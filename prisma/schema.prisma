@@ -273,6 +273,39 @@ model InventoryItem {
 
 // ==================== TECHNIQUES ====================
 
+// Каталог техник (глобальный)
+model Technique {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // === Идентификация ===
+  name        String @unique
+  nameId      String @unique // Для поиска дубликатов
+  description String
+  
+  // === Классификация ===
+  type     String  // combat, cultivation, support, movement, sensory, healing
+  element  String  // fire, water, earth, air, void, neutral
+  rarity   String  // common, uncommon, rare, legendary
+  
+  // === Требования ===
+  minCultivationLevel Int     @default(1)
+  qiCost              Int     @default(0)
+  physicalFatigueCost Float   @default(0)
+  mentalFatigueCost   Float   @default(0)
+  
+  // === Эффекты (JSON) ===
+  effects String? // { damage, healing, qiRegen, duration, statModifiers }
+  
+  // === Источник ===
+  source String @default("created") // learned, created, inherited
+  
+  // Связи
+  characterTechniques CharacterTechnique[]
+}
+
+// Изученные персонажем техники
 model CharacterTechnique {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
@@ -280,16 +313,13 @@ model CharacterTechnique {
   characterId String
   character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
   
-  // === Данные техники ===
-  name        String
-  description String?
-  
-  // === Требования ===
-  minLevel Int @default(1) // Минимальный уровень культивации
-  qiCost   Int @default(0) // Затраты Ци
+  techniqueId String
+  technique   Technique @relation(fields: [techniqueId], references: [id])
   
   // === Мастерство ===
   mastery Float @default(0.0) // 0-100%
+  
+  @@unique([characterId, techniqueId])
 }
 
 // ==================== SETTINGS ====================
@@ -354,4 +384,68 @@ model SystemLog {
   @@index([level])
   @@index([category])
   @@index([createdAt])
+}
+
+// ==================== ENCOUNTERED ENTITIES ====================
+
+// Встреченные персонажи и монстры
+model EncounteredEntity {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // === Идентификация ===
+  name  String
+  type  String  // npc, monster, animal, spirit
+  title String?
+  description String?
+  
+  // === Характеристики ===
+  cultivationLevel    Int?
+  cultivationSubLevel Int?
+  power               Float? // Для монстров
+  
+  // === Отношения ===
+  disposition Float @default(0) // -100 до 100
+  importance  String @default("normal") // minor, normal, important, critical
+  
+  // === Память ===
+  encounterCount    Int      @default(1)
+  firstEncounter    DateTime @default(now())
+  lastEncounter     DateTime @default(now())
+  
+  // === Местоположение ===
+  lastLocationId String?
+  homeLocationId String?
+  
+  // === Теги и данные (JSON) ===
+  tags       String  @default("[]")
+  customData String?
+  
+  // === Связь с сессией ===
+  sessionId String?
+  
+  // Связи
+  memories EntityMemory[]
+  
+  // Индексы
+  @@index([type])
+  @@index([importance])
+  @@index([lastEncounter])
+}
+
+// Воспоминания о сущности
+model EntityMemory {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  
+  entityId String
+  entity   EncounteredEntity @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  
+  // === Данные воспоминания ===
+  type    String  // dialogue, combat, trade, quest, social
+  summary String
+  impact  Float   // Влияние на disposition
+  
+  @@index([entityId])
 }
