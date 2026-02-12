@@ -1,141 +1,203 @@
-# 🚀 Welcome to Z.ai Code Scaffold
+# 🌸 Cultivation World Simulator
 
-A modern, production-ready web application scaffold powered by cutting-edge technologies, designed to accelerate your development with [Z.ai](https://chat.z.ai)'s AI-powered coding assistance.
+Текстовая RPG-симуляция мира культивации с ИИ-гейм-мастером. Погрузитесь в мир сянся, где вы можете развиваться от пробуждённого ядра до бессмертия.
 
-## ✨ Technology Stack
+## ✨ Особенности
 
-This scaffold provides a robust foundation built with:
+### 🎮 Игровой процесс
+- **📖 Живое повествование** — ИИ-рассказчик создаёт уникальную историю
+- **⚡ Система Ци** — детальная физика энергии с формулами
+- **🏔️ 10 уровней культивации** — от Пробуждённого Ядра до Бессмертия
+- **🗺️ Огромный мир** — 100,000 км обитаемых земель
+- **👥 NPC и секты** — социальные структуры и отношения
 
-### 🎯 Core Framework
-- **⚡ Next.js 16** - The React framework for production with App Router
-- **📘 TypeScript 5** - Type-safe JavaScript for better developer experience
-- **🎨 Tailwind CSS 4** - Utility-first CSS framework for rapid UI development
+### 🤖 ИИ-Гейм-Мастер
+- Поддержка нескольких провайдеров LLM
+- Локальная LLM (Ollama)
+- Внешние API (OpenAI и др.)
+- z-ai-web-dev-sdk
 
-### 🧩 UI Components & Styling
-- **🧩 shadcn/ui** - High-quality, accessible components built on Radix UI
-- **🎯 Lucide React** - Beautiful & consistent icon library
-- **🌈 Framer Motion** - Production-ready motion library for React
-- **🎨 Next Themes** - Perfect dark mode in 2 lines of code
+### 🎨 Интерфейс
+- Минималистичный текстовый UI
+- Тёмная тема
+- Адаптивный дизайн
+- Сохранение/загрузка
 
-### 📋 Forms & Validation
-- **🎣 React Hook Form** - Performant forms with easy validation
-- **✅ Zod** - TypeScript-first schema validation
-
-### 🔄 State Management & Data Fetching
-- **🐻 Zustand** - Simple, scalable state management
-- **🔄 TanStack Query** - Powerful data synchronization for React
-- **🌐 Fetch** - Promise-based HTTP request
-
-### 🗄️ Database & Backend
-- **🗄️ Prisma** - Next-generation TypeScript ORM
-- **🔐 NextAuth.js** - Complete open-source authentication solution
-
-### 🎨 Advanced UI Features
-- **📊 TanStack Table** - Headless UI for building tables and datagrids
-- **🖱️ DND Kit** - Modern drag and drop toolkit for React
-- **📊 Recharts** - Redefined chart library built with React and D3
-- **🖼️ Sharp** - High performance image processing
-
-### 🌍 Internationalization & Utilities
-- **🌍 Next Intl** - Internationalization library for Next.js
-- **📅 Date-fns** - Modern JavaScript date utility library
-- **🪝 ReactUse** - Collection of essential React hooks for modern development
-
-## 🎯 Why This Scaffold?
-
-- **🏎️ Fast Development** - Pre-configured tooling and best practices
-- **🎨 Beautiful UI** - Complete shadcn/ui component library with advanced interactions
-- **🔒 Type Safety** - Full TypeScript configuration with Zod validation
-- **📱 Responsive** - Mobile-first design principles with smooth animations
-- **🗄️ Database Ready** - Prisma ORM configured for rapid backend development
-- **🔐 Auth Included** - NextAuth.js for secure authentication flows
-- **📊 Data Visualization** - Charts, tables, and drag-and-drop functionality
-- **🌍 i18n Ready** - Multi-language support with Next Intl
-- **🚀 Production Ready** - Optimized build and deployment settings
-- **🤖 AI-Friendly** - Structured codebase perfect for AI assistance
-
-## 🚀 Quick Start
+## 🚀 Быстрый старт
 
 ```bash
-# Install dependencies
+# Установка зависимостей
 bun install
 
-# Start development server
+# Инициализация базы данных
+bun run db:push
+
+# Запуск сервера разработки
 bun run dev
-
-# Build for production
-bun run build
-
-# Start production server
-bun start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see your application running.
+Откройте [http://localhost:3000](http://localhost:3000) в браузере.
 
-## 🤖 Powered by Z.ai
+## 🎯 Варианты старта
 
-This scaffold is optimized for use with [Z.ai](https://chat.z.ai) - your AI assistant for:
+### 1. 🏛️ В секте
+- Пробуждение в теле кандидата
+- Частичная амнезия
+- 4 дня испытаний
+- Не знает о системе
 
-- **💻 Code Generation** - Generate components, pages, and features instantly
-- **🎨 UI Development** - Create beautiful interfaces with AI assistance  
-- **🔧 Bug Fixing** - Identify and resolve issues with intelligent suggestions
-- **📝 Documentation** - Auto-generate comprehensive documentation
-- **🚀 Optimization** - Performance improvements and best practices
+### 2. 🌲 Свободный старт
+- Случайная локация
+- Знает о системе
+- Минимальные ресурсы
 
-Ready to build something amazing? Start chatting with Z.ai at [chat.z.ai](https://chat.z.ai) and experience the future of AI-powered development!
+### 3. ⚙️ Кастомный
+- Выбор локации
+- Настройка характеристик
+- Полный контроль
 
-## 📁 Project Structure
+## 📋 Система команд
+
+| Команда | Описание |
+|---------|----------|
+| `!!` | Действие для ГГ (системное сообщение) |
+| `--` | Глобальный запрос к симуляции |
+| `---` | Строгий режим вывода |
+| `--ПМ` | Проверка мира |
+
+## 🏗️ Технологии
+
+### Основной стек
+- **Next.js 16** — React-фреймворк с App Router
+- **TypeScript 5** — типобезопасный JavaScript
+- **Tailwind CSS 4** — стилизация
+- **Prisma** — ORM для базы данных
+- **SQLite** — хранение данных
+
+### UI компоненты
+- **shadcn/ui** — компоненты интерфейса
+- **Lucide React** — иконки
+- **Framer Motion** — анимации
+
+### AI интеграция
+- **z-ai-web-dev-sdk** — основной провайдер
+- **Ollama** — локальная LLM
+- **OpenAI API** — внешний API
+
+## 📁 Структура проекта
 
 ```
 src/
-├── app/                 # Next.js App Router pages
-├── components/          # Reusable React components
-│   └── ui/             # shadcn/ui components
-├── hooks/              # Custom React hooks
-└── lib/                # Utility functions and configurations
+├── app/                    # Next.js App Router
+│   ├── page.tsx           # Главная страница
+│   └── api/               # API endpoints
+│       ├── chat/          # API чата
+│       └── game/          # API игры
+├── components/
+│   ├── game/              # Игровые компоненты
+│   ├── start/             # Экран старта
+│   └── ui/                # shadcn/ui компоненты
+├── data/
+│   ├── memory-containers.ts  # Контейнеры памяти
+│   ├── cultivation-levels.ts # Уровни культивации
+│   └── prompts/           # Промпты для ИИ
+├── hooks/                 # React хуки
+└── lib/
+    ├── llm/               # LLM провайдеры
+    ├── game/              # Игровая логика
+    └── image/             # Генерация изображений
 ```
 
-## 🎨 Available Features & Components
+## ⚙️ Конфигурация LLM
 
-This scaffold includes a comprehensive set of modern web development tools:
+### z-ai-web-dev-sdk (по умолчанию)
+Работает автоматически без настройки.
 
-### 🧩 UI Components (shadcn/ui)
-- **Layout**: Card, Separator, Aspect Ratio, Resizable Panels
-- **Forms**: Input, Textarea, Select, Checkbox, Radio Group, Switch
-- **Feedback**: Alert, Toast (Sonner), Progress, Skeleton
-- **Navigation**: Breadcrumb, Menubar, Navigation Menu, Pagination
-- **Overlay**: Dialog, Sheet, Popover, Tooltip, Hover Card
-- **Data Display**: Badge, Avatar, Calendar
+### Локальная LLM (Ollama)
+```bash
+# Установка Ollama
+curl -fsSL https://ollama.com/install.sh | sh
 
-### 📊 Advanced Data Features
-- **Tables**: Powerful data tables with sorting, filtering, pagination (TanStack Table)
-- **Charts**: Beautiful visualizations with Recharts
-- **Forms**: Type-safe forms with React Hook Form + Zod validation
+# Загрузка модели
+ollama pull llama3.1:8b
 
-### 🎨 Interactive Features
-- **Animations**: Smooth micro-interactions with Framer Motion
-- **Drag & Drop**: Modern drag-and-drop functionality with DND Kit
-- **Theme Switching**: Built-in dark/light mode support
+# Запуск сервера
+ollama serve
+```
 
-### 🔐 Backend Integration
-- **Authentication**: Ready-to-use auth flows with NextAuth.js
-- **Database**: Type-safe database operations with Prisma
-- **API Client**: HTTP requests with Fetch + TanStack Query
-- **State Management**: Simple and scalable with Zustand
+### Внешний API
+Создайте файл `.env.local`:
+```env
+LLM_PROVIDER=api
+LLM_API_ENDPOINT=https://api.openai.com/v1/chat/completions
+LLM_API_KEY=your-api-key
+LLM_API_MODEL=gpt-4
+```
 
-### 🌍 Production Features
-- **Internationalization**: Multi-language support with Next Intl
-- **Image Optimization**: Automatic image processing with Sharp
-- **Type Safety**: End-to-end TypeScript with Zod validation
-- **Essential Hooks**: 100+ useful React hooks with ReactUse for common patterns
+## 📊 Система культивации
 
-## 🤝 Get Started with Z.ai
+| Уровень | Название | Плотность Ци |
+|---------|----------|--------------|
+| 1 | Пробуждённое Ядро | 1 ед/см³ |
+| 2 | Течение Жизни | 2 ед/см³ |
+| 3 | Пламя Внутреннего Огня | 4 ед/см³ |
+| 4 | Объединение Тела и Духа | 8 ед/см³ |
+| 5 | Сердце Небес | 16 ед/см³ |
+| 6 | Разрыв Пелены | 32 ед/см³ |
+| 7 | Вечное Кольцо | 64 ед/см³ |
+| 8 | Глас Небес | 128 ед/см³ |
+| 9 | Бессмертное Ядро | 256 ед/см³ |
 
-1. **Clone this scaffold** to jumpstart your project
-2. **Visit [chat.z.ai](https://chat.z.ai)** to access your AI coding assistant
-3. **Start building** with intelligent code generation and assistance
-4. **Deploy with confidence** using the production-ready setup
+### Формулы
+- **Плотность Ци:** `Qi(x) = 2^(уровень-1)` ед/см³
+- **Прорыв (малый):** ёмкость ядра × 10
+- **Прорыв (большой):** ёмкость ядра × 100
+- **Генерация:** 10% от ёмкости ядра/сутки
+
+## 🗺️ География мира
+
+```
+┌─────────────────────────────────────────────┐
+│                 КУПОЛ (10,000 км)           │
+│  ┌─────────────────────────────────────┐    │
+│  │     Внутреннее кольцо (0-5,000 км)  │    │
+│  │     Ци: 500-1000+ ед/м³             │    │
+│  │     Макс. уровень: 9.0-9.9          │    │
+│  │  ┌─────────────────────────────┐    │    │
+│  │  │  Среднее кольцо             │    │    │
+│  │  │  (5,000-15,000 км)          │    │    │
+│  │  │  Ци: 200-500 ед/м³          │    │    │
+│  │  │  Макс. уровень: 7.0-8.0     │    │    │
+│  │  │  ┌─────────────────────┐    │    │    │
+│  │  │  │  Внешнее кольцо     │    │    │    │
+│  │  │  │  (15,000-20,000 км) │    │    │    │
+│  │  │  │  Ци: 100-200 ед/м³  │    │    │    │
+│  │  │  │  ┌─────────────┐    │    │    │    │
+│  │  │  │  │ Приграничье │    │    │    │    │
+│  │  │  │  │ (20-100к км)│    │    │    │    │
+│  │  │  │  │ Ци: 20-100  │    │    │    │    │
+│  │  │  │  └─────────────┘    │    │    │    │
+│  │  │  └─────────────────────┘    │    │    │
+│  │  └─────────────────────────────┘    │    │
+│  └─────────────────────────────────────┘    │
+│              Бесконечное Море               │
+│               (20,000 км)                   │
+└─────────────────────────────────────────────┘
+```
+
+## 🔮 Планы развития
+
+- [ ] Боевая система
+- [ ] Система техник Ци
+- [ ] Генерация изображений (Stable Diffusion)
+- [ ] Карта мира
+- [ ] Мультиплеер
+- [ ] Звуковое сопровождение
+
+## 📜 Лицензия
+
+MIT License
 
 ---
 
-Built with ❤️ for the developer community. Supercharged by [Z.ai](https://chat.z.ai) 🚀
+Создано с ❤️ для любителей жанра сянся. Powered by [Z.ai](https://chat.z.ai) 🚀
