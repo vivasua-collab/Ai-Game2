@@ -33,14 +33,23 @@ export class ZAIProvider implements ILLMProvider {
         throw new Error("Z-AI SDK not initialized - SDK returned null");
       }
 
-      // Формируем сообщения для z-ai (system prompt идёт как assistant)
-      const formattedMessages = [
-        { role: "assistant" as const, content: systemPrompt },
-        ...messages.map((m) => ({
-          role: m.role === "system" ? ("assistant" as const) : m.role,
-          content: m.content,
-        })),
-      ];
+      // Формируем сообщения для z-ai
+      // Z-AI ожидает: сначала system как assistant, затем user/assistant чередование
+      const formattedMessages = [];
+      
+      // System prompt как первое сообщение от assistant
+      formattedMessages.push({
+        role: "assistant" as const,
+        content: systemPrompt
+      });
+      
+      // Добавляем историю сообщений
+      for (const msg of messages) {
+        formattedMessages.push({
+          role: msg.role === "system" ? "assistant" as const : msg.role,
+          content: msg.content
+        });
+      }
 
       const completion = await this.zai.chat.completions.create({
         messages: formattedMessages,
@@ -74,14 +83,26 @@ export class ZAIProvider implements ILLMProvider {
   async isAvailable(): Promise<LLMAvailability> {
     try {
       await this.initialize();
-      // Простой тестовый запрос
-      const testCompletion = await this.zai!.chat.completions.create({
-        messages: [{ role: "assistant", content: "test" }],
+      
+      if (!this.zai) {
+        return {
+          available: false,
+          provider: "z-ai",
+          error: "SDK not initialized",
+        };
+      }
+      
+      // Простой тестовый запрос с правильным форматом
+      const testCompletion = await this.zai.chat.completions.create({
+        messages: [
+          { role: "user", content: "test" }
+        ],
         thinking: { type: "disabled" },
       });
       return {
         available: !!testCompletion.choices[0]?.message?.content,
         provider: "z-ai",
+        model: testCompletion.model,
       };
     } catch (error) {
       return {
