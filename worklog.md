@@ -76,3 +76,51 @@ Stage Summary:
 - UI controls on start screen for log management
 - Integrated into all major API endpoints
 - Ready for debugging and error tracking
+
+---
+Task ID: 3
+Agent: Main Orchestrator
+Task: Database safety and versioning system
+
+Work Log:
+- Added database files to .gitignore (/db/*.db, /db/*.db-journal, /db/*.db-wal)
+- Created .gitkeep files for /db/ and /db/backups/ folders
+- Updated SCHEMA_VERSION to 3 in migrations.ts
+- Added new fields to schema:
+  - GameSession: worldId, worldName, startType
+  - Character: name
+- Created HISTORY.md with version history
+- Updated README.md with documentation links
+- Created backup system before migrations
+
+Stage Summary:
+- Database protected from git pull overwrites
+- Version tracking system implemented
+- Automatic backup before schema changes
+- Documentation updated (HISTORY.md, README.md, worklog.md)
+
+---
+Task ID: 4
+Agent: Main Orchestrator
+Task: Save system enhancement
+
+Work Log:
+- Updated StartGameRequest interface with characterName
+- Updated /api/game/start to accept and store character name
+- Updated /api/game/save to return full save info:
+  - worldId, worldName, startType, startTypeLabel
+  - Character name, health, fatigue, mentalFatigue
+  - Time info with hour and minute
+- Updated SaveData interface in StartScreen.tsx
+- Enhanced save card UI with:
+  - Character name and start type badge
+  - World name and ID preview
+  - Qi progress bar
+  - Fatigue and health stats
+- Updated useGame hook with characterName parameter
+- Updated page.tsx to pass characterName
+
+Stage Summary:
+- Full save information displayed on load screen
+- Character naming on custom start
+- World identification system ready for future multi-world features

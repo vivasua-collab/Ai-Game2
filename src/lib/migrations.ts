@@ -11,7 +11,10 @@ import { existsSync, copyFileSync, unlinkSync, readdirSync, mkdirSync, statSync 
 import { join } from "path";
 
 // Версия схемы БД (увеличивать при изменениях в schema.prisma)
-export const SCHEMA_VERSION = 2;
+// v1: Базовая схема
+// v2: Добавлена система логирования (SystemLog)
+// v3: Добавлены поля worldId, worldName, startType в GameSession; name в Character
+export const SCHEMA_VERSION = 3;
 
 // Путь к базе данных
 const DB_PATH = join(process.cwd(), "db", "custom.db");

@@ -57,3 +57,10 @@ prompt
 server.log
 # Skills directory
 /skills/
+
+# Database files - protect user save games
+/db/*.db
+/db/*.db-journal
+/db/*.db-wal
+!/db/.gitkeep
+!/db/backups/.gitkeep

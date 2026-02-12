@@ -22,6 +22,18 @@ interface StartScreenProps {
   isLoading: boolean;
 }
 
+// Интерфейс GPU детектора
+interface GPUInfo {
+  available: boolean;
+  type: "nvidia-tensor" | "nvidia-cuda" | "cuda-cpu" | "none";
+  gpuName: string | null;
+  cudaVersion: string | null;
+  vram: number | null;
+  tensorCores: boolean;
+  computeCapability: string | null;
+  recommendation: string;
+}
+
 // Интерфейс сохранения с новой информацией
 interface SaveData {
   id: string;
@@ -78,17 +90,19 @@ interface LLMStatus {
   };
 }
 
-// Компонент индикатора статуса LLM
+// Компонент индикатора статуса LLM с GPU детектором
 function LLMStatusIndicator() {
   const [status, setStatus] = useState<LLMStatus | null>(null);
   const [isChecking, setIsChecking] = useState(true);
   const [showWarning, setShowWarning] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
+  const [gpuInfo, setGpuInfo] = useState<GPUInfo | null>(null);
 
   // Проверка статуса при загрузке
   useEffect(() => {
     checkStatus();
+    checkGPU();
   }, []);
 
   const checkStatus = async () => {
@@ -113,6 +127,26 @@ function LLMStatusIndicator() {
       });
     } finally {
       setIsChecking(false);
+    }
+  };
+
+  const checkGPU = async () => {
+    try {
+      const response = await fetch("/api/system/gpu");
+      const data = await response.json();
+      setGpuInfo(data.gpu);
+    } catch (error) {
+      console.error("Failed to check GPU:", error);
+      setGpuInfo({
+        available: false,
+        type: "none",
+        gpuName: null,
+        cudaVersion: null,
+        vram: null,
+        tensorCores: false,
+        computeCapability: null,
+        recommendation: "Не удалось определить GPU",
+      });
     }
   };
 
@@ -154,6 +188,21 @@ function LLMStatusIndicator() {
         return "External API";
       default:
         return provider;
+    }
+  };
+
+  // GPU статус цвет
+  const getGPUStatusColor = () => {
+    if (!gpuInfo) return "bg-slate-500";
+    switch (gpuInfo.type) {
+      case "nvidia-tensor":
+        return "bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]";
+      case "nvidia-cuda":
+        return "bg-yellow-500 shadow-[0_0_8px_rgba(234,179,8,0.6)]";
+      case "cuda-cpu":
+        return "bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.6)]";
+      default:
+        return "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]";
     }
   };
 
@@ -291,6 +340,40 @@ function LLMStatusIndicator() {
               )}
             </div>
           )}
+
+          {/* GPU детектор */}
+          <div className="mt-3 pt-3 border-t border-slate-700">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={checkGPU}
+                  className={`w-3 h-3 rounded-full transition-all cursor-pointer ${getGPUStatusColor()}`}
+                  title="GPU для локальной LLM"
+                />
+                <span className="text-xs text-slate-400">
+                  {gpuInfo?.gpuName || "GPU не найден"}
+                </span>
+              </div>
+              {gpuInfo?.vram && (
+                <span className="text-xs text-slate-500">
+                  {Math.round(gpuInfo.vram / 1024)}GB
+                </span>
+              )}
+            </div>
+            {gpuInfo && (
+              <div className={`text-xs p-2 rounded ${
+                gpuInfo.type === "nvidia-tensor" 
+                  ? "bg-green-900/20 text-green-400"
+                  : gpuInfo.type === "nvidia-cuda"
+                  ? "bg-yellow-900/20 text-yellow-400"
+                  : gpuInfo.type === "cuda-cpu"
+                  ? "bg-orange-900/20 text-orange-400"
+                  : "bg-red-900/20 text-red-400"
+              }`}>
+                {gpuInfo.recommendation}
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
 
@@ -1035,14 +1118,17 @@ export function StartScreen({ onStartGame, onLoadGame, isLoading }: StartScreenP
               </Button>
             </div>
 
-            {/* Индикатор LLM */}
-            <LLMStatusIndicator />
-
-            {/* Панель логирования */}
-            <LoggingPanel />
-
-            {/* Панель управления БД */}
-            <DatabasePanel />
+            {/* Системные панели в ряд */}
+            <div className="flex flex-wrap justify-center gap-4 mb-4 w-full max-w-5xl">
+              {/* 1. Нейросеть */}
+              <LLMStatusIndicator />
+              
+              {/* 2. База данных */}
+              <DatabasePanel />
+              
+              {/* 3. Логирование */}
+              <LoggingPanel />
+            </div>
           </>
         )}
 
