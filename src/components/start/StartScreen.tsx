@@ -240,6 +240,77 @@ function LLMStatusIndicator() {
   );
 }
 
+// Компонент панели управления базой данных
+function DatabasePanel() {
+  const [isResetting, setIsResetting] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+
+  const handleResetDatabase = async () => {
+    if (!confirm("⚠️ Вы уверены? Это удалит все данные игры!")) {
+      return;
+    }
+
+    setIsResetting(true);
+    setMessage(null);
+
+    try {
+      const response = await fetch("/api/database/reset", {
+        method: "POST",
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        setMessage("✅ База данных пересоздана");
+      } else {
+        setMessage(`❌ Ошибка: ${data.error}`);
+      }
+    } catch (error) {
+      setMessage(`❌ Ошибка: ${error instanceof Error ? error.message : "Unknown"}`);
+    } finally {
+      setIsResetting(false);
+      setTimeout(() => setMessage(null), 5000);
+    }
+  };
+
+  return (
+    <Card className="bg-slate-800/50 border-slate-700 w-full max-w-md">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-sm text-slate-300 flex items-center gap-2">
+          💾 База данных
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <div className="flex items-center justify-between">
+          <Label className="text-slate-400 text-sm">Пересоздать с нуля</Label>
+          <Button
+            size="sm"
+            variant="outline"
+            className="border-red-600 text-red-400 hover:bg-red-900/30"
+            onClick={handleResetDatabase}
+            disabled={isResetting}
+          >
+            {isResetting ? "⏳..." : "🔄 Сбросить"}
+          </Button>
+        </div>
+
+        {message && (
+          <div className={`text-sm p-2 rounded ${
+            message.startsWith("✅") 
+              ? "bg-green-900/30 text-green-400" 
+              : "bg-red-900/30 text-red-400"
+          }`}>
+            {message}
+          </div>
+        )}
+
+        <p className="text-xs text-slate-500">
+          Удалит все сохранения и пересоздаст структуру таблиц
+        </p>
+      </CardContent>
+    </Card>
+  );
+}
+
 // Компонент панели настроек логирования
 function LoggingPanel() {
   const [loggingEnabled, setLoggingEnabled] = useState(true);
@@ -670,6 +741,9 @@ export function StartScreen({ onStartGame, onLoadGame, isLoading }: StartScreenP
 
             {/* Панель логирования */}
             <LoggingPanel />
+
+            {/* Панель управления БД */}
+            <DatabasePanel />
           </>
         )}
 

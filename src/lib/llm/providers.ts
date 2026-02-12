@@ -121,14 +121,79 @@ export class ZAIProvider implements ILLMProvider {
 // ==================== Local LLM Provider (Ollama) ====================
 export class LocalLLMProvider implements ILLMProvider {
   private config: LLMConfig;
+  private cachedModel: string | null = null;
+  private availableModels: string[] = [];
 
   constructor(config: LLMConfig) {
     this.config = config;
   }
 
+  /**
+   * Получить список доступных моделей от Ollama Desktop
+   * API: GET http://localhost:11434/api/tags
+   */
+  async getAvailableModels(): Promise<string[]> {
+    const endpoint = this.config.localEndpoint || "http://localhost:11434";
+    
+    try {
+      const response = await fetch(`${endpoint}/api/tags`, {
+        method: "GET",
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        // Ollama возвращает { models: [{ name: "llama3:latest", ... }, ...] }
+        this.availableModels = (data.models || []).map((m: { name: string }) => m.name);
+        return this.availableModels;
+      }
+      return [];
+    } catch {
+      return [];
+    }
+  }
+
+  /**
+   * Получить текущую активную модель из Ollama Desktop
+   * Если модель задана в конфиге и она доступна - используем её
+   * Иначе берём первую доступную из списка
+   */
+  async getActiveModel(): Promise<string> {
+    // Если уже кэшировали модель - возвращаем
+    if (this.cachedModel) {
+      return this.cachedModel;
+    }
+
+    // Получаем список доступных моделей
+    const models = await this.getAvailableModels();
+    
+    // Если задана модель в конфиге и она существует
+    const configModel = this.config.localModel;
+    if (configModel) {
+      // Проверяем точное совпадение или совпадение без тега
+      const exactMatch = models.find(m => m === configModel);
+      const partialMatch = models.find(m => m.startsWith(configModel + ":") || m.startsWith(configModel + "-"));
+      
+      if (exactMatch || partialMatch) {
+        this.cachedModel = exactMatch || partialMatch;
+        return this.cachedModel!;
+      }
+    }
+
+    // Берём первую доступную модель
+    if (models.length > 0) {
+      this.cachedModel = models[0];
+      return this.cachedModel!;
+    }
+
+    // Fallback - дефолтная модель
+    return configModel || "llama3.1:8b";
+  }
+
   async generate(systemPrompt: string, messages: LLMMessage[]): Promise<LLMResponse> {
     const endpoint = this.config.localEndpoint || "http://localhost:11434";
-    const model = this.config.localModel || "llama3.1:8b";
+    
+    // Получаем активную модель от Ollama Desktop
+    const model = await this.getActiveModel();
 
     try {
       // Формируем сообщения для Ollama
@@ -186,15 +251,30 @@ export class LocalLLMProvider implements ILLMProvider {
   async isAvailable(): Promise<LLMAvailability> {
     try {
       const endpoint = this.config.localEndpoint || "http://localhost:11434";
-      const response = await fetch(`${endpoint}/api/tags`, {
+      
+      // Получаем список моделей
+      const models = await this.getAvailableModels();
+      
+      if (models.length > 0) {
+        // Определяем активную модель
+        const activeModel = await this.getActiveModel();
+        return {
+          available: true,
+          provider: "local",
+          model: activeModel,
+        };
+      }
+
+      // Проверяем доступность сервера даже без моделей
+      const response = await fetch(`${endpoint}/api/version`, {
         method: "GET",
       });
 
       if (response.ok) {
         return {
-          available: true,
+          available: false,
           provider: "local",
-          model: this.config.localModel || "llama3.1:8b",
+          error: "Ollama работает, но нет загруженных моделей. Запустите: ollama pull llama3",
         };
       }
 
@@ -214,6 +294,13 @@ export class LocalLLMProvider implements ILLMProvider {
 
   getProviderName(): LLMProviderType {
     return "local";
+  }
+
+  /**
+   * Сбросить кэш модели (для обновления при смене модели в Desktop)
+   */
+  resetModelCache(): void {
+    this.cachedModel = null;
   }
 }
 
