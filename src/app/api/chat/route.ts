@@ -138,6 +138,135 @@ export async function POST(request: NextRequest) {
     const requestType = identifyRequestType(message);
     await logDebug("GAME", "Request identified", { requestType, message: message.substring(0, 50) });
 
+    // === МЕДИТАЦИЯ И ПРОРЫВ - ОБРАБАТЫВАЕМ ЛОКАЛЬНО БЕЗ LLM ===
+    // Это должно быть ПЕРЕД проверкой needsLLM
+    if (requestType === "cultivation") {
+      const lowerMessage = message.toLowerCase();
+      const isBreakthrough = /прорыв|breakthrough/.test(lowerMessage);
+      const meditationMatch = lowerMessage.match(/(\d+)\s*(час|минут)/);
+      
+      let durationMinutes = 60; // дефолт 1 час
+      if (meditationMatch) {
+        const value = parseInt(meditationMatch[1]);
+        const unit = meditationMatch[2];
+        durationMinutes = unit === "час" ? value * 60 : value;
+      }
+
+      if (isBreakthrough) {
+        // Попытка прорыва
+        const result = attemptBreakthrough(session.character);
+        if (result.success) {
+          mechanicsUpdate = {
+            cultivationLevel: result.newLevel,
+            cultivationSubLevel: result.newSubLevel,
+            coreCapacity: result.newCoreCapacity,
+            accumulatedQi: Math.max(0, session.character.accumulatedQi - result.qiConsumed),
+            fatigue: Math.max(0, session.character.fatigue - result.fatigueGained.physical),
+            mentalFatigue: Math.max(0, (session.character.mentalFatigue || 0) - result.fatigueGained.mental),
+          };
+        }
+        timeAdvanceForMechanics.minutes = 30;
+        
+        await db.character.update({
+          where: { id: session.characterId },
+          data: { ...mechanicsUpdate, updatedAt: new Date() },
+        });
+        
+        const qiDelta = { qiChange: 0, reason: "Прорыв", isBreakthrough: result.success };
+        
+        return NextResponse.json({
+          success: true,
+          response: {
+            type: "narration",
+            content: result.success 
+              ? `${result.message}\n\n💎 Ёмкость ядра: ${result.newCoreCapacity}\n⚡ Накопленная Ци: ${session.character.accumulatedQi - result.qiConsumed}`
+              : `❌ ${result.message}`,
+            qiDelta,
+            stateUpdate: mechanicsUpdate,
+            timeAdvance: { minutes: 30 },
+          },
+          updatedTime: null,
+        });
+      } else {
+        // Накопление Ци через медитацию
+        const meditationType: MeditationType = "accumulation";
+        const result = performMeditation(session.character, location, durationMinutes, meditationType);
+        
+        if (result.success) {
+          mechanicsUpdate = {
+            // Медитация СНИМАЕТ усталость (отдых)
+            fatigue: Math.max(0, session.character.fatigue - result.fatigueGained.physical),
+            mentalFatigue: Math.max(0, (session.character.mentalFatigue || 0) - result.fatigueGained.mental),
+          };
+          
+          if (result.coreWasFilled) {
+            mechanicsUpdate.currentQi = session.character.coreCapacity;
+            mechanicsUpdate.accumulatedQi = session.character.accumulatedQi + result.accumulatedQiGained;
+          } else {
+            mechanicsUpdate.currentQi = session.character.currentQi + result.qiGained;
+          }
+          
+          timeAdvanceForMechanics.minutes = result.duration;
+        }
+        
+        await db.character.update({
+          where: { id: session.characterId },
+          data: { ...mechanicsUpdate, updatedAt: new Date() },
+        });
+        
+        const breakdownText = result.breakdown 
+          ? `\n  • Ядро: +${result.breakdown.coreGeneration}\n  • Среда: +${result.breakdown.environmentalAbsorption}`
+          : "";
+        
+        await db.message.create({
+          data: {
+            sessionId,
+            type: "narration",
+            sender: "narrator",
+            content: result.coreWasFilled
+              ? `⚡ Ядро заполнено! +${result.accumulatedQiGained} к накоплению.`
+              : `Медитация завершена. Накоплено: +${result.qiGained}.`,
+          },
+        });
+        
+        const qiDelta = {
+          qiChange: result.qiGained,
+          reason: result.coreWasFilled ? "Ядро заполнено! Потратьте Ци для продолжения." : "Медитация",
+          isBreakthrough: false,
+          accumulatedGain: result.accumulatedQiGained,
+        };
+        
+        let responseContent = "";
+        if (!result.success) {
+          responseContent = `❌ ${result.interruptionReason}`;
+        } else if (result.coreWasFilled) {
+          const newAccumulated = session.character.accumulatedQi + result.accumulatedQiGained;
+          const currentFills = Math.floor(newAccumulated / session.character.coreCapacity);
+          const requiredFills = session.character.cultivationLevel * 10 + session.character.cultivationSubLevel;
+          const fillsNeeded = Math.max(0, requiredFills - currentFills);
+          responseContent = `⚡ **Ядро заполнено!**\n\n📊 Прогресс: ${currentFills}/${requiredFills} заполнений\n🔄 Осталось: ${fillsNeeded}\n\n⚠️ **Потратьте Ци (техники, бой) чтобы продолжить!**${breakdownText}\n⏱️ Время: ${result.duration} мин.\n😌 Усталость снижена.`;
+        } else {
+          responseContent = `🧘 Медитация завершена.\n\n⚡ Накоплено Ци: +${result.qiGained}${breakdownText}\n  Ядро: ${session.character.currentQi + result.qiGained}/${session.character.coreCapacity}\n😌 Усталость снижена.\n⏱️ Время: ${result.duration} мин.`;
+        }
+        
+        return NextResponse.json({
+          success: true,
+          response: {
+            type: "narration",
+            content: responseContent,
+            qiDelta,
+            fatigueDelta: {
+              physical: -result.fatigueGained.physical, // Отрицательное = снимает усталость
+              mental: -result.fatigueGained.mental,
+            },
+            stateUpdate: mechanicsUpdate,
+            timeAdvance: { minutes: result.duration },
+          },
+          updatedTime: null,
+        });
+      }
+    }
+
     // Обрабатываем локальные запросы без LLM
     if (!needsLLM(message)) {
       const routing = routeRequest(message, session.character, location, null, []);
@@ -251,162 +380,18 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Определяем действие для механик
-    let mechanicsUpdate: Record<string, unknown> = {};
-    let timeAdvanceForMechanics = { minutes: 0 };
-
-    // Обработка медитации - возвращаем результат БЕЗ LLM
-    if (requestType === "cultivation") {
-      const lowerMessage = message.toLowerCase();
-      const isBreakthrough = /прорыв|breakthrough/.test(lowerMessage);
-      const meditationMatch = lowerMessage.match(/(\d+)\s*(час|минут)/);
-      
-      let durationMinutes = 60; // дефолт 1 час
-      if (meditationMatch) {
-        const value = parseInt(meditationMatch[1]);
-        const unit = meditationMatch[2];
-        durationMinutes = unit === "час" ? value * 60 : value;
-      }
-
-      if (isBreakthrough) {
-        // Попытка прорыва
-        const result = attemptBreakthrough(session.character);
-        if (result.success) {
-          mechanicsUpdate = {
-            cultivationLevel: result.newLevel,
-            cultivationSubLevel: result.newSubLevel,
-            coreCapacity: result.newCoreCapacity,
-            accumulatedQi: Math.max(0, session.character.accumulatedQi - result.qiConsumed),
-            fatigue: Math.min(100, session.character.fatigue + result.fatigueGained.physical),
-            mentalFatigue: Math.min(100, (session.character.mentalFatigue || 0) + result.fatigueGained.mental),
-          };
-        }
-        timeAdvanceForMechanics.minutes = 30; // Прорыв занимает 30 минут
-        
-        // Обновляем БД
-        await db.character.update({
-          where: { id: session.characterId },
-          data: { ...mechanicsUpdate, updatedAt: new Date() },
-        });
-        
-        // qiDelta для клиента (дельта вместо абсолютного значения)
-        // Прорыв НЕ тратит currentQi, только accumulatedQi
-        const qiDelta = { qiChange: 0, reason: "Прорыв", isBreakthrough: result.success };
-        
-        return NextResponse.json({
-          success: true,
-          response: {
-            type: "narration",
-            content: result.success 
-              ? `${result.message}\n\n💎 Ёмкость ядра: ${result.newCoreCapacity}\n⚡ Накопленная Ци: ${session.character.accumulatedQi - result.qiConsumed}`
-              : `❌ ${result.message}`,
-            qiDelta,
-            stateUpdate: mechanicsUpdate,
-            timeAdvance: { minutes: 30 },
-          },
-          updatedTime: null,
-        });
-      } else {
-        // Накопление Ци
-        const meditationType: MeditationType = "accumulation";
-        const result = performMeditation(session.character, location, durationMinutes, meditationType);
-        
-        if (result.success) {
-          mechanicsUpdate = {
-            fatigue: Math.min(100, session.character.fatigue + result.fatigueGained.physical),
-            mentalFatigue: Math.min(100, (session.character.mentalFatigue || 0) + result.fatigueGained.mental),
-          };
-          
-          // ПРАВИЛЬНАЯ МЕХАНИКА: при заполнении ядра
-          // - currentQi = maxQi (остаётся полным!)
-          // - accumulatedQi += maxQi (добавляем к накоплению)
-          // - Игрок должен ПОТРАТИТЬ Ци перед следующей медитацией
-          if (result.coreWasFilled) {
-            mechanicsUpdate.currentQi = session.character.coreCapacity; // Ядро ОСТАЁТСЯ полным
-            mechanicsUpdate.accumulatedQi = session.character.accumulatedQi + result.accumulatedQiGained;
-          } else {
-            mechanicsUpdate.currentQi = session.character.currentQi + result.qiGained;
-          }
-          
-          timeAdvanceForMechanics.minutes = result.duration;
-        }
-        
-        // Обновляем БД
-        await db.character.update({
-          where: { id: session.characterId },
-          data: { ...mechanicsUpdate, updatedAt: new Date() },
-        });
-        
-        // Формируем сообщение
-        const breakdownText = result.breakdown 
-          ? `\n  • Ядро: +${result.breakdown.coreGeneration}\n  • Среда: +${result.breakdown.environmentalAbsorption}`
-          : "";
-        
-        // Сохраняем сообщение
-        await db.message.create({
-          data: {
-            sessionId,
-            type: "narration",
-            sender: "narrator",
-            content: result.coreWasFilled
-              ? `⚡ Ядро заполнено! +${result.accumulatedQiGained} к накоплению. Прогресс: ${session.character.accumulatedQi + result.accumulatedQiGained}/${session.character.coreCapacity * 10}. Потратьте Ци для продолжения.`
-              : `Медитация ${result.wasInterrupted ? "прервена" : "завершена"}. ` +
-                `Накоплено Ци: +${result.qiGained}${breakdownText}\n  Итого: ${session.character.currentQi + result.qiGained}/${session.character.coreCapacity}. ` +
-                `Время: ${result.duration} мин.`,
-          },
-        });
-        
-        // qiDelta для клиента
-        // При coreWasFilled: currentQi = maxQi (ядро заполнено), accumulatedQi вырос
-        const qiDelta = {
-          qiChange: result.qiGained, // Прирост до полного заполнения
-          reason: result.coreWasFilled ? "Ядро заполнено! Потратьте Ци для продолжения." : (result.wasInterrupted ? "Медитация прервана" : "Медитация"),
-          isBreakthrough: false,
-          accumulatedGain: result.accumulatedQiGained,
-        };
-        
-        // Текст ответа
-        let responseContent = "";
-        if (!result.success) {
-          responseContent = `❌ ${result.interruptionReason}`;
-        } else if (result.coreWasFilled) {
-          const newAccumulated = session.character.accumulatedQi + result.accumulatedQiGained;
-          const currentFills = Math.floor(newAccumulated / session.character.coreCapacity);
-          const requiredFills = session.character.cultivationLevel * 10 + session.character.cultivationSubLevel;
-          const fillsNeeded = Math.max(0, requiredFills - currentFills);
-          responseContent = `⚡ **Ядро заполнено!**\n\n📊 Прогресс прорыва: ${currentFills}/${requiredFills} заполнений\n🔄 Осталось: ${fillsNeeded}\n\n⚠️ **Потратьте Ци (техники, бой) чтобы продолжить накопление!**${breakdownText}\n⏱️ Время: ${result.duration} мин.`;
-        } else if (result.wasInterrupted && result.interruptionReason) {
-          responseContent = `⚠️ ${result.interruptionReason}\n\n🧘 Медитация прервана.\n\nНакоплено Ци: +${result.qiGained}${breakdownText}\n  Итого: ${session.character.currentQi + result.qiGained}/${session.character.coreCapacity}.`;
-        } else {
-          responseContent = `🧘 Медитация завершена.\n\nНакоплено Ци: +${result.qiGained}${breakdownText}\n  Итого: ${session.character.currentQi + result.qiGained}/${session.character.coreCapacity}.\n\nВремя: ${result.duration} мин.`;
-        }
-        
-        return NextResponse.json({
-          success: true,
-          response: {
-            type: "narration",
-            content: responseContent,
-            qiDelta,
-            fatigueDelta: {
-              physical: result.fatigueGained.physical,
-              mental: result.fatigueGained.mental,
-            },
-            stateUpdate: mechanicsUpdate,
-            timeAdvance: { minutes: result.duration },
-          },
-          updatedTime: null,
-        });
-      }
-    }
-
     // Обработка боя
     if (requestType === "combat") {
       const fatigueResult = calculateFatigueFromAction(session.character, "combat_light", 5);
-      mechanicsUpdate = {
+      const mechanicsUpdate = {
         fatigue: fatigueResult.physicalFatigue,
         mentalFatigue: fatigueResult.mentalFatigue,
       };
-      timeAdvanceForMechanics.minutes = 5;
+      // Бой увеличивает усталость
+      await db.character.update({
+        where: { id: session.characterId },
+        data: { ...mechanicsUpdate, updatedAt: new Date() },
+      });
     }
 
     // Формируем системный промпт с текущим состоянием

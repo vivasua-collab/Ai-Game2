@@ -321,14 +321,15 @@ export function useGame() {
             updatedCharacter.accumulatedQi = (updatedCharacter.accumulatedQi || 0) + accumulatedQiGained;
           }
           
-          // Применяем усталость от LLM если есть
+          // Применяем изменение усталости (может быть + или -)
           if (data.response.fatigueDelta) {
-            updatedCharacter.fatigue = Math.min(100, 
+            // fatigueDelta может быть отрицательным (медитация снимает) или положительным (бой добавляет)
+            updatedCharacter.fatigue = Math.max(0, Math.min(100, 
               (updatedCharacter.fatigue || 0) + (data.response.fatigueDelta.physical || 0)
-            );
-            updatedCharacter.mentalFatigue = Math.min(100,
+            ));
+            updatedCharacter.mentalFatigue = Math.max(0, Math.min(100,
               (updatedCharacter.mentalFatigue || 0) + (data.response.fatigueDelta.mental || 0)
-            );
+            ));
           }
           
           // Совместимость со старым форматом stateUpdate

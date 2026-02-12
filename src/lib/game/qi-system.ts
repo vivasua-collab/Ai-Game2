@@ -200,23 +200,25 @@ export function performMeditation(
   };
 }
 
-// Расчёт усталости от медитации
+// Расчёт снятия усталости при медитации
+// Медитация = отдых, поэтому снимает усталость
 function calculateMeditationFatigue(
   durationMinutes: number,
   type: MeditationType
 ): { physical: number; mental: number } {
-  // Физическая усталость: низкая (сидячее положение)
-  const physical = durationMinutes * 0.05; // 3% за час
+  // Медитация СНИМАЕТ усталость (это отдых!)
+  // Физическая: сидячее положение, расслабление
+  const physicalRelief = durationMinutes * 0.1; // -6% за час
   
-  // Ментальная усталость: зависит от типа
-  // Накопление: средняя нагрузка
-  // Прорыв: высокая нагрузка
-  const mentalRate = type === "breakthrough" ? 0.2 : 0.1; // 12% или 6% за час
-  const mental = durationMinutes * mentalRate;
+  // Ментальная: глубокая концентрация, покой
+  // Накопление: хороший отдых
+  // Прорыв: меньше отдыха (напряжение)
+  const mentalRate = type === "breakthrough" ? 0.05 : 0.15; // -3% или -9% за час
+  const mentalRelief = durationMinutes * mentalRate;
   
   return {
-    physical: Math.min(physical, 100),
-    mental: Math.min(mental, 100),
+    physical: physicalRelief, // Положительное значение = сколько снимется
+    mental: mentalRelief,
   };
 }
 

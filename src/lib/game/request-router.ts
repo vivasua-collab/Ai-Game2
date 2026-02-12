@@ -285,6 +285,7 @@ function buildLocationResponse(location: Location | null): object {
 // Проверка, нужен ли LLM для запроса
 export function needsLLM(input: string): boolean {
   const requestType = identifyRequestType(input);
-  const localTypes: RequestType[] = ["status", "techniques", "inventory", "stats", "location_info"];
+  // cultivation обрабатывается ЛОКАЛЬНО (медитация, прорыв)
+  const localTypes: RequestType[] = ["status", "techniques", "inventory", "stats", "location_info", "cultivation"];
   return !localTypes.includes(requestType);
 }
