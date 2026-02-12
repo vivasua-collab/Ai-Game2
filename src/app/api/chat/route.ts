@@ -155,11 +155,58 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    // Проверка мира (--ПМ) - возвращаем текущее состояние без LLM расчётов
+    if (message.trim().startsWith("--ПМ") || message.trim().toLowerCase().startsWith("--пм")) {
+      const verifyResult = {
+        character: {
+          cultivationLevel: session.character.cultivationLevel,
+          cultivationSubLevel: session.character.cultivationSubLevel,
+          currentQi: session.character.currentQi,
+          coreCapacity: session.character.coreCapacity,
+          accumulatedQi: session.character.accumulatedQi,
+          fatigue: session.character.fatigue,
+          mentalFatigue: session.character.mentalFatigue || 0,
+        },
+        location: location ? {
+          name: location.name,
+          qiDensity: location.qiDensity,
+          terrainType: location.terrainType,
+        } : null,
+        worldTime: {
+          year: session.worldYear,
+          month: session.worldMonth,
+          day: session.worldDay,
+          hour: session.worldHour,
+          minute: session.worldMinute,
+        },
+      };
+      
+      return NextResponse.json({
+        success: true,
+        response: {
+          type: "system",
+          content: `📋 **Проверка мира --ПМ**\n\n` +
+            `**Персонаж:**\n` +
+            `- Уровень культивации: ${verifyResult.character.cultivationLevel}.${verifyResult.character.cultivationSubLevel}\n` +
+            `- Ци: ${verifyResult.character.currentQi}/${verifyResult.character.coreCapacity}\n` +
+            `- Накоплено для прорыва: ${verifyResult.character.accumulatedQi}\n` +
+            `- Физ. усталость: ${verifyResult.character.fatigue}%\n` +
+            `- Мент. усталость: ${verifyResult.character.mentalFatigue}%\n\n` +
+            `**Локация:** ${verifyResult.location?.name || "Неизвестно"}\n` +
+            (verifyResult.location ? `- Плотность Ци: ${verifyResult.location.qiDensity} ед/м³\n` : "") +
+            `\n**Время:** ${verifyResult.worldTime.year} г., ${verifyResult.worldTime.month} мес., ${verifyResult.worldTime.day} д., ${verifyResult.worldTime.hour}:${verifyResult.worldTime.minute.toString().padStart(2, "0")}`,
+          stateUpdate: null,
+          timeAdvance: null,
+        },
+        updatedTime: null,
+      });
+    }
+
     // Определяем действие для механик
     let mechanicsUpdate: Record<string, unknown> = {};
     let timeAdvanceForMechanics = { minutes: 0 };
 
-    // Обработка медитации
+    // Обработка медитации - возвращаем результат БЕЗ LLM
     if (requestType === "cultivation") {
       const lowerMessage = message.toLowerCase();
       const isBreakthrough = /прорыв|breakthrough/.test(lowerMessage);
@@ -186,6 +233,25 @@ export async function POST(request: NextRequest) {
           };
         }
         timeAdvanceForMechanics.minutes = 30; // Прорыв занимает 30 минут
+        
+        // Обновляем БД
+        await db.character.update({
+          where: { id: session.characterId },
+          data: { ...mechanicsUpdate, updatedAt: new Date() },
+        });
+        
+        return NextResponse.json({
+          success: true,
+          response: {
+            type: "narration",
+            content: result.success 
+              ? `⚡ ${result.message} Ёмкость ядра увеличена до ${result.newCoreCapacity}.`
+              : `❌ ${result.message}`,
+            stateUpdate: mechanicsUpdate,
+            timeAdvance: { minutes: 30 },
+          },
+          updatedTime: null,
+        });
       } else {
         // Накопление Ци
         const meditationType: MeditationType = "accumulation";
@@ -198,12 +264,38 @@ export async function POST(request: NextRequest) {
             mentalFatigue: Math.min(100, (session.character.mentalFatigue || 0) + result.fatigueGained.mental),
           };
           timeAdvanceForMechanics.minutes = result.duration;
-          
-          // Если медитация прервана из-за переполнения, добавляем сообщение
-          if (result.wasInterrupted && result.interruptionReason) {
-            await logInfo("GAME", "Meditation interrupted", { reason: result.interruptionReason });
-          }
         }
+        
+        // Обновляем БД
+        await db.character.update({
+          where: { id: session.characterId },
+          data: { ...mechanicsUpdate, updatedAt: new Date() },
+        });
+        
+        // Сохраняем сообщение
+        await db.message.create({
+          data: {
+            sessionId,
+            type: "narration",
+            sender: "narrator",
+            content: `Медитация ${result.wasInterrupted ? "прервана" : "завершена"}. ` +
+              `Накоплено Ци: +${result.qiGained} (теперь ${session.character.currentQi + result.qiGained}/${session.character.coreCapacity}). ` +
+              `Время: ${result.duration} мин.`,
+          },
+        });
+        
+        return NextResponse.json({
+          success: true,
+          response: {
+            type: "narration",
+            content: result.wasInterrupted && result.interruptionReason
+              ? `⚠️ ${result.interruptionReason}\n\nНакоплено Ци: +${result.qiGained} (теперь ${session.character.currentQi + result.qiGained}/${session.character.coreCapacity}).`
+              : `🧘 Медитация завершена.\n\nНакоплено Ци: +${result.qiGained} (теперь ${session.character.currentQi + result.qiGained}/${session.character.coreCapacity}).\nВремя: ${result.duration} мин.`,
+            stateUpdate: mechanicsUpdate,
+            timeAdvance: { minutes: result.duration },
+          },
+          updatedTime: null,
+        });
       }
     }
 
