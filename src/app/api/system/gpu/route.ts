@@ -13,6 +13,7 @@ interface GPUInfo {
   tensorCores: boolean;
   computeCapability: string | null;
   recommendation: string;
+  debug?: string; // Для отладки
 }
 
 async function detectNvidiaGPU(): Promise<GPUInfo> {
@@ -27,14 +28,19 @@ async function detectNvidiaGPU(): Promise<GPUInfo> {
     recommendation: "Локальная нейросеть будет работать на CPU (медленно)",
   };
 
-  try {
-    // Проверяем наличие nvidia-smi
-    const { stdout: nvidiaSmi } = await execAsync("nvidia-smi --query-gpu=name,memory.total,compute_cap --format=csv,noheader 2>/dev/null", {
-      timeout: 5000,
-    });
+  const debugLogs: string[] = [];
 
-    if (nvidiaSmi && nvidiaSmi.trim()) {
-      const lines = nvidiaSmi.trim().split("\n");
+  // Метод 1: Пробуем nvidia-smi (Linux/Mac/Windows с PATH)
+  try {
+    debugLogs.push("Trying nvidia-smi...");
+    const { stdout, stderr } = await execAsync("nvidia-smi --query-gpu=name,memory.total,compute_cap --format=csv,noheader", {
+      timeout: 8000,
+    });
+    
+    debugLogs.push(`nvidia-smi stdout: ${stdout?.substring(0, 200)}`);
+    
+    if (stdout && stdout.trim()) {
+      const lines = stdout.trim().split("\n");
       const firstGpu = lines[0].split(",").map(s => s.trim());
       
       const gpuName = firstGpu[0] || "Unknown NVIDIA GPU";
@@ -46,7 +52,6 @@ async function detectNvidiaGPU(): Promise<GPUInfo> {
       const vram = vramMatch ? parseInt(vramMatch[1]) : null;
 
       // Проверяем compute capability для тензорных ядер
-      // Tensor cores доступны с compute capability 7.0+ (Volta, Turing, Ampere, Hopper)
       const capMatch = computeCap.match(/(\d+)\.(\d+)/);
       let tensorCores = false;
       let computeCapability: string | null = null;
@@ -58,35 +63,30 @@ async function detectNvidiaGPU(): Promise<GPUInfo> {
         tensorCores = major >= 7;
       }
 
-      // Определяем тип GPU
-      let type: GPUInfo["type"] = "nvidia-cuda";
-      if (tensorCores) {
-        type = "nvidia-tensor";
+      // RTX 50xx серия (Blackwell) имеет compute capability 10.x
+      if (gpuName.includes("RTX 50") || gpuName.includes("RTX 5070")) {
+        tensorCores = true; // Blackwell имеет тензорные ядра
+        if (!computeCapability) {
+          computeCapability = "10.0"; // Примерно для Blackwell
+        }
       }
 
-      // Получаем версию CUDA
+      let type: GPUInfo["type"] = tensorCores ? "nvidia-tensor" : "nvidia-cuda";
+
+      // Получаем версию CUDA через nvidia-smi
       let cudaVersion: string | null = null;
       try {
-        const { stdout: nvccOut } = await execAsync("nvcc --version 2>/dev/null | grep release");
-        const cudaMatch = nvccOut.match(/release (\d+\.\d+)/);
-        if (cudaMatch) {
-          cudaVersion = cudaMatch[1];
+        const { stdout: cudaOut } = await execAsync("nvidia-smi --query-gpu=driver_version --format=csv,noheader", { timeout: 3000 });
+        if (cudaOut) {
+          cudaVersion = cudaOut.trim().split("\n")[0];
         }
       } catch {
-        // nvcc не установлен, но драйвер работает
+        // Ignore
       }
 
-      // Формируем рекомендацию
-      let recommendation = "";
-      if (tensorCores) {
-        recommendation = `🚀 Оптимально! ${gpuName} с тензорными ядрами для быстрой работы`;
-      } else if (vram && vram >= 6000) {
-        recommendation = `✅ Хорошо. ${gpuName} с ${Math.round(vram/1024)}GB VRAM`;
-      } else if (vram && vram >= 4000) {
-        recommendation = `⚠️ Приемлемо. ${gpuName} для малых моделей`;
-      } else {
-        recommendation = `⚠️ Ограничено. ${gpuName} только для малых моделей (7B)`;
-      }
+      const recommendation = tensorCores
+        ? `🚀 Оптимально! ${gpuName} с тензорными ядрами`
+        : `✅ Хорошо. ${gpuName}${vram ? ` (${Math.round(vram/1024)}GB)` : ""}`;
 
       return {
         available: true,
@@ -97,55 +97,126 @@ async function detectNvidiaGPU(): Promise<GPUInfo> {
         tensorCores,
         computeCapability,
         recommendation,
+        debug: debugLogs.join(" | "),
       };
     }
-  } catch {
-    // nvidia-smi не найден или не работает
+  } catch (error) {
+    const errMsg = error instanceof Error ? error.message : String(error);
+    debugLogs.push(`nvidia-smi failed: ${errMsg}`);
   }
 
-  // Проверяем CUDA на CPU (например, Intel MKL или AMD ROCm)
+  // Метод 2: Windows - пробуем полный путь к nvidia-smi
   try {
-    const { stdout: rocmSmi } = await execAsync("rocm-smi --showname 2>/dev/null", {
+    debugLogs.push("Trying Windows nvidia-smi path...");
+    const nvidiaSmiPaths = [
+      "C:\\Windows\\System32\\nvidia-smi.exe",
+      "C:\\Program Files\\NVIDIA Corporation\\NVSMI\\nvidia-smi.exe",
+      '"C:\\Program Files\\NVIDIA Corporation\\NVSMI\\nvidia-smi.exe"',
+    ];
+
+    for (const nvidiaSmiPath of nvidiaSmiPaths) {
+      try {
+        const { stdout } = await execAsync(`"${nvidiaSmiPath}" --query-gpu=name,memory.total --format=csv,noheader`, {
+          timeout: 8000,
+        });
+        
+        if (stdout && stdout.trim()) {
+          debugLogs.push(`Windows nvidia-smi found: ${stdout.substring(0, 100)}`);
+          const lines = stdout.trim().split("\n");
+          const firstGpu = lines[0].split(",").map(s => s.trim());
+          
+          const gpuName = firstGpu[0] || "Unknown NVIDIA GPU";
+          const vramStr = firstGpu[1] || "";
+          const vramMatch = vramStr.match(/(\d+)/);
+          const vram = vramMatch ? parseInt(vramMatch[1]) : null;
+
+          // RTX 50xx серия
+          const tensorCores = gpuName.includes("RTX 50") || gpuName.includes("RTX 40") || gpuName.includes("RTX 30");
+
+          return {
+            available: true,
+            type: tensorCores ? "nvidia-tensor" : "nvidia-cuda",
+            gpuName,
+            cudaVersion: null,
+            vram,
+            tensorCores,
+            computeCapability: tensorCores ? "7.0+" : null,
+            recommendation: tensorCores
+              ? `🚀 Оптимально! ${gpuName} с тензорными ядрами`
+              : `✅ ${gpuName}${vram ? ` (${Math.round(vram/1024)}GB)` : ""}`,
+            debug: debugLogs.join(" | "),
+          };
+        }
+      } catch {
+        continue;
+      }
+    }
+  } catch (error) {
+    debugLogs.push(`Windows paths failed: ${error}`);
+  }
+
+  // Метод 3: Windows WMIC для определения GPU
+  try {
+    debugLogs.push("Trying WMIC for GPU detection...");
+    const { stdout } = await execAsync("wmic path win32_VideoController get name", {
       timeout: 5000,
     });
     
-    if (rocmSmi && rocmSmi.trim()) {
-      return {
-        available: true,
-        type: "cuda-cpu",
-        gpuName: "AMD GPU (ROCm)",
-        cudaVersion: "ROCm",
-        vram: null,
-        tensorCores: false,
-        computeCapability: null,
-        recommendation: "AMD GPU через ROCm поддерживается",
-      };
+    if (stdout) {
+      debugLogs.push(`WMIC output: ${stdout.substring(0, 200)}`);
+      const lines = stdout.split("\n").filter(l => l.trim() && !l.includes("Name"));
+      
+      for (const line of lines) {
+        const gpuName = line.trim();
+        if (gpuName.toLowerCase().includes("nvidia") || gpuName.toLowerCase().includes("rtx") || gpuName.toLowerCase().includes("gtx")) {
+          const tensorCores = gpuName.includes("RTX 50") || gpuName.includes("RTX 40") || gpuName.includes("RTX 30") || gpuName.includes("RTX 20");
+          
+          return {
+            available: true,
+            type: tensorCores ? "nvidia-tensor" : "nvidia-cuda",
+            gpuName,
+            cudaVersion: null,
+            vram: null,
+            tensorCores,
+            computeCapability: null,
+            recommendation: tensorCores
+              ? `🚀 Оптимально! ${gpuName} обнаружен`
+              : `✅ ${gpuName} обнаружен`,
+            debug: debugLogs.join(" | "),
+          };
+        }
+      }
     }
-  } catch {
-    // ROCm не найден
+  } catch (error) {
+    debugLogs.push(`WMIC failed: ${error}`);
   }
 
-  // Проверяем наличие CUDA toolkit без GPU
+  // Метод 4: Проверяем Ollama через его API
   try {
-    const { stdout: nvccOut } = await execAsync("nvcc --version 2>/dev/null | grep release");
-    if (nvccOut) {
-      const cudaMatch = nvccOut.match(/release (\d+\.\d+)/);
+    debugLogs.push("Trying Ollama API...");
+    const { stdout } = await execAsync("ollama list", { timeout: 5000 });
+    if (stdout) {
+      // Ollama установлен, значит CUDA вероятно работает
       return {
         available: true,
         type: "cuda-cpu",
-        gpuName: null,
-        cudaVersion: cudaMatch ? cudaMatch[1] : "unknown",
+        gpuName: "Ollama detected",
+        cudaVersion: null,
         vram: null,
         tensorCores: false,
         computeCapability: null,
-        recommendation: "CUDA есть, но GPU не найден. Будет CPU",
+        recommendation: "⚠️ Ollama установлен. GPU определится при запуске модели",
+        debug: debugLogs.join(" | "),
       };
     }
   } catch {
-    // CUDA не найден
+    debugLogs.push("Ollama not found");
   }
 
-  return defaultResult;
+  return {
+    ...defaultResult,
+    debug: debugLogs.join(" | "),
+  };
 }
 
 export async function GET() {
@@ -155,5 +226,6 @@ export async function GET() {
     success: true,
     gpu: gpuInfo,
     timestamp: new Date().toISOString(),
+    platform: process.platform,
   });
 }

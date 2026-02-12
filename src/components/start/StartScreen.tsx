@@ -32,6 +32,8 @@ interface GPUInfo {
   tensorCores: boolean;
   computeCapability: string | null;
   recommendation: string;
+  debug?: string;
+  platform?: string;
 }
 
 // Интерфейс сохранения с новой информацией
@@ -98,6 +100,8 @@ function LLMStatusIndicator() {
   const [selectedProvider, setSelectedProvider] = useState<string>("");
   const [isSaving, setIsSaving] = useState(false);
   const [gpuInfo, setGpuInfo] = useState<GPUInfo | null>(null);
+  const [showGPUDebug, setShowGPUDebug] = useState(false);
+  const [platform, setPlatform] = useState<string>("");
 
   // Проверка статуса при загрузке
   useEffect(() => {
@@ -135,6 +139,7 @@ function LLMStatusIndicator() {
       const response = await fetch("/api/system/gpu");
       const data = await response.json();
       setGpuInfo(data.gpu);
+      setPlatform(data.platform || "");
     } catch (error) {
       console.error("Failed to check GPU:", error);
       setGpuInfo({
@@ -346,19 +351,24 @@ function LLMStatusIndicator() {
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center gap-2">
                 <button
-                  onClick={checkGPU}
+                  onClick={() => setShowGPUDebug(!showGPUDebug)}
                   className={`w-3 h-3 rounded-full transition-all cursor-pointer ${getGPUStatusColor()}`}
-                  title="GPU для локальной LLM"
+                  title="Нажмите для отладки GPU"
                 />
                 <span className="text-xs text-slate-400">
                   {gpuInfo?.gpuName || "GPU не найден"}
                 </span>
               </div>
-              {gpuInfo?.vram && (
-                <span className="text-xs text-slate-500">
-                  {Math.round(gpuInfo.vram / 1024)}GB
-                </span>
-              )}
+              <div className="flex items-center gap-2">
+                {platform && (
+                  <span className="text-xs text-slate-600">{platform}</span>
+                )}
+                {gpuInfo?.vram && (
+                  <span className="text-xs text-slate-500">
+                    {Math.round(gpuInfo.vram / 1024)}GB
+                  </span>
+                )}
+              </div>
             </div>
             {gpuInfo && (
               <div className={`text-xs p-2 rounded ${
@@ -371,6 +381,14 @@ function LLMStatusIndicator() {
                   : "bg-red-900/20 text-red-400"
               }`}>
                 {gpuInfo.recommendation}
+              </div>
+            )}
+            
+            {/* Отладочная информация */}
+            {showGPUDebug && gpuInfo?.debug && (
+              <div className="mt-2 p-2 bg-slate-900/50 rounded text-xs text-slate-500 max-h-32 overflow-y-auto">
+                <div className="font-medium text-slate-400 mb-1">Debug info:</div>
+                <pre className="whitespace-pre-wrap break-all">{gpuInfo.debug}</pre>
               </div>
             )}
           </div>
