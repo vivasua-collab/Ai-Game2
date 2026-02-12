@@ -268,9 +268,12 @@ export async function POST(request: NextRequest) {
             mentalFatigue: Math.min(100, (session.character.mentalFatigue || 0) + result.fatigueGained.mental),
           };
           
-          // НОВАЯ МЕХАНИКА: при заполнении ядра - перенос в accumulatedQi
+          // ПРАВИЛЬНАЯ МЕХАНИКА: при заполнении ядра
+          // - currentQi = maxQi (остаётся полным!)
+          // - accumulatedQi += maxQi (добавляем к накоплению)
+          // - Игрок должен ПОТРАТИТЬ Ци перед следующей медитацией
           if (result.coreWasFilled) {
-            mechanicsUpdate.currentQi = 0; // Ядро опустошается
+            mechanicsUpdate.currentQi = session.character.coreCapacity; // Ядро ОСТАЁТСЯ полным
             mechanicsUpdate.accumulatedQi = session.character.accumulatedQi + result.accumulatedQiGained;
           } else {
             mechanicsUpdate.currentQi = session.character.currentQi + result.qiGained;
@@ -297,20 +300,20 @@ export async function POST(request: NextRequest) {
             type: "narration",
             sender: "narrator",
             content: result.coreWasFilled
-              ? `⚡ Ядро заполнено! Ци перенесена в накопление. Прогресс прорыва: ${session.character.accumulatedQi + result.accumulatedQiGained}/${session.character.coreCapacity * 10}`
-              : `Медитация ${result.wasInterrupted ? "прервана" : "завершена"}. ` +
+              ? `⚡ Ядро заполнено! +${result.accumulatedQiGained} к накоплению. Прогресс: ${session.character.accumulatedQi + result.accumulatedQiGained}/${session.character.coreCapacity * 10}. Потратьте Ци для продолжения.`
+              : `Медитация ${result.wasInterrupted ? "прервена" : "завершена"}. ` +
                 `Накоплено Ци: +${result.qiGained}${breakdownText}\n  Итого: ${session.character.currentQi + result.qiGained}/${session.character.coreCapacity}. ` +
                 `Время: ${result.duration} мин.`,
           },
         });
         
         // qiDelta для клиента
-        // При coreWasFilled: currentQi = 0 (сброс), но accumulatedQi вырос
+        // При coreWasFilled: currentQi = maxQi (ядро заполнено), accumulatedQi вырос
         const qiDelta = {
-          qiChange: result.coreWasFilled ? -session.character.currentQi : result.qiGained,
-          reason: result.coreWasFilled ? "Ядро заполнено - перенос в накопление" : (result.wasInterrupted ? "Медитация прервана" : "Медитация"),
+          qiChange: result.qiGained, // Прирост до полного заполнения
+          reason: result.coreWasFilled ? "Ядро заполнено! Потратьте Ци для продолжения." : (result.wasInterrupted ? "Медитация прервана" : "Медитация"),
           isBreakthrough: false,
-          accumulatedGain: result.accumulatedQiGained, // Новое поле для клиента
+          accumulatedGain: result.accumulatedQiGained,
         };
         
         // Текст ответа
@@ -321,7 +324,7 @@ export async function POST(request: NextRequest) {
           const newAccumulated = session.character.accumulatedQi + result.accumulatedQiGained;
           const required = session.character.coreCapacity * 10;
           const fillsNeeded = Math.max(0, Math.ceil((required - newAccumulated) / session.character.coreCapacity));
-          responseContent = `⚡ **Ядро заполнено!**\n\n💎 Ци перенесена в накопление для прорыва.\n📊 Прогресс: ${newAccumulated}/${required} (${Math.floor(newAccumulated/required*100)}%)\n🔄 Осталось заполнений: ${fillsNeeded}${breakdownText}\n⏱️ Время: ${result.duration} мин.`;
+          responseContent = `⚡ **Ядро заполнено!**\n\n📊 Прогресс прорыва: ${newAccumulated}/${required} (${Math.floor(newAccumulated/required*100)}%)\n🔄 Осталось заполнений: ${fillsNeeded}\n\n⚠️ **Потратьте Ци (техники, бой) чтобы продолжить накопление!**${breakdownText}\n⏱️ Время: ${result.duration} мин.`;
         } else if (result.wasInterrupted && result.interruptionReason) {
           responseContent = `⚠️ ${result.interruptionReason}\n\n🧘 Медитация прервана.\n\nНакоплено Ци: +${result.qiGained}${breakdownText}\n  Итого: ${session.character.currentQi + result.qiGained}/${session.character.coreCapacity}.`;
         } else {

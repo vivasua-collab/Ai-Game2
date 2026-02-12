@@ -278,17 +278,21 @@ export function useGame() {
           
           // Формируем сообщение об изменении Ци
           if (result.qiGained > 0) {
-            qiChangeMessage = `\n\n⚡ Ци: +${result.qiGained}`;
-            if (result.overflow > 0) {
-              qiChangeMessage += ` (${result.overflow} рассеялось в среду)`;
+            // Положительное изменение
+            if (qiDelta.accumulatedGain) {
+              // Ядро заполнено! Показываем прогресс прорыва
+              const newAccumulated = (prev.character?.accumulatedQi || 0) + qiDelta.accumulatedGain;
+              const required = prev.character!.coreCapacity * 10;
+              qiChangeMessage = `\n\n⚡ Ядро заполнено! Прогресс прорыва: ${newAccumulated}/${required}\n⚠️ Потратьте Ци чтобы продолжить!`;
+            } else {
+              qiChangeMessage = `\n\n⚡ Ци: +${result.qiGained}`;
+              if (result.overflow > 0) {
+                qiChangeMessage += ` (${result.overflow} рассеялось в среду)`;
+              }
             }
           } else if (qiDelta.qiChange < 0) {
-            // Отрицательное изменение (сброс ядра или затраты)
-            if (qiDelta.accumulatedGain) {
-              qiChangeMessage = `\n\n⚡ Ядро сброшено → накопление +${qiDelta.accumulatedGain}`;
-            } else {
-              qiChangeMessage = `\n\n⚡ Ци: ${qiDelta.qiChange}`;
-            }
+            // Отрицательное изменение (затраты)
+            qiChangeMessage = `\n\n⚡ Ци: ${qiDelta.qiChange}`;
           }
         }
         

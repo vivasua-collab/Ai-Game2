@@ -134,7 +134,8 @@ export function performMeditation(
   let interruptionReason: string | undefined;
   
   // === МЕХАНИКА НАКОПЛЕНИЯ ДЛЯ ПРОРЫВА ===
-  // accumulatedQi растёт только при ПОЛНОМ заполнении ядра
+  // accumulatedQi растёт при ПОЛНОМ заполнении ядра
+  // Ядро остаётся полным, игрок должен ПОТРАТИТЬ Ци перед следующей медитацией
   let accumulatedQiGained = 0;
   let coreWasFilled = false;
   
@@ -142,7 +143,8 @@ export function performMeditation(
     const qiToFull = maxQi - currentQi;
     
     if (qiToFull <= 0) {
-      // Ядро уже полное - НЕ медитируем, нужно сначала опустошить (прорыв или трата)
+      // Ядро уже полное - НЕ медитируем!
+      // Игрок должен ПОТРАТИТЬ Ци (техники, бой) или попытаться прорваться
       return {
         success: false,
         qiGained: 0,
@@ -150,17 +152,19 @@ export function performMeditation(
         coreWasFilled: false,
         duration: 0,
         wasInterrupted: true,
-        interruptionReason: "Ядро заполнено! Для накопления прогресса прорыва нужно опустошить ядро (использовать техники или попытаться прорваться).",
+        interruptionReason: "⚡ Ядро заполнено! Потратьте Ци (техники, бой) чтобы продолжить накопление, или попытайтесь прорваться.",
         fatigueGained: { physical: 0, mental: 0 },
         breakdown: { coreGeneration: 0, environmentalAbsorption: 0 },
       };
     }
     
     if (totalGain >= qiToFull) {
-      // Ядро будет заполнено! Переносим в accumulatedQi
+      // Ядро будет заполнено! 
+      // currentQi = maxQi (остаётся полным!)
+      // accumulatedQi += maxQi (добавляем к накоплению)
       coreWasFilled = true;
-      accumulatedQiGained = maxQi; // Весь объём ядра переносится в накопление
-      totalGain = 0; // Ядро опустошается
+      accumulatedQiGained = maxQi;
+      totalGain = qiToFull; // Точно до заполнения, не больше
       
       // Пересчитываем время до заполнения
       const totalRate = coreRate + envRate;
@@ -171,7 +175,7 @@ export function performMeditation(
       envGain = envRate * actualDuration;
       
       wasInterrupted = true;
-      interruptionReason = "⚡ Ядро заполнено! Ци перенесена в накопление для прорыва.";
+      interruptionReason = "⚡ Ядро заполнено! Потратьте Ци чтобы продолжить накопление.";
     }
   }
   // Для прорыва - не ограничиваем и не переносим
