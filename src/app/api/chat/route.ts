@@ -22,6 +22,12 @@ import {
   calculateEfficiencyModifiers,
   type ActionType,
 } from "@/lib/game/fatigue-system";
+import {
+  checkMeditationInterruption,
+  generateInterruptionPrompt,
+  getLocationDangerLevel,
+  calculateInterruptionChance,
+} from "@/lib/game/meditation-interruption";
 
 // Инициализируем LLM при первом запросе
 let llmInitialized = false;
@@ -190,6 +196,120 @@ export async function POST(request: NextRequest) {
       } else {
         // Накопление Ци через медитацию
         const meditationType: MeditationType = "accumulation";
+        
+        // === ПРОВЕРКА ПРЕРЫВАНИЯ МЕДИТАЦИИ ===
+        const worldTime = {
+          year: session.worldYear,
+          month: session.worldMonth,
+          day: session.worldDay,
+          hour: session.worldHour,
+          minute: session.worldMinute,
+          formatted: "",
+          season: session.worldMonth <= 6 ? "тёплый" : "холодный",
+        };
+        
+        const interruptionCheck = checkMeditationInterruption(
+          session.character,
+          location,
+          worldTime,
+          durationMinutes
+        );
+        
+        await logDebug("GAME", "Meditation interruption check", {
+          baseChance: interruptionCheck.baseChance,
+          finalChance: interruptionCheck.finalChance,
+          interrupted: interruptionCheck.interrupted,
+        });
+        
+        if (interruptionCheck.interrupted && interruptionCheck.event) {
+          // === ПРЕРЫВАНИЕ МЕДИТАЦИИ ===
+          const event = interruptionCheck.event;
+          const interruptedMinutes = interruptionCheck.checkHour * 60;
+          
+          // Рассчитываем Qi за время до прерывания
+          const partialResult = performMeditation(
+            session.character,
+            location,
+            interruptedMinutes,
+            meditationType
+          );
+          
+          // Обновляем персонажа
+          const mechanicsUpdate: Record<string, unknown> = {
+            currentQi: session.character.currentQi + partialResult.qiGained,
+            fatigue: Math.max(0, session.character.fatigue - partialResult.fatigueGained.physical),
+            mentalFatigue: Math.max(0, (session.character.mentalFatigue || 0) - partialResult.fatigueGained.mental),
+          };
+          
+          await db.character.update({
+            where: { id: session.characterId },
+            data: { ...mechanicsUpdate, updatedAt: new Date() },
+          });
+          
+          // Генерируем описание события через LLM
+          const interruptionPrompt = generateInterruptionPrompt(
+            event,
+            session.character,
+            location,
+            interruptionCheck.checkHour
+          );
+          
+          let eventDescription = event.description;
+          try {
+            const llmResponse = await generateGameResponse(
+              buildGameMasterPrompt("Кратко опиши сцену прерывания медитации."),
+              interruptionPrompt,
+              []
+            );
+            eventDescription = llmResponse.content;
+          } catch {
+            // Используем дефолтное описание
+          }
+          
+          // Формируем ответ с опциями
+          const options = [];
+          if (event.canIgnore) {
+            options.push({ id: "ignore", label: "Проигнорировать", risk: "низкий" });
+          }
+          options.push({ id: "confront", label: "Встать и встретить", risk: "средний" });
+          if (event.canHide) {
+            options.push({ id: "hide", label: "Скрыться", risk: "низкий" });
+          }
+          
+          const responseContent = `⚠️ **Медитация прервана!** (${interruptionCheck.checkHour} час)\n\n` +
+            `🎯 **${event.type === "creature" ? "🐺" : event.type === "person" ? "👤" : event.type === "spirit" ? "👻" : event.type === "phenomenon" ? "🌀" : "✨"} ${event.description}**\n\n` +
+            `${eventDescription}\n\n` +
+            `📊 Шанс прерывания: ${Math.round(interruptionCheck.finalChance * 100)}%\n` +
+            `⚡ Накоплено до прерывания: +${partialResult.qiGained} Ци\n\n` +
+            `**Действия:**\n` +
+            options.map((o, i) => `${i + 1}. ${o.label} (риск: ${o.risk})`).join("\n");
+          
+          return NextResponse.json({
+            success: true,
+            response: {
+              type: "interruption",
+              content: responseContent,
+              qiDelta: {
+                qiChange: partialResult.qiGained,
+                reason: "Медитация прервана",
+                isBreakthrough: false,
+              },
+              fatigueDelta: {
+                physical: -partialResult.fatigueGained.physical,
+                mental: -partialResult.fatigueGained.mental,
+              },
+              stateUpdate: mechanicsUpdate,
+              timeAdvance: { minutes: interruptedMinutes },
+              interruption: {
+                event: event,
+                options: options,
+              },
+            },
+            updatedTime: null,
+          });
+        }
+        
+        // === ОБЫЧНАЯ МЕДИТАЦИЯ (без прерывания) ===
         const result = performMeditation(session.character, location, durationMinutes, meditationType);
         
         if (result.success) {
@@ -205,8 +325,6 @@ export async function POST(request: NextRequest) {
           } else {
             mechanicsUpdate.currentQi = session.character.currentQi + result.qiGained;
           }
-          
-          timeAdvanceForMechanics.minutes = result.duration;
         }
         
         await db.character.update({
@@ -218,23 +336,13 @@ export async function POST(request: NextRequest) {
           ? `\n  • Ядро: +${result.breakdown.coreGeneration}\n  • Среда: +${result.breakdown.environmentalAbsorption}`
           : "";
         
-        await db.message.create({
-          data: {
-            sessionId,
-            type: "narration",
-            sender: "narrator",
-            content: result.coreWasFilled
-              ? `⚡ Ядро заполнено! +${result.accumulatedQiGained} к накоплению.`
-              : `Медитация завершена. Накоплено: +${result.qiGained}.`,
-          },
-        });
-        
-        const qiDelta = {
-          qiChange: result.qiGained,
-          reason: result.coreWasFilled ? "Ядро заполнено! Потратьте Ци для продолжения." : "Медитация",
-          isBreakthrough: false,
-          accumulatedGain: result.accumulatedQiGained,
-        };
+        // Информация о безопасности
+        const locationDanger = getLocationDangerLevel(location);
+        const safetyInfo = interruptionCheck.finalChance < 0.1 
+          ? "\n🛡️ Безопасное место для медитации."
+          : interruptionCheck.finalChance < 0.3
+            ? "\n⚠️ Есть риск прерывания."
+            : "\n⚠️ Опасное место! Высокий риск прерывания.";
         
         let responseContent = "";
         if (!result.success) {
@@ -244,9 +352,9 @@ export async function POST(request: NextRequest) {
           const currentFills = Math.floor(newAccumulated / session.character.coreCapacity);
           const requiredFills = session.character.cultivationLevel * 10 + session.character.cultivationSubLevel;
           const fillsNeeded = Math.max(0, requiredFills - currentFills);
-          responseContent = `⚡ **Ядро заполнено!**\n\n📊 Прогресс: ${currentFills}/${requiredFills} заполнений\n🔄 Осталось: ${fillsNeeded}\n\n⚠️ **Потратьте Ци (техники, бой) чтобы продолжить!**${breakdownText}\n⏱️ Время: ${result.duration} мин.\n😌 Усталость снижена.`;
+          responseContent = `⚡ **Ядро заполнено!**\n\n📊 Прогресс: ${currentFills}/${requiredFills} заполнений\n🔄 Осталось: ${fillsNeeded}\n\n⚠️ **Потратьте Ци (техники, бой) чтобы продолжить!**${breakdownText}\n⏱️ Время: ${result.duration} мин.\n😌 Усталость снижена.${safetyInfo}`;
         } else {
-          responseContent = `🧘 Медитация завершена.\n\n⚡ Накоплено Ци: +${result.qiGained}${breakdownText}\n  Ядро: ${session.character.currentQi + result.qiGained}/${session.character.coreCapacity}\n😌 Усталость снижена.\n⏱️ Время: ${result.duration} мин.`;
+          responseContent = `🧘 Медитация завершена.\n\n⚡ Накоплено Ци: +${result.qiGained}${breakdownText}\n  Ядро: ${session.character.currentQi + result.qiGained}/${session.character.coreCapacity}\n😌 Усталость снижена.\n⏱️ Время: ${result.duration} мин.${safetyInfo}`;
         }
         
         return NextResponse.json({
@@ -254,9 +362,14 @@ export async function POST(request: NextRequest) {
           response: {
             type: "narration",
             content: responseContent,
-            qiDelta,
+            qiDelta: {
+              qiChange: result.qiGained,
+              reason: result.coreWasFilled ? "Ядро заполнено! Потратьте Ци для продолжения." : "Медитация",
+              isBreakthrough: false,
+              accumulatedGain: result.accumulatedQiGained,
+            },
             fatigueDelta: {
-              physical: -result.fatigueGained.physical, // Отрицательное = снимает усталость
+              physical: -result.fatigueGained.physical,
               mental: -result.fatigueGained.mental,
             },
             stateUpdate: mechanicsUpdate,

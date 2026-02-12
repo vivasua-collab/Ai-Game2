@@ -16,6 +16,7 @@ export interface Character {
   cultivationSubLevel: number;
   currentQi: number;
   coreCapacity: number;
+  accumulatedQi: number;       // Накопленная Ци для прорыва
   strength: number;
   agility: number;
   intelligence: number;
@@ -28,6 +29,7 @@ export interface Character {
   sectRole: string | null;
   currentLocation?: Location;
   sect?: Sect;
+  skills?: Record<string, number>;  // Навыки: { "deep_meditation": 3, ... }
 }
 
 export interface Location {
