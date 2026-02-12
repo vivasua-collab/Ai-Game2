@@ -4,9 +4,13 @@
  * ПРИОРИТЕТ: Локальные расчёты имеют приоритет над данными от LLM
  * LLM возвращает только ДЕЛЬТУ (затраты/накопление), а расчёты проводятся здесь
  * 
+ * ДВА ИСТОЧНИКА ЦИ:
+ * 1. Выработка микроядром - работает ВСЕГДА (пассивно, до 90% ядра)
+ * 2. Поглощение из среды - ТОЛЬКО при активной медитации
+ * 
  * Правила:
  * - Генерация микроядром: 10% от ёмкости ядра / сутки
- * - Поглощение: проводимость × плотность Ци локации
+ * - Поглощение: проводимость × плотность Ци локации (только медитация)
  * - Переполнение: излишки уходят в окружающую среду (кроме прорыва)
  */
 
@@ -23,6 +27,10 @@ export interface QiCalculationResult {
   qiLost: number;          // Сколько потеряно (рассеялось)
   overflow: number;        // Излишки, ушедшие в среду
   rate: number;            // Скорость Ци/сек
+  breakdown?: {            // Детализация источников
+    coreGeneration: number;  // От микроядра
+    environmentalAbsorption: number; // Из среды
+  };
 }
 
 // Интерфейс дельты от LLM
@@ -33,29 +41,50 @@ export interface QiDelta {
 }
 
 /**
- * Расчёт скорости накопления Ци
+ * Расчёт скорости ВЫРАБОТКИ МИКРОЯДРОМ
+ * Работает ВСЕГДА (пассивно)
  * @returns Ци в секунду
  */
-export function calculateQiRate(
+export function calculateCoreGenerationRate(
+  character: Character
+): number {
+  // Генерация микроядром: 10% от ёмкости / сутки
+  const baseGeneration = character.coreCapacity * 0.1;
+  return baseGeneration / SECONDS_PER_DAY; // Ци/секунду
+}
+
+/**
+ * Расчёт скорости ПОГЛОЩЕНИЯ ИЗ ОКРУЖАЮЩЕЙ СРЕДЫ
+ * Работает ТОЛЬКО при активной медитации
+ * @returns Ци в секунду
+ */
+export function calculateEnvironmentalAbsorptionRate(
   character: Character,
   location: Location | null
 ): number {
-  // Базовая генерация микроядром: 10% от ёмкости / сутки
-  const baseGeneration = character.coreCapacity * 0.1;
-  
   // Проводимость персонажа (ед/сек)
   const conductivity = character.conductivity;
   
   // Плотность Ци локации (ед/м³)
   const qiDensity = location?.qiDensity || 20;
   
-  // Формула: база + (плотность × проводимость) / секунд в сутках
-  const environmentalAbsorption = (qiDensity * conductivity) / SECONDS_PER_DAY;
-  
-  // Общая скорость: базовая генерация + поглощение из окружения
-  const totalRate = (baseGeneration / SECONDS_PER_DAY) + environmentalAbsorption;
-  
-  return totalRate; // Ци/секунду
+  // Формула: (плотность × проводимость) / секунд в сутках
+  // Результат: Ци/секунду
+  return (qiDensity * conductivity) / SECONDS_PER_DAY;
+}
+
+/**
+ * Расчёт ПОЛНОЙ скорости накопления при МЕДИТАЦИИ
+ * Включает оба источника: ядро + среда
+ * @returns Ци в секунду
+ */
+export function calculateMeditationQiRate(
+  character: Character,
+  location: Location | null
+): number {
+  const coreRate = calculateCoreGenerationRate(character);
+  const envRate = calculateEnvironmentalAbsorptionRate(character, location);
+  return coreRate + envRate;
 }
 
 /**
@@ -113,8 +142,8 @@ export function applyQiDelta(
  * @param character Персонаж
  * @param location Локация
  * @param durationSeconds Длительность в секундах
- * @param isMeditation Это активная медитация? (может заполнять до 100%)
- * @returns Результат расчёта
+ * @param isMeditation Это активная медитация? (ядро + среда, до 100%)
+ * @returns Результат расчёта с детализацией источников
  */
 export function calculateQiOverTime(
   character: Character,
@@ -122,31 +151,115 @@ export function calculateQiOverTime(
   durationSeconds: number,
   isMeditation: boolean = false
 ): QiCalculationResult {
-  const rate = calculateQiRate(character, location);
+  const maxQi = character.coreCapacity;
+  const currentQi = character.currentQi;
+  
+  // РАЗДЕЛЕНИЕ ИСТОЧНИКОВ:
+  // 1. Ядро - ВСЕГДА работает
+  const coreRate = calculateCoreGenerationRate(character);
+  let coreGain = coreRate * durationSeconds;
+  
+  // 2. Среда - ТОЛЬКО при медитации
+  let envGain = 0;
+  if (isMeditation) {
+    const envRate = calculateEnvironmentalAbsorptionRate(character, location);
+    envGain = envRate * durationSeconds;
+  }
+  
+  // Пассивное накопление только до 90% (только от ядра)
+  // При медитации можно до 100% (ядро + среда)
+  const passiveCap = maxQi * PASSIVE_QI_CAP;
+  const effectiveCap = isMeditation ? maxQi : passiveCap;
+  
+  // Общий прирост
+  let totalGain = coreGain + envGain;
+  let overflow = 0;
+  
+  // Проверка переполнения
+  if (currentQi + totalGain > effectiveCap) {
+    totalGain = effectiveCap - currentQi;
+    overflow = (coreGain + envGain) - totalGain;
+    
+    // Пропорционально уменьшаем источники при переполнении
+    if (coreGain + envGain > 0) {
+      const ratio = totalGain / (coreGain + envGain);
+      coreGain *= ratio;
+      envGain *= ratio;
+    }
+  }
+  
+  const newQi = Math.min(effectiveCap, currentQi + totalGain);
+  const totalRate = isMeditation 
+    ? calculateMeditationQiRate(character, location)
+    : coreRate;
+  
+  return {
+    newQi: Math.round(newQi * 100) / 100,
+    qiGained: Math.round(totalGain * 100) / 100,
+    qiLost: 0,
+    overflow: Math.round(overflow * 100) / 100,
+    rate: totalRate,
+    breakdown: {
+      coreGeneration: Math.round(coreGain * 100) / 100,
+      environmentalAbsorption: Math.round(envGain * 100) / 100,
+    },
+  };
+}
+
+/**
+ * Рассчитать ПАССИВНОЕ накопление Ци
+ * Только от микроядра, до 90% ёмкости
+ * 
+ * @param character Персонаж
+ * @param deltaTimeSeconds Время с последнего обновления
+ * @returns Результат расчёта
+ */
+export function calculatePassiveQiGain(
+  character: Character,
+  deltaTimeSeconds: number
+): QiCalculationResult {
   const maxQi = character.coreCapacity;
   const currentQi = character.currentQi;
   
   // Пассивное накопление только до 90%
   const passiveCap = maxQi * PASSIVE_QI_CAP;
-  const effectiveCap = isMeditation ? maxQi : passiveCap;
   
-  let potentialGain = rate * durationSeconds;
-  let overflow = 0;
+  // Только ядро
+  const coreRate = calculateCoreGenerationRate(character);
+  let coreGain = coreRate * deltaTimeSeconds;
   
-  // Проверка переполнения
-  if (currentQi + potentialGain > effectiveCap) {
-    potentialGain = effectiveCap - currentQi;
-    overflow = (rate * durationSeconds) - potentialGain;
+  // Если уже выше капа - нет накопления
+  if (currentQi >= passiveCap) {
+    return {
+      newQi: currentQi,
+      qiGained: 0,
+      qiLost: 0,
+      overflow: 0,
+      rate: coreRate,
+      breakdown: {
+        coreGeneration: 0,
+        environmentalAbsorption: 0,
+      },
+    };
   }
   
-  const newQi = Math.min(effectiveCap, currentQi + potentialGain);
+  // Ограничение по капу
+  let overflow = 0;
+  if (currentQi + coreGain > passiveCap) {
+    overflow = (currentQi + coreGain) - passiveCap;
+    coreGain = passiveCap - currentQi;
+  }
   
   return {
-    newQi: Math.round(newQi * 100) / 100,
-    qiGained: Math.round(potentialGain * 100) / 100,
+    newQi: Math.round((currentQi + coreGain) * 100) / 100,
+    qiGained: Math.round(coreGain * 100) / 100,
     qiLost: 0,
     overflow: Math.round(overflow * 100) / 100,
-    rate,
+    rate: coreRate,
+    breakdown: {
+      coreGeneration: Math.round(coreGain * 100) / 100,
+      environmentalAbsorption: 0,
+    },
   };
 }
 

@@ -124,3 +124,30 @@ Stage Summary:
 - Full save information displayed on load screen
 - Character naming on custom start
 - World identification system ready for future multi-world features
+
+---
+Task ID: 5
+Agent: Main Orchestrator
+Task: Local Qi storage system with client priority
+
+Work Log:
+- Created qi-client.ts module with local Qi calculator
+  - QiDelta interface for LLM responses (delta instead of absolute values)
+  - applyQiDelta function with overflow handling
+  - Validation and utility functions for Qi calculations
+- Updated useGame.ts with LocalQiState
+  - Client-side Qi state has priority over server data
+  - Applied delta from LLM responses locally
+  - Overflow handling: excess Qi goes to environment (except breakthrough)
+- Updated API route to return qiDelta for meditation
+  - Meditation returns qiDelta instead of just stateUpdate
+  - Added fatigueDelta for consistency
+- Updated game-master.ts prompt
+  - LLM returns only delta (qiChange) not absolute values
+  - Clear instructions about overflow mechanics
+
+Stage Summary:
+- Local Qi storage implemented with client priority
+- LLM returns only delta, calculations are local
+- Overflow mechanics: excess Qi dissipates to environment
+- Consistent with game design document rules

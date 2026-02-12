@@ -1,11 +1,14 @@
 /**
- * Система Ци - клиентская математика
+ * Система Ци - серверная математика
+ * 
+ * ДВА ИСТОЧНИКА ЦИ:
+ * 1. Выработка микроядром - работает ВСЕГДА (пассивно, до 90% ядра)
+ * 2. Поглощение из среды - ТОЛЬКО при активной медитации
  * 
  * Правила:
  * - Генерация микроядром: 10% от ёмкости ядра / сутки
- * - Влияние локации: плотность Ци × проводимость
- * - Переполнение: при 100% ядра медитация прерывается
- * - Прорыв: не прерывается при переполнении
+ * - Поглощение: проводимость × плотность Ци локации (только медитация)
+ * - Переполнение: при 100% ядра медитация прерывается (кроме прорыва)
  */
 
 import type { Character, Location } from "@/hooks/useGame";
@@ -25,34 +28,58 @@ export interface MeditationResult {
     physical: number;
     mental: number;
   };
+  breakdown?: {
+    coreGeneration: number;
+    environmentalAbsorption: number;
+  };
 }
 
-// Расчёт скорости накопления Ци
-export function calculateQiAccumulationRate(
+// Константы
+const SECONDS_PER_DAY = 86400;
+const PASSIVE_QI_CAP = 0.9; // Пассивное накопление только до 90%
+
+/**
+ * Расчёт скорости ВЫРАБОТКИ МИКРОЯДРОМ
+ * Работает ВСЕГДА (пассивно)
+ * @returns Ци в секунду
+ */
+export function calculateCoreGenerationRate(character: Character): number {
+  // Генерация микроядром: 10% от ёмкости / сутки
+  const baseGeneration = character.coreCapacity * 0.1;
+  return baseGeneration / SECONDS_PER_DAY; // Ци/секунду
+}
+
+/**
+ * Расчёт скорости ПОГЛОЩЕНИЯ ИЗ СРЕДЫ
+ * Работает ТОЛЬКО при медитации
+ * @returns Ци в секунду
+ */
+export function calculateEnvironmentalAbsorptionRate(
   character: Character,
   location: Location | null
 ): number {
-  // Базовая генерация микроядром: 10% от ёмкости / сутки
-  const baseGeneration = character.coreCapacity * 0.1;
-  
   // Проводимость персонажа (ед/сек)
   const conductivity = character.conductivity;
   
   // Плотность Ци локации (ед/м³)
-  const qiDensity = location?.qiDensity || 20; // дефолт 20
+  const qiDensity = location?.qiDensity || 20;
   
   // Влияние уровня культивации
   const levelInfo = CULTIVATION_LEVELS.find(l => l.level === character.cultivationLevel);
   const levelMultiplier = levelInfo?.conductivityMultiplier || 1;
   
-  // Формула: база + (плотность × проводимость × множитель уровня) / 86400 (секунд в сутках)
-  // Результат: Ци/секунду
-  const environmentalAbsorption = (qiDensity * conductivity * levelMultiplier) / 86400;
-  
-  // Общая скорость: базовая генерация + поглощение из окружения
-  const totalRate = (baseGeneration / 86400) + environmentalAbsorption;
-  
-  return totalRate; // Ци в секунду
+  // Формула: (плотность × проводимость × множитель) / секунд в сутках
+  return (qiDensity * conductivity * levelMultiplier) / SECONDS_PER_DAY;
+}
+
+// Расчёт скорости накопления Ци (для совместимости)
+export function calculateQiAccumulationRate(
+  character: Character,
+  location: Location | null
+): number {
+  const coreRate = calculateCoreGenerationRate(character);
+  const envRate = calculateEnvironmentalAbsorptionRate(character, location);
+  return coreRate + envRate;
 }
 
 // Расчёт времени до полного ядра
@@ -66,6 +93,7 @@ export function calculateTimeToFull(
   
   if (deficit <= 0) return 0;
   
+  // Для расчёта времени используем полную скорость (как при медитации)
   const rate = calculateQiAccumulationRate(character, location);
   if (rate <= 0) return Infinity;
   
@@ -79,17 +107,25 @@ export function performMeditation(
   intendedDuration: number, // в минутах
   type: MeditationType
 ): MeditationResult {
-  const rate = calculateQiAccumulationRate(character, location); // Ци/сек
   const maxQi = character.coreCapacity;
   const currentQi = character.currentQi;
   
   let actualDuration = intendedDuration * 60; // переводим в секунды
-  let qiGained = 0;
+  
+  // === РАЗДЕЛЕНИЕ ИСТОЧНИКОВ ===
+  // При медитации работают ОБА источника
+  
+  // 1. Выработка микроядром (ВСЕГДА)
+  const coreRate = calculateCoreGenerationRate(character);
+  let coreGain = coreRate * actualDuration;
+  
+  // 2. Поглощение из среды (ТОЛЬКО при медитации - а это медитация)
+  const envRate = calculateEnvironmentalAbsorptionRate(character, location);
+  let envGain = envRate * actualDuration;
+  
+  let totalGain = coreGain + envGain;
   let wasInterrupted = false;
   let interruptionReason: string | undefined;
-  
-  // Расчёт Ци за полную длительность
-  const potentialQiGain = rate * actualDuration;
   
   // Проверка переполнения для накопительной медитации
   if (type === "accumulation") {
@@ -104,22 +140,29 @@ export function performMeditation(
         wasInterrupted: true,
         interruptionReason: "Ядро уже полностью заполнено. Медитация невозможна.",
         fatigueGained: { physical: 0, mental: 0 },
+        breakdown: { coreGeneration: 0, environmentalAbsorption: 0 },
       };
     }
     
-    if (potentialQiGain > qiToFull) {
+    if (totalGain > qiToFull) {
       // Переполнение - прерываем медитацию
-      actualDuration = Math.ceil(qiToFull / rate);
-      qiGained = qiToFull;
+      // Пересчитываем время до заполнения
+      const totalRate = coreRate + envRate;
+      actualDuration = Math.ceil(qiToFull / totalRate);
+      
+      // Пересчитываем прирост по источникам
+      coreGain = coreRate * actualDuration;
+      envGain = envRate * actualDuration;
+      totalGain = coreGain + envGain;
+      
+      // Округляем до точного заполнения
+      totalGain = qiToFull;
+      
       wasInterrupted = true;
       interruptionReason = "Ядро достигло максимальной ёмкости. Медитация прервана.";
-    } else {
-      qiGained = potentialQiGain;
     }
-  } else {
-    // Медитация для прорыва - не прерывается
-    qiGained = potentialQiGain;
   }
+  // Для прорыва - не ограничиваем
   
   // Расчёт усталости
   const durationMinutes = actualDuration / 60;
@@ -127,11 +170,15 @@ export function performMeditation(
   
   return {
     success: true,
-    qiGained: Math.floor(qiGained),
+    qiGained: Math.floor(totalGain),
     duration: Math.ceil(actualDuration / 60), // возвращаем в минутах
     wasInterrupted,
     interruptionReason,
     fatigueGained,
+    breakdown: {
+      coreGeneration: Math.floor(coreGain),
+      environmentalAbsorption: Math.floor(envGain),
+    },
   };
 }
 
@@ -285,23 +332,25 @@ export function calculateQiCost(
 }
 
 // Автоматическое накопление Ци (для фонового процесса)
+// Внимание: работает ТОЛЬКО выработка микроядром, до 90% ёмкости
 export function calculatePassiveQiGain(
   character: Character,
   location: Location | null,
   deltaTimeSeconds: number
 ): number {
-  const rate = calculateQiAccumulationRate(character, location);
   const maxQi = character.coreCapacity;
   const currentQi = character.currentQi;
   
-  // Пассивное накопление только до 90% ёмкости
-  const passiveCap = maxQi * 0.9;
+  // Пассивное накопление только до 90%
+  const passiveCap = maxQi * PASSIVE_QI_CAP;
   
   if (currentQi >= passiveCap) {
     return 0; // Выше капа - нет пассивного накопления
   }
   
-  const potentialGain = rate * deltaTimeSeconds;
+  // Только выработка микроядром (БЕЗ поглощения из среды)
+  const coreRate = calculateCoreGenerationRate(character);
+  const potentialGain = coreRate * deltaTimeSeconds;
   const actualGain = Math.min(potentialGain, passiveCap - currentQi);
   
   return Math.floor(actualGain);

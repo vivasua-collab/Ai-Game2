@@ -240,6 +240,11 @@ export async function POST(request: NextRequest) {
           data: { ...mechanicsUpdate, updatedAt: new Date() },
         });
         
+        // qiDelta для клиента (дельта вместо абсолютного значения)
+        const qiDelta = result.success
+          ? { qiChange: -result.qiConsumed, reason: "Прорыв", isBreakthrough: true }
+          : { qiChange: 0, reason: "Неудачный прорыв", isBreakthrough: false };
+        
         return NextResponse.json({
           success: true,
           response: {
@@ -247,6 +252,7 @@ export async function POST(request: NextRequest) {
             content: result.success 
               ? `⚡ ${result.message} Ёмкость ядра увеличена до ${result.newCoreCapacity}.`
               : `❌ ${result.message}`,
+            qiDelta,
             stateUpdate: mechanicsUpdate,
             timeAdvance: { minutes: 30 },
           },
@@ -273,24 +279,40 @@ export async function POST(request: NextRequest) {
         });
         
         // Сохраняем сообщение
+        const breakdownText = result.breakdown 
+          ? `\n  • Ядро: +${result.breakdown.coreGeneration}\n  • Среда: +${result.breakdown.environmentalAbsorption}`
+          : "";
+        
         await db.message.create({
           data: {
             sessionId,
             type: "narration",
             sender: "narrator",
             content: `Медитация ${result.wasInterrupted ? "прервана" : "завершена"}. ` +
-              `Накоплено Ци: +${result.qiGained} (теперь ${session.character.currentQi + result.qiGained}/${session.character.coreCapacity}). ` +
+              `Накоплено Ци: +${result.qiGained}${breakdownText}\n  Итого: ${session.character.currentQi + result.qiGained}/${session.character.coreCapacity}. ` +
               `Время: ${result.duration} мин.`,
           },
         });
+        
+        // qiDelta для клиента (дельта вместо абсолютного значения)
+        const qiDelta = {
+          qiChange: result.qiGained,
+          reason: result.wasInterrupted ? "Медитация прервана" : "Медитация",
+          isBreakthrough: false,
+        };
         
         return NextResponse.json({
           success: true,
           response: {
             type: "narration",
             content: result.wasInterrupted && result.interruptionReason
-              ? `⚠️ ${result.interruptionReason}\n\nНакоплено Ци: +${result.qiGained} (теперь ${session.character.currentQi + result.qiGained}/${session.character.coreCapacity}).`
-              : `🧘 Медитация завершена.\n\nНакоплено Ци: +${result.qiGained} (теперь ${session.character.currentQi + result.qiGained}/${session.character.coreCapacity}).\nВремя: ${result.duration} мин.`,
+              ? `⚠️ ${result.interruptionReason}\n\n🧘 Медитация прервана.\n\nНакоплено Ци: +${result.qiGained}${breakdownText}\n  Итого: ${session.character.currentQi + result.qiGained}/${session.character.coreCapacity}.`
+              : `🧘 Медитация завершена.\n\nНакоплено Ци: +${result.qiGained}${breakdownText}\n  Итого: ${session.character.currentQi + result.qiGained}/${session.character.coreCapacity}.\n\nВремя: ${result.duration} мин.`,
+            qiDelta,
+            fatigueDelta: {
+              physical: result.fatigueGained.physical,
+              mental: result.fatigueGained.mental,
+            },
             stateUpdate: mechanicsUpdate,
             timeAdvance: { minutes: result.duration },
           },
