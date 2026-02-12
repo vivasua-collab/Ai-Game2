@@ -142,7 +142,7 @@ function CharacterPanel({ character, isOpen, onClose }: { character: Character |
   if (!character || !isOpen) return null;
 
   return (
-    <Card className="absolute left-14 top-0 w-72 bg-slate-800/95 border-slate-700 shadow-xl z-30">
+    <Card className="absolute left-14 top-[104px] w-72 bg-slate-800/95 border-slate-700 shadow-xl z-30">
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <CardTitle className="text-sm text-amber-400">📊 Характеристики</CardTitle>
         <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-slate-400" onClick={onClose}>✕</Button>
@@ -206,7 +206,7 @@ function InventoryPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
   if (!isOpen) return null;
 
   return (
-    <Card className="absolute left-14 top-0 w-80 bg-slate-800/95 border-slate-700 shadow-xl z-30">
+    <Card className="absolute left-14 top-[104px] w-80 bg-slate-800/95 border-slate-700 shadow-xl z-30">
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <CardTitle className="text-sm text-amber-400">🎒 Инвентарь</CardTitle>
         <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-slate-400" onClick={onClose}>✕</Button>
@@ -228,7 +228,7 @@ function TechniquesPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
   if (!isOpen) return null;
 
   return (
-    <Card className="absolute left-14 top-0 w-80 bg-slate-800/95 border-slate-700 shadow-xl z-30">
+    <Card className="absolute left-14 top-[104px] w-80 bg-slate-800/95 border-slate-700 shadow-xl z-30">
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <CardTitle className="text-sm text-amber-400">⚡ Техники</CardTitle>
         <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-slate-400" onClick={onClose}>✕</Button>
@@ -250,7 +250,7 @@ function MapPanel({ isOpen, onClose, location }: { isOpen: boolean; onClose: () 
   if (!isOpen) return null;
 
   return (
-    <Card className="absolute left-14 top-0 w-96 bg-slate-800/95 border-slate-700 shadow-xl z-30">
+    <Card className="absolute left-14 top-[104px] w-96 bg-slate-800/95 border-slate-700 shadow-xl z-30">
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <CardTitle className="text-sm text-amber-400">🗺️ Карта мира</CardTitle>
         <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-slate-400" onClick={onClose}>✕</Button>
@@ -273,7 +273,7 @@ function QuestsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
   if (!isOpen) return null;
 
   return (
-    <Card className="absolute left-14 top-0 w-80 bg-slate-800/95 border-slate-700 shadow-xl z-30">
+    <Card className="absolute left-14 top-[104px] w-80 bg-slate-800/95 border-slate-700 shadow-xl z-30">
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <CardTitle className="text-sm text-amber-400">📜 Квесты</CardTitle>
         <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-slate-400" onClick={onClose}>✕</Button>
@@ -295,7 +295,7 @@ function RelationsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
   if (!isOpen) return null;
 
   return (
-    <Card className="absolute left-14 top-0 w-80 bg-slate-800/95 border-slate-700 shadow-xl z-30">
+    <Card className="absolute left-14 top-[104px] w-80 bg-slate-800/95 border-slate-700 shadow-xl z-30">
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <CardTitle className="text-sm text-amber-400">👥 Отношения</CardTitle>
         <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-slate-400" onClick={onClose}>✕</Button>
@@ -330,7 +330,7 @@ function SideMenu({
   ];
 
   return (
-    <div className="absolute left-0 top-0 bottom-0 w-12 bg-slate-800/90 border-r border-slate-700 flex flex-col items-center py-2 z-20">
+    <div className="absolute left-0 top-[104px] bottom-0 w-12 bg-slate-800/90 border-r border-t border-slate-700 flex flex-col items-center py-2 z-20">
       {menuItems.map((item) => (
         <button
           key={item.id}
