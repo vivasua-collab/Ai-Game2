@@ -38,6 +38,8 @@ bun run dev
 
 Откройте [http://localhost:3000](http://localhost:3000) в браузере.
 
+> 📖 **Подробная инструкция по установке:** [Install.md](./Install.md) — полное руководство для Windows, Linux и macOS.
+
 ## 🎯 Варианты старта
 
 ### 1. 🏛️ В секте
