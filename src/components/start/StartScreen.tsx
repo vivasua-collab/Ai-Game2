@@ -87,16 +87,12 @@ function LoggingPanel() {
   // Загрузка логов для просмотра
   const handleShowLogs = async () => {
     try {
-      const response = await fetch("/api/logs?limit=50&buffer=true");
+      const response = await fetch("/api/logs?limit=50");
       const data = await response.json();
       if (data.success) {
-        // Объединяем логи из БД и буфера
-        const allLogs: LogEntry[] = [...(data.buffer || []), ...(data.database?.logs || [])];
-        // Убираем дубликаты по времени и сообщению
-        const uniqueLogs = allLogs.filter((log, index, self) =>
-          index === self.findIndex((l) => l.timestamp === log.timestamp && l.message === log.message)
-        );
-        setLogs(uniqueLogs.slice(0, 100));
+        // Логи приходят из базы данных (или буфера на сервере)
+        const logs = data.database?.logs || [];
+        setLogs(logs);
         setShowLogs(true);
       }
     } catch (error) {
