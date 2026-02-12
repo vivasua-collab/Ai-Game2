@@ -35,6 +35,210 @@ interface LogEntry {
   duration?: number | null;
 }
 
+// Интерфейс статуса LLM
+interface LLMStatus {
+  available: boolean;
+  currentProvider: string;
+  currentModel: string;
+  providers: {
+    zai: { available: boolean; error?: string; model?: string };
+    local: { available: boolean; error?: string; model?: string };
+    api: { available: boolean; error?: string; model?: string };
+  };
+}
+
+// Компонент индикатора статуса LLM
+function LLMStatusIndicator() {
+  const [status, setStatus] = useState<LLMStatus | null>(null);
+  const [isChecking, setIsChecking] = useState(true);
+  const [showWarning, setShowWarning] = useState(false);
+
+  // Проверка статуса при загрузке
+  useEffect(() => {
+    checkStatus();
+  }, []);
+
+  const checkStatus = async () => {
+    setIsChecking(true);
+    try {
+      const response = await fetch("/api/llm/status");
+      const data = await response.json();
+      setStatus(data);
+    } catch (error) {
+      console.error("Failed to check LLM status:", error);
+      setStatus({
+        available: false,
+        currentProvider: "unknown",
+        currentModel: "unknown",
+        providers: {
+          zai: { available: false, error: "Failed to check" },
+          local: { available: false, error: "Failed to check" },
+          api: { available: false, error: "Failed to check" },
+        },
+      });
+    } finally {
+      setIsChecking(false);
+    }
+  };
+
+  const handleIndicatorClick = () => {
+    if (!status?.available) {
+      setShowWarning(true);
+    } else {
+      checkStatus();
+    }
+  };
+
+  // Определяем имя провайдера для отображения
+  const getProviderDisplayName = (provider: string): string => {
+    switch (provider) {
+      case "z-ai":
+        return "Z-AI";
+      case "local":
+        return "Ollama";
+      case "api":
+        return "External API";
+      default:
+        return provider;
+    }
+  };
+
+  return (
+    <>
+      <Card className="bg-slate-800/50 border-slate-700 w-full max-w-md">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm text-slate-300 flex items-center gap-2">
+            🧠 Нейросеть
+            {isChecking && (
+              <Badge variant="outline" className="text-xs border-slate-600 text-slate-400">
+                Проверка...
+              </Badge>
+            )}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between">
+            {/* Индикатор и информация */}
+            <div className="flex items-center gap-3">
+              {/* Лампочка-индикатор */}
+              <button
+                onClick={handleIndicatorClick}
+                className={`relative w-4 h-4 rounded-full transition-all duration-300 ${
+                  status?.available 
+                    ? "bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.7)] cursor-pointer hover:shadow-[0_0_15px_rgba(34,197,94,0.9)]" 
+                    : "bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.7)] cursor-pointer hover:shadow-[0_0_15px_rgba(239,68,68,0.9)] animate-pulse"
+                }`}
+                title={status?.available ? "Нейросеть доступна" : "Нейросеть недоступна - нажмите для подробностей"}
+              />
+              
+              {/* Информация о провайдере */}
+              <div className="flex flex-col">
+                <span className="text-sm text-slate-200">
+                  {status ? getProviderDisplayName(status.currentProvider) : "Загрузка..."}
+                </span>
+                <span className="text-xs text-slate-500">
+                  {status?.currentModel || "..."}
+                </span>
+              </div>
+            </div>
+
+            {/* Кнопка проверки */}
+            <Button
+              size="sm"
+              variant="outline"
+              className="border-slate-600 text-slate-300"
+              onClick={checkStatus}
+              disabled={isChecking}
+            >
+              {isChecking ? "⏳" : "🔄"}
+            </Button>
+          </div>
+
+          {/* Доступные провайдеры */}
+          {status && (
+            <div className="mt-3 flex flex-wrap gap-1">
+              {status.providers.zai.available && (
+                <Badge variant="outline" className="text-xs border-green-600 text-green-400">
+                  Z-AI ✓
+                </Badge>
+              )}
+              {status.providers.local.available && (
+                <Badge variant="outline" className="text-xs border-green-600 text-green-400">
+                  Ollama ✓
+                </Badge>
+              )}
+              {status.providers.api.available && (
+                <Badge variant="outline" className="text-xs border-green-600 text-green-400">
+                  API ✓
+                </Badge>
+              )}
+              {!status.providers.zai.available && !status.providers.local.available && !status.providers.api.available && (
+                <Badge variant="outline" className="text-xs border-red-600 text-red-400">
+                  Нет доступных
+                </Badge>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Всплывающее окно предупреждения */}
+      {showWarning && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+          <Card className="bg-slate-800 border-slate-600 w-full max-w-md">
+            <CardHeader>
+              <CardTitle className="text-red-400 flex items-center gap-2">
+                ⚠️ Проверь нейросеть
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-slate-300">
+                Нейросеть недоступна или работает некорректно. Проверьте настройки:
+              </p>
+              
+              <div className="space-y-2 text-sm">
+                {status?.providers && (
+                  <>
+                    {!status.providers.zai.available && (
+                      <div className="text-slate-400">
+                        • <span className="text-amber-400">Z-AI:</span> {status.providers.zai.error || "недоступен"}
+                      </div>
+                    )}
+                    {!status.providers.local.available && (
+                      <div className="text-slate-400">
+                        • <span className="text-amber-400">Ollama:</span> {status.providers.local.error || "не запущен"}
+                      </div>
+                    )}
+                    {!status.providers.api.available && (
+                      <div className="text-slate-400">
+                        • <span className="text-amber-400">API:</span> {status.providers.api.error || "не настроен"}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+
+              <div className="bg-slate-900/50 rounded p-3 text-xs text-slate-400">
+                <p className="font-medium text-slate-300 mb-1">Для локального запуска:</p>
+                <p>1. Установите Ollama: https://ollama.com</p>
+                <p>2. Запустите: ollama pull llama3.1:8b</p>
+                <p>3. Перезапустите проект</p>
+              </div>
+
+              <Button
+                className="w-full bg-slate-700 hover:bg-slate-600"
+                onClick={() => setShowWarning(false)}
+              >
+                Закрыть
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    </>
+  );
+}
+
 // Компонент панели настроек логирования
 function LoggingPanel() {
   const [loggingEnabled, setLoggingEnabled] = useState(true);
@@ -459,6 +663,9 @@ export function StartScreen({ onStartGame, onLoadGame, isLoading }: StartScreenP
                 📂 Загрузить игру
               </Button>
             </div>
+
+            {/* Индикатор LLM */}
+            <LLMStatusIndicator />
 
             {/* Панель логирования */}
             <LoggingPanel />

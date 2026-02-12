@@ -31,22 +31,21 @@ type DbWithSystemLog = {
 };
 
 let db: DbWithSystemLog | null = null;
-let dbAvailable = false;
 
-async function getDb() {
+async function getDb(): Promise<DbWithSystemLog | null> {
   if (db !== null) return db;
   try {
     const dbModule = await import("@/lib/db");
     db = dbModule.db;
-    // Проверяем доступность systemLog
-    if (db && typeof db.systemLog?.findMany === 'function') {
-      dbAvailable = true;
-    }
     return db;
   } catch {
-    db = null;
     return null;
   }
+}
+
+// Проверка доступности SystemLog (динамическая)
+function isSystemLogAvailable(database: DbWithSystemLog | null): boolean {
+  return database !== null && typeof database.systemLog?.findMany === 'function';
 }
 
 // GET - получить логи
@@ -61,9 +60,12 @@ export async function GET(request: NextRequest) {
     // Пытаемся получить логи из БД
     let dbLogs: LogEntry[] = [];
     let dbTotal = 0;
+    let dbAvailable = false;
 
     try {
       const database = await getDb();
+      dbAvailable = isSystemLogAvailable(database);
+      
       if (dbAvailable && database?.systemLog) {
         const dbResults = await database.systemLog.findMany({
           orderBy: { createdAt: "desc" },
@@ -158,7 +160,7 @@ export async function POST(request: NextRequest) {
       case "clearDatabase":
         try {
           const database = await getDb();
-          if (dbAvailable && database?.systemLog) {
+          if (isSystemLogAvailable(database) && database?.systemLog) {
             await database.systemLog.deleteMany({});
           }
         } catch (dbError) {
@@ -180,7 +182,7 @@ export async function POST(request: NextRequest) {
         level: getLogLevel(),
       },
       database: {
-        available: dbAvailable,
+        available: isSystemLogAvailable(await getDb()),
       },
     });
   } catch (error) {
@@ -207,8 +209,11 @@ export async function DELETE(request: NextRequest) {
     clearLogBuffer();
 
     // Пытаемся очистить БД
+    let dbAvailable = false;
     try {
       const database = await getDb();
+      dbAvailable = isSystemLogAvailable(database);
+      
       if (dbAvailable && database?.systemLog) {
         if (clearAll) {
           await database.systemLog.deleteMany({});
