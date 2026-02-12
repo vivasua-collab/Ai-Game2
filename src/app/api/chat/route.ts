@@ -218,6 +218,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Продвигаем время если нужно
+    let updatedTime = null;
     if (gameResponse.timeAdvance) {
       const totalMinutes =
         (gameResponse.timeAdvance.days || 0) * 24 * 60 +
@@ -267,6 +268,16 @@ export async function POST(request: NextRequest) {
               updatedAt: new Date(),
             },
           });
+          
+          // Сохраняем обновлённое время для ответа
+          updatedTime = {
+            year: newYear,
+            month: newMonth,
+            day: newDay,
+            hour: newHour,
+            minute: newMinute,
+            daysSinceStart,
+          };
         } catch (dbError) {
           await logWarn("DATABASE", "Failed to update world time", {
             error: dbError instanceof Error ? dbError.message : "Unknown DB error",
@@ -281,6 +292,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       response: gameResponse,
+      updatedTime, // Возвращаем обновлённое время
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";

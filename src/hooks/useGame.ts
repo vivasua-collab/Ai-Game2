@@ -227,11 +227,30 @@ export function useGame() {
           ? { ...prev.character!, ...data.response.stateUpdate }
           : prev.character;
 
+        // Обновляем время если оно изменилось
+        let updatedWorldTime = prev.worldTime;
+        let updatedDaysSinceStart = prev.daysSinceStart;
+        
+        if (data.updatedTime) {
+          updatedWorldTime = {
+            year: data.updatedTime.year,
+            month: data.updatedTime.month,
+            day: data.updatedTime.day,
+            hour: data.updatedTime.hour,
+            minute: data.updatedTime.minute,
+            formatted: `${data.updatedTime.year} Э.С.М., ${data.updatedTime.month} месяц, ${data.updatedTime.day} день`,
+            season: data.updatedTime.month <= 6 ? "тёплый" : "холодный",
+          };
+          updatedDaysSinceStart = data.updatedTime.daysSinceStart;
+        }
+
         return {
           ...prev,
           messages: [...prev.messages, aiMessage],
           isLoading: false,
           character: updatedCharacter,
+          worldTime: updatedWorldTime,
+          daysSinceStart: updatedDaysSinceStart,
         };
       });
     } catch (error) {
