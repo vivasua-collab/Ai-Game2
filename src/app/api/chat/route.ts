@@ -157,6 +157,9 @@ export async function POST(request: NextRequest) {
 
     // Проверка мира (--ПМ) - возвращаем текущее состояние без LLM расчётов
     if (message.trim().startsWith("--ПМ") || message.trim().toLowerCase().startsWith("--пм")) {
+      const currentFills = Math.floor(session.character.accumulatedQi / session.character.coreCapacity);
+      const requiredFills = session.character.cultivationLevel * 10 + session.character.cultivationSubLevel;
+      
       const verifyResult = {
         character: {
           cultivationLevel: session.character.cultivationLevel,
@@ -164,6 +167,7 @@ export async function POST(request: NextRequest) {
           currentQi: session.character.currentQi,
           coreCapacity: session.character.coreCapacity,
           accumulatedQi: session.character.accumulatedQi,
+          fillsProgress: `${currentFills}/${requiredFills}`, // Прогресс прорыва
           fatigue: session.character.fatigue,
           mentalFatigue: session.character.mentalFatigue || 0,
         },
@@ -189,7 +193,7 @@ export async function POST(request: NextRequest) {
             `**Персонаж:**\n` +
             `- Уровень культивации: ${verifyResult.character.cultivationLevel}.${verifyResult.character.cultivationSubLevel}\n` +
             `- Ци: ${verifyResult.character.currentQi}/${verifyResult.character.coreCapacity}\n` +
-            `- Накоплено для прорыва: ${verifyResult.character.accumulatedQi}\n` +
+            `- Накоплено для прорыва: ${verifyResult.character.accumulatedQi} (${verifyResult.character.fillsProgress} заполнений)\n` +
             `- Физ. усталость: ${verifyResult.character.fatigue}%\n` +
             `- Мент. усталость: ${verifyResult.character.mentalFatigue}%\n\n` +
             `**Локация:** ${verifyResult.location?.name || "Неизвестно"}\n` +
@@ -197,6 +201,51 @@ export async function POST(request: NextRequest) {
             `\n**Время:** ${verifyResult.worldTime.year} г., ${verifyResult.worldTime.month} мес., ${verifyResult.worldTime.day} д., ${verifyResult.worldTime.hour}:${verifyResult.worldTime.minute.toString().padStart(2, "0")}`,
           stateUpdate: null,
           timeAdvance: null,
+        },
+        updatedTime: null,
+      });
+    }
+
+    // === КОМАНДА ПЕРЕЗАПУСКА МИРА ===
+    if (message.trim().toLowerCase() === "-- перезапуск мира!") {
+      await logInfo("GAME", "World restart requested", { sessionId });
+      
+      // Удаляем старую сессию и все связанные данные
+      try {
+        // Удаляем сообщения
+        await db.message.deleteMany({ where: { sessionId } });
+        // Удаляем NPC
+        await db.nPC.deleteMany({ where: { sessionId } });
+        // Удаляем локации
+        await db.location.deleteMany({ where: { sessionId } });
+        // Удаляем секты (если есть)
+        await db.sect.deleteMany({ where: { sessionId } });
+        // Удаляем персонажа
+        await db.character.deleteMany({ where: { id: session.characterId } });
+        // Удаляем сессию
+        await db.gameSession.delete({ where: { id: sessionId } });
+        
+        await logInfo("GAME", "World deleted successfully", { sessionId });
+      } catch (dbError) {
+        await logError("DATABASE", "Failed to delete world", {
+          error: dbError instanceof Error ? dbError.message : "Unknown",
+          sessionId,
+        });
+        return NextResponse.json({
+          success: false,
+          response: {
+            type: "error",
+            content: "❌ Ошибка при удалении мира. Попробуйте ещё раз.",
+          },
+        });
+      }
+      
+      return NextResponse.json({
+        success: true,
+        response: {
+          type: "system",
+          content: "🔄 **Мир удалён!**\n\nНажмите кнопку \"Подтвердить\" для создания нового мира.",
+          requiresRestart: true, // Сигнал клиенту для перезапуска
         },
         updatedTime: null,
       });
@@ -322,9 +371,10 @@ export async function POST(request: NextRequest) {
           responseContent = `❌ ${result.interruptionReason}`;
         } else if (result.coreWasFilled) {
           const newAccumulated = session.character.accumulatedQi + result.accumulatedQiGained;
-          const required = session.character.coreCapacity * 10;
-          const fillsNeeded = Math.max(0, Math.ceil((required - newAccumulated) / session.character.coreCapacity));
-          responseContent = `⚡ **Ядро заполнено!**\n\n📊 Прогресс прорыва: ${newAccumulated}/${required} (${Math.floor(newAccumulated/required*100)}%)\n🔄 Осталось заполнений: ${fillsNeeded}\n\n⚠️ **Потратьте Ци (техники, бой) чтобы продолжить накопление!**${breakdownText}\n⏱️ Время: ${result.duration} мин.`;
+          const currentFills = Math.floor(newAccumulated / session.character.coreCapacity);
+          const requiredFills = session.character.cultivationLevel * 10 + session.character.cultivationSubLevel;
+          const fillsNeeded = Math.max(0, requiredFills - currentFills);
+          responseContent = `⚡ **Ядро заполнено!**\n\n📊 Прогресс прорыва: ${currentFills}/${requiredFills} заполнений\n🔄 Осталось: ${fillsNeeded}\n\n⚠️ **Потратьте Ци (техники, бой) чтобы продолжить накопление!**${breakdownText}\n⏱️ Время: ${result.duration} мин.`;
         } else if (result.wasInterrupted && result.interruptionReason) {
           responseContent = `⚠️ ${result.interruptionReason}\n\n🧘 Медитация прервана.\n\nНакоплено Ци: +${result.qiGained}${breakdownText}\n  Итого: ${session.character.currentQi + result.qiGained}/${session.character.coreCapacity}.`;
         } else {

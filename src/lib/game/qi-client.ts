@@ -343,3 +343,157 @@ export function createQiGain(amount: number, reason: string): QiDelta {
     isBreakthrough: false,
   };
 }
+
+// ============================================
+// РАСЧЁТЫ ПРОРЫВА (клиентская сторона)
+// ============================================
+
+/**
+ * Интерфейс требований для прорыва
+ */
+export interface BreakthroughRequirements {
+  requiredFills: number;      // Сколько заполнений нужно (level*10 + subLevel)
+  currentFills: number;       // Сколько уже накоплено
+  fillsNeeded: number;        // Сколько ещё осталось
+  requiredQi: number;         // Сколько Ци нужно
+  currentAccumulated: number; // Сколько накоплено
+  canAttempt: boolean;
+}
+
+/**
+ * Расчёт требований для прорыва
+ * Количество циклов = уровень * 10 + подуровень
+ * 1.0 = 10 циклов, 6.5 = 65 циклов
+ */
+export function calculateBreakthroughRequirements(
+  character: Character
+): BreakthroughRequirements {
+  const currentLevel = character.cultivationLevel;
+  const currentSubLevel = character.cultivationSubLevel;
+  
+  // Количество заполнений = уровень * 10 + подуровень
+  const requiredFills = currentLevel * 10 + currentSubLevel;
+  
+  // Текущее накопление в "заполнениях ядра"
+  const currentFills = Math.floor(character.accumulatedQi / character.coreCapacity);
+  
+  // Сколько ещё нужно
+  const fillsNeeded = Math.max(0, requiredFills - currentFills);
+  
+  // Абсолютное значение Ци
+  const requiredQi = requiredFills * character.coreCapacity;
+  const currentAccumulated = character.accumulatedQi;
+  
+  return {
+    requiredFills,
+    currentFills,
+    fillsNeeded,
+    requiredQi,
+    currentAccumulated,
+    canAttempt: currentFills >= requiredFills,
+  };
+}
+
+/**
+ * Интерфейс результата прорыва
+ */
+export interface BreakthroughResult {
+  success: boolean;
+  newLevel: number;
+  newSubLevel: number;
+  newCoreCapacity: number;
+  qiConsumed: number;
+  fatigueGained: { physical: number; mental: number };
+  message: string;
+}
+
+/**
+ * Выполнить прорыв (локально на клиенте)
+ */
+export function attemptBreakthrough(character: Character): BreakthroughResult {
+  const currentLevel = character.cultivationLevel;
+  const currentSubLevel = character.cultivationSubLevel;
+  
+  // Проверяем требования
+  const requirements = calculateBreakthroughRequirements(character);
+  
+  if (!requirements.canAttempt) {
+    return {
+      success: false,
+      newLevel: currentLevel,
+      newSubLevel: currentSubLevel,
+      newCoreCapacity: character.coreCapacity,
+      qiConsumed: 0,
+      fatigueGained: { physical: 5, mental: 20 },
+      message: `Недостаточно накопленной Ци. Нужно: ${requirements.requiredFills} заполнений, накоплено: ${requirements.currentFills}. Осталось: ${requirements.fillsNeeded}`,
+    };
+  }
+  
+  // Определяем тип прорыва (большой при subLevel >= 9)
+  const isMajorBreakthrough = currentSubLevel >= 9;
+  
+  // Прорыв успешен
+  let newLevel = currentLevel;
+  let newSubLevel = currentSubLevel;
+  
+  if (isMajorBreakthrough) {
+    newLevel = currentLevel + 1;
+    newSubLevel = 0;
+  } else {
+    newSubLevel = currentSubLevel + 1;
+  }
+  
+  // Новая ёмкость ядра (+10%)
+  const newCoreCapacity = Math.ceil(character.coreCapacity * 1.1);
+  
+  // Затраты накопленной Ци
+  const qiConsumed = requirements.requiredQi;
+  
+  // Усталость от прорыва
+  const fatigueGained = {
+    physical: 10,
+    mental: isMajorBreakthrough ? 40 : 25,
+  };
+  
+  return {
+    success: true,
+    newLevel,
+    newSubLevel,
+    newCoreCapacity,
+    qiConsumed,
+    fatigueGained,
+    message: isMajorBreakthrough
+      ? `🌟 Большой прорыв! Уровень ${newLevel}!`
+      : `⬆️ Продвижение до ${newLevel}.${newSubLevel}`,
+  };
+}
+
+/**
+ * Рассчитать время до следующего заполнения ядра
+ */
+export function calculateTimeToNextFill(
+  character: Character,
+  location: Location | null
+): number {
+  const currentQi = character.currentQi;
+  const maxQi = character.coreCapacity;
+  const deficit = maxQi - currentQi;
+  
+  if (deficit <= 0) return 0; // Уже полное
+  
+  const rate = calculateMeditationQiRate(character, location);
+  if (rate <= 0) return Infinity;
+  
+  return Math.ceil(deficit / rate); // секунды
+}
+
+/**
+ * Форматирование времени для отображения
+ */
+export function formatTime(seconds: number): string {
+  if (seconds === Infinity) return "∞";
+  if (seconds < 60) return `${seconds} сек`;
+  if (seconds < 3600) return `${Math.floor(seconds / 60)} мин`;
+  if (seconds < 86400) return `${(seconds / 3600).toFixed(1)} ч`;
+  return `${(seconds / 86400).toFixed(1)} дн`;
+}

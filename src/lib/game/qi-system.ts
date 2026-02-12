@@ -221,27 +221,42 @@ function calculateMeditationFatigue(
 }
 
 // Расчёт Ци для прорыва
-// УПРОЩЁННАЯ ЛОГИКА: всегда 10 × ёмкость ядра
+// НОВАЯ ЛОГИКА: количество циклов = уровень культивации
+// 1.0 = 10 циклов, 6.5 = 65 циклов
 export function calculateBreakthroughRequirements(
   character: Character
 ): {
-  requiredQi: number;
-  currentAccumulated: number;
-  deficit: number;
-  fillsNeeded: number; // Сколько ещё заполнений ядра нужно
+  requiredFills: number;      // Сколько заполнений нужно (level*10 + subLevel)
+  currentFills: number;       // Сколько уже накоплено (в "заполнениях")
+  fillsNeeded: number;        // Сколько ещё осталось
+  requiredQi: number;         // Сколько Ци нужно
+  currentAccumulated: number; // Сколько накоплено
   canAttempt: boolean;
 } {
-  const requiredQi = character.coreCapacity * 10; // Всегда 10 ёмкостей
+  const currentLevel = character.cultivationLevel;
+  const currentSubLevel = character.cultivationSubLevel;
+  
+  // Количество заполнений = уровень * 10 + подуровень
+  // 1.0 = 10, 1.5 = 15, 6.5 = 65
+  const requiredFills = currentLevel * 10 + currentSubLevel;
+  
+  // Текущее накопление в "заполнениях ядра"
+  const currentFills = Math.floor(character.accumulatedQi / character.coreCapacity);
+  
+  // Сколько ещё нужно
+  const fillsNeeded = Math.max(0, requiredFills - currentFills);
+  
+  // Абсолютное значение Ци
+  const requiredQi = requiredFills * character.coreCapacity;
   const currentAccumulated = character.accumulatedQi;
-  const deficit = requiredQi - currentAccumulated;
-  const fillsNeeded = Math.ceil(deficit / character.coreCapacity);
   
   return {
+    requiredFills,
+    currentFills,
+    fillsNeeded,
     requiredQi,
     currentAccumulated,
-    deficit: Math.max(0, deficit),
-    fillsNeeded: Math.max(0, fillsNeeded),
-    canAttempt: deficit <= 0,
+    canAttempt: currentFills >= requiredFills,
   };
 }
 
@@ -262,7 +277,7 @@ export function attemptBreakthrough(
   const currentLevel = character.cultivationLevel;
   const currentSubLevel = character.cultivationSubLevel;
   
-  // Проверяем требования (всегда 10 × ёмкость)
+  // Проверяем требования
   const requirements = calculateBreakthroughRequirements(character);
   
   if (!requirements.canAttempt) {
@@ -273,7 +288,7 @@ export function attemptBreakthrough(
       newCoreCapacity: character.coreCapacity,
       qiConsumed: 0,
       fatigueGained: { physical: 5, mental: 20 },
-      message: `Недостаточно накопленной Ци. Нужно: ${requirements.requiredQi} (${requirements.fillsNeeded} заполнений ядра), накоплено: ${requirements.currentAccumulated}`,
+      message: `Недостаточно накопленной Ци. Нужно: ${requirements.requiredFills} заполнений (${requirements.requiredQi} Ци), накоплено: ${requirements.currentFills} (${requirements.currentAccumulated} Ци). Осталось: ${requirements.fillsNeeded} заполнений.`,
     };
   }
   
@@ -294,7 +309,7 @@ export function attemptBreakthrough(
   // Новая ёмкость ядра (+10%)
   const newCoreCapacity = Math.ceil(character.coreCapacity * 1.1);
   
-  // Затраты накопленной Ци
+  // Затраты накопленной Ци (сбрасываем накопление)
   const qiConsumed = requirements.requiredQi;
   
   // Усталость от прорыва (высокая ментальная нагрузка)

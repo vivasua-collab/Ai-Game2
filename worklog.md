@@ -185,3 +185,29 @@ Stage Summary:
 - 10 full core fills needed for each breakthrough
 - Clear progress tracking for players
 - Pushed to GitHub
+
+---
+Task ID: 7
+Agent: Main Orchestrator
+Task: Update breakthrough formula and add world restart command
+
+Work Log:
+- Changed breakthrough formula:
+  - Fills needed = level * 10 + subLevel
+  - 1.0 = 10 fills, 6.5 = 65 fills
+- Added breakthrough calculations to qi-client.ts:
+  - calculateBreakthroughRequirements()
+  - attemptBreakthrough()
+  - All calculations on client side, not LLM
+- Updated API messages with new formula
+- Added "-- перезапуск мира!" command:
+  - Deletes session and all related data
+  - Returns requiresRestart signal to client
+  - Client resets to start screen
+- Updated --ПМ command to show fill progress
+
+Stage Summary:
+- Breakthrough cycles now scale with level
+- All breakthrough math is client-side
+- World restart command implemented
+- Pushed to GitHub

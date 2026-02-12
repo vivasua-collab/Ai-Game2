@@ -249,6 +249,16 @@ export function useGame() {
         createdAt: new Date().toISOString(),
       };
 
+      // === ПРОВЕРКА ПЕРЕЗАПУСКА МИРА ===
+      if (data.response.requiresRestart) {
+        // Сбрасываем состояние и возвращаем на старт
+        setState({
+          ...initialState,
+          messages: [aiMessage],
+        });
+        return;
+      }
+
       setState((prev) => {
         // === ЛОКАЛЬНЫЙ РАСЧЁТ ЦИ ===
         // Приоритет: локальное состояние > данные от сервера
@@ -282,8 +292,9 @@ export function useGame() {
             if (qiDelta.accumulatedGain) {
               // Ядро заполнено! Показываем прогресс прорыва
               const newAccumulated = (prev.character?.accumulatedQi || 0) + qiDelta.accumulatedGain;
-              const required = prev.character!.coreCapacity * 10;
-              qiChangeMessage = `\n\n⚡ Ядро заполнено! Прогресс прорыва: ${newAccumulated}/${required}\n⚠️ Потратьте Ци чтобы продолжить!`;
+              const currentFills = Math.floor(newAccumulated / prev.character!.coreCapacity);
+              const requiredFills = prev.character!.cultivationLevel * 10 + prev.character!.cultivationSubLevel;
+              qiChangeMessage = `\n\n⚡ Ядро заполнено! Прогресс: ${currentFills}/${requiredFills} заполнений\n⚠️ Потратьте Ци чтобы продолжить!`;
             } else {
               qiChangeMessage = `\n\n⚡ Ци: +${result.qiGained}`;
               if (result.overflow > 0) {
