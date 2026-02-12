@@ -22,18 +22,26 @@ interface StartScreenProps {
   isLoading: boolean;
 }
 
+// Расширенный интерфейс лога с деталями
+interface LogEntry {
+  id: string;
+  timestamp: string;
+  level: string;
+  category: string;
+  message: string;
+  details?: Record<string, unknown> | null;
+  stack?: string | null;
+  sessionId?: string | null;
+  duration?: number | null;
+}
+
 // Компонент панели настроек логирования
 function LoggingPanel() {
   const [loggingEnabled, setLoggingEnabled] = useState(true);
   const [logLevel, setLogLevel] = useState("INFO");
   const [showLogs, setShowLogs] = useState(false);
-  const [logs, setLogs] = useState<Array<{
-    id: string;
-    timestamp: string;
-    level: string;
-    category: string;
-    message: string;
-  }>>([]);
+  const [logs, setLogs] = useState<LogEntry[]>([]);
+  const [expandedLogId, setExpandedLogId] = useState<string | null>(null);
 
   // Загрузка текущих настроек
   useEffect(() => {
@@ -83,9 +91,9 @@ function LoggingPanel() {
       const data = await response.json();
       if (data.success) {
         // Объединяем логи из БД и буфера
-        const allLogs = [...(data.buffer || []), ...(data.database?.logs || [])];
+        const allLogs: LogEntry[] = [...(data.buffer || []), ...(data.database?.logs || [])];
         // Убираем дубликаты по времени и сообщению
-        const uniqueLogs = allLogs.filter((log: { timestamp: string; message: string }, index: number, self: Array<{ timestamp: string; message: string }>) =>
+        const uniqueLogs = allLogs.filter((log, index, self) =>
           index === self.findIndex((l) => l.timestamp === log.timestamp && l.message === log.message)
         );
         setLogs(uniqueLogs.slice(0, 100));
@@ -117,6 +125,25 @@ function LoggingPanel() {
       default:
         return "bg-green-500";
     }
+  };
+
+  const getLevelBorder = (level: string) => {
+    switch (level) {
+      case "ERROR":
+        return "border-l-red-500";
+      case "WARN":
+        return "border-l-yellow-500";
+      case "DEBUG":
+        return "border-l-blue-500";
+      default:
+        return "border-l-green-500";
+    }
+  };
+
+  // Форматирование деталей ошибки
+  const formatDetails = (details: Record<string, unknown> | null | undefined): string => {
+    if (!details) return "";
+    return JSON.stringify(details, null, 2);
   };
 
   return (
@@ -207,29 +234,82 @@ function LoggingPanel() {
                 <p className="text-slate-400 text-center py-8">Нет логов</p>
               ) : (
                 <div className="divide-y divide-slate-700">
-                  {logs.map((log, index) => (
-                    <div
-                      key={log.id || index}
-                      className="p-3 hover:bg-slate-700/50 transition-colors"
-                    >
-                      <div className="flex items-start gap-2">
-                        <Badge className={`${getLevelColor(log.level)} text-xs flex-shrink-0`}>
-                          {log.level}
-                        </Badge>
-                        <Badge variant="outline" className="text-xs border-slate-600 text-slate-400 flex-shrink-0">
-                          {log.category}
-                        </Badge>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm text-slate-200 break-words">
-                            {log.message}
-                          </p>
-                          <p className="text-xs text-slate-500 mt-1">
-                            {new Date(log.timestamp).toLocaleString("ru")}
-                          </p>
+                  {logs.map((log, index) => {
+                    const isExpanded = expandedLogId === (log.id || index.toString());
+                    const hasDetails = log.details && Object.keys(log.details).length > 0;
+                    const hasStack = log.stack;
+                    
+                    return (
+                      <div
+                        key={log.id || index}
+                        className={`border-l-4 ${getLevelBorder(log.level)} hover:bg-slate-700/50 transition-colors cursor-pointer`}
+                        onClick={() => setExpandedLogId(isExpanded ? null : (log.id || index.toString()))}
+                      >
+                        <div className="p-3">
+                          <div className="flex items-start gap-2">
+                            <Badge className={`${getLevelColor(log.level)} text-xs flex-shrink-0`}>
+                              {log.level}
+                            </Badge>
+                            <Badge variant="outline" className="text-xs border-slate-600 text-slate-400 flex-shrink-0">
+                              {log.category}
+                            </Badge>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm text-slate-200 break-words">
+                                {log.message}
+                              </p>
+                              <div className="flex items-center gap-2 mt-1">
+                                <p className="text-xs text-slate-500">
+                                  {new Date(log.timestamp).toLocaleString("ru")}
+                                </p>
+                                {log.duration && (
+                                  <Badge variant="outline" className="text-xs border-slate-600 text-slate-400">
+                                    {log.duration}мс
+                                  </Badge>
+                                )}
+                                {(hasDetails || hasStack) && (
+                                  <Badge variant="outline" className="text-xs border-amber-600 text-amber-400">
+                                    {isExpanded ? "▼ Детали" : "▶ Детали"}
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          
+                          {/* Расширенная информация */}
+                          {isExpanded && (hasDetails || hasStack) && (
+                            <div className="mt-3 ml-16 space-y-2">
+                              {/* Детали ошибки */}
+                              {hasDetails && (
+                                <div className="bg-slate-900/50 rounded p-2">
+                                  <p className="text-xs text-amber-400 mb-1">📝 Детали:</p>
+                                  <pre className="text-xs text-slate-300 whitespace-pre-wrap break-all overflow-x-auto">
+                                    {formatDetails(log.details)}
+                                  </pre>
+                                </div>
+                              )}
+                              
+                              {/* Stack trace */}
+                              {hasStack && (
+                                <div className="bg-red-900/20 rounded p-2">
+                                  <p className="text-xs text-red-400 mb-1">🔴 Stack Trace:</p>
+                                  <pre className="text-xs text-slate-300 whitespace-pre-wrap break-all overflow-x-auto max-h-40">
+                                    {log.stack}
+                                  </pre>
+                                </div>
+                              )}
+                              
+                              {/* Session ID */}
+                              {log.sessionId && (
+                                <div className="text-xs text-slate-500">
+                                  Session: {log.sessionId}
+                                </div>
+                              )}
+                            </div>
+                          )}
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </CardContent>

@@ -5,9 +5,9 @@ import {
   buildRandomStartPrompt,
   buildCustomStartPrompt,
 } from "@/data/prompts/game-master";
-import { generateGameResponse, initializeLLM } from "@/lib/llm";
+import { generateGameResponse, initializeLLM, isLLMReady } from "@/lib/llm";
 import { calculateBaseConductivity } from "@/data/cultivation-levels";
-import { logError, logInfo, LogTimer } from "@/lib/logger";
+import { logError, logInfo, logWarn, logDebug, LogTimer } from "@/lib/logger";
 
 // Инициализируем LLM
 let llmInitialized = false;
@@ -118,9 +118,31 @@ export async function POST(request: NextRequest) {
   const timer = new LogTimer("API", "Start game request");
   
   try {
+    // Инициализируем LLM
     if (!llmInitialized) {
-      initializeLLM();
-      llmInitialized = true;
+      try {
+        initializeLLM();
+        llmInitialized = true;
+        await logInfo("SYSTEM", "LLM provider initialized for game start");
+      } catch (initError) {
+        await logError("LLM", "Failed to initialize LLM provider on game start", {
+          error: initError instanceof Error ? initError.message : "Unknown init error",
+          stack: initError instanceof Error ? initError.stack : undefined,
+        });
+        return NextResponse.json(
+          { 
+            error: "LLM initialization failed", 
+            message: initError instanceof Error ? initError.message : "Unknown initialization error",
+            component: "LLM_PROVIDER",
+          },
+          { status: 503 }
+        );
+      }
+    }
+
+    // Проверяем готовность LLM
+    if (!isLLMReady()) {
+      await logWarn("LLM", "LLM provider not ready for game start");
     }
 
     const body: StartGameRequest = await request.json();
@@ -129,10 +151,15 @@ export async function POST(request: NextRequest) {
     await logInfo("GAME", "Starting new game", {
       variant,
       hasCustomConfig: !!customConfig,
+      customConfig: customConfig ? {
+        location: customConfig.location || "default",
+        age: customConfig.age || 16,
+        coreCapacity: customConfig.coreCapacity || 1000,
+      } : null,
     });
 
     // Определяем параметры старта
-    let startConfig = {
+    const startConfig = {
       age: 16,
       coreCapacity: 1000,
       knowsAboutSystem: false,
@@ -175,135 +202,231 @@ export async function POST(request: NextRequest) {
     // Рассчитываем проводимость
     const conductivity = calculateBaseConductivity(startConfig.coreCapacity);
 
-    // Создаём персонажа
-    const character = await db.character.create({
-      data: {
-        age: startConfig.age,
+    await logDebug("GAME", "Start config calculated", {
+      startConfig: {
+        locationName: startConfig.locationName,
+        qiDensity: startConfig.qiDensity,
         coreCapacity: startConfig.coreCapacity,
-        currentQi: 0,
-        accumulatedQi: 0,
-        cultivationLevel: 1,
-        cultivationSubLevel: 0,
-        strength: customConfig?.strength || 10.0,
-        agility: customConfig?.agility || 10.0,
-        intelligence: customConfig?.intelligence || 10.0,
         conductivity,
-        health: 100.0,
-        fatigue: 0.0,
-        hasAmnesia: startConfig.hasAmnesia,
-        knowsAboutSystem: startConfig.knowsAboutSystem,
-        sectRole: startConfig.sectRole,
       },
     });
+
+    // Создаём персонажа
+    let character;
+    try {
+      character = await db.character.create({
+        data: {
+          age: startConfig.age,
+          coreCapacity: startConfig.coreCapacity,
+          currentQi: 0,
+          accumulatedQi: 0,
+          cultivationLevel: 1,
+          cultivationSubLevel: 0,
+          strength: customConfig?.strength || 10.0,
+          agility: customConfig?.agility || 10.0,
+          intelligence: customConfig?.intelligence || 10.0,
+          conductivity,
+          health: 100.0,
+          fatigue: 0.0,
+          hasAmnesia: startConfig.hasAmnesia,
+          knowsAboutSystem: startConfig.knowsAboutSystem,
+          sectRole: startConfig.sectRole,
+        },
+      });
+      await logDebug("DATABASE", "Character created", { characterId: character.id });
+    } catch (dbError) {
+      await logError("DATABASE", "Failed to create character", {
+        error: dbError instanceof Error ? dbError.message : "Unknown DB error",
+        stack: dbError instanceof Error ? dbError.stack : undefined,
+        operation: "character.create",
+        startConfig: {
+          age: startConfig.age,
+          coreCapacity: startConfig.coreCapacity,
+        },
+      });
+      return NextResponse.json(
+        { 
+          error: "Database error: Failed to create character", 
+          message: dbError instanceof Error ? dbError.message : "Database operation failed",
+          component: "DATABASE_CHARACTER",
+        },
+        { status: 500 }
+      );
+    }
 
     // Создаём начальную локацию
-    const location = await db.location.create({
-      data: {
-        name: startConfig.locationName,
-        distanceFromCenter: startConfig.distanceFromCenter,
-        qiDensity: startConfig.qiDensity,
-        qiFlowRate: Math.floor(startConfig.qiDensity / 10),
-        terrainType: variant === 1 ? "mountains" : "plains",
-      },
-    });
+    let location;
+    try {
+      location = await db.location.create({
+        data: {
+          name: startConfig.locationName,
+          distanceFromCenter: startConfig.distanceFromCenter,
+          qiDensity: startConfig.qiDensity,
+          qiFlowRate: Math.floor(startConfig.qiDensity / 10),
+          terrainType: variant === 1 ? "mountains" : "plains",
+        },
+      });
+      await logDebug("DATABASE", "Location created", { locationId: location.id, name: location.name });
+    } catch (dbError) {
+      await logError("DATABASE", "Failed to create location", {
+        error: dbError instanceof Error ? dbError.message : "Unknown DB error",
+        stack: dbError instanceof Error ? dbError.stack : undefined,
+        operation: "location.create",
+      });
+      // Откатываем создание персонажа
+      await db.character.delete({ where: { id: character.id } });
+      return NextResponse.json(
+        { 
+          error: "Database error: Failed to create location", 
+          message: dbError instanceof Error ? dbError.message : "Database operation failed",
+          component: "DATABASE_LOCATION",
+        },
+        { status: 500 }
+      );
+    }
 
     // Обновляем персонажа с локацией
-    await db.character.update({
-      where: { id: character.id },
-      data: { currentLocationId: location.id },
-    });
+    try {
+      await db.character.update({
+        where: { id: character.id },
+        data: { currentLocationId: location.id },
+      });
+    } catch (dbError) {
+      await logWarn("DATABASE", "Failed to update character location", {
+        error: dbError instanceof Error ? dbError.message : "Unknown DB error",
+        characterId: character.id,
+        locationId: location.id,
+      });
+    }
 
     // Создаём сессию игры
-    const session = await db.gameSession.create({
-      data: {
-        startVariant: variant,
-        worldYear: 1864,
-        worldMonth: 1, // Первый месяц тёплого сезона
-        worldDay: 1,
-        worldHour: 7, // 7:00 утра
-        worldMinute: 0,
-        daysSinceStart: 0,
-        isPaused: true,
-        worldState: JSON.stringify({
-          startConfig,
-          events: [],
-        }),
+    let session;
+    try {
+      session = await db.gameSession.create({
+        data: {
+          startVariant: variant,
+          worldYear: 1864,
+          worldMonth: 1, // Первый месяц тёплого сезона
+          worldDay: 1,
+          worldHour: 7, // 7:00 утра
+          worldMinute: 0,
+          daysSinceStart: 0,
+          isPaused: true,
+          worldState: JSON.stringify({
+            startConfig,
+            events: [],
+          }),
+          characterId: character.id,
+        },
+      });
+      await logDebug("DATABASE", "Game session created", { sessionId: session.id });
+    } catch (dbError) {
+      await logError("DATABASE", "Failed to create game session", {
+        error: dbError instanceof Error ? dbError.message : "Unknown DB error",
+        stack: dbError instanceof Error ? dbError.stack : undefined,
+        operation: "gameSession.create",
         characterId: character.id,
-      },
-    });
+      });
+      // Откат
+      await db.location.delete({ where: { id: location.id } });
+      await db.character.delete({ where: { id: character.id } });
+      return NextResponse.json(
+        { 
+          error: "Database error: Failed to create game session", 
+          message: dbError instanceof Error ? dbError.message : "Database operation failed",
+          component: "DATABASE_SESSION",
+        },
+        { status: 500 }
+      );
+    }
 
     // Создаём секту если нужно (вариант 1)
     if (variant === 1 && startConfig.sectName) {
-      const sect = await db.sect.create({
-        data: {
-          name: startConfig.sectName,
-          description: `Секта культивации, расположенная на окраине обитаемых земель.`,
-          powerLevel: 6.2,
-          locationId: location.id,
-          sessionId: session.id,
-          resources: JSON.stringify({
-            spiritStones: 50000,
-            herbs: 1000,
-            techniques: 20,
-          }),
-        },
-      });
+      try {
+        const sect = await db.sect.create({
+          data: {
+            name: startConfig.sectName,
+            description: `Секта культивации, расположенная на окраине обитаемых земель.`,
+            powerLevel: 6.2,
+            locationId: location.id,
+            sessionId: session.id,
+            resources: JSON.stringify({
+              spiritStones: 50000,
+              herbs: 1000,
+              techniques: 20,
+            }),
+          },
+        });
 
-      // Привязываем персонажа к секте
-      await db.character.update({
-        where: { id: character.id },
-        data: { sectId: sect.id },
-      });
+        // Привязываем персонажа к секте
+        await db.character.update({
+          where: { id: character.id },
+          data: { sectId: sect.id },
+        });
 
-      // Создаём NPC для секты
-      // Глава секты (уровень 6.5)
-      await db.nPC.create({
-        data: {
-          name: generateNPCName(),
-          title: "Глава секты",
-          age: 150 + Math.floor(Math.random() * 100),
-          cultivationLevel: 6,
-          cultivationSubLevel: 5,
-          coreCapacity: 50000,
-          currentQi: 45000,
-          strength: 35.0,
-          agility: 32.0,
-          intelligence: 28.0,
-          conductivity: 138.9,
-          personality: JSON.stringify({ traits: ["мудрый", "строгий", "справедливый"] }),
-          disposition: 0,
-          sectId: sect.id,
-          locationId: location.id,
-          role: "sect_leader",
-          sessionId: session.id,
-        },
-      });
-
-      // Старейшины (3 шт, уровни 6.1-6.4)
-      for (let i = 0; i < 3; i++) {
+        // Создаём NPC для секты
+        // Глава секты (уровень 6.5)
         await db.nPC.create({
           data: {
             name: generateNPCName(),
-            title: "Старейшина",
-            age: 100 + Math.floor(Math.random() * 80),
+            title: "Глава секты",
+            age: 150 + Math.floor(Math.random() * 100),
             cultivationLevel: 6,
-            cultivationSubLevel: 1 + Math.floor(Math.random() * 3),
-            coreCapacity: 30000 + Math.floor(Math.random() * 20000),
-            currentQi: 25000 + Math.floor(Math.random() * 15000),
-            strength: 25.0 + Math.random() * 10,
-            agility: 23.0 + Math.random() * 10,
-            intelligence: 20.0 + Math.random() * 10,
-            conductivity: 80 + Math.random() * 40,
-            personality: JSON.stringify({
-              traits: ["опытный", "осторожный"],
-            }),
-            disposition: Math.random() * 20 - 10,
+            cultivationSubLevel: 5,
+            coreCapacity: 50000,
+            currentQi: 45000,
+            strength: 35.0,
+            agility: 32.0,
+            intelligence: 28.0,
+            conductivity: 138.9,
+            personality: JSON.stringify({ traits: ["мудрый", "строгий", "справедливый"] }),
+            disposition: 0,
             sectId: sect.id,
             locationId: location.id,
-            role: "elder",
+            role: "sect_leader",
             sessionId: session.id,
           },
         });
+
+        // Старейшины (3 шт, уровни 6.1-6.4)
+        for (let i = 0; i < 3; i++) {
+          await db.nPC.create({
+            data: {
+              name: generateNPCName(),
+              title: "Старейшина",
+              age: 100 + Math.floor(Math.random() * 80),
+              cultivationLevel: 6,
+              cultivationSubLevel: 1 + Math.floor(Math.random() * 3),
+              coreCapacity: 30000 + Math.floor(Math.random() * 20000),
+              currentQi: 25000 + Math.floor(Math.random() * 15000),
+              strength: 25.0 + Math.random() * 10,
+              agility: 23.0 + Math.random() * 10,
+              intelligence: 20.0 + Math.random() * 10,
+              conductivity: 80 + Math.random() * 40,
+              personality: JSON.stringify({
+                traits: ["опытный", "осторожный"],
+              }),
+              disposition: Math.random() * 20 - 10,
+              sectId: sect.id,
+              locationId: location.id,
+              role: "elder",
+              sessionId: session.id,
+            },
+          });
+        }
+        
+        await logDebug("DATABASE", "Sect and NPCs created", { 
+          sectId: sect.id, 
+          sectName: sect.name,
+          npcCount: 4, // 1 leader + 3 elders
+        });
+      } catch (dbError) {
+        await logWarn("DATABASE", "Failed to create sect or NPCs", {
+          error: dbError instanceof Error ? dbError.message : "Unknown DB error",
+          stack: dbError instanceof Error ? dbError.stack : undefined,
+          sessionId: session.id,
+        });
+        // Продолжаем без секты
       }
     }
 
@@ -322,29 +445,64 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const llmTimer = new LogTimer("LLM", "Generate opening narration", session.id);
-    const gameResponse = await generateGameResponse(
-      systemPrompt,
-      "Начни игру. Опиши момент пробуждения ГГ.",
-      []
-    );
-    await llmTimer.end("INFO", { contentLength: gameResponse.content.length });
+    let gameResponse;
+    try {
+      const llmTimer = new LogTimer("LLM", "Generate opening narration", session.id);
+      gameResponse = await generateGameResponse(
+        systemPrompt,
+        "Начни игру. Опиши момент пробуждения ГГ.",
+        []
+      );
+      await llmTimer.end("INFO", { contentLength: gameResponse.content.length });
+    } catch (llmError) {
+      await logError("LLM", "Failed to generate opening narration", {
+        error: llmError instanceof Error ? llmError.message : "Unknown LLM error",
+        stack: llmError instanceof Error ? llmError.stack : undefined,
+        sessionId: session.id,
+        variant,
+      });
+      // Не откатываем - сессия создана, просто возвращаем ошибку
+      return NextResponse.json(
+        { 
+          error: "LLM generation failed: Could not generate opening narration", 
+          message: llmError instanceof Error ? llmError.message : "AI response generation failed",
+          component: "LLM_GENERATION",
+          sessionId: session.id, // Возвращаем ID созданной сессии
+        },
+        { status: 502 }
+      );
+    }
 
     // Сохраняем первое сообщение
-    await db.message.create({
-      data: {
+    try {
+      await db.message.create({
+        data: {
+          sessionId: session.id,
+          type: "narration",
+          sender: "narrator",
+          content: gameResponse.content,
+        },
+      });
+    } catch (dbError) {
+      await logWarn("DATABASE", "Failed to save opening narration", {
+        error: dbError instanceof Error ? dbError.message : "Unknown DB error",
         sessionId: session.id,
-        type: "narration",
-        sender: "narrator",
-        content: gameResponse.content,
-      },
-    });
+      });
+    }
 
     // Обновляем локацию с привязкой к сессии
-    await db.location.update({
-      where: { id: location.id },
-      data: { sessionId: session.id },
-    });
+    try {
+      await db.location.update({
+        where: { id: location.id },
+        data: { sessionId: session.id },
+      });
+    } catch (dbError) {
+      await logWarn("DATABASE", "Failed to link location to session", {
+        error: dbError instanceof Error ? dbError.message : "Unknown DB error",
+        locationId: location.id,
+        sessionId: session.id,
+      });
+    }
 
     // Возвращаем все данные
     const fullSession = await db.gameSession.findUnique({
@@ -362,6 +520,7 @@ export async function POST(request: NextRequest) {
       sessionId: session.id,
       variant,
       characterId: character.id,
+      locationName: startConfig.locationName,
     });
 
     return NextResponse.json({
@@ -371,9 +530,13 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    await logError("GAME", "Start game error", {
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    const errorName = error instanceof Error ? error.constructor.name : "UnknownError";
+    
+    await logError("GAME", "Start game critical error", {
       error: errorMessage,
-      stack: error instanceof Error ? error.stack : undefined,
+      errorType: errorName,
+      stack: errorStack,
     });
     await timer.end("ERROR", { success: false, error: errorMessage });
     
@@ -381,6 +544,8 @@ export async function POST(request: NextRequest) {
       {
         error: "Internal server error",
         message: errorMessage,
+        component: "GAME_CRITICAL",
+        errorType: errorName,
       },
       { status: 500 }
     );

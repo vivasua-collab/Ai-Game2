@@ -31,6 +31,11 @@ export function getLLMManager(): LLMManager {
   return llmManager;
 }
 
+// Проверка готовности LLM
+export function isLLMReady(): boolean {
+  return llmManager !== null;
+}
+
 // Утилита для генерации ответа игры
 export async function generateGameResponse(
   systemPrompt: string,

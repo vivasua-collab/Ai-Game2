@@ -49,6 +49,7 @@ export async function GET(request: NextRequest) {
           category: log.category,
           message: log.message,
           details: log.details ? JSON.parse(log.details) : null,
+          stack: log.stack,
           sessionId: log.sessionId,
           duration: log.duration,
         })),
@@ -63,6 +64,7 @@ export async function GET(request: NextRequest) {
         category: log.category,
         message: log.message,
         details: log.details ? JSON.parse(log.details) : null,
+        stack: log.stack,
         sessionId: log.sessionId,
         duration: log.duration,
       }));

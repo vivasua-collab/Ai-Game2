@@ -26,29 +26,49 @@ export class ZAIProvider implements ILLMProvider {
   }
 
   async generate(systemPrompt: string, messages: LLMMessage[]): Promise<LLMResponse> {
-    await this.initialize();
+    try {
+      await this.initialize();
 
-    // Формируем сообщения для z-ai (system prompt идёт как assistant)
-    const formattedMessages = [
-      { role: "assistant" as const, content: systemPrompt },
-      ...messages.map((m) => ({
-        role: m.role === "system" ? ("assistant" as const) : m.role,
-        content: m.content,
-      })),
-    ];
+      if (!this.zai) {
+        throw new Error("Z-AI SDK not initialized - SDK returned null");
+      }
 
-    const completion = await this.zai!.chat.completions.create({
-      messages: formattedMessages,
-      thinking: { type: "disabled" },
-    });
+      // Формируем сообщения для z-ai (system prompt идёт как assistant)
+      const formattedMessages = [
+        { role: "assistant" as const, content: systemPrompt },
+        ...messages.map((m) => ({
+          role: m.role === "system" ? ("assistant" as const) : m.role,
+          content: m.content,
+        })),
+      ];
 
-    const content = completion.choices[0]?.message?.content || "";
+      const completion = await this.zai.chat.completions.create({
+        messages: formattedMessages,
+        thinking: { type: "disabled" },
+      });
 
-    return {
-      content,
-      provider: "z-ai",
-      model: completion.model,
-    };
+      if (!completion.choices || completion.choices.length === 0) {
+        throw new Error("Z-AI returned empty response - no choices in completion");
+      }
+
+      const content = completion.choices[0]?.message?.content || "";
+
+      if (!content) {
+        throw new Error("Z-AI returned empty content in response");
+      }
+
+      return {
+        content,
+        provider: "z-ai",
+        model: completion.model,
+      };
+    } catch (error) {
+      // Добавляем контекст к ошибке
+      const errorMessage = error instanceof Error ? error.message : "Unknown Z-AI error";
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      
+      throw new Error(`Z-AI Provider Error: ${errorMessage}\nStack: ${errorStack || "N/A"}`);
+    }
   }
 
   async isAvailable(): Promise<LLMAvailability> {
@@ -89,40 +109,57 @@ export class LocalLLMProvider implements ILLMProvider {
     const endpoint = this.config.localEndpoint || "http://localhost:11434";
     const model = this.config.localModel || "llama3.1:8b";
 
-    // Формируем сообщения для Ollama
-    const formattedMessages = [
-      { role: "system", content: systemPrompt },
-      ...messages,
-    ];
+    try {
+      // Формируем сообщения для Ollama
+      const formattedMessages = [
+        { role: "system", content: systemPrompt },
+        ...messages,
+      ];
 
-    const response = await fetch(`${endpoint}/api/chat`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        model,
-        messages: formattedMessages,
-        stream: false,
-        options: {
-          temperature: this.config.temperature || 0.8,
-          num_predict: this.config.maxTokens || 2000,
+      const response = await fetch(`${endpoint}/api/chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      }),
-    });
+        body: JSON.stringify({
+          model,
+          messages: formattedMessages,
+          stream: false,
+          options: {
+            temperature: this.config.temperature || 0.8,
+            num_predict: this.config.maxTokens || 2000,
+          },
+        }),
+      });
 
-    if (!response.ok) {
-      throw new Error(`Ollama error: ${response.status} ${response.statusText}`);
+      if (!response.ok) {
+        const errorBody = await response.text().catch(() => "Unable to read response body");
+        throw new Error(`Ollama HTTP ${response.status}: ${response.statusText}. Body: ${errorBody}`);
+      }
+
+      const data = await response.json();
+      const content = data.message?.content || "";
+
+      if (!content) {
+        throw new Error("Ollama returned empty content. Response: " + JSON.stringify(data));
+      }
+
+      return {
+        content,
+        provider: "local",
+        model,
+      };
+    } catch (error) {
+      // Проверяем, это сетевая ошибка
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new Error(`Ollama Connection Error: Cannot connect to ${endpoint}. Make sure Ollama is running. Original: ${error.message}`);
+      }
+      
+      const errorMessage = error instanceof Error ? error.message : "Unknown Ollama error";
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      
+      throw new Error(`Ollama Provider Error (${endpoint}/${model}): ${errorMessage}\nStack: ${errorStack || "N/A"}`);
     }
-
-    const data = await response.json();
-    const content = data.message?.content || "";
-
-    return {
-      content,
-      provider: "local",
-      model,
-    };
   }
 
   async isAvailable(): Promise<LLMAvailability> {
@@ -172,49 +209,70 @@ export class APIProvider implements ILLMProvider {
     const apiKey = this.config.apiKey;
     const model = this.config.apiModel || "gpt-4";
 
-    if (!endpoint || !apiKey) {
-      throw new Error("API endpoint and key are required");
+    if (!endpoint) {
+      throw new Error("API Provider Error: API endpoint not configured. Set LLM_API_ENDPOINT environment variable.");
     }
 
-    // Формируем сообщения в OpenAI-совместимом формате
-    const formattedMessages = [
-      { role: "system", content: systemPrompt },
-      ...messages,
-    ];
+    if (!apiKey) {
+      throw new Error("API Provider Error: API key not configured. Set LLM_API_KEY environment variable.");
+    }
 
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
+    try {
+      // Формируем сообщения в OpenAI-совместимом формате
+      const formattedMessages = [
+        { role: "system", content: systemPrompt },
+        ...messages,
+      ];
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          messages: formattedMessages,
+          temperature: this.config.temperature || 0.8,
+          max_tokens: this.config.maxTokens || 2000,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorBody = await response.text().catch(() => "Unable to read response body");
+        throw new Error(`API HTTP ${response.status}: ${response.statusText}. Endpoint: ${endpoint}. Body: ${errorBody.substring(0, 500)}`);
+      }
+
+      const data = await response.json();
+      const content = data.choices?.[0]?.message?.content || "";
+
+      if (!content) {
+        throw new Error("API returned empty content. Response: " + JSON.stringify(data).substring(0, 500));
+      }
+
+      return {
+        content,
+        provider: "api",
         model,
-        messages: formattedMessages,
-        temperature: this.config.temperature || 0.8,
-        max_tokens: this.config.maxTokens || 2000,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status} ${response.statusText}`);
+        usage: data.usage
+          ? {
+              promptTokens: data.usage.prompt_tokens,
+              completionTokens: data.usage.completion_tokens,
+              totalTokens: data.usage.total_tokens,
+            }
+          : undefined,
+      };
+    } catch (error) {
+      // Проверяем, это сетевая ошибка
+      if (error instanceof TypeError && error.message.includes("fetch")) {
+        throw new Error(`API Connection Error: Cannot connect to ${endpoint}. Check network and endpoint URL. Original: ${error.message}`);
+      }
+      
+      const errorMessage = error instanceof Error ? error.message : "Unknown API error";
+      const errorStack = error instanceof Error ? error.stack : undefined;
+      
+      throw new Error(`API Provider Error (${endpoint}/${model}): ${errorMessage}\nStack: ${errorStack || "N/A"}`);
     }
-
-    const data = await response.json();
-    const content = data.choices?.[0]?.message?.content || "";
-
-    return {
-      content,
-      provider: "api",
-      model,
-      usage: data.usage
-        ? {
-            promptTokens: data.usage.prompt_tokens,
-            completionTokens: data.usage.completion_tokens,
-            totalTokens: data.usage.total_tokens,
-          }
-        : undefined,
-    };
   }
 
   async isAvailable(): Promise<LLMAvailability> {
