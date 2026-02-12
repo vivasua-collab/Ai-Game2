@@ -232,8 +232,12 @@ function LoggingPanel() {
                 <div className="divide-y divide-slate-700">
                   {logs.map((log, index) => {
                     const isExpanded = expandedLogId === (log.id || index.toString());
-                    const hasDetails = log.details && Object.keys(log.details).length > 0;
-                    const hasStack = log.stack;
+                    // Проверяем наличие деталей (объект или строка)
+                    const detailsObj = log.details && typeof log.details === 'string' 
+                      ? (() => { try { return JSON.parse(log.details); } catch { return null; } })()
+                      : log.details;
+                    const hasDetails = detailsObj && Object.keys(detailsObj).length > 0;
+                    const hasStack = log.stack && log.stack.length > 0;
                     
                     return (
                       <div
@@ -279,7 +283,7 @@ function LoggingPanel() {
                                 <div className="bg-slate-900/50 rounded p-2">
                                   <p className="text-xs text-amber-400 mb-1">📝 Детали:</p>
                                   <pre className="text-xs text-slate-300 whitespace-pre-wrap break-all overflow-x-auto">
-                                    {formatDetails(log.details)}
+                                    {JSON.stringify(detailsObj, null, 2)}
                                   </pre>
                                 </div>
                               )}

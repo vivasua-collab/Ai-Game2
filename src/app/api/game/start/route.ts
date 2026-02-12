@@ -125,8 +125,9 @@ export async function POST(request: NextRequest) {
         llmInitialized = true;
         await logInfo("SYSTEM", "LLM provider initialized for game start");
       } catch (initError) {
-        await logError("LLM", "Failed to initialize LLM provider on game start", {
-          error: initError instanceof Error ? initError.message : "Unknown init error",
+        const errorMsg = initError instanceof Error ? initError.message : "Unknown init error";
+        await logError("LLM", `Failed to initialize LLM provider: ${errorMsg}`, {
+          error: errorMsg,
           stack: initError instanceof Error ? initError.stack : undefined,
         });
         return NextResponse.json(
@@ -235,8 +236,9 @@ export async function POST(request: NextRequest) {
       });
       await logDebug("DATABASE", "Character created", { characterId: character.id });
     } catch (dbError) {
-      await logError("DATABASE", "Failed to create character", {
-        error: dbError instanceof Error ? dbError.message : "Unknown DB error",
+      const errorMsg = dbError instanceof Error ? dbError.message : "Unknown DB error";
+      await logError("DATABASE", `Failed to create character: ${errorMsg}`, {
+        error: errorMsg,
         stack: dbError instanceof Error ? dbError.stack : undefined,
         operation: "character.create",
         startConfig: {
@@ -247,7 +249,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { 
           error: "Database error: Failed to create character", 
-          message: dbError instanceof Error ? dbError.message : "Database operation failed",
+          message: errorMsg,
           component: "DATABASE_CHARACTER",
         },
         { status: 500 }
@@ -268,17 +270,23 @@ export async function POST(request: NextRequest) {
       });
       await logDebug("DATABASE", "Location created", { locationId: location.id, name: location.name });
     } catch (dbError) {
-      await logError("DATABASE", "Failed to create location", {
-        error: dbError instanceof Error ? dbError.message : "Unknown DB error",
+      const errorMsg = dbError instanceof Error ? dbError.message : "Unknown DB error";
+      await logError("DATABASE", `Failed to create location: ${errorMsg}`, {
+        error: errorMsg,
         stack: dbError instanceof Error ? dbError.stack : undefined,
         operation: "location.create",
+        locationData: {
+          name: startConfig.locationName,
+          distanceFromCenter: startConfig.distanceFromCenter,
+          qiDensity: startConfig.qiDensity,
+        },
       });
       // Откатываем создание персонажа
       await db.character.delete({ where: { id: character.id } });
       return NextResponse.json(
         { 
           error: "Database error: Failed to create location", 
-          message: dbError instanceof Error ? dbError.message : "Database operation failed",
+          message: errorMsg,
           component: "DATABASE_LOCATION",
         },
         { status: 500 }
@@ -321,8 +329,9 @@ export async function POST(request: NextRequest) {
       });
       await logDebug("DATABASE", "Game session created", { sessionId: session.id });
     } catch (dbError) {
-      await logError("DATABASE", "Failed to create game session", {
-        error: dbError instanceof Error ? dbError.message : "Unknown DB error",
+      const errorMsg = dbError instanceof Error ? dbError.message : "Unknown DB error";
+      await logError("DATABASE", `Failed to create game session: ${errorMsg}`, {
+        error: errorMsg,
         stack: dbError instanceof Error ? dbError.stack : undefined,
         operation: "gameSession.create",
         characterId: character.id,
@@ -333,7 +342,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { 
           error: "Database error: Failed to create game session", 
-          message: dbError instanceof Error ? dbError.message : "Database operation failed",
+          message: errorMsg,
           component: "DATABASE_SESSION",
         },
         { status: 500 }
@@ -455,8 +464,9 @@ export async function POST(request: NextRequest) {
       );
       await llmTimer.end("INFO", { contentLength: gameResponse.content.length });
     } catch (llmError) {
-      await logError("LLM", "Failed to generate opening narration", {
-        error: llmError instanceof Error ? llmError.message : "Unknown LLM error",
+      const errorMsg = llmError instanceof Error ? llmError.message : "Unknown LLM error";
+      await logError("LLM", `Failed to generate opening narration: ${errorMsg}`, {
+        error: errorMsg,
         stack: llmError instanceof Error ? llmError.stack : undefined,
         sessionId: session.id,
         variant,
@@ -465,7 +475,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { 
           error: "LLM generation failed: Could not generate opening narration", 
-          message: llmError instanceof Error ? llmError.message : "AI response generation failed",
+          message: errorMsg,
           component: "LLM_GENERATION",
           sessionId: session.id, // Возвращаем ID созданной сессии
         },
@@ -533,7 +543,7 @@ export async function POST(request: NextRequest) {
     const errorStack = error instanceof Error ? error.stack : undefined;
     const errorName = error instanceof Error ? error.constructor.name : "UnknownError";
     
-    await logError("GAME", "Start game critical error", {
+    await logError("GAME", `Start game critical error: ${errorMessage}`, {
       error: errorMessage,
       errorType: errorName,
       stack: errorStack,
