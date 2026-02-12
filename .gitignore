@@ -62,5 +62,5 @@ server.log
 /db/*.db
 /db/*.db-journal
 /db/*.db-wal
+/db/backups/
 !/db/.gitkeep
-!/db/backups/.gitkeep
