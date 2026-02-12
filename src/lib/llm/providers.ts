@@ -522,6 +522,46 @@ export class LLMManager {
 
     return results as Record<LLMProviderType, LLMAvailability>;
   }
+
+  /**
+   * Обновить конфигурацию local провайдера (Ollama)
+   */
+  updateLocalConfig(config: { localEndpoint?: string; localModel?: string }): void {
+    const localProvider = this.providers.get("local");
+    if (localProvider && localProvider instanceof LocalLLMProvider) {
+      if (config.localEndpoint) {
+        this.config.localEndpoint = config.localEndpoint;
+      }
+      if (config.localModel) {
+        this.config.localModel = config.localModel;
+      }
+      // Пересоздаем провайдер с новой конфигурацией
+      this.providers.set("local", new LocalLLMProvider(this.config));
+      
+      // Сбрасываем текущий провайдер если это был local
+      if (this.currentProvider?.getProviderName() === "local") {
+        this.currentProvider = this.providers.get("local") || null;
+      }
+    }
+  }
+
+  /**
+   * Обновить общую конфигурацию LLM
+   */
+  updateConfig(config: Partial<LLMConfig>): void {
+    this.config = { ...this.config, ...config };
+    
+    // Пересоздаем провайдеры с новой конфигурацией
+    this.providers.set("z-ai", new ZAIProvider(this.config));
+    this.providers.set("local", new LocalLLMProvider(this.config));
+    
+    if (this.config.apiEndpoint && this.config.apiKey) {
+      this.providers.set("api", new APIProvider(this.config));
+    }
+    
+    // Сбрасываем текущий провайдер
+    this.currentProvider = null;
+  }
 }
 
 // Экспорт фабрики

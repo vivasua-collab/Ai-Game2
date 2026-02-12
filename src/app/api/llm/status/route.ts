@@ -1,14 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
-import { checkLLMStatus, initializeLLM, getLLMManager, setPreferredProvider } from "@/lib/llm";
+import { checkLLMStatus, initializeLLM, getLLMManager, setPreferredProvider, updateLLMConfig } from "@/lib/llm";
+import { db } from "@/lib/db";
 
 // GET - проверка статуса LLM провайдеров
 export async function GET() {
   try {
-    // Инициализируем LLM если ещё не сделали
-    try {
-      initializeLLM();
-    } catch {
-      // Игнорируем ошибки инициализации
+    // Загружаем настройки из БД
+    const settings = await db.gameSettings.findFirst();
+    
+    // Если есть кастомный endpoint для Ollama, применяем его
+    if (settings?.llmEndpoint) {
+      try {
+        initializeLLM();
+        updateLLMConfig({ localEndpoint: settings.llmEndpoint });
+      } catch {
+        // Игнорируем ошибки
+      }
+    } else {
+      // Инициализируем LLM если ещё не сделали
+      try {
+        initializeLLM();
+      } catch {
+        // Игнорируем ошибки инициализации
+      }
     }
 
     // Получаем статус всех провайдеров
@@ -83,6 +97,8 @@ export async function GET() {
       // Выбранный провайдер для использования
       activeProvider: currentProvider,
       activeModel: models[currentProvider] || "default",
+      // Сохраненный endpoint
+      savedEndpoint: settings?.llmEndpoint || null,
     });
   } catch (error) {
     return NextResponse.json(

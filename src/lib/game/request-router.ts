@@ -65,7 +65,7 @@ export function identifyRequestType(input: string): RequestType {
   }
   
   // Информация о локации
-  if (/^(где я|локация|место|описание места|!\s*локация)/.test(lowerInput)) {
+  if (/^(где я|где я нахожусь|что вокруг|где нахожусь|локация|место|описание места|моё местоположение|!\s*локация)/.test(lowerInput)) {
     return "location_info";
   }
   

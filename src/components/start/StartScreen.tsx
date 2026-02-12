@@ -92,6 +92,16 @@ interface LLMStatus {
   };
 }
 
+// Интерфейс настроек LLM
+interface LLMSettings {
+  llmProvider: string;
+  llmModel: string | null;
+  llmEndpoint: string | null;
+  llmApiKey: string | null;
+  temperature: number;
+  maxTokens: number;
+}
+
 // Компонент индикатора статуса LLM с GPU детектором
 function LLMStatusIndicator() {
   const [status, setStatus] = useState<LLMStatus | null>(null);
@@ -102,12 +112,35 @@ function LLMStatusIndicator() {
   const [gpuInfo, setGpuInfo] = useState<GPUInfo | null>(null);
   const [showGPUDebug, setShowGPUDebug] = useState(false);
   const [platform, setPlatform] = useState<string>("");
+  
+  // Настройки Ollama
+  const [showSettings, setShowSettings] = useState(false);
+  const [settings, setSettings] = useState<LLMSettings | null>(null);
+  const [ollamaEndpoint, setOllamaEndpoint] = useState("http://localhost:11434");
+  const [isSavingSettings, setIsSavingSettings] = useState(false);
+  const [settingsMessage, setSettingsMessage] = useState<string | null>(null);
 
   // Проверка статуса при загрузке
   useEffect(() => {
     checkStatus();
     checkGPU();
+    loadSettings();
   }, []);
+
+  const loadSettings = async () => {
+    try {
+      const response = await fetch("/api/settings/llm");
+      const data = await response.json();
+      if (data.success) {
+        setSettings(data.settings);
+        if (data.settings.llmEndpoint) {
+          setOllamaEndpoint(data.settings.llmEndpoint);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to load LLM settings:", error);
+    }
+  };
 
   const checkStatus = async () => {
     setIsChecking(true);
@@ -116,6 +149,10 @@ function LLMStatusIndicator() {
       const data = await response.json();
       setStatus(data);
       setSelectedProvider(data.preferredProvider || data.currentProvider || "");
+      // Если есть сохраненный endpoint, показываем его
+      if (data.savedEndpoint) {
+        setOllamaEndpoint(data.savedEndpoint);
+      }
     } catch (error) {
       console.error("Failed to check LLM status:", error);
       setStatus({
@@ -179,6 +216,35 @@ function LLMStatusIndicator() {
       setShowWarning(true);
     } else {
       checkStatus();
+    }
+  };
+
+  const handleSaveSettings = async () => {
+    setIsSavingSettings(true);
+    setSettingsMessage(null);
+    
+    try {
+      const response = await fetch("/api/settings/llm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ llmEndpoint: ollamaEndpoint }),
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setSettings(data.settings);
+        setSettingsMessage("✅ Настройки сохранены");
+        // Обновляем статус провайдеров
+        await checkStatus();
+      } else {
+        setSettingsMessage(`❌ Ошибка: ${data.error}`);
+      }
+    } catch (error) {
+      setSettingsMessage(`❌ Ошибка: ${error instanceof Error ? error.message : "Unknown"}`);
+    } finally {
+      setIsSavingSettings(false);
+      setTimeout(() => setSettingsMessage(null), 3000);
     }
   };
 
@@ -262,16 +328,28 @@ function LLMStatusIndicator() {
               </div>
             </div>
 
-            {/* Кнопка проверки */}
-            <Button
-              size="sm"
-              variant="outline"
-              className="border-slate-600 text-slate-300"
-              onClick={checkStatus}
-              disabled={isChecking}
-            >
-              {isChecking ? "⏳" : "🔄"}
-            </Button>
+            {/* Кнопки проверки и настроек */}
+            <div className="flex items-center gap-1">
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-slate-600 text-slate-300"
+                onClick={checkStatus}
+                disabled={isChecking}
+                title="Проверить статус"
+              >
+                {isChecking ? "⏳" : "🔄"}
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-slate-600 text-slate-300"
+                onClick={() => setShowSettings(!showSettings)}
+                title="Настройки подключения"
+              >
+                ⚙️
+              </Button>
+            </div>
           </div>
 
           {/* Выбор провайдера при наличии нескольких */}
@@ -293,6 +371,82 @@ function LLMStatusIndicator() {
               <p className="text-xs text-slate-500">
                 ⚙️ Выбранная сеть будет использоваться по умолчанию
               </p>
+            </div>
+          )}
+
+          {/* Блок настроек Ollama */}
+          {showSettings && (
+            <div className="mt-3 p-3 bg-slate-900/50 rounded-md space-y-3 border border-slate-700">
+              <div className="flex items-center justify-between">
+                <div className="text-xs text-slate-300 font-medium">⚙️ Настройки Ollama</div>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 w-6 p-0 text-slate-500"
+                  onClick={() => setShowSettings(false)}
+                >
+                  ✕
+                </Button>
+              </div>
+              
+              <div className="space-y-2">
+                <Label className="text-xs text-slate-400">Адрес сервера (IP или домен)</Label>
+                <Input
+                  value={ollamaEndpoint}
+                  onChange={(e) => setOllamaEndpoint(e.target.value)}
+                  placeholder="http://localhost:11434"
+                  className="h-8 text-xs bg-slate-800 border-slate-600"
+                />
+                <p className="text-xs text-slate-500">
+                  Локально: http://localhost:11434 | Удалённо: http://192.168.1.100:11434
+                </p>
+              </div>
+
+              {/* Команда запуска Ollama */}
+              <div className="space-y-2 p-2 bg-slate-900/50 rounded border border-slate-700">
+                <div className="text-xs text-slate-400 font-medium">🚀 Запуск Ollama с GPU:</div>
+                <code className="block text-xs text-green-400 bg-slate-950 p-2 rounded font-mono overflow-x-auto">
+                  ollama serve
+                </code>
+                <p className="text-xs text-slate-500">
+                  Ollama автоматически использует GPU если драйверы установлены.
+                  Для NVIDIA: установите <span className="text-amber-400">CUDA Toolkit</span> и драйверы.
+                </p>
+                <div className="text-xs text-slate-500 mt-1">
+                  <span className="text-slate-400">Проверка GPU:</span>
+                  <code className="ml-1 text-slate-300">nvidia-smi</code>
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  className="flex-1 h-8 text-xs bg-amber-600 hover:bg-amber-700"
+                  onClick={handleSaveSettings}
+                  disabled={isSavingSettings}
+                >
+                  {isSavingSettings ? "⏳ Сохранение..." : "💾 Сохранить"}
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-8 text-xs border-slate-600"
+                  onClick={checkStatus}
+                  disabled={isChecking}
+                >
+                  🔄 Проверить
+                </Button>
+              </div>
+
+              {settingsMessage && (
+                <div className={`text-xs p-2 rounded ${
+                  settingsMessage.startsWith("✅") 
+                    ? "bg-green-900/30 text-green-400" 
+                    : "bg-red-900/30 text-red-400"
+                }`}>
+                  {settingsMessage}
+                </div>
+              )}
             </div>
           )}
 

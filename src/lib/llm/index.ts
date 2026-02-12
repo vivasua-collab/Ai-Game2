@@ -3,7 +3,7 @@
 export * from "./types";
 export * from "./providers";
 
-import { LLMManager, createLLMManager } from "./providers";
+import { LLMManager, createLLMManager, LocalLLMProvider } from "./providers";
 import type { LLMConfig, LLMMessage, LLMResponse, GameResponse } from "./types";
 import { parseCommand } from "./types";
 
@@ -29,6 +29,18 @@ export function getLLMManager(): LLMManager {
     return initializeLLM();
   }
   return llmManager;
+}
+
+// Обновление конфигурации Ollama endpoint
+export function updateOllamaEndpoint(endpoint: string): void {
+  const manager = getLLMManager();
+  manager.updateLocalConfig({ localEndpoint: endpoint });
+}
+
+// Обновление конфигурации LLM
+export function updateLLMConfig(config: Partial<LLMConfig>): void {
+  const manager = getLLMManager();
+  manager.updateConfig(config);
 }
 
 // Проверка готовности LLM
@@ -77,12 +89,53 @@ export async function generateGameResponse(
     const jsonMatch = response.content.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       const parsed = JSON.parse(jsonMatch[0]);
-      return {
-        type: parsed.type || "narration",
-        content: parsed.content || response.content,
-        stateUpdate: parsed.stateUpdate,
-        timeAdvance: parsed.timeAdvance,
-      };
+      
+      // Если есть поле content - используем его
+      if (parsed.content && typeof parsed.content === "string") {
+        return {
+          type: parsed.type || "narration",
+          content: parsed.content,
+          stateUpdate: parsed.stateUpdate,
+          timeAdvance: parsed.timeAdvance,
+        };
+      }
+      
+      // Если JSON без content, но с данными локации - форматируем текст
+      if (parsed.location) {
+        const loc = parsed.location as Record<string, unknown>;
+        const locationText = `📍 **${loc.name || "Неизвестная местность"}**
+
+Тип местности: ${loc.terrainType || "неизвестен"}
+Плотность Ци: ${loc.qiDensity || "неизвестна"} ед/м³
+${loc.distanceFromCenter ? `Расстояние от центра мира: ${loc.distanceFromCenter} км` : ""}
+
+Ты оглядываешься вокруг, пытаясь понять, где находишься...`;
+        return {
+          type: "narration",
+          content: locationText,
+        };
+      }
+      
+      // Если JSON без content, но с другими данными - форматируем
+      if (parsed.type && !parsed.content) {
+        // Преобразуем JSON в читаемый текст
+        const formattedContent = Object.entries(parsed)
+          .filter(([key]) => key !== "type" && key !== "stateUpdate" && key !== "timeAdvance")
+          .map(([key, value]) => {
+            if (typeof value === "object" && value !== null) {
+              return `**${key}**: ${JSON.stringify(value, null, 2)}`;
+            }
+            return `**${key}**: ${value}`;
+          })
+          .join("\n");
+        
+        return {
+          type: parsed.type || "narration",
+          content: formattedContent || response.content,
+          stateUpdate: parsed.stateUpdate,
+          timeAdvance: parsed.timeAdvance,
+        };
+      }
     }
   } catch {
     // Если не JSON, возвращаем как narration

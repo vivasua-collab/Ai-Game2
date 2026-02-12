@@ -1,5 +1,8 @@
 // Prisma schema for Cultivation World Simulator
-// Version: 1.0
+// Version: 3
+// v1: Базовая схема
+// v2: Добавлена система логирования (SystemLog)
+// v3: Добавлены поля worldId, worldName, startType в GameSession; name в Character
 
 generator client {
   provider = "prisma-client-js"
