@@ -255,20 +255,29 @@ export async function POST(request: NextRequest) {
       await logDebug("DATABASE", "Character created", { characterId: character.id, name: character.name });
     } catch (dbError) {
       const errorMsg = dbError instanceof Error ? dbError.message : "Unknown DB error";
+      
+      // Проверяем, нужна ли миграция БД
+      const needsMigration = errorMsg.includes("Unknown argument") || errorMsg.includes("Did you mean");
+      
       await logError("DATABASE", `Failed to create character: ${errorMsg}`, {
         error: errorMsg,
         stack: dbError instanceof Error ? dbError.stack : undefined,
         operation: "character.create",
+        needsMigration,
         startConfig: {
           age: startConfig.age,
           coreCapacity: startConfig.coreCapacity,
         },
       });
+      
       return NextResponse.json(
         { 
-          error: "Database error: Failed to create character", 
+          error: needsMigration 
+            ? "Database schema outdated. Run: bun run db:push" 
+            : "Database error: Failed to create character", 
           message: errorMsg,
           component: "DATABASE_CHARACTER",
+          needsMigration,
         },
         { status: 500 }
       );
