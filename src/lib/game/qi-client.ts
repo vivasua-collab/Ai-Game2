@@ -33,11 +33,12 @@ export interface QiCalculationResult {
   };
 }
 
-// Интерфейс дельты от LLM
+// Интерфейс дельты от LLM/API
 export interface QiDelta {
   qiChange: number;        // Дельта Ци (отрицательная = затраты, положительная = накопление)
   reason: string;          // Причина изменения
   isBreakthrough?: boolean; // Это прорыв? (не рассеивать излишки)
+  accumulatedGain?: number; // Прирост накопленной Ци для прорыва (при заполнении ядра)
 }
 
 /**

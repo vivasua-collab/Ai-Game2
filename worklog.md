@@ -151,3 +151,37 @@ Stage Summary:
 - LLM returns only delta, calculations are local
 - Overflow mechanics: excess Qi dissipates to environment
 - Consistent with game design document rules
+
+---
+Task ID: 6
+Agent: Main Orchestrator
+Task: Implement new breakthrough mechanics (Option B)
+
+Work Log:
+- Updated qi-system.ts with new breakthrough logic:
+  - accumulatedQi grows ONLY when core is filled to 100%
+  - At 100% core: currentQi → 0, accumulatedQi += coreCapacity
+  - Breakthrough requires accumulatedQi >= 10 × coreCapacity
+- Updated MeditationResult interface:
+  - Added accumulatedQiGained field
+  - Added coreWasFilled field
+- Simplified breakthrough requirements:
+  - Always 10 × coreCapacity (no more major/minor distinction)
+  - Added fillsNeeded calculation
+- Updated API route.ts:
+  - Proper handling of core fill → accumulated transfer
+  - Updated response messages with progress info
+- Updated qi-client.ts:
+  - Added accumulatedGain to QiDelta interface
+- Updated useGame.ts:
+  - Handles accumulatedQi updates from qiDelta
+  - Shows proper messages for core reset
+- Updated game-master.ts prompt:
+  - Added breakthrough mechanics explanation
+  - Updated instructions for LLM
+
+Stage Summary:
+- New breakthrough mechanic: fill core → transfer to accumulated → breakthrough
+- 10 full core fills needed for each breakthrough
+- Clear progress tracking for players
+- Pushed to GitHub

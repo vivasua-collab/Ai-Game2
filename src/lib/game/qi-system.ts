@@ -5,10 +5,14 @@
  * 1. Выработка микроядром - работает ВСЕГДА (пассивно, до 90% ядра)
  * 2. Поглощение из среды - ТОЛЬКО при активной медитации
  * 
+ * МЕХАНИКА ПРОРЫВА:
+ * - accumulatedQi растёт только при заполнении ядра до 100%
+ * - При 100% ядра: currentQi → 0, accumulatedQi += coreCapacity
+ * - Прорыв возможен когда accumulatedQi >= 10 × coreCapacity
+ * 
  * Правила:
  * - Генерация микроядром: 10% от ёмкости ядра / сутки
  * - Поглощение: проводимость × плотность Ци локации (только медитация)
- * - Переполнение: при 100% ядра медитация прерывается (кроме прорыва)
  */
 
 import type { Character, Location } from "@/hooks/useGame";
@@ -21,6 +25,8 @@ export type MeditationType = "accumulation" | "breakthrough";
 export interface MeditationResult {
   success: boolean;
   qiGained: number;
+  accumulatedQiGained: number; // Сколько перенесено в накопление для прорыва
+  coreWasFilled: boolean; // Ядро было заполнено до 100%
   duration: number; // в минутах
   wasInterrupted: boolean;
   interruptionReason?: string;
@@ -127,42 +133,48 @@ export function performMeditation(
   let wasInterrupted = false;
   let interruptionReason: string | undefined;
   
-  // Проверка переполнения для накопительной медитации
+  // === МЕХАНИКА НАКОПЛЕНИЯ ДЛЯ ПРОРЫВА ===
+  // accumulatedQi растёт только при ПОЛНОМ заполнении ядра
+  let accumulatedQiGained = 0;
+  let coreWasFilled = false;
+  
   if (type === "accumulation") {
     const qiToFull = maxQi - currentQi;
     
     if (qiToFull <= 0) {
-      // Ядро уже полное
+      // Ядро уже полное - НЕ медитируем, нужно сначала опустошить (прорыв или трата)
       return {
         success: false,
         qiGained: 0,
+        accumulatedQiGained: 0,
+        coreWasFilled: false,
         duration: 0,
         wasInterrupted: true,
-        interruptionReason: "Ядро уже полностью заполнено. Медитация невозможна.",
+        interruptionReason: "Ядро заполнено! Для накопления прогресса прорыва нужно опустошить ядро (использовать техники или попытаться прорваться).",
         fatigueGained: { physical: 0, mental: 0 },
         breakdown: { coreGeneration: 0, environmentalAbsorption: 0 },
       };
     }
     
-    if (totalGain > qiToFull) {
-      // Переполнение - прерываем медитацию
+    if (totalGain >= qiToFull) {
+      // Ядро будет заполнено! Переносим в accumulatedQi
+      coreWasFilled = true;
+      accumulatedQiGained = maxQi; // Весь объём ядра переносится в накопление
+      totalGain = 0; // Ядро опустошается
+      
       // Пересчитываем время до заполнения
       const totalRate = coreRate + envRate;
       actualDuration = Math.ceil(qiToFull / totalRate);
       
-      // Пересчитываем прирост по источникам
+      // Пересчитываем прирост по источникам (для статистики)
       coreGain = coreRate * actualDuration;
       envGain = envRate * actualDuration;
-      totalGain = coreGain + envGain;
-      
-      // Округляем до точного заполнения
-      totalGain = qiToFull;
       
       wasInterrupted = true;
-      interruptionReason = "Ядро достигло максимальной ёмкости. Медитация прервана.";
+      interruptionReason = "⚡ Ядро заполнено! Ци перенесена в накопление для прорыва.";
     }
   }
-  // Для прорыва - не ограничиваем
+  // Для прорыва - не ограничиваем и не переносим
   
   // Расчёт усталости
   const durationMinutes = actualDuration / 60;
@@ -171,6 +183,8 @@ export function performMeditation(
   return {
     success: true,
     qiGained: Math.floor(totalGain),
+    accumulatedQiGained,
+    coreWasFilled,
     duration: Math.ceil(actualDuration / 60), // возвращаем в минутах
     wasInterrupted,
     interruptionReason,
@@ -203,23 +217,26 @@ function calculateMeditationFatigue(
 }
 
 // Расчёт Ци для прорыва
+// УПРОЩЁННАЯ ЛОГИКА: всегда 10 × ёмкость ядра
 export function calculateBreakthroughRequirements(
-  character: Character,
-  isMajorBreakthrough: boolean
+  character: Character
 ): {
   requiredQi: number;
   currentAccumulated: number;
   deficit: number;
+  fillsNeeded: number; // Сколько ещё заполнений ядра нужно
   canAttempt: boolean;
 } {
-  const requiredQi = character.coreCapacity * (isMajorBreakthrough ? 100 : 10);
+  const requiredQi = character.coreCapacity * 10; // Всегда 10 ёмкостей
   const currentAccumulated = character.accumulatedQi;
   const deficit = requiredQi - currentAccumulated;
+  const fillsNeeded = Math.ceil(deficit / character.coreCapacity);
   
   return {
     requiredQi,
     currentAccumulated,
     deficit: Math.max(0, deficit),
+    fillsNeeded: Math.max(0, fillsNeeded),
     canAttempt: deficit <= 0,
   };
 }
@@ -241,11 +258,8 @@ export function attemptBreakthrough(
   const currentLevel = character.cultivationLevel;
   const currentSubLevel = character.cultivationSubLevel;
   
-  // Определяем тип прорыва
-  const isMajorBreakthrough = currentSubLevel >= 9;
-  
-  // Проверяем требования
-  const requirements = calculateBreakthroughRequirements(character, isMajorBreakthrough);
+  // Проверяем требования (всегда 10 × ёмкость)
+  const requirements = calculateBreakthroughRequirements(character);
   
   if (!requirements.canAttempt) {
     return {
@@ -255,9 +269,12 @@ export function attemptBreakthrough(
       newCoreCapacity: character.coreCapacity,
       qiConsumed: 0,
       fatigueGained: { physical: 5, mental: 20 },
-      message: `Недостаточно накопленной Ци для прорыва. Нужно: ${requirements.requiredQi}, накоплено: ${requirements.currentAccumulated}`,
+      message: `Недостаточно накопленной Ци. Нужно: ${requirements.requiredQi} (${requirements.fillsNeeded} заполнений ядра), накоплено: ${requirements.currentAccumulated}`,
     };
   }
+  
+  // Определяем тип прорыва (большой при subLevel >= 9)
+  const isMajorBreakthrough = currentSubLevel >= 9;
   
   // Прорыв успешен
   let newLevel = currentLevel;
@@ -273,7 +290,7 @@ export function attemptBreakthrough(
   // Новая ёмкость ядра (+10%)
   const newCoreCapacity = Math.ceil(character.coreCapacity * 1.1);
   
-  // Затраты Ци
+  // Затраты накопленной Ци
   const qiConsumed = requirements.requiredQi;
   
   // Усталость от прорыва (высокая ментальная нагрузка)
@@ -290,9 +307,19 @@ export function attemptBreakthrough(
     qiConsumed,
     fatigueGained,
     message: isMajorBreakthrough
-      ? `Прорыв на ${newLevel} уровень культивации!`
-      : `Продвижение до ${newLevel}.${newSubLevel}`,
+      ? `🌟 Большой прорыв! Уровень ${newLevel} (${getCultivationLevelName(newLevel)})!`
+      : `⬆️ Продвижение до ${newLevel}.${newSubLevel}`,
   };
+}
+
+// Вспомогательная функция для названия уровня
+function getCultivationLevelName(level: number): string {
+  const names = [
+    '', 'Пробуждённое Ядро', 'Течение Жизни', 'Пламя Внутреннего Огня',
+    'Объединение Тела и Духа', 'Сердце Небес', 'Разрыв Пелены',
+    'Вечное Кольцо', 'Глас Небес', 'Бессмертное Ядро', 'Вознесение'
+  ];
+  return names[level] || 'Неизвестно';
 }
 
 // Расчёт расхода Ци на действие

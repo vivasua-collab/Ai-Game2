@@ -254,6 +254,7 @@ export function useGame() {
         // Приоритет: локальное состояние > данные от сервера
         let updatedLocalQi = prev.localQi;
         let qiChangeMessage = "";
+        let accumulatedQiGained = 0;
         
         if (data.response.qiDelta && prev.localQi && prev.character) {
           const qiDelta: QiDelta = data.response.qiDelta;
@@ -270,6 +271,11 @@ export function useGame() {
             pendingDelta: 0,
           };
           
+          // Если ядро было заполнено - сохраняем прирост accumulatedQi
+          if (qiDelta.accumulatedGain) {
+            accumulatedQiGained = qiDelta.accumulatedGain;
+          }
+          
           // Формируем сообщение об изменении Ци
           if (result.qiGained > 0) {
             qiChangeMessage = `\n\n⚡ Ци: +${result.qiGained}`;
@@ -277,7 +283,12 @@ export function useGame() {
               qiChangeMessage += ` (${result.overflow} рассеялось в среду)`;
             }
           } else if (qiDelta.qiChange < 0) {
-            qiChangeMessage = `\n\n⚡ Ци: ${qiDelta.qiChange}`;
+            // Отрицательное изменение (сброс ядра или затраты)
+            if (qiDelta.accumulatedGain) {
+              qiChangeMessage = `\n\n⚡ Ядро сброшено → накопление +${qiDelta.accumulatedGain}`;
+            } else {
+              qiChangeMessage = `\n\n⚡ Ци: ${qiDelta.qiChange}`;
+            }
           }
         }
         
@@ -288,6 +299,11 @@ export function useGame() {
           // Используем ЛОКАЛЬНОЕ значение Ци (приоритет!)
           if (updatedLocalQi) {
             updatedCharacter.currentQi = updatedLocalQi.currentQi;
+          }
+          
+          // Обновляем accumulatedQi если был прирост
+          if (accumulatedQiGained > 0) {
+            updatedCharacter.accumulatedQi = (updatedCharacter.accumulatedQi || 0) + accumulatedQiGained;
           }
           
           // Применяем усталость от LLM если есть
@@ -302,7 +318,7 @@ export function useGame() {
           
           // Совместимость со старым форматом stateUpdate
           if (data.response.stateUpdate) {
-            // НЕ перезаписываем currentQi из stateUpdate!
+            // НЕ перезаписываем currentQi из stateUpdate если есть qiDelta!
             const { currentQi, ...otherUpdates } = data.response.stateUpdate;
             updatedCharacter = { ...updatedCharacter, ...otherUpdates };
           }
