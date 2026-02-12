@@ -42,30 +42,31 @@ export interface RoutingResult {
 
 // Определение типа запроса
 export function identifyRequestType(input: string): RequestType {
+  // Приводим к нижнему регистру для унификации (работает и с русскими буквами)
   const lowerInput = input.toLowerCase().trim();
   
-  // Статус персонажа
-  if (/^(статус|status|мой статус|показать статус|!\s*статус)/.test(lowerInput)) {
+  // Статус персонажа (работает в любом регистре: СТАТУС, Статус, статус)
+  if (/^(статус|status|мой статус|показать статус|!\s*статус|!\s*status)$/.test(lowerInput)) {
     return "status";
   }
   
   // Список техник
-  if (/^(техники|skills|скилы|мои техники|список техник|!\s*техники)/.test(lowerInput)) {
+  if (/^(техники|skills|скилы|скилл|мои техники|список техник|!\s*техники|!\s*skills)$/.test(lowerInput)) {
     return "techniques";
   }
   
   // Инвентарь
-  if (/^(инвентарь|inventory|рюкзак|вещи|!\s*инвентарь)/.test(lowerInput)) {
+  if (/^(инвентарь|inventory|рюкзак|вещи|!\s*инвентарь|!\s*inventory)$/.test(lowerInput)) {
     return "inventory";
   }
   
   // Характеристики
-  if (/^(характеристики|stats|параметры|статы|!\s*характеристики)/.test(lowerInput)) {
+  if (/^(характеристики|stats|параметры|статы|!\s*характеристики|!\s*stats|!\s*параметры)$/.test(lowerInput)) {
     return "stats";
   }
   
   // Информация о локации
-  if (/^(где я|где я нахожусь|что вокруг|где нахожусь|локация|место|описание места|моё местоположение|!\s*локация)/.test(lowerInput)) {
+  if (/^(где я|где я нахожусь|что вокруг|где нахожусь|локация|место|описание места|мо[ёе] местоположение|!\s*локация)$/.test(lowerInput)) {
     return "location_info";
   }
   

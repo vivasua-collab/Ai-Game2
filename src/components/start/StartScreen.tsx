@@ -404,17 +404,19 @@ function LLMStatusIndicator() {
 
               {/* Команда запуска Ollama */}
               <div className="space-y-2 p-2 bg-slate-900/50 rounded border border-slate-700">
-                <div className="text-xs text-slate-400 font-medium">🚀 Запуск Ollama с GPU:</div>
-                <code className="block text-xs text-green-400 bg-slate-950 p-2 rounded font-mono overflow-x-auto">
-                  ollama serve
+                <div className="text-xs text-slate-400 font-medium">🚀 Запуск Ollama с GPU и контекстом 16K:</div>
+                <code className="block text-xs text-green-400 bg-slate-950 p-2 rounded font-mono overflow-x-auto whitespace-nowrap">
+                  OLLAMA_NUM_CTX=16384 ollama serve
                 </code>
                 <p className="text-xs text-slate-500">
-                  Ollama автоматически использует GPU если драйверы установлены.
-                  Для NVIDIA: установите <span className="text-amber-400">CUDA Toolkit</span> и драйверы.
+                  Ollama автоматически использует GPU. Контекст 16K нужен для длинных повествований.
                 </p>
                 <div className="text-xs text-slate-500 mt-1">
                   <span className="text-slate-400">Проверка GPU:</span>
                   <code className="ml-1 text-slate-300">nvidia-smi</code>
+                </div>
+                <div className="text-xs text-amber-400/80 mt-1">
+                  ⚠️ Контекст 16K требует больше VRAM (~8-12 ГБ для 7B модели)
                 </div>
               </div>
 

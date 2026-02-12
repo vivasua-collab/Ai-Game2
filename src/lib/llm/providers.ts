@@ -214,6 +214,7 @@ export class LocalLLMProvider implements ILLMProvider {
           options: {
             temperature: this.config.temperature || 0.8,
             num_predict: this.config.maxTokens || 2000,
+            num_ctx: 16384, // Контекст 16K для длинных повествований
           },
         }),
       });
