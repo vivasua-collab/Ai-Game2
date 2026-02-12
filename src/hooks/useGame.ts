@@ -1,6 +1,11 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import { 
+  applyQiDelta, 
+  type QiDelta,
+  type QiCalculationResult 
+} from "@/lib/game/qi-client";
 
 // Типы
 export interface Character {
@@ -58,6 +63,13 @@ export interface WorldTime {
   season: string;
 }
 
+// Локальное состояние Ци (приоритет над сервером)
+export interface LocalQiState {
+  currentQi: number;
+  lastUpdate: number;
+  pendingDelta: number;
+}
+
 export interface GameState {
   sessionId: string | null;
   isLoading: boolean;
@@ -68,6 +80,7 @@ export interface GameState {
   messages: Message[];
   isPaused: boolean;
   daysSinceStart: number;
+  localQi: LocalQiState | null; // Локальное состояние Ци
 }
 
 const initialState: GameState = {
@@ -80,6 +93,7 @@ const initialState: GameState = {
   messages: [],
   isPaused: true,
   daysSinceStart: 0,
+  localQi: null,
 };
 
 export function useGame() {
@@ -131,6 +145,12 @@ export function useGame() {
           ],
           isPaused: session.isPaused,
           daysSinceStart: session.daysSinceStart,
+          // Инициализируем локальное состояние Ци
+          localQi: {
+            currentQi: session.character.currentQi,
+            lastUpdate: Date.now(),
+            pendingDelta: 0,
+          },
         });
 
         return true;
@@ -168,6 +188,12 @@ export function useGame() {
         messages: data.session.recentMessages,
         isPaused: data.session.isPaused,
         daysSinceStart: data.session.daysSinceStart,
+        // Инициализируем локальное состояние Ци из сохранения
+        localQi: {
+          currentQi: data.session.character.currentQi,
+          lastUpdate: Date.now(),
+          pendingDelta: 0,
+        },
       });
 
       return true;
@@ -224,10 +250,63 @@ export function useGame() {
       };
 
       setState((prev) => {
-        // Обновляем персонажа если есть изменения
-        const updatedCharacter = data.response.stateUpdate
-          ? { ...prev.character!, ...data.response.stateUpdate }
-          : prev.character;
+        // === ЛОКАЛЬНЫЙ РАСЧЁТ ЦИ ===
+        // Приоритет: локальное состояние > данные от сервера
+        let updatedLocalQi = prev.localQi;
+        let qiChangeMessage = "";
+        
+        if (data.response.qiDelta && prev.localQi && prev.character) {
+          const qiDelta: QiDelta = data.response.qiDelta;
+          const result = applyQiDelta(
+            prev.localQi.currentQi,
+            qiDelta,
+            prev.character.coreCapacity,
+            qiDelta.isBreakthrough || false
+          );
+          
+          updatedLocalQi = {
+            currentQi: result.newQi,
+            lastUpdate: Date.now(),
+            pendingDelta: 0,
+          };
+          
+          // Формируем сообщение об изменении Ци
+          if (result.qiGained > 0) {
+            qiChangeMessage = `\n\n⚡ Ци: +${result.qiGained}`;
+            if (result.overflow > 0) {
+              qiChangeMessage += ` (${result.overflow} рассеялось в среду)`;
+            }
+          } else if (qiDelta.qiChange < 0) {
+            qiChangeMessage = `\n\n⚡ Ци: ${qiDelta.qiChange}`;
+          }
+        }
+        
+        // Обновляем персонажа с локальным значением Ци
+        let updatedCharacter = prev.character ? { ...prev.character } : null;
+        
+        if (updatedCharacter) {
+          // Используем ЛОКАЛЬНОЕ значение Ци (приоритет!)
+          if (updatedLocalQi) {
+            updatedCharacter.currentQi = updatedLocalQi.currentQi;
+          }
+          
+          // Применяем усталость от LLM если есть
+          if (data.response.fatigueDelta) {
+            updatedCharacter.fatigue = Math.min(100, 
+              (updatedCharacter.fatigue || 0) + (data.response.fatigueDelta.physical || 0)
+            );
+            updatedCharacter.mentalFatigue = Math.min(100,
+              (updatedCharacter.mentalFatigue || 0) + (data.response.fatigueDelta.mental || 0)
+            );
+          }
+          
+          // Совместимость со старым форматом stateUpdate
+          if (data.response.stateUpdate) {
+            // НЕ перезаписываем currentQi из stateUpdate!
+            const { currentQi, ...otherUpdates } = data.response.stateUpdate;
+            updatedCharacter = { ...updatedCharacter, ...otherUpdates };
+          }
+        }
 
         // Обновляем время если оно изменилось
         let updatedWorldTime = prev.worldTime;
@@ -246,13 +325,17 @@ export function useGame() {
           updatedDaysSinceStart = data.updatedTime.daysSinceStart;
         }
 
+        // Добавляем информацию о Ци в контент если есть изменения
+        const finalContent = data.response.content + qiChangeMessage;
+
         return {
           ...prev,
-          messages: [...prev.messages, aiMessage],
+          messages: [...prev.messages, { ...aiMessage, content: finalContent }],
           isLoading: false,
           character: updatedCharacter,
           worldTime: updatedWorldTime,
           daysSinceStart: updatedDaysSinceStart,
+          localQi: updatedLocalQi,
         };
       });
     } catch (error) {

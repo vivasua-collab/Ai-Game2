@@ -92,11 +92,45 @@ export async function generateGameResponse(
       
       // Если есть поле content - используем его
       if (parsed.content && typeof parsed.content === "string") {
+        // Обрабатываем qiDelta (новый формат)
+        let qiDelta = undefined;
+        if (parsed.qiDelta && typeof parsed.qiDelta === "object") {
+          const d = parsed.qiDelta as Record<string, unknown>;
+          qiDelta = {
+            qiChange: typeof d.qiChange === "number" ? d.qiChange : 0,
+            reason: typeof d.reason === "string" ? d.reason : "Действие",
+            isBreakthrough: Boolean(d.isBreakthrough),
+          };
+        }
+        
+        // Обрабатываем fatigueDelta
+        let fatigueDelta = undefined;
+        if (parsed.fatigueDelta && typeof parsed.fatigueDelta === "object") {
+          const f = parsed.fatigueDelta as Record<string, unknown>;
+          fatigueDelta = {
+            physical: typeof f.physical === "number" ? f.physical : 0,
+            mental: typeof f.mental === "number" ? f.mental : 0,
+          };
+        }
+        
+        // Обрабатываем timeAdvance
+        let timeAdvance = undefined;
+        if (parsed.timeAdvance && typeof parsed.timeAdvance === "object") {
+          const t = parsed.timeAdvance as Record<string, unknown>;
+          timeAdvance = {
+            minutes: typeof t.minutes === "number" ? t.minutes : 0,
+            hours: typeof t.hours === "number" ? t.hours : undefined,
+            days: typeof t.days === "number" ? t.days : undefined,
+          };
+        }
+        
         return {
           type: parsed.type || "narration",
           content: parsed.content,
-          stateUpdate: parsed.stateUpdate,
-          timeAdvance: parsed.timeAdvance,
+          qiDelta,
+          fatigueDelta,
+          timeAdvance,
+          stateUpdate: parsed.stateUpdate, // Для совместимости
         };
       }
       
@@ -113,6 +147,7 @@ ${loc.distanceFromCenter ? `Расстояние от центра мира: ${l
         return {
           type: "narration",
           content: locationText,
+          qiDelta: { qiChange: 0, reason: "Нет изменений" },
         };
       }
       
@@ -120,7 +155,7 @@ ${loc.distanceFromCenter ? `Расстояние от центра мира: ${l
       if (parsed.type && !parsed.content) {
         // Преобразуем JSON в читаемый текст
         const formattedContent = Object.entries(parsed)
-          .filter(([key]) => key !== "type" && key !== "stateUpdate" && key !== "timeAdvance")
+          .filter(([key]) => key !== "type" && key !== "qiDelta" && key !== "fatigueDelta" && key !== "timeAdvance")
           .map(([key, value]) => {
             if (typeof value === "object" && value !== null) {
               return `**${key}**: ${JSON.stringify(value, null, 2)}`;
@@ -132,7 +167,8 @@ ${loc.distanceFromCenter ? `Расстояние от центра мира: ${l
         return {
           type: parsed.type || "narration",
           content: formattedContent || response.content,
-          stateUpdate: parsed.stateUpdate,
+          qiDelta: parsed.qiDelta,
+          fatigueDelta: parsed.fatigueDelta,
           timeAdvance: parsed.timeAdvance,
         };
       }

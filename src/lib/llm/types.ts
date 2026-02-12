@@ -71,8 +71,17 @@ export interface GameAction {
 export interface GameResponse {
   type: "narration" | "system" | "error";
   content: string;
-  stateUpdate?: Partial<CharacterState>;
+  qiDelta?: {
+    qiChange: number;
+    reason: string;
+    isBreakthrough?: boolean;
+  };
+  fatigueDelta?: {
+    physical: number;
+    mental: number;
+  };
   timeAdvance?: TimeAdvance;
+  stateUpdate?: Partial<CharacterState>; // Для совместимости со старым форматом
 }
 
 export interface CharacterState {
