@@ -7,6 +7,7 @@ import {
 } from "@/data/prompts/game-master";
 import { generateGameResponse, initializeLLM } from "@/lib/llm";
 import { calculateBaseConductivity } from "@/data/cultivation-levels";
+import { logError, logInfo, LogTimer } from "@/lib/logger";
 
 // Инициализируем LLM
 let llmInitialized = false;
@@ -114,6 +115,8 @@ function generateNPCName(): string {
 }
 
 export async function POST(request: NextRequest) {
+  const timer = new LogTimer("API", "Start game request");
+  
   try {
     if (!llmInitialized) {
       initializeLLM();
@@ -122,6 +125,11 @@ export async function POST(request: NextRequest) {
 
     const body: StartGameRequest = await request.json();
     const { variant, customConfig } = body;
+
+    await logInfo("GAME", "Starting new game", {
+      variant,
+      hasCustomConfig: !!customConfig,
+    });
 
     // Определяем параметры старта
     let startConfig = {
@@ -314,11 +322,13 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    const llmTimer = new LogTimer("LLM", "Generate opening narration", session.id);
     const gameResponse = await generateGameResponse(
       systemPrompt,
       "Начни игру. Опиши момент пробуждения ГГ.",
       []
     );
+    await llmTimer.end("INFO", { contentLength: gameResponse.content.length });
 
     // Сохраняем первое сообщение
     await db.message.create({
@@ -347,17 +357,30 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    await timer.end("INFO", { sessionId: session.id, variant, success: true });
+    await logInfo("GAME", "Game started successfully", {
+      sessionId: session.id,
+      variant,
+      characterId: character.id,
+    });
+
     return NextResponse.json({
       success: true,
       session: fullSession,
       openingNarration: gameResponse.content,
     });
   } catch (error) {
-    console.error("Start game API error:", error);
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    await logError("GAME", "Start game error", {
+      error: errorMessage,
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+    await timer.end("ERROR", { success: false, error: errorMessage });
+    
     return NextResponse.json(
       {
         error: "Internal server error",
-        message: error instanceof Error ? error.message : "Unknown error",
+        message: errorMessage,
       },
       { status: 500 }
     );

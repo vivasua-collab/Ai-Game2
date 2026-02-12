@@ -1,17 +1,243 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface StartScreenProps {
   onStartGame: (variant: 1 | 2 | 3, customConfig?: Record<string, unknown>) => void;
   onLoadGame: (sessionId: string) => void;
   isLoading: boolean;
+}
+
+// Компонент панели настроек логирования
+function LoggingPanel() {
+  const [loggingEnabled, setLoggingEnabled] = useState(true);
+  const [logLevel, setLogLevel] = useState("INFO");
+  const [showLogs, setShowLogs] = useState(false);
+  const [logs, setLogs] = useState<Array<{
+    id: string;
+    timestamp: string;
+    level: string;
+    category: string;
+    message: string;
+  }>>([]);
+
+  // Загрузка текущих настроек
+  useEffect(() => {
+    fetch("/api/logs")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setLoggingEnabled(data.settings.enabled);
+          setLogLevel(data.settings.level);
+        }
+      })
+      .catch(console.error);
+  }, []);
+
+  // Переключение логирования
+  const handleToggleLogging = async (enabled: boolean) => {
+    try {
+      await fetch("/api/logs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "toggle", enabled }),
+      });
+      setLoggingEnabled(enabled);
+    } catch (error) {
+      console.error("Failed to toggle logging:", error);
+    }
+  };
+
+  // Изменение уровня логов
+  const handleSetLevel = async (level: string) => {
+    try {
+      await fetch("/api/logs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "setLevel", level }),
+      });
+      setLogLevel(level);
+    } catch (error) {
+      console.error("Failed to set log level:", error);
+    }
+  };
+
+  // Загрузка логов для просмотра
+  const handleShowLogs = async () => {
+    try {
+      const response = await fetch("/api/logs?limit=50&buffer=true");
+      const data = await response.json();
+      if (data.success) {
+        // Объединяем логи из БД и буфера
+        const allLogs = [...(data.buffer || []), ...(data.database?.logs || [])];
+        // Убираем дубликаты по времени и сообщению
+        const uniqueLogs = allLogs.filter((log: { timestamp: string; message: string }, index: number, self: Array<{ timestamp: string; message: string }>) =>
+          index === self.findIndex((l) => l.timestamp === log.timestamp && l.message === log.message)
+        );
+        setLogs(uniqueLogs.slice(0, 100));
+        setShowLogs(true);
+      }
+    } catch (error) {
+      console.error("Failed to load logs:", error);
+    }
+  };
+
+  // Очистка логов
+  const handleClearLogs = async () => {
+    try {
+      await fetch("/api/logs?all=true", { method: "DELETE" });
+      setLogs([]);
+    } catch (error) {
+      console.error("Failed to clear logs:", error);
+    }
+  };
+
+  const getLevelColor = (level: string) => {
+    switch (level) {
+      case "ERROR":
+        return "bg-red-500";
+      case "WARN":
+        return "bg-yellow-500";
+      case "DEBUG":
+        return "bg-blue-500";
+      default:
+        return "bg-green-500";
+    }
+  };
+
+  return (
+    <>
+      <Card className="bg-slate-800/50 border-slate-700 w-full max-w-md">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm text-slate-300 flex items-center gap-2">
+            📊 Логирование
+            <Badge variant={loggingEnabled ? "default" : "secondary"} className="text-xs">
+              {loggingEnabled ? "Вкл" : "Выкл"}
+            </Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <div className="flex items-center justify-between">
+            <Label className="text-slate-400 text-sm">Запись логов</Label>
+            <Switch
+              checked={loggingEnabled}
+              onCheckedChange={handleToggleLogging}
+            />
+          </div>
+
+          {loggingEnabled && (
+            <>
+              <div className="flex items-center justify-between">
+                <Label className="text-slate-400 text-sm">Уровень</Label>
+                <Select value={logLevel} onValueChange={handleSetLevel}>
+                  <SelectTrigger className="w-24 h-8 bg-slate-700 border-slate-600 text-sm">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="ERROR">ERROR</SelectItem>
+                    <SelectItem value="WARN">WARN</SelectItem>
+                    <SelectItem value="INFO">INFO</SelectItem>
+                    <SelectItem value="DEBUG">DEBUG</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="flex-1 border-slate-600 text-slate-300"
+                  onClick={handleShowLogs}
+                >
+                  📋 Показать
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="flex-1 border-slate-600 text-slate-300"
+                  onClick={handleClearLogs}
+                >
+                  🗑️ Очистить
+                </Button>
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Модальное окно с логами */}
+      {showLogs && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+          <Card className="bg-slate-800 border-slate-600 w-full max-w-4xl max-h-[80vh] flex flex-col">
+            <CardHeader className="flex-shrink-0 border-b border-slate-700">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-slate-200">📋 Системные логи</CardTitle>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="border-slate-600"
+                  onClick={() => setShowLogs(false)}
+                >
+                  ✕ Закрыть
+                </Button>
+              </div>
+              <div className="flex gap-2 mt-2">
+                <Badge className="bg-red-500 text-xs">ERROR</Badge>
+                <Badge className="bg-yellow-500 text-xs">WARN</Badge>
+                <Badge className="bg-green-500 text-xs">INFO</Badge>
+                <Badge className="bg-blue-500 text-xs">DEBUG</Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="flex-1 overflow-y-auto p-0">
+              {logs.length === 0 ? (
+                <p className="text-slate-400 text-center py-8">Нет логов</p>
+              ) : (
+                <div className="divide-y divide-slate-700">
+                  {logs.map((log, index) => (
+                    <div
+                      key={log.id || index}
+                      className="p-3 hover:bg-slate-700/50 transition-colors"
+                    >
+                      <div className="flex items-start gap-2">
+                        <Badge className={`${getLevelColor(log.level)} text-xs flex-shrink-0`}>
+                          {log.level}
+                        </Badge>
+                        <Badge variant="outline" className="text-xs border-slate-600 text-slate-400 flex-shrink-0">
+                          {log.category}
+                        </Badge>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-slate-200 break-words">
+                            {log.message}
+                          </p>
+                          <p className="text-xs text-slate-500 mt-1">
+                            {new Date(log.timestamp).toLocaleString("ru")}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      )}
+    </>
+  );
 }
 
 export function StartScreen({ onStartGame, onLoadGame, isLoading }: StartScreenProps) {
@@ -50,9 +276,9 @@ export function StartScreen({ onStartGame, onLoadGame, isLoading }: StartScreenP
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white p-4 flex flex-col items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-800 text-white p-4 flex flex-col">
       {/* Заголовок */}
-      <div className="text-center mb-8">
+      <div className="text-center mb-6 pt-4">
         <h1 className="text-4xl font-bold mb-2 text-amber-400">
           🌸 Cultivation World Simulator
         </h1>
@@ -61,284 +287,290 @@ export function StartScreen({ onStartGame, onLoadGame, isLoading }: StartScreenP
         </p>
       </div>
 
-      {/* Выбор варианта старта */}
-      {!showCustomForm && !showLoadForm && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl w-full">
-          {/* Вариант 1: Секта */}
-          <Card className="bg-slate-800/50 border-slate-700 hover:border-amber-500/50 transition-colors">
-            <CardHeader>
-              <CardTitle className="text-amber-400">🏛️ Секта</CardTitle>
-              <CardDescription className="text-slate-400">
-                Старт в секте культивации
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="text-sm text-slate-300 space-y-2 mb-4">
-                <li>• Пробуждение в теле кандидата</li>
-                <li>• Частичная амнезия</li>
-                <li>• 4 дня испытаний</li>
-                <li>• Не знает о системе</li>
-              </ul>
-              <Button
-                className="w-full bg-amber-600 hover:bg-amber-700"
-                onClick={() => onStartGame(1)}
-                disabled={isLoading}
-              >
-                {isLoading ? "Загрузка..." : "Начать в секте"}
-              </Button>
-            </CardContent>
-          </Card>
+      {/* Основной контент */}
+      <div className="flex-1 flex flex-col items-center justify-center">
+        {/* Выбор варианта старта */}
+        {!showCustomForm && !showLoadForm && (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl w-full mb-6">
+              {/* Вариант 1: Секта */}
+              <Card className="bg-slate-800/50 border-slate-700 hover:border-amber-500/50 transition-colors">
+                <CardHeader>
+                  <CardTitle className="text-amber-400">🏛️ Секта</CardTitle>
+                  <CardDescription className="text-slate-400">
+                    Старт в секте культивации
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="text-sm text-slate-300 space-y-2 mb-4">
+                    <li>• Пробуждение в теле кандидата</li>
+                    <li>• Частичная амнезия</li>
+                    <li>• 4 дня испытаний</li>
+                    <li>• Не знает о системе</li>
+                  </ul>
+                  <Button
+                    className="w-full bg-amber-600 hover:bg-amber-700"
+                    onClick={() => onStartGame(1)}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Загрузка..." : "Начать в секте"}
+                  </Button>
+                </CardContent>
+              </Card>
 
-          {/* Вариант 2: Случайная область */}
-          <Card className="bg-slate-800/50 border-slate-700 hover:border-emerald-500/50 transition-colors">
-            <CardHeader>
-              <CardTitle className="text-emerald-400">🌲 Свобода</CardTitle>
-              <CardDescription className="text-slate-400">
-                Старт в случайной области
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="text-sm text-slate-300 space-y-2 mb-4">
-                <li>• Случайная локация</li>
-                <li>• Полная память</li>
-                <li>• Знает о системе</li>
-                <li>• Минимальные ресурсы</li>
-              </ul>
-              <Button
-                className="w-full bg-emerald-600 hover:bg-emerald-700"
-                onClick={() => onStartGame(2)}
-                disabled={isLoading}
-              >
-                {isLoading ? "Загрузка..." : "Начать свободно"}
-              </Button>
-            </CardContent>
-          </Card>
+              {/* Вариант 2: Случайная область */}
+              <Card className="bg-slate-800/50 border-slate-700 hover:border-emerald-500/50 transition-colors">
+                <CardHeader>
+                  <CardTitle className="text-emerald-400">🌲 Свобода</CardTitle>
+                  <CardDescription className="text-slate-400">
+                    Старт в случайной области
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="text-sm text-slate-300 space-y-2 mb-4">
+                    <li>• Случайная локация</li>
+                    <li>• Полная память</li>
+                    <li>• Знает о системе</li>
+                    <li>• Минимальные ресурсы</li>
+                  </ul>
+                  <Button
+                    className="w-full bg-emerald-600 hover:bg-emerald-700"
+                    onClick={() => onStartGame(2)}
+                    disabled={isLoading}
+                  >
+                    {isLoading ? "Загрузка..." : "Начать свободно"}
+                  </Button>
+                </CardContent>
+              </Card>
 
-          {/* Вариант 3: Кастомный */}
-          <Card className="bg-slate-800/50 border-slate-700 hover:border-purple-500/50 transition-colors">
-            <CardHeader>
-              <CardTitle className="text-purple-400">⚙️ Кастомный</CardTitle>
-              <CardDescription className="text-slate-400">
-                Настрой свой старт
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <ul className="text-sm text-slate-300 space-y-2 mb-4">
-                <li>• Выбери локацию</li>
-                <li>• Настрой характеристики</li>
-                <li>• Задай объём ядра</li>
-                <li>• Полный контроль</li>
-              </ul>
-              <Button
-                className="w-full bg-purple-600 hover:bg-purple-700"
-                onClick={() => setShowCustomForm(true)}
-                disabled={isLoading}
-              >
-                Настроить
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* Форма кастомного старта */}
-      {showCustomForm && (
-        <Card className="bg-slate-800/50 border-slate-700 max-w-lg w-full">
-          <CardHeader>
-            <CardTitle className="text-purple-400">⚙️ Кастомный старт</CardTitle>
-            <CardDescription className="text-slate-400">
-              Настрой параметры начала игры
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <Label htmlFor="location" className="text-slate-300">Локация</Label>
-              <Input
-                id="location"
-                placeholder="Например: Горный хребет"
-                value={customSettings.location}
-                onChange={(e) =>
-                  setCustomSettings({ ...customSettings, location: e.target.value })
-                }
-                className="bg-slate-700 border-slate-600"
-              />
+              {/* Вариант 3: Кастомный */}
+              <Card className="bg-slate-800/50 border-slate-700 hover:border-purple-500/50 transition-colors">
+                <CardHeader>
+                  <CardTitle className="text-purple-400">⚙️ Кастомный</CardTitle>
+                  <CardDescription className="text-slate-400">
+                    Настрой свой старт
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ul className="text-sm text-slate-300 space-y-2 mb-4">
+                    <li>• Выбери локацию</li>
+                    <li>• Настрой характеристики</li>
+                    <li>• Задай объём ядра</li>
+                    <li>• Полный контроль</li>
+                  </ul>
+                  <Button
+                    className="w-full bg-purple-600 hover:bg-purple-700"
+                    onClick={() => setShowCustomForm(true)}
+                    disabled={isLoading}
+                  >
+                    Настроить
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <Label htmlFor="age" className="text-slate-300">Возраст</Label>
-                <Input
-                  id="age"
-                  type="number"
-                  value={customSettings.age}
-                  onChange={(e) =>
-                    setCustomSettings({ ...customSettings, age: parseInt(e.target.value) || 16 })
-                  }
-                  className="bg-slate-700 border-slate-600"
-                />
-              </div>
-              <div>
-                <Label htmlFor="core" className="text-slate-300">Ядро</Label>
-                <Input
-                  id="core"
-                  type="number"
-                  value={customSettings.coreCapacity}
-                  onChange={(e) =>
-                    setCustomSettings({
-                      ...customSettings,
-                      coreCapacity: parseInt(e.target.value) || 1000,
-                    })
-                  }
-                  className="bg-slate-700 border-slate-600"
-                />
-              </div>
-            </div>
-
-            <Separator className="bg-slate-700" />
-
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <Label className="text-slate-300">Сила</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={customSettings.strength}
-                  onChange={(e) =>
-                    setCustomSettings({
-                      ...customSettings,
-                      strength: parseFloat(e.target.value) || 10,
-                    })
-                  }
-                  className="bg-slate-700 border-slate-600"
-                />
-              </div>
-              <div>
-                <Label className="text-slate-300">Ловкость</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={customSettings.agility}
-                  onChange={(e) =>
-                    setCustomSettings({
-                      ...customSettings,
-                      agility: parseFloat(e.target.value) || 10,
-                    })
-                  }
-                  className="bg-slate-700 border-slate-600"
-                />
-              </div>
-              <div>
-                <Label className="text-slate-300">Интеллект</Label>
-                <Input
-                  type="number"
-                  step="0.01"
-                  value={customSettings.intelligence}
-                  onChange={(e) =>
-                    setCustomSettings({
-                      ...customSettings,
-                      intelligence: parseFloat(e.target.value) || 10,
-                    })
-                  }
-                  className="bg-slate-700 border-slate-600"
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="system"
-                checked={customSettings.knowsAboutSystem}
-                onCheckedChange={(checked) =>
-                  setCustomSettings({ ...customSettings, knowsAboutSystem: checked })
-                }
-              />
-              <Label htmlFor="system" className="text-slate-300">
-                Знает о системе
-              </Label>
-            </div>
-
-            <div className="flex gap-2">
+            {/* Кнопки загрузки и настройки */}
+            <div className="flex gap-4 mb-6">
               <Button
                 variant="outline"
-                className="flex-1 border-slate-600"
-                onClick={() => setShowCustomForm(false)}
+                className="border-slate-600 text-slate-300"
+                onClick={handleLoadSaves}
+              >
+                📂 Загрузить игру
+              </Button>
+            </div>
+
+            {/* Панель логирования */}
+            <LoggingPanel />
+          </>
+        )}
+
+        {/* Форма кастомного старта */}
+        {showCustomForm && (
+          <Card className="bg-slate-800/50 border-slate-700 max-w-lg w-full">
+            <CardHeader>
+              <CardTitle className="text-purple-400">⚙️ Кастомный старт</CardTitle>
+              <CardDescription className="text-slate-400">
+                Настрой параметры начала игры
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="location" className="text-slate-300">Локация</Label>
+                <Input
+                  id="location"
+                  placeholder="Например: Горный хребет"
+                  value={customSettings.location}
+                  onChange={(e) =>
+                    setCustomSettings({ ...customSettings, location: e.target.value })
+                  }
+                  className="bg-slate-700 border-slate-600"
+                />
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <Label htmlFor="age" className="text-slate-300">Возраст</Label>
+                  <Input
+                    id="age"
+                    type="number"
+                    value={customSettings.age}
+                    onChange={(e) =>
+                      setCustomSettings({ ...customSettings, age: parseInt(e.target.value) || 16 })
+                    }
+                    className="bg-slate-700 border-slate-600"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="core" className="text-slate-300">Ядро</Label>
+                  <Input
+                    id="core"
+                    type="number"
+                    value={customSettings.coreCapacity}
+                    onChange={(e) =>
+                      setCustomSettings({
+                        ...customSettings,
+                        coreCapacity: parseInt(e.target.value) || 1000,
+                      })
+                    }
+                    className="bg-slate-700 border-slate-600"
+                  />
+                </div>
+              </div>
+
+              <Separator className="bg-slate-700" />
+
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <Label className="text-slate-300">Сила</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={customSettings.strength}
+                    onChange={(e) =>
+                      setCustomSettings({
+                        ...customSettings,
+                        strength: parseFloat(e.target.value) || 10,
+                      })
+                    }
+                    className="bg-slate-700 border-slate-600"
+                  />
+                </div>
+                <div>
+                  <Label className="text-slate-300">Ловкость</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={customSettings.agility}
+                    onChange={(e) =>
+                      setCustomSettings({
+                        ...customSettings,
+                        agility: parseFloat(e.target.value) || 10,
+                      })
+                    }
+                    className="bg-slate-700 border-slate-600"
+                  />
+                </div>
+                <div>
+                  <Label className="text-slate-300">Интеллект</Label>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    value={customSettings.intelligence}
+                    onChange={(e) =>
+                      setCustomSettings({
+                        ...customSettings,
+                        intelligence: parseFloat(e.target.value) || 10,
+                      })
+                    }
+                    className="bg-slate-700 border-slate-600"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="system"
+                  checked={customSettings.knowsAboutSystem}
+                  onCheckedChange={(checked) =>
+                    setCustomSettings({ ...customSettings, knowsAboutSystem: checked })
+                  }
+                />
+                <Label htmlFor="system" className="text-slate-300">
+                  Знает о системе
+                </Label>
+              </div>
+
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  className="flex-1 border-slate-600"
+                  onClick={() => setShowCustomForm(false)}
+                >
+                  Назад
+                </Button>
+                <Button
+                  className="flex-1 bg-purple-600 hover:bg-purple-700"
+                  onClick={handleCustomStart}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Загрузка..." : "Начать игру"}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Форма загрузки */}
+        {showLoadForm && (
+          <Card className="bg-slate-800/50 border-slate-700 max-w-lg w-full">
+            <CardHeader>
+              <CardTitle className="text-blue-400">📂 Загрузить игру</CardTitle>
+              <CardDescription className="text-slate-400">
+                Выберите сохранение
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {saves.length === 0 ? (
+                <p className="text-slate-400 text-center py-4">Нет сохранений</p>
+              ) : (
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+                  {saves.map((save) => (
+                    <div
+                      key={save.id}
+                      className="flex justify-between items-center p-3 bg-slate-700/50 rounded hover:bg-slate-700 cursor-pointer"
+                      onClick={() => onLoadGame(save.id)}
+                    >
+                      <div>
+                        <p className="text-sm text-slate-300">
+                          День {save.daysSinceStart}
+                        </p>
+                        <p className="text-xs text-slate-500">
+                          {new Date(save.updatedAt).toLocaleString("ru")}
+                        </p>
+                      </div>
+                      <Button size="sm" variant="outline" className="border-slate-600">
+                        Загрузить
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              <Button
+                variant="outline"
+                className="w-full mt-4 border-slate-600"
+                onClick={() => setShowLoadForm(false)}
               >
                 Назад
               </Button>
-              <Button
-                className="flex-1 bg-purple-600 hover:bg-purple-700"
-                onClick={handleCustomStart}
-                disabled={isLoading}
-              >
-                {isLoading ? "Загрузка..." : "Начать игру"}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Форма загрузки */}
-      {showLoadForm && (
-        <Card className="bg-slate-800/50 border-slate-700 max-w-lg w-full">
-          <CardHeader>
-            <CardTitle className="text-blue-400">📂 Загрузить игру</CardTitle>
-            <CardDescription className="text-slate-400">
-              Выберите сохранение
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            {saves.length === 0 ? (
-              <p className="text-slate-400 text-center py-4">Нет сохранений</p>
-            ) : (
-              <div className="space-y-2 max-h-60 overflow-y-auto">
-                {saves.map((save) => (
-                  <div
-                    key={save.id}
-                    className="flex justify-between items-center p-3 bg-slate-700/50 rounded hover:bg-slate-700 cursor-pointer"
-                    onClick={() => onLoadGame(save.id)}
-                  >
-                    <div>
-                      <p className="text-sm text-slate-300">
-                        День {save.daysSinceStart}
-                      </p>
-                      <p className="text-xs text-slate-500">
-                        {new Date(save.updatedAt).toLocaleString("ru")}
-                      </p>
-                    </div>
-                    <Button size="sm" variant="outline" className="border-slate-600">
-                      Загрузить
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            )}
-            <Button
-              variant="outline"
-              className="w-full mt-4 border-slate-600"
-              onClick={() => setShowLoadForm(false)}
-            >
-              Назад
-            </Button>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Кнопки загрузки */}
-      {!showCustomForm && !showLoadForm && (
-        <div className="flex gap-4 mt-8">
-          <Button
-            variant="outline"
-            className="border-slate-600 text-slate-300"
-            onClick={handleLoadSaves}
-          >
-            📂 Загрузить игру
-          </Button>
-        </div>
-      )}
+            </CardContent>
+          </Card>
+        )}
+      </div>
 
       {/* Подсказки */}
       {!showCustomForm && !showLoadForm && (
-        <div className="mt-8 text-center text-sm text-slate-500">
+        <div className="text-center text-sm text-slate-500 pb-4">
           <p>Команды: !! (действие) | -- (запрос мира) | --- (строгий режим) | --ПМ (проверка)</p>
         </div>
       )}

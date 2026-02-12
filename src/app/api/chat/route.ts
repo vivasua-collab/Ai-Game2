@@ -3,27 +3,34 @@ import { db } from "@/lib/db";
 import { generateGameResponse, initializeLLM } from "@/lib/llm";
 import { buildGameMasterPrompt } from "@/data/prompts/game-master";
 import type { LLMMessage } from "@/lib/llm/types";
+import { logError, logInfo, logWarn, LogTimer } from "@/lib/logger";
 
 // Инициализируем LLM при первом запросе
 let llmInitialized = false;
 
 export async function POST(request: NextRequest) {
+  const timer = new LogTimer("API", "Chat request");
+  
   try {
     // Инициализируем LLM если ещё не сделали
     if (!llmInitialized) {
       initializeLLM();
       llmInitialized = true;
+      await logInfo("SYSTEM", "LLM initialized");
     }
 
     const body = await request.json();
     const { sessionId, message } = body;
 
     if (!sessionId || !message) {
+      await logWarn("API", "Missing sessionId or message", { sessionId, hasMessage: !!message });
       return NextResponse.json(
         { error: "sessionId and message are required" },
         { status: 400 }
       );
     }
+
+    await logInfo("API", "Chat request received", { sessionId, messageLength: message.length });
 
     // Получаем сессию и персонажа
     const session = await db.gameSession.findUnique({
@@ -38,6 +45,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!session) {
+      await logWarn("API", "Session not found", { sessionId });
       return NextResponse.json({ error: "Session not found" }, { status: 404 });
     }
 
@@ -78,11 +86,13 @@ export async function POST(request: NextRequest) {
     });
 
     // Генерируем ответ
+    const llmTimer = new LogTimer("LLM", "Generate response", sessionId);
     const gameResponse = await generateGameResponse(
       systemPrompt,
       message,
       conversationHistory
     );
+    await llmTimer.end("INFO", { responseType: gameResponse.type });
 
     // Сохраняем ответ
     await db.message.create({
@@ -160,16 +170,24 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    await timer.end("INFO", { sessionId, success: true });
+    
     return NextResponse.json({
       success: true,
       response: gameResponse,
     });
   } catch (error) {
-    console.error("Chat API error:", error);
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    await logError("API", "Chat API error", {
+      error: errorMessage,
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+    await timer.end("ERROR", { success: false, error: errorMessage });
+    
     return NextResponse.json(
       {
         error: "Internal server error",
-        message: error instanceof Error ? error.message : "Unknown error",
+        message: errorMessage,
       },
       { status: 500 }
     );

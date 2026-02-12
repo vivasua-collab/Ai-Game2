@@ -322,3 +322,36 @@ model GameSettings {
   enableImages    Boolean @default(false)
   imageProvider   String  @default("stub") // stub, local, api
 }
+
+// ==================== SYSTEM LOGS ====================
+
+model SystemLog {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  
+  // === Уровень лога ===
+  level     String   // ERROR, WARN, INFO, DEBUG
+  
+  // === Категория ===
+  category  String   // SYSTEM, API, LLM, GAME, DATABASE, UI, AUTH, UNKNOWN
+  
+  // === Сообщение ===
+  message   String
+  
+  // === Детали (JSON string) ===
+  details   String?
+  
+  // === Связи ===
+  sessionId String?  // ID игровой сессии (если применимо)
+  
+  // === Stack trace (для ошибок) ===
+  stack     String?
+  
+  // === Длительность операции (мс) ===
+  duration  Int?
+  
+  // Индекс для быстрого поиска
+  @@index([level])
+  @@index([category])
+  @@index([createdAt])
+}
