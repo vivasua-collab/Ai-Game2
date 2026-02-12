@@ -343,8 +343,9 @@ export class LLMManager {
   }
 
   async getAvailableProvider(): Promise<ILLMProvider | null> {
-    // Приоритет: z-ai -> local -> api
-    const priority: LLMProviderType[] = ["z-ai", "local", "api"];
+    // Приоритет: local (Ollama) -> z-ai -> api
+    // Ollama бесплатный и локальный, поэтому проверяем первым
+    const priority: LLMProviderType[] = ["local", "z-ai", "api"];
 
     for (const providerType of priority) {
       const provider = this.providers.get(providerType);

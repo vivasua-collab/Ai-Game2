@@ -219,10 +219,11 @@ function LLMStatusIndicator() {
               </div>
 
               <div className="bg-slate-900/50 rounded p-3 text-xs text-slate-400">
-                <p className="font-medium text-slate-300 mb-1">Для локального запуска:</p>
+                <p className="font-medium text-slate-300 mb-1">Для локального запуска (бесплатно):</p>
                 <p>1. Установите Ollama: https://ollama.com</p>
-                <p>2. Запустите: ollama pull llama3.1:8b</p>
+                <p>2. Загрузите модель: ollama pull llama3</p>
                 <p>3. Перезапустите проект</p>
+                <p className="mt-2 text-amber-400">Или создайте .z-ai-config файл с API ключом</p>
               </div>
 
               <Button

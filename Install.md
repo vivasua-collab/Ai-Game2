@@ -284,20 +284,16 @@ bun run dev
 
 ---
 
-## ⚙️ Настройка LLM
+## ⚙️ Настройка LLM (Нейросеть)
 
-### Вариант 1: z-ai-web-dev-sdk (по умолчанию)
-
-Работает автоматически, дополнительных настроек не требуется.
-
-### Вариант 2: Локальная LLM (Ollama)
+### Вариант 1: Ollama (РЕКОМЕНДУЕТСЯ - бесплатно, локально)
 
 **Windows:**
 1. Скачайте Ollama: https://ollama.com/download
-2. Установите и запустите
+2. Установите и запустите (Ollama запустится автоматически в трее)
 3. Загрузите модель:
 ```powershell
-ollama pull llama3.1:8b
+ollama pull llama3
 ```
 
 **Linux:**
@@ -308,21 +304,44 @@ curl -fsSL https://ollama.com/install.sh | sh
 # Запуск сервера
 ollama serve &
 
-# Загрузка модели
-ollama pull llama3.1:8b
+# Загрузка модели (выберите одну)
+ollama pull llama3        # ~4.7 GB - хороший баланс
+ollama pull llama3.1:8b   # ~4.7 GB - рекомендуется
+ollama pull mistral       # ~4.1 GB - быстрее
+ollama pull phi3          # ~2.3 GB - для слабых ПК
 ```
 
-### Вариант 3: Внешний API
+**После установки:** Просто запустите `bun run dev` - Ollama определится автоматически!
+
+### Вариант 2: Z-AI SDK (требует API ключ)
+
+Z-AI SDK требует конфигурационный файл с API ключом:
+
+1. Создайте файл `.z-ai-config` в корне проекта:
+```json
+{
+  "baseUrl": "https://your-api-server.com/v1",
+  "apiKey": "YOUR_API_KEY",
+  "chatId": "",
+  "userId": ""
+}
+```
+
+2. Запустите проект: `bun run dev`
+
+**Примечание:** Z-AI SDK - это клиент для коммерческого API, требует регистрации и API ключа.
+
+### Вариант 3: Внешний API (OpenAI, Anthropic и др.)
 
 Создайте файл `.env.local` в корне проекта:
 
 ```env
-# Выбор провайдера: z-ai | local | api
+# Выбор провайдера: local | z-ai | api
 LLM_PROVIDER=api
 
 # Настройки API (пример для OpenAI)
-LLM_API_ENDPOINT=https://api.openai.com/v1/chat/completions
 LLM_API_KEY=sk-your-api-key-here
+LLM_API_ENDPOINT=https://api.openai.com/v1/chat/completions
 LLM_API_MODEL=gpt-4
 
 # Параметры генерации

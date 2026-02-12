@@ -37,6 +37,10 @@ yarn-error.log*
 # Keep .env.example for documentation
 !.env.example
 
+# Z-AI config (contains API key - keep it secret!)
+.z-ai-config
+!.z-ai-config.example
+
 # vercel
 .vercel
 
