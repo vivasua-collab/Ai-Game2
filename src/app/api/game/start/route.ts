@@ -212,7 +212,7 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Создаём персонажа
+    // Создаём персонажа (без локации - добавим позже)
     let character;
     try {
       character = await db.character.create({
@@ -256,58 +256,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Создаём начальную локацию
-    let location;
-    try {
-      location = await db.location.create({
-        data: {
-          name: startConfig.locationName,
-          distanceFromCenter: startConfig.distanceFromCenter,
-          qiDensity: startConfig.qiDensity,
-          qiFlowRate: Math.floor(startConfig.qiDensity / 10),
-          terrainType: variant === 1 ? "mountains" : "plains",
-        },
-      });
-      await logDebug("DATABASE", "Location created", { locationId: location.id, name: location.name });
-    } catch (dbError) {
-      const errorMsg = dbError instanceof Error ? dbError.message : "Unknown DB error";
-      await logError("DATABASE", `Failed to create location: ${errorMsg}`, {
-        error: errorMsg,
-        stack: dbError instanceof Error ? dbError.stack : undefined,
-        operation: "location.create",
-        locationData: {
-          name: startConfig.locationName,
-          distanceFromCenter: startConfig.distanceFromCenter,
-          qiDensity: startConfig.qiDensity,
-        },
-      });
-      // Откатываем создание персонажа
-      await db.character.delete({ where: { id: character.id } });
-      return NextResponse.json(
-        { 
-          error: "Database error: Failed to create location", 
-          message: errorMsg,
-          component: "DATABASE_LOCATION",
-        },
-        { status: 500 }
-      );
-    }
-
-    // Обновляем персонажа с локацией
-    try {
-      await db.character.update({
-        where: { id: character.id },
-        data: { currentLocationId: location.id },
-      });
-    } catch (dbError) {
-      await logWarn("DATABASE", "Failed to update character location", {
-        error: dbError instanceof Error ? dbError.message : "Unknown DB error",
-        characterId: character.id,
-        locationId: location.id,
-      });
-    }
-
-    // Создаём сессию игры
+    // Создаём сессию игры (сначала сессия, т.к. Location требует sessionId)
     let session;
     try {
       session = await db.gameSession.create({
@@ -336,8 +285,7 @@ export async function POST(request: NextRequest) {
         operation: "gameSession.create",
         characterId: character.id,
       });
-      // Откат
-      await db.location.delete({ where: { id: location.id } });
+      // Откатываем создание персонажа
       await db.character.delete({ where: { id: character.id } });
       return NextResponse.json(
         { 
@@ -347,6 +295,60 @@ export async function POST(request: NextRequest) {
         },
         { status: 500 }
       );
+    }
+
+    // Создаём начальную локацию (теперь можем привязать к сессии)
+    let location;
+    try {
+      location = await db.location.create({
+        data: {
+          name: startConfig.locationName,
+          distanceFromCenter: startConfig.distanceFromCenter,
+          qiDensity: startConfig.qiDensity,
+          qiFlowRate: Math.floor(startConfig.qiDensity / 10),
+          terrainType: variant === 1 ? "mountains" : "plains",
+          sessionId: session.id,
+        },
+      });
+      await logDebug("DATABASE", "Location created", { locationId: location.id, name: location.name });
+    } catch (dbError) {
+      const errorMsg = dbError instanceof Error ? dbError.message : "Unknown DB error";
+      await logError("DATABASE", `Failed to create location: ${errorMsg}`, {
+        error: errorMsg,
+        stack: dbError instanceof Error ? dbError.stack : undefined,
+        operation: "location.create",
+        locationData: {
+          name: startConfig.locationName,
+          distanceFromCenter: startConfig.distanceFromCenter,
+          qiDensity: startConfig.qiDensity,
+          sessionId: session.id,
+        },
+      });
+      // Откатываем создание сессии и персонажа
+      await db.gameSession.delete({ where: { id: session.id } });
+      await db.character.delete({ where: { id: character.id } });
+      return NextResponse.json(
+        { 
+          error: "Database error: Failed to create location", 
+          message: errorMsg,
+          component: "DATABASE_LOCATION",
+        },
+        { status: 500 }
+      );
+    }
+
+    // Обновляем персонажа с локацией
+    try {
+      await db.character.update({
+        where: { id: character.id },
+        data: { currentLocationId: location.id },
+      });
+    } catch (dbError) {
+      await logWarn("DATABASE", "Failed to update character location", {
+        error: dbError instanceof Error ? dbError.message : "Unknown DB error",
+        characterId: character.id,
+        locationId: location.id,
+      });
     }
 
     // Создаём секту если нужно (вариант 1)
