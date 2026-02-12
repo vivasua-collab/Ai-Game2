@@ -1,0 +1,460 @@
+// Prisma schema for Cultivation World Simulator
+// Version: 1.0
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ==================== GAME SESSION ====================
+
+model GameSession {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // === Идентификация мира ===
+  worldId     String @default(cuid()) // Уникальный ID мира
+  worldName   String @default("Неизвестный мир") // Название мира
+  
+  // Стартовый вариант (1=секта, 2=случайный, 3=кастомный)
+  startVariant Int     @default(1)
+  startType    String  @default("sect") // sect, random, custom - текстовый тип
+  
+  // Мировое время
+  worldYear   Int @default(1864)  // Год по Э.С.М.
+  worldMonth  Int @default(1)     // Месяц (1-12)
+  worldDay    Int @default(1)     // День (1-30)
+  worldHour   Int @default(6)     // Час (0-23)
+  worldMinute Int @default(0)     // Минута (0-59)
+  
+  // Время от попадания ГГ
+  daysSinceStart Int @default(0)
+  
+  // Текущее состояние мира (JSON string)
+  worldState String @default("{}")
+  
+  // Статус симуляции
+  isPaused Boolean @default(true)
+  
+  // Связи
+  character Character  @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  characterId String
+  messages   Message[]
+  events     WorldEvent[]
+  npcs       NPC[]
+  locations  Location[]
+  sects      Sect[]
+}
+
+// ==================== CHARACTER ====================
+
+model Character {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // === Идентификация ===
+  name String @default("Безымянный") // Имя персонажа
+  
+  // === Базовые характеристики ===
+  // Все характеристики с точностью 0.01
+  strength     Float @default(10.0)  // Сила
+  agility      Float @default(10.0)  // Ловкость
+  intelligence Float @default(10.0)  // Интеллект (IQ)
+  conductivity Float @default(0.0)   // Проводимость меридиан (ед/сек)
+  
+  // === Культивация ===
+  cultivationLevel    Int @default(1)  // Основной уровень (1-9)
+  cultivationSubLevel Int @default(0)  // Под-уровень (0-9)
+  
+  // === Ядро ===
+  coreCapacity  Int   @default(1000) // Ёмкость ядра (ед)
+  coreQuality   Float @default(1.0)  // Качество ядра
+  currentQi     Int   @default(0)    // Текущее количество Ци
+  accumulatedQi Int   @default(0)    // Накопленная для прорыва Ци
+  
+  // === Физиология ===
+  health        Float @default(100.0) // Здоровье (%)
+  fatigue       Float @default(0.0)   // Физическая усталость (%)
+  mentalFatigue Float @default(0.0)   // Ментальная усталость (%)
+  age           Int   @default(16)    // Возраст (лет)
+  
+  // === Память и система ===
+  hasAmnesia       Boolean @default(true)  // Амнезия
+  knowsAboutSystem Boolean @default(false) // Знает о системе
+  
+  // === Позиция ===
+  currentLocationId String?
+  currentLocation   Location? @relation("CurrentLocation", fields: [currentLocationId], references: [id])
+  
+  // === Принадлежность ===
+  sectId   String?
+  sect     Sect?   @relation(fields: [sectId], references: [id])
+  sectRole String? // candidate, outer_disciple, inner_disciple, core_member, elder
+  
+  // === Ресурсы ===
+  contributionPoints Int @default(0) // Очки вклада (ОВ)
+  spiritStones       Int @default(0) // Духовные камни
+  
+  // Связи
+  sessions   GameSession[]
+  inventory  InventoryItem[]
+  techniques CharacterTechnique[]
+}
+
+// ==================== MESSAGE ====================
+
+model Message {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  
+  sessionId String
+  session   GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  
+  // Тип сообщения
+  type String // narration, system, player, command, overlord
+  
+  // Отправитель
+  sender String? // narrator, system, player, overlord
+  
+  // Контент
+  content String
+  
+  // Метаданные (JSON string)
+  metadata String?
+}
+
+// ==================== WORLD EVENT ====================
+
+model WorldEvent {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  
+  sessionId String
+  session   GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  
+  // Тип события
+  eventType String // qi_change, breakthrough, battle, discovery, etc.
+  
+  // Описание
+  description String
+  
+  // Влияние на мир (JSON string)
+  worldImpact String?
+  
+  // Обработано ли
+  processed Boolean @default(false)
+}
+
+// ==================== NPC ====================
+
+model NPC {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  sessionId String
+  session   GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  
+  // === Базовые данные ===
+  name  String
+  title String?
+  age   Int
+  
+  // === Культивация ===
+  cultivationLevel    Int
+  cultivationSubLevel Int
+  coreCapacity        Int
+  currentQi           Int
+  
+  // === Характеристики ===
+  strength     Float
+  agility      Float
+  intelligence Float
+  conductivity Float
+  
+  // === Личность ===
+  personality String    // Черты характера (JSON)
+  motivation  String? // Мотивация
+  
+  // === Отношения ===
+  disposition Float @default(0) // Отношение к ГГ (-100 до 100)
+  
+  // === Принадлежность ===
+  sectId String?
+  sect   Sect?   @relation(fields: [sectId], references: [id])
+  role   String? // elder, disciple, candidate, etc.
+  
+  // === Позиция ===
+  locationId String?
+  location   Location? @relation(fields: [locationId], references: [id])
+}
+
+// ==================== LOCATION ====================
+
+model Location {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  
+  sessionId String
+  session   GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  
+  // === Базовые данные ===
+  name        String
+  description String?
+  
+  // === Координаты ===
+  // Км от центра мира
+  distanceFromCenter Int    @default(50000)
+  x                  Float?
+  y                  Float?
+  
+  // === Характеристики места ===
+  qiDensity  Int @default(100) // ед/м³
+  qiFlowRate Int @default(10)  // ед/сек (для лей-линий)
+  
+  // === Тип местности ===
+  terrainType String @default("plains") // mountains, plains, forest, sea, desert, etc.
+  
+  // === Связи ===
+  characters     Character[]  @relation("CurrentLocation")
+  npcs           NPC[]
+  subLocations   Location[]   @relation("SubLocations")
+  parentLocation Location?    @relation("SubLocations", fields: [parentLocationId], references: [id])
+  parentLocationId String?
+  sects          Sect[]
+}
+
+// ==================== SECT ====================
+
+model Sect {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  sessionId String
+  session   GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  
+  // === Базовые данные ===
+  name        String
+  description String?
+  
+  // === Расположение ===
+  locationId String
+  location   Location @relation(fields: [locationId], references: [id])
+  
+  // === Уровень силы секты ===
+  powerLevel Float @default(5.0) // Средний уровень культивации старейшин
+  
+  // === Ресурсы секты (JSON string) ===
+  resources String?
+  
+  // === Связи ===
+  members Character[]
+  npcs    NPC[]
+}
+
+// ==================== INVENTORY ====================
+
+model InventoryItem {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  
+  characterId String
+  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  
+  // === Данные предмета ===
+  name   String
+  type   String  // material, artifact, consumable, spirit_stone, etc.
+  rarity String? // common, uncommon, rare, legendary
+  
+  // === Количество ===
+  quantity Int @default(1)
+  
+  // === Свойства (JSON string) ===
+  properties String?
+}
+
+// ==================== TECHNIQUES ====================
+
+// Каталог техник (глобальный)
+model Technique {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // === Идентификация ===
+  name        String @unique
+  nameId      String @unique // Для поиска дубликатов
+  description String
+  
+  // === Классификация ===
+  type     String  // combat, cultivation, support, movement, sensory, healing
+  element  String  // fire, water, earth, air, void, neutral
+  rarity   String  // common, uncommon, rare, legendary
+  
+  // === Требования ===
+  minCultivationLevel Int     @default(1)
+  qiCost              Int     @default(0)
+  physicalFatigueCost Float   @default(0)
+  mentalFatigueCost   Float   @default(0)
+  
+  // === Эффекты (JSON) ===
+  effects String? // { damage, healing, qiRegen, duration, statModifiers }
+  
+  // === Источник ===
+  source String @default("created") // learned, created, inherited
+  
+  // Связи
+  characterTechniques CharacterTechnique[]
+}
+
+// Изученные персонажем техники
+model CharacterTechnique {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  
+  characterId String
+  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  
+  techniqueId String
+  technique   Technique @relation(fields: [techniqueId], references: [id])
+  
+  // === Мастерство ===
+  mastery Float @default(0.0) // 0-100%
+  
+  @@unique([characterId, techniqueId])
+}
+
+// ==================== SETTINGS ====================
+
+model GameSettings {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // === LLM настройки ===
+  llmProvider String  @default("z-ai") // z-ai, local, api
+  llmModel    String?
+  llmEndpoint String?
+  llmApiKey   String?
+  
+  // === Общие настройки ===
+  temperature Float @default(0.8)
+  maxTokens   Int   @default(2000)
+  
+  // === Настройки игры ===
+  autoSave    Boolean @default(true)
+  autoSaveInterval Int @default(5) // минуты
+  
+  // === Настройки отображения ===
+  showQiDensity   Boolean @default(true)
+  showTimeOfDay   Boolean @default(true)
+  showDistance    Boolean @default(true)
+  
+  // === Изображения ===
+  enableImages    Boolean @default(false)
+  imageProvider   String  @default("stub") // stub, local, api
+}
+
+// ==================== SYSTEM LOGS ====================
+
+model SystemLog {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  
+  // === Уровень лога ===
+  level     String   // ERROR, WARN, INFO, DEBUG
+  
+  // === Категория ===
+  category  String   // SYSTEM, API, LLM, GAME, DATABASE, UI, AUTH, UNKNOWN
+  
+  // === Сообщение ===
+  message   String
+  
+  // === Детали (JSON string) ===
+  details   String?
+  
+  // === Связи ===
+  sessionId String?  // ID игровой сессии (если применимо)
+  
+  // === Stack trace (для ошибок) ===
+  stack     String?
+  
+  // === Длительность операции (мс) ===
+  duration  Int?
+  
+  // Индекс для быстрого поиска
+  @@index([level])
+  @@index([category])
+  @@index([createdAt])
+}
+
+// ==================== ENCOUNTERED ENTITIES ====================
+
+// Встреченные персонажи и монстры
+model EncounteredEntity {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // === Идентификация ===
+  name  String
+  type  String  // npc, monster, animal, spirit
+  title String?
+  description String?
+  
+  // === Характеристики ===
+  cultivationLevel    Int?
+  cultivationSubLevel Int?
+  power               Float? // Для монстров
+  
+  // === Отношения ===
+  disposition Float @default(0) // -100 до 100
+  importance  String @default("normal") // minor, normal, important, critical
+  
+  // === Память ===
+  encounterCount    Int      @default(1)
+  firstEncounter    DateTime @default(now())
+  lastEncounter     DateTime @default(now())
+  
+  // === Местоположение ===
+  lastLocationId String?
+  homeLocationId String?
+  
+  // === Теги и данные (JSON) ===
+  tags       String  @default("[]")
+  customData String?
+  
+  // === Связь с сессией ===
+  sessionId String?
+  
+  // Связи
+  memories EntityMemory[]
+  
+  // Индексы
+  @@index([type])
+  @@index([importance])
+  @@index([lastEncounter])
+}
+
+// Воспоминания о сущности
+model EntityMemory {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  
+  entityId String
+  entity   EncounteredEntity @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  
+  // === Данные воспоминания ===
+  type    String  // dialogue, combat, trade, quest, social
+  summary String
+  impact  Float   // Влияние на disposition
+  
+  @@index([entityId])
+}
