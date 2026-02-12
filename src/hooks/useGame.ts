@@ -285,6 +285,33 @@ export function useGame() {
     setState(initialState);
   }, []);
 
+  // Сохранить и выйти
+  const saveAndExit = useCallback(async () => {
+    const sessionId = state.sessionId;
+    if (!sessionId) {
+      // Если нет сессии, просто сбрасываем
+      setState(initialState);
+      return;
+    }
+
+    try {
+      // Сохраняем текущее состояние
+      await fetch("/api/game/save", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          sessionId,
+          isPaused: true, // Ставим на паузу при выходе
+        }),
+      });
+    } catch (error) {
+      console.error("Save on exit error:", error);
+    } finally {
+      // В любом случае сбрасываем состояние
+      setState(initialState);
+    }
+  }, [state.sessionId]);
+
   return {
     ...state,
     startGame,
@@ -294,5 +321,6 @@ export function useGame() {
     getSaves,
     clearError,
     resetGame,
+    saveAndExit,
   };
 }

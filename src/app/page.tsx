@@ -31,6 +31,11 @@ export default function Home() {
     setShowStartScreen(true);
   };
 
+  const handleSaveAndExit = async () => {
+    await game.saveAndExit();
+    setShowStartScreen(true);
+  };
+
   // Показываем экран старта
   if (showStartScreen || !game.sessionId) {
     return (
@@ -55,6 +60,7 @@ export default function Home() {
       onSendMessage={game.sendMessage}
       onTogglePause={game.togglePause}
       onNewGame={handleNewGame}
+      onSaveAndExit={handleSaveAndExit}
     />
   );
 }

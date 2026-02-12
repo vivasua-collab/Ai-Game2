@@ -19,6 +19,7 @@ interface GameChatProps {
   onSendMessage: (message: string) => void;
   onTogglePause: () => void;
   onNewGame: () => void;
+  onSaveAndExit: () => void;
 }
 
 // Компонент одного сообщения
@@ -132,55 +133,56 @@ function StatusBar({
   );
 }
 
-// Панель характеристик
+// Панель характеристик (внизу справа, не мешает хедеру)
 function CharacterPanel({ character }: { character: Character | null }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   if (!character) return null;
 
   return (
-    <div className="absolute top-2 right-2 z-10">
+    <div className="fixed bottom-20 right-4 z-20">
       <Button
         variant="outline"
         size="sm"
-        className="border-slate-600 bg-slate-800/90"
+        className="border-slate-600 bg-slate-800/90 hover:bg-slate-700"
         onClick={() => setIsExpanded(!isExpanded)}
       >
-        📊 Характеристики
+        {isExpanded ? "✕ Закрыть" : "📊 Характеристики"}
       </Button>
 
       {isExpanded && (
-        <Card className="absolute top-10 right-0 w-64 bg-slate-800/95 border-slate-700 p-3 shadow-xl">
+        <Card className="absolute bottom-12 right-0 w-72 bg-slate-800/95 border-slate-700 p-4 shadow-xl">
+          <h3 className="text-sm font-semibold text-amber-400 mb-3">📊 Характеристики персонажа</h3>
           <div className="space-y-2 text-sm">
             <div className="flex justify-between">
               <span className="text-slate-400">Возраст:</span>
-              <span>{character.age} лет</span>
+              <span className="text-slate-200">{character.age} лет</span>
             </div>
             <Separator className="bg-slate-700" />
             <div className="flex justify-between">
               <span className="text-slate-400">Сила:</span>
-              <span>{character.strength.toFixed(2)}</span>
+              <span className="text-slate-200">{character.strength.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-400">Ловкость:</span>
-              <span>{character.agility.toFixed(2)}</span>
+              <span className="text-slate-200">{character.agility.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-400">Интеллект:</span>
-              <span>{character.intelligence.toFixed(2)}</span>
+              <span className="text-slate-200">{character.intelligence.toFixed(2)}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-400">Проводимость:</span>
-              <span>{character.conductivity.toFixed(2)}/сек</span>
+              <span className="text-slate-200">{character.conductivity.toFixed(2)}/сек</span>
             </div>
             <Separator className="bg-slate-700" />
             <div className="flex justify-between">
               <span className="text-slate-400">Ядро:</span>
-              <span>{character.coreCapacity} ед.</span>
+              <span className="text-slate-200">{character.coreCapacity} ед.</span>
             </div>
             <div className="flex justify-between">
               <span className="text-slate-400">Усталость:</span>
-              <span>{character.fatigue.toFixed(1)}%</span>
+              <span className="text-slate-200">{character.fatigue.toFixed(1)}%</span>
             </div>
           </div>
         </Card>
@@ -200,6 +202,7 @@ export function GameChat({
   onSendMessage,
   onTogglePause,
   onNewGame,
+  onSaveAndExit,
 }: GameChatProps) {
   const [input, setInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -226,27 +229,37 @@ export function GameChat({
   return (
     <div className="h-screen flex flex-col bg-slate-900 text-white relative">
       {/* Хедер */}
-      <header className="bg-slate-800 border-b border-slate-700 px-4 py-3 flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-amber-400">
-          🌸 Cultivation Simulator
-        </h1>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="border-slate-600"
-            onClick={onTogglePause}
-          >
-            {isPaused ? "▶️ Запуск" : "⏸️ Пауза"}
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="border-slate-600"
-            onClick={onNewGame}
-          >
-            🔄 Новая игра
-          </Button>
+      <header className="bg-slate-800 border-b border-slate-700 px-4 py-3 flex-shrink-0">
+        <div className="flex items-center justify-between gap-4">
+          <h1 className="text-lg font-semibold text-amber-400 flex-shrink-0">
+            🌸 Cultivation Simulator
+          </h1>
+          <div className="flex items-center gap-2 flex-wrap justify-end">
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-slate-600 text-slate-300 hover:bg-slate-700"
+              onClick={onTogglePause}
+            >
+              {isPaused ? "▶️ Запуск" : "⏸️ Пауза"}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-green-600 text-green-400 hover:bg-green-900/30"
+              onClick={onSaveAndExit}
+            >
+              💾 Сохранить и выйти
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-red-600 text-red-400 hover:bg-red-900/30"
+              onClick={onNewGame}
+            >
+              🔄 Новая игра
+            </Button>
+          </div>
         </div>
       </header>
 
