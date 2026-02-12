@@ -410,6 +410,7 @@ export class LLMManager {
   private providers: Map<LLMProviderType, ILLMProvider> = new Map();
   private config: LLMConfig;
   private currentProvider: ILLMProvider | null = null;
+  private preferredProvider: LLMProviderType | null = null;
 
   constructor(config: LLMConfig) {
     this.config = config;
@@ -430,6 +431,18 @@ export class LLMManager {
   }
 
   async getAvailableProvider(): Promise<ILLMProvider | null> {
+    // Если есть предпочтительный провайдер - проверяем его первым
+    if (this.preferredProvider) {
+      const provider = this.providers.get(this.preferredProvider);
+      if (provider) {
+        const availability = await provider.isAvailable();
+        if (availability.available) {
+          this.currentProvider = provider;
+          return provider;
+        }
+      }
+    }
+
     // Приоритет: local (Ollama) -> z-ai -> api
     // Ollama бесплатный и локальный, поэтому проверяем первым
     const priority: LLMProviderType[] = ["local", "z-ai", "api"];
@@ -455,6 +468,34 @@ export class LLMManager {
       return true;
     }
     return false;
+  }
+
+  /**
+   * Установить предпочтительный провайдер
+   * Будет использоваться первым при генерации
+   */
+  setPreferredProvider(providerType: string): boolean {
+    const validProviders: LLMProviderType[] = ["z-ai", "local", "api"];
+    if (!validProviders.includes(providerType as LLMProviderType)) {
+      return false;
+    }
+    
+    this.preferredProvider = providerType as LLMProviderType;
+    
+    // Сразу устанавливаем как текущий если есть
+    const provider = this.providers.get(this.preferredProvider);
+    if (provider) {
+      this.currentProvider = provider;
+    }
+    
+    return true;
+  }
+
+  /**
+   * Получить текущий предпочтительный провайдер
+   */
+  getPreferredProvider(): LLMProviderType | null {
+    return this.preferredProvider;
   }
 
   async generate(systemPrompt: string, messages: LLMMessage[]): Promise<LLMResponse> {

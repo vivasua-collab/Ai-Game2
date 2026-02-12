@@ -36,6 +36,12 @@ export function isLLMReady(): boolean {
   return llmManager !== null;
 }
 
+// Установка предпочтительного провайдера
+export function setPreferredProvider(provider: string): void {
+  const manager = getLLMManager();
+  manager.setPreferredProvider(provider);
+}
+
 // Утилита для генерации ответа игры
 export async function generateGameResponse(
   systemPrompt: string,
@@ -89,13 +95,25 @@ export async function generateGameResponse(
 }
 
 // Проверка доступности провайдеров
-export async function checkLLMStatus(): Promise<Record<string, { available: boolean; error?: string }>> {
+export async function checkLLMStatus(): Promise<Record<string, { available: boolean; error?: string; model?: string }>> {
   const manager = getLLMManager();
   const status = await manager.checkAllProviders();
 
   return {
-    zai: { available: status["z-ai"]?.available || false, error: status["z-ai"]?.error },
-    local: { available: status["local"]?.available || false, error: status["local"]?.error },
-    api: { available: status["api"]?.available || false, error: status["api"]?.error },
+    zai: { 
+      available: status["z-ai"]?.available || false, 
+      error: status["z-ai"]?.error,
+      model: status["z-ai"]?.model,
+    },
+    local: { 
+      available: status["local"]?.available || false, 
+      error: status["local"]?.error,
+      model: status["local"]?.model,
+    },
+    api: { 
+      available: status["api"]?.available || false, 
+      error: status["api"]?.error,
+      model: status["api"]?.model,
+    },
   };
 }

@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server";
-import { checkLLMStatus, initializeLLM, getLLMManager } from "@/lib/llm";
+import { NextRequest, NextResponse } from "next/server";
+import { checkLLMStatus, initializeLLM, getLLMManager, setPreferredProvider } from "@/lib/llm";
 
 // GET - проверка статуса LLM провайдеров
 export async function GET() {
@@ -14,18 +14,29 @@ export async function GET() {
     // Получаем статус всех провайдеров
     const status = await checkLLMStatus();
     
-    // Определяем текущий провайдер
-    let currentProvider = "z-ai";
-    
+    // Получаем выбранный провайдер
+    let preferredProvider = null;
     try {
       const manager = getLLMManager();
-      // Пытаемся получить доступный провайдер
-      const provider = await manager.getAvailableProvider();
-      if (provider) {
-        currentProvider = provider.getProviderName();
-      }
+      preferredProvider = manager.getPreferredProvider();
     } catch {
       // Игнорируем ошибки
+    }
+    
+    // Определяем текущий провайдер
+    let currentProvider = preferredProvider || "z-ai";
+    
+    if (!preferredProvider) {
+      try {
+        const manager = getLLMManager();
+        // Пытаемся получить доступный провайдер
+        const provider = await manager.getAvailableProvider();
+        if (provider) {
+          currentProvider = provider.getProviderName();
+        }
+      } catch {
+        // Игнорируем ошибки
+      }
     }
 
     // Определяем, есть ли доступный провайдер
@@ -51,6 +62,7 @@ export async function GET() {
       available: isAvailable,
       currentProvider,
       currentModel: models[currentProvider] || "default",
+      preferredProvider,
       providers: {
         zai: {
           available: status.zai?.available || false,
@@ -80,6 +92,45 @@ export async function GET() {
         error: error instanceof Error ? error.message : "Unknown error",
         currentProvider: "unknown",
         currentModel: "unknown",
+      },
+      { status: 500 }
+    );
+  }
+}
+
+// POST - установка предпочтительного провайдера
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { provider } = body;
+
+    if (!provider || !["z-ai", "local", "api"].includes(provider)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid provider. Must be: z-ai, local, or api" },
+        { status: 400 }
+      );
+    }
+
+    // Инициализируем LLM если ещё не сделали
+    try {
+      initializeLLM();
+    } catch {
+      // Игнорируем ошибки инициализации
+    }
+
+    // Устанавливаем предпочтительный провайдер
+    setPreferredProvider(provider);
+
+    return NextResponse.json({
+      success: true,
+      message: `Preferred provider set to: ${provider}`,
+      preferredProvider: provider,
+    });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : "Unknown error",
       },
       { status: 500 }
     );

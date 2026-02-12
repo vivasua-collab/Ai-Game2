@@ -33,7 +33,7 @@ function MessageBubble({ message }: { message: Message }) {
       className={`flex ${isPlayer ? "justify-end" : "justify-start"} mb-3`}
     >
       <div
-        className={`max-w-[80%] p-3 rounded-lg ${
+        className={`p-3 rounded-lg ${
           isPlayer
             ? "bg-blue-600/30 border border-blue-500/30"
             : isSystem
@@ -48,7 +48,7 @@ function MessageBubble({ message }: { message: Message }) {
             {message.sender === "narrator" ? "📖 Рассказчик" : "⚙️ Система"}
           </div>
         )}
-        <div className="text-sm text-slate-200 whitespace-pre-wrap">
+        <div className="text-sm text-slate-200 whitespace-pre-wrap break-words">
           {message.content}
         </div>
       </div>
@@ -133,7 +133,7 @@ function StatusBar({
   );
 }
 
-// Панель характеристик (внизу справа, не мешает хедеру)
+// Панель характеристик
 function CharacterPanel({ character }: { character: Character | null }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -230,15 +230,15 @@ export function GameChat({
     <div className="h-screen flex flex-col bg-slate-900 text-white relative">
       {/* Хедер */}
       <header className="bg-slate-800 border-b border-slate-700 px-4 py-3 flex-shrink-0">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <h1 className="text-lg font-semibold text-amber-400 flex-shrink-0">
             🌸 Cultivation Simulator
           </h1>
-          <div className="flex items-center gap-2 flex-wrap justify-end">
+          <div className="flex items-center gap-2 flex-wrap">
             <Button
               variant="outline"
               size="sm"
-              className="border-slate-600 text-slate-300 hover:bg-slate-700"
+              className="border-slate-600 text-slate-300 hover:bg-slate-700 min-w-[90px]"
               onClick={onTogglePause}
             >
               {isPaused ? "▶️ Запуск" : "⏸️ Пауза"}
@@ -246,7 +246,7 @@ export function GameChat({
             <Button
               variant="outline"
               size="sm"
-              className="border-green-600 text-green-400 hover:bg-green-900/30"
+              className="border-emerald-600 text-emerald-400 hover:bg-emerald-900/30 min-w-[150px]"
               onClick={onSaveAndExit}
             >
               💾 Сохранить и выйти
@@ -254,7 +254,7 @@ export function GameChat({
             <Button
               variant="outline"
               size="sm"
-              className="border-red-600 text-red-400 hover:bg-red-900/30"
+              className="border-amber-600 text-amber-400 hover:bg-amber-900/30 min-w-[120px]"
               onClick={onNewGame}
             >
               🔄 Новая игра
@@ -274,31 +274,37 @@ export function GameChat({
       {/* Панель характеристик */}
       <CharacterPanel character={character} />
 
-      {/* Область сообщений */}
-      <div className="flex-1 overflow-y-auto p-4">
-        {messages.map((message) => (
-          <MessageBubble key={message.id} message={message} />
-        ))}
-        {isLoading && (
-          <div className="flex justify-start mb-3">
-            <div className="bg-slate-700/50 border border-slate-600/30 p-3 rounded-lg">
-              <div className="text-sm text-slate-400 animate-pulse">
-                📖 Рассказчик думает...
+      {/* Основная область с ограничением ширины чата */}
+      {/* max-w-[100ch] - ограничение по символам (приоритет) */}
+      {/* max-w-[33vw] - ограничение по ширине экрана */}
+      <div className="flex-1 overflow-y-auto p-4 flex justify-center">
+        <div className="w-full max-w-[100ch]">
+          {messages.map((message) => (
+            <MessageBubble key={message.id} message={message} />
+          ))}
+          {isLoading && (
+            <div className="flex justify-start mb-3">
+              <div className="bg-slate-700/50 border border-slate-600/30 p-3 rounded-lg">
+                <div className="text-sm text-slate-400 animate-pulse">
+                  📖 Рассказчик думает...
+                </div>
               </div>
             </div>
-          </div>
-        )}
-        <div ref={messagesEndRef} />
+          )}
+          <div ref={messagesEndRef} />
+        </div>
       </div>
 
       {/* Подсказки команд */}
-      <div className="px-4 py-1 text-xs text-slate-500 border-t border-slate-700/50">
-        Команды: !! (действие ГГ) | -- (запрос мира) | --- (строгий режим) | --ПМ (проверка мира)
+      <div className="px-4 py-1 text-xs text-slate-500 border-t border-slate-700/50 flex justify-center">
+        <div className="max-w-[100ch] w-full">
+          Команды: !! (действие ГГ) | -- (запрос мира) | --- (строгий режим) | --ПМ (проверка мира)
+        </div>
       </div>
 
       {/* Поле ввода */}
-      <div className="p-4 border-t border-slate-700 bg-slate-800/50">
-        <div className="flex gap-2">
+      <div className="p-4 border-t border-slate-700 bg-slate-800/50 flex justify-center">
+        <div className="w-full max-w-[100ch] flex gap-2">
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}

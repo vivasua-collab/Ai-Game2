@@ -40,6 +40,7 @@ interface LLMStatus {
   available: boolean;
   currentProvider: string;
   currentModel: string;
+  preferredProvider?: string | null;
   providers: {
     zai: { available: boolean; error?: string; model?: string };
     local: { available: boolean; error?: string; model?: string };
@@ -52,6 +53,8 @@ function LLMStatusIndicator() {
   const [status, setStatus] = useState<LLMStatus | null>(null);
   const [isChecking, setIsChecking] = useState(true);
   const [showWarning, setShowWarning] = useState(false);
+  const [selectedProvider, setSelectedProvider] = useState<string>("");
+  const [isSaving, setIsSaving] = useState(false);
 
   // Проверка статуса при загрузке
   useEffect(() => {
@@ -64,12 +67,14 @@ function LLMStatusIndicator() {
       const response = await fetch("/api/llm/status");
       const data = await response.json();
       setStatus(data);
+      setSelectedProvider(data.preferredProvider || data.currentProvider || "");
     } catch (error) {
       console.error("Failed to check LLM status:", error);
       setStatus({
         available: false,
         currentProvider: "unknown",
         currentModel: "unknown",
+        preferredProvider: null,
         providers: {
           zai: { available: false, error: "Failed to check" },
           local: { available: false, error: "Failed to check" },
@@ -78,6 +83,25 @@ function LLMStatusIndicator() {
       });
     } finally {
       setIsChecking(false);
+    }
+  };
+
+  const handleProviderChange = async (provider: string) => {
+    setSelectedProvider(provider);
+    setIsSaving(true);
+    
+    try {
+      await fetch("/api/llm/status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ provider }),
+      });
+      // Обновляем статус после выбора
+      await checkStatus();
+    } catch (error) {
+      console.error("Failed to set provider:", error);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -103,6 +127,13 @@ function LLMStatusIndicator() {
     }
   };
 
+  // Получаем список доступных провайдеров
+  const availableProviders = status ? Object.entries(status.providers)
+    .filter(([_, p]) => p.available)
+    .map(([key]) => key === "zai" ? "z-ai" : key) : [];
+
+  const hasMultipleProviders = availableProviders.length > 1;
+
   return (
     <>
       <Card className="bg-slate-800/50 border-slate-700 w-full max-w-md">
@@ -112,6 +143,11 @@ function LLMStatusIndicator() {
             {isChecking && (
               <Badge variant="outline" className="text-xs border-slate-600 text-slate-400">
                 Проверка...
+              </Badge>
+            )}
+            {isSaving && (
+              <Badge variant="outline" className="text-xs border-amber-600 text-amber-400">
+                Сохранение...
               </Badge>
             )}
           </CardTitle>
@@ -154,22 +190,68 @@ function LLMStatusIndicator() {
             </Button>
           </div>
 
+          {/* Выбор провайдера при наличии нескольких */}
+          {hasMultipleProviders && (
+            <div className="mt-3 space-y-2">
+              <Label className="text-xs text-slate-400">Дефолтный маршрут:</Label>
+              <Select value={selectedProvider} onValueChange={handleProviderChange} disabled={isSaving}>
+                <SelectTrigger className="w-full h-8 bg-slate-700 border-slate-600 text-sm">
+                  <SelectValue placeholder="Выберите провайдер" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableProviders.map((provider) => (
+                    <SelectItem key={provider} value={provider}>
+                      {getProviderDisplayName(provider)} {status?.providers[provider === "z-ai" ? "zai" : provider as "local" | "api"]?.model && `(${status.providers[provider === "z-ai" ? "zai" : provider as "local" | "api"]?.model})`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-slate-500">
+                ⚙️ Выбранная сеть будет использоваться по умолчанию
+              </p>
+            </div>
+          )}
+
           {/* Доступные провайдеры */}
           {status && (
             <div className="mt-3 flex flex-wrap gap-1">
               {status.providers.zai.available && (
-                <Badge variant="outline" className="text-xs border-green-600 text-green-400">
-                  Z-AI ✓
+                <Badge 
+                  variant="outline" 
+                  className={`text-xs cursor-pointer transition-all ${
+                    selectedProvider === "z-ai" 
+                      ? "border-amber-500 text-amber-400 bg-amber-900/20" 
+                      : "border-green-600 text-green-400"
+                  }`}
+                  onClick={() => hasMultipleProviders && handleProviderChange("z-ai")}
+                >
+                  Z-AI {selectedProvider === "z-ai" ? "★" : "✓"}
                 </Badge>
               )}
               {status.providers.local.available && (
-                <Badge variant="outline" className="text-xs border-green-600 text-green-400">
-                  Ollama ✓
+                <Badge 
+                  variant="outline" 
+                  className={`text-xs cursor-pointer transition-all ${
+                    selectedProvider === "local" 
+                      ? "border-amber-500 text-amber-400 bg-amber-900/20" 
+                      : "border-green-600 text-green-400"
+                  }`}
+                  onClick={() => hasMultipleProviders && handleProviderChange("local")}
+                >
+                  Ollama {selectedProvider === "local" ? "★" : "✓"}
                 </Badge>
               )}
               {status.providers.api.available && (
-                <Badge variant="outline" className="text-xs border-green-600 text-green-400">
-                  API ✓
+                <Badge 
+                  variant="outline" 
+                  className={`text-xs cursor-pointer transition-all ${
+                    selectedProvider === "api" 
+                      ? "border-amber-500 text-amber-400 bg-amber-900/20" 
+                      : "border-green-600 text-green-400"
+                  }`}
+                  onClick={() => hasMultipleProviders && handleProviderChange("api")}
+                >
+                  API {selectedProvider === "api" ? "★" : "✓"}
                 </Badge>
               )}
               {!status.providers.zai.available && !status.providers.local.available && !status.providers.api.available && (
