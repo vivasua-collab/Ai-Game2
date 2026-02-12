@@ -3,9 +3,10 @@
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import type { Message, Character, WorldTime, Location } from "@/hooks/useGame";
 
 interface GameChatProps {
@@ -21,6 +22,9 @@ interface GameChatProps {
   onNewGame: () => void;
   onSaveAndExit: () => void;
 }
+
+// Типы боковых панелей
+type PanelType = "character" | "inventory" | "techniques" | "map" | "quests" | "relations" | null;
 
 // Компонент одного сообщения
 function MessageBubble({ message }: { message: Message }) {
@@ -74,7 +78,7 @@ function StatusBar({
   const healthPercent = character.health;
 
   return (
-    <div className="bg-slate-800/80 border-b border-slate-700 px-4 py-2">
+    <div className="bg-slate-800/80 border-b border-slate-700 px-4 py-2 ml-12">
       <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
         {/* Левая часть: Культивация */}
         <div className="flex items-center gap-4">
@@ -134,80 +138,213 @@ function StatusBar({
 }
 
 // Панель характеристик
-function CharacterPanel({ character }: { character: Character | null }) {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  if (!character) return null;
+function CharacterPanel({ character, isOpen, onClose }: { character: Character | null; isOpen: boolean; onClose: () => void }) {
+  if (!character || !isOpen) return null;
 
   return (
-    <div className="fixed bottom-20 right-4 z-20">
-      <Button
-        variant="outline"
-        size="sm"
-        className="border-slate-600 bg-slate-800/90 hover:bg-slate-700"
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
-        {isExpanded ? "✕ Закрыть" : "📊 Характеристики"}
-      </Button>
-
-      {isExpanded && (
-        <Card className="absolute bottom-12 right-0 w-72 bg-slate-800/95 border-slate-700 p-4 shadow-xl">
-          <h3 className="text-sm font-semibold text-amber-400 mb-3">📊 Характеристики персонажа</h3>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-slate-400">Возраст:</span>
-              <span className="text-slate-200">{character.age} лет</span>
+    <Card className="absolute left-14 top-0 w-72 bg-slate-800/95 border-slate-700 shadow-xl z-30">
+      <CardHeader className="pb-2 flex flex-row items-center justify-between">
+        <CardTitle className="text-sm text-amber-400">📊 Характеристики</CardTitle>
+        <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-slate-400" onClick={onClose}>✕</Button>
+      </CardHeader>
+      <CardContent className="space-y-2 text-sm">
+        <div className="flex justify-between">
+          <span className="text-slate-400">Имя:</span>
+          <span className="text-slate-200">{character.name}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-slate-400">Возраст:</span>
+          <span className="text-slate-200">{character.age} лет</span>
+        </div>
+        <Separator className="bg-slate-700" />
+        <div className="flex justify-between">
+          <span className="text-slate-400">Сила:</span>
+          <span className="text-slate-200">{character.strength.toFixed(2)}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-slate-400">Ловкость:</span>
+          <span className="text-slate-200">{character.agility.toFixed(2)}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-slate-400">Интеллект:</span>
+          <span className="text-slate-200">{character.intelligence.toFixed(2)}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-slate-400">Проводимость:</span>
+          <span className="text-slate-200">{character.conductivity.toFixed(2)}/сек</span>
+        </div>
+        <Separator className="bg-slate-700" />
+        <div className="flex justify-between">
+          <span className="text-slate-400">Ядро:</span>
+          <span className="text-slate-200">{character.coreCapacity} ед.</span>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-slate-400">Физ. усталость:</span>
+          <div className="flex items-center gap-2">
+            <div className="w-16 h-2 bg-slate-700 rounded-full overflow-hidden">
+              <div className="h-full bg-orange-500" style={{ width: `${character.fatigue}%` }} />
             </div>
-            <Separator className="bg-slate-700" />
-            <div className="flex justify-between">
-              <span className="text-slate-400">Сила:</span>
-              <span className="text-slate-200">{character.strength.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Ловкость:</span>
-              <span className="text-slate-200">{character.agility.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Интеллект:</span>
-              <span className="text-slate-200">{character.intelligence.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-400">Проводимость:</span>
-              <span className="text-slate-200">{character.conductivity.toFixed(2)}/сек</span>
-            </div>
-            <Separator className="bg-slate-700" />
-            <div className="flex justify-between">
-              <span className="text-slate-400">Ядро:</span>
-              <span className="text-slate-200">{character.coreCapacity} ед.</span>
-            </div>
-            <Separator className="bg-slate-700" />
-            <div className="flex justify-between items-center">
-              <span className="text-slate-400">Физ. усталость:</span>
-              <div className="flex items-center gap-2">
-                <div className="w-16 h-2 bg-slate-700 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-orange-500 transition-all duration-300"
-                    style={{ width: `${character.fatigue}%` }}
-                  />
-                </div>
-                <span className="text-slate-200 text-xs">{character.fatigue.toFixed(0)}%</span>
-              </div>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-slate-400">Мент. усталость:</span>
-              <div className="flex items-center gap-2">
-                <div className="w-16 h-2 bg-slate-700 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-purple-500 transition-all duration-300"
-                    style={{ width: `${character.mentalFatigue}%` }}
-                  />
-                </div>
-                <span className="text-slate-200 text-xs">{character.mentalFatigue.toFixed(0)}%</span>
-              </div>
-            </div>
+            <span className="text-slate-200 text-xs">{character.fatigue.toFixed(0)}%</span>
           </div>
-        </Card>
-      )}
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-slate-400">Мент. усталость:</span>
+          <div className="flex items-center gap-2">
+            <div className="w-16 h-2 bg-slate-700 rounded-full overflow-hidden">
+              <div className="h-full bg-purple-500" style={{ width: `${character.mentalFatigue}%` }} />
+            </div>
+            <span className="text-slate-200 text-xs">{character.mentalFatigue.toFixed(0)}%</span>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Панель инвентаря
+function InventoryPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  if (!isOpen) return null;
+
+  return (
+    <Card className="absolute left-14 top-0 w-80 bg-slate-800/95 border-slate-700 shadow-xl z-30">
+      <CardHeader className="pb-2 flex flex-row items-center justify-between">
+        <CardTitle className="text-sm text-amber-400">🎒 Инвентарь</CardTitle>
+        <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-slate-400" onClick={onClose}>✕</Button>
+      </CardHeader>
+      <CardContent>
+        <ScrollArea className="h-64">
+          <div className="text-sm text-slate-400 text-center py-8">
+            Инвентарь пуст
+            <p className="text-xs mt-2">Найденные предметы будут отображаться здесь</p>
+          </div>
+        </ScrollArea>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Панель техник
+function TechniquesPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  if (!isOpen) return null;
+
+  return (
+    <Card className="absolute left-14 top-0 w-80 bg-slate-800/95 border-slate-700 shadow-xl z-30">
+      <CardHeader className="pb-2 flex flex-row items-center justify-between">
+        <CardTitle className="text-sm text-amber-400">⚡ Техники</CardTitle>
+        <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-slate-400" onClick={onClose}>✕</Button>
+      </CardHeader>
+      <CardContent>
+        <ScrollArea className="h-64">
+          <div className="text-sm text-slate-400 text-center py-8">
+            Нет изученных техник
+            <p className="text-xs mt-2">Изучайте техники культивации в процессе игры</p>
+          </div>
+        </ScrollArea>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Панель карты
+function MapPanel({ isOpen, onClose, location }: { isOpen: boolean; onClose: () => void; location: Location | null }) {
+  if (!isOpen) return null;
+
+  return (
+    <Card className="absolute left-14 top-0 w-96 bg-slate-800/95 border-slate-700 shadow-xl z-30">
+      <CardHeader className="pb-2 flex flex-row items-center justify-between">
+        <CardTitle className="text-sm text-amber-400">🗺️ Карта мира</CardTitle>
+        <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-slate-400" onClick={onClose}>✕</Button>
+      </CardHeader>
+      <CardContent>
+        <div className="text-sm text-slate-400 text-center py-8">
+          Карта мира
+          {location && (
+            <p className="text-xs mt-2 text-slate-300">📍 Текущая локация: {location.name}</p>
+          )}
+          <p className="text-xs mt-2">Исследуйте мир, чтобы открыть новые области</p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Панель квестов
+function QuestsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  if (!isOpen) return null;
+
+  return (
+    <Card className="absolute left-14 top-0 w-80 bg-slate-800/95 border-slate-700 shadow-xl z-30">
+      <CardHeader className="pb-2 flex flex-row items-center justify-between">
+        <CardTitle className="text-sm text-amber-400">📜 Квесты</CardTitle>
+        <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-slate-400" onClick={onClose}>✕</Button>
+      </CardHeader>
+      <CardContent>
+        <ScrollArea className="h-64">
+          <div className="text-sm text-slate-400 text-center py-8">
+            Нет активных квестов
+            <p className="text-xs mt-2">Квесты будут появляться по мере развития сюжета</p>
+          </div>
+        </ScrollArea>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Панель отношений
+function RelationsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  if (!isOpen) return null;
+
+  return (
+    <Card className="absolute left-14 top-0 w-80 bg-slate-800/95 border-slate-700 shadow-xl z-30">
+      <CardHeader className="pb-2 flex flex-row items-center justify-between">
+        <CardTitle className="text-sm text-amber-400">👥 Отношения</CardTitle>
+        <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-slate-400" onClick={onClose}>✕</Button>
+      </CardHeader>
+      <CardContent>
+        <ScrollArea className="h-64">
+          <div className="text-sm text-slate-400 text-center py-8">
+            Нет знакомых персонажей
+            <p className="text-xs mt-2">Встреченные NPC будут отображаться здесь</p>
+          </div>
+        </ScrollArea>
+      </CardContent>
+    </Card>
+  );
+}
+
+// Боковое меню с иконками
+function SideMenu({ 
+  activePanel, 
+  setActivePanel 
+}: { 
+  activePanel: PanelType; 
+  setActivePanel: (panel: PanelType) => void;
+}) {
+  const menuItems: { id: PanelType; icon: string; label: string }[] = [
+    { id: "character", icon: "📊", label: "Характеристики" },
+    { id: "inventory", icon: "🎒", label: "Инвентарь" },
+    { id: "techniques", icon: "⚡", label: "Техники" },
+    { id: "map", icon: "🗺️", label: "Карта" },
+    { id: "quests", icon: "📜", label: "Квесты" },
+    { id: "relations", icon: "👥", label: "Отношения" },
+  ];
+
+  return (
+    <div className="absolute left-0 top-0 bottom-0 w-12 bg-slate-800/90 border-r border-slate-700 flex flex-col items-center py-2 z-20">
+      {menuItems.map((item) => (
+        <button
+          key={item.id}
+          onClick={() => setActivePanel(activePanel === item.id ? null : item.id)}
+          className={`w-10 h-10 rounded-lg flex items-center justify-center mb-1 transition-all ${
+            activePanel === item.id
+              ? "bg-amber-600/30 border border-amber-500/50 text-amber-400"
+              : "hover:bg-slate-700/50 text-slate-400 hover:text-slate-200"
+          }`}
+          title={item.label}
+        >
+          <span className="text-lg">{item.icon}</span>
+        </button>
+      ))}
     </div>
   );
 }
@@ -226,6 +363,7 @@ export function GameChat({
   onSaveAndExit,
 }: GameChatProps) {
   const [input, setInput] = useState("");
+  const [activePanel, setActivePanel] = useState<PanelType>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Автопрокрутка к новым сообщениям
@@ -249,8 +387,41 @@ export function GameChat({
 
   return (
     <div className="h-screen flex flex-col bg-slate-900 text-white relative">
+      {/* Боковое меню */}
+      <SideMenu activePanel={activePanel} setActivePanel={setActivePanel} />
+
+      {/* Панели */}
+      <div className="relative">
+        <CharacterPanel 
+          character={character} 
+          isOpen={activePanel === "character"} 
+          onClose={() => setActivePanel(null)} 
+        />
+        <InventoryPanel 
+          isOpen={activePanel === "inventory"} 
+          onClose={() => setActivePanel(null)} 
+        />
+        <TechniquesPanel 
+          isOpen={activePanel === "techniques"} 
+          onClose={() => setActivePanel(null)} 
+        />
+        <MapPanel 
+          isOpen={activePanel === "map"} 
+          onClose={() => setActivePanel(null)}
+          location={location}
+        />
+        <QuestsPanel 
+          isOpen={activePanel === "quests"} 
+          onClose={() => setActivePanel(null)} 
+        />
+        <RelationsPanel 
+          isOpen={activePanel === "relations"} 
+          onClose={() => setActivePanel(null)} 
+        />
+      </div>
+
       {/* Хедер */}
-      <header className="bg-slate-800 border-b border-slate-700 px-4 py-3 flex-shrink-0">
+      <header className="bg-slate-800 border-b border-slate-700 px-4 py-3 flex-shrink-0 ml-12">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <h1 className="text-lg font-semibold text-amber-400 flex-shrink-0">
             🌸 Cultivation Simulator
@@ -292,13 +463,8 @@ export function GameChat({
         daysSinceStart={daysSinceStart}
       />
 
-      {/* Панель характеристик */}
-      <CharacterPanel character={character} />
-
       {/* Основная область с ограничением ширины чата */}
-      {/* max-w-[100ch] - ограничение по символам (приоритет) */}
-      {/* max-w-[33vw] - ограничение по ширине экрана */}
-      <div className="flex-1 overflow-y-auto p-4 flex justify-center">
+      <div className="flex-1 overflow-y-auto p-4 flex justify-center ml-12">
         <div className="w-full max-w-[100ch]">
           {messages.map((message) => (
             <MessageBubble key={message.id} message={message} />
@@ -317,14 +483,14 @@ export function GameChat({
       </div>
 
       {/* Подсказки команд */}
-      <div className="px-4 py-1 text-xs text-slate-500 border-t border-slate-700/50 flex justify-center">
+      <div className="px-4 py-1 text-xs text-slate-500 border-t border-slate-700/50 flex justify-center ml-12">
         <div className="max-w-[100ch] w-full">
           Команды: !! (действие ГГ) | -- (запрос мира) | --- (строгий режим) | --ПМ (проверка мира)
         </div>
       </div>
 
       {/* Поле ввода */}
-      <div className="p-4 border-t border-slate-700 bg-slate-800/50 flex justify-center">
+      <div className="p-4 border-t border-slate-700 bg-slate-800/50 flex justify-center ml-12">
         <div className="w-full max-w-[100ch] flex gap-2">
           <Input
             value={input}
