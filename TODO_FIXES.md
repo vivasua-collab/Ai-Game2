@@ -10,9 +10,24 @@
 | 3 | Транзакция restart | ✅ Done | $transaction |
 | 4 | ~~Валидация payload~~ | ✅ Done | CustomConfigSchema |
 | 5 | Оркестрация services | ⏳ Pending | Thin controllers |
-| 6 | Build + metadata | ⚠️ Partially | Fonts fallback |
-| 7 | Критичные ошибки | 🔴 CRITICAL | Zustand + infinite loop |
-| 8 | README на русском | ⏳ Pending | Перевод |
+| 6 | Build + metadata | ✅ Done | Fonts fallback |
+| 7 | Zustand shallow fix | ✅ Done | No infinite loop |
+| 8 | README на русском | ✅ Done | Перевод |
+
+---
+
+## ✅ ВСЕ КРИТИЧНЫЕ ОШИБКИ ИСПРАВЛЕНЫ
+
+### Исправлено:
+1. **Zustand infinite loop** - добавлен `shallow` comparison
+2. **Build проходит** - в офлайн режиме
+3. **README переведён** - на русский язык
+
+### Ветка:
+`fix/core-consistency-pass-1`
+
+### Pull Request:
+https://github.com/vivasua-collab/Ai-Game2/pull/new/fix/core-consistency-pass-1
 
 ---
 
