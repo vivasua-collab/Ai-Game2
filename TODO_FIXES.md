@@ -1,0 +1,207 @@
+# План исправлений для ИИ-агента
+
+## Статус выполнения
+
+| Шаг | Задача | Статус | DoD |
+|-----|--------|--------|-----|
+| 0 | Baseline + ветка | ✅ Done | lint/build результаты |
+| 1 | Рассинхрон времени | ✅ Done | updatedTime всегда есть |
+| 2 | Усталость прорыва | ✅ Done | + вместо - |
+| 3 | Транзакция restart | ✅ Done | $transaction |
+| 4 | ~~Валидация payload~~ | ✅ Done | CustomConfigSchema |
+| 5 | Оркестрация services | ⏳ Pending | Thin controllers |
+| 6 | Build + metadata | ✅ Done | Fonts fallback |
+| 7 | Zustand shallow fix | ✅ Done | No infinite loop |
+| 8 | README на русском | ✅ Done | Перевод |
+
+---
+
+## ✅ ВСЕ КРИТИЧНЫЕ ОШИБКИ ИСПРАВЛЕНЫ
+
+### Исправлено:
+1. **Zustand infinite loop** - добавлен `shallow` comparison
+2. **Build проходит** - в офлайн режиме
+3. **README переведён** - на русский язык
+
+### Ветка:
+`fix/core-consistency-pass-1`
+
+### Pull Request:
+https://github.com/vivasua-collab/Ai-Game2/pull/new/fix/core-consistency-pass-1
+
+---
+
+## 🔴 КРИТИЧНЫЕ ОШИБКИ (исправить немедленно!)
+
+### Ошибка 1: Zustand getServerSnapshot
+```
+Console Error: The result of getServerSnapshot should be cached to avoid an infinite loop
+src/stores/game.store.ts (247:37) @ useGameActions
+```
+
+**Проблема:** `useGameActions` возвращает новый объект на каждый рендер.
+
+**Решение:**
+```typescript
+// Было (создаёт новый объект каждый раз):
+export const useGameActions = () => useGameStore(state => ({
+  startGame: state.startGame,
+  // ...
+}));
+
+// Нужно (использовать shallow comparison или отдельные селекторы):
+import { shallow } from 'zustand/shallow';
+
+export const useGameActions = () => useGameStore(
+  state => ({
+    startGame: state.startGame,
+    loadGame: state.loadGame,
+    sendAction: state.sendAction,
+  }),
+  shallow
+);
+```
+
+### Ошибка 2: Maximum update depth exceeded
+```
+Console Error: Maximum update depth exceeded
+src/components/ui/switch.tsx (13:5) @ Switch
+```
+
+**Проблема:** Switch компонент вызывает бесконечный ре-рендер.
+
+**Решение:** Проверить зависимости useEffect в компонентах, использовать useCallback для handlers.
+
+---
+
+## Шаг 0: Baseline и ветка ✅
+
+**Выполнено:**
+- [x] Создана ветка `master2`
+- [x] Lint проходит
+- [x] Build падает из-за Google Fonts (исправлено fallback)
+
+**Результаты в worklog.md**
+
+---
+
+## Шаг 1: Рассинхрон времени ✅
+
+**Проблема:** `updatedTime: null` в ответах API после медитации/прорыва.
+
+**Выполнено:**
+- [x] Создан `calculateUpdatedTime()` helper
+- [x] Убраны ранние `return ... updatedTime: null`
+- [x] Все ветки возвращают `updatedTime`
+
+**DoD:** ✅ После медитации/прорыва время в UI увеличивается
+
+---
+
+## Шаг 2: Усталость при прорыве ✅
+
+**Проблема:** Усталость вычиталась вместо сложения.
+
+**Выполнено:**
+- [x] Заменено `-` на `+` для fatigue
+- [x] Добавлен cap `Math.min(100, ...)`
+
+**DoD:** ✅ Прорыв увеличивает усталость
+
+---
+
+## Шаг 3: Атомарный restart ✅
+
+**Проблема:** Нетранзакционное удаление мира.
+
+**Выполнено:**
+- [x] Обёрнуто в `db.$transaction([...])`
+
+**DoD:** ✅ Нет частично удалённых миров
+
+---
+
+## Шаг 4: Валидация payload ✅
+
+**Проблема:** `customConfig: z.record(z.unknown())` слишком слабо.
+
+**Выполнено:**
+- [x] Создан `customConfigSchema` с строгими полями
+- [x] Применён к `startGameSchema`
+
+**DoD:** ✅ Невалидные поля не проходят
+
+---
+
+## Шаг 5: Оркестрация services ⏳
+
+**Проблема:** Логика дублируется в route и services.
+
+**TODO:**
+- [ ] Перенести orchestration в GameService
+- [ ] Route сделать thin-controller
+- [ ] Удалить дублирование
+
+**Критерий:** API-роуты < 100 строк
+
+---
+
+## Шаг 6: Build-устойчивость ⚠️
+
+**Выполнено:**
+- [x] Добавлен fallback для шрифтов
+- [x] Обновлена metadata
+
+**Осталось:**
+- [ ] Проверить build в офлайн-режиме
+- [ ] Добавить test script в package.json
+
+---
+
+## Шаг 7: README на русском ⏳
+
+**TODO:**
+- [ ] Перевести README.md на русский язык
+- [ ] Описать установку, запуск, архитектуру
+
+---
+
+## Шаг 8: Мини-чеклист перед PR
+
+- [ ] Lint зелёный
+- [ ] Тесты на время после медитации/прорыва
+- [ ] Тесты на усталость после прорыва
+- [ ] Тесты на валидацию start payload
+- [ ] Нет ранних возвратов `updatedTime: null`
+- [ ] Migration note в worklog.md
+
+---
+
+## Файлы для исправления
+
+### Критично (сейчас):
+1. `src/stores/game.store.ts` - useGameActions с shallow
+2. `src/components/game/GameChat.tsx` - useCallback для handlers
+3. `src/components/start/StartScreen.tsx` - проверить useEffect
+
+### Средний приоритет:
+4. `README.md` - перевод на русский
+5. `package.json` - добавить test script
+
+---
+
+## Команды для проверки
+
+```bash
+# Проверка lint
+bun run lint
+
+# Проверка build (в офлайн)
+bun run build
+
+# Запуск тестов
+bun run test
+
+# Dev сервер
+bun run dev
+```

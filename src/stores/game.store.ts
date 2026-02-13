@@ -13,6 +13,7 @@
 
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
+import { useShallow } from 'zustand/react/shallow';
 import type { Character, Location, WorldTime, Message, GameState } from '@/types/game';
 import { GameClientService } from '@/services/game-client.service';
 
@@ -243,15 +244,17 @@ export const useGameError = () => useGameStore(s => s.error);
 
 // ==================== ACTION HOOKS ====================
 
-/** Hook for game actions - re-renders on any state change */
-export const useGameActions = () => useGameStore(state => ({
-  startGame: state.startGame,
-  loadGame: state.loadGame,
-  sendAction: state.sendAction,
-  sendMessage: state.sendMessage,
-  togglePause: state.togglePause,
-  getSaves: state.getSaves,
-  clearError: state.clearError,
-  resetGame: state.resetGame,
-  saveAndExit: state.saveAndExit,
-}));
+/** Hook for game actions - uses useShallow to prevent infinite loops */
+export const useGameActions = () => useGameStore(
+  useShallow(state => ({
+    startGame: state.startGame,
+    loadGame: state.loadGame,
+    sendAction: state.sendAction,
+    sendMessage: state.sendMessage,
+    togglePause: state.togglePause,
+    getSaves: state.getSaves,
+    clearError: state.clearError,
+    resetGame: state.resetGame,
+    saveAndExit: state.saveAndExit,
+  }))
+);
