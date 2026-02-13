@@ -47,5 +47,16 @@ test
 prompt
 
 server.log
+
 # Skills directory
 /skills/
+
+# Database files (local data)
+db/*.db
+db/backups/
+
+# Temporary agent files
+worklog.md
+TASKS_*.md
+REFACTORING_PLAN.md
+TODO_FIXES.md
