@@ -11,7 +11,7 @@
  * Логика: никто не потревожит практика 9.0 в локации 6.0
  */
 
-import type { Character, Location, WorldTime } from "@/hooks/useGame";
+import type { Character, Location, WorldTime } from "@/types/game";
 import { 
   calculateSkillsInterruptionModifier,
   calculateFormationInterruptionModifier,

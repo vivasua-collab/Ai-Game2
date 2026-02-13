@@ -14,7 +14,7 @@
  * - Создания контента
  */
 
-import type { Character, Location, WorldTime } from "@/hooks/useGame";
+import type { Character, Location, WorldTime } from "@/types/game";
 import type { Technique } from "./technique-system";
 
 // Типы запросов

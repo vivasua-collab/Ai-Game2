@@ -12,7 +12,7 @@
  * - Восстановление во сне
  */
 
-import type { Character, Location } from "@/hooks/useGame";
+import type { Character, Location } from "@/types/game";
 
 // Типы действий для расчёта усталости
 export type ActionType = 
