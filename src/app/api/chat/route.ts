@@ -35,6 +35,10 @@ let llmInitialized = false;
 export async function POST(request: NextRequest) {
   const timer = new LogTimer("API", "Chat request");
   
+  // Инициализируем переменные для механик
+  let mechanicsUpdate: Record<string, unknown> = {};
+  const timeAdvanceForMechanics = { minutes: 0 };
+  
   try {
     // Инициализируем LLM если ещё не сделали
     if (!llmInitialized) {
