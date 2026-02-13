@@ -4,6 +4,7 @@ import { generateGameResponse, initializeLLM, isLLMReady } from "@/lib/llm";
 import { buildGameMasterPrompt } from "@/data/prompts/game-master";
 import type { LLMMessage } from "@/lib/llm/types";
 import { logError, logInfo, logWarn, logDebug, LogTimer } from "@/lib/logger";
+import { ChatRequestSchema, formatValidationErrors } from "@/validation";
 import {
   identifyRequestType,
   routeRequest,
@@ -68,20 +69,23 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { sessionId, message } = body;
-
-    if (!sessionId || !message) {
-      await logWarn("API", "Missing required parameters", { 
-        hasSessionId: !!sessionId, 
-        hasMessage: !!message,
-        sessionId: sessionId || "missing",
-      });
+    
+    // === ВАЛИДАЦИЯ ВХОДНЫХ ДАННЫХ ===
+    const parseResult = ChatRequestSchema.safeParse(body);
+    if (!parseResult.success) {
+      const errors = formatValidationErrors(parseResult.error);
+      await logWarn("API", "Validation failed", { errors });
       return NextResponse.json(
-        { error: "sessionId and message are required", component: "API_VALIDATION" },
+        { 
+          success: false,
+          error: "Validation failed", 
+          details: errors,
+        },
         { status: 400 }
       );
     }
-
+    
+    const { sessionId, message } = parseResult.data;
     await logDebug("API", "Chat request received", { sessionId, messageLength: message.length });
 
     // Получаем сессию и персонажа

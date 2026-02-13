@@ -1,20 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { SessionIdSchema, formatValidationErrors } from "@/validation";
+import { logError, logWarn } from "@/lib/logger";
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const sessionId = searchParams.get("sessionId");
 
-    if (!sessionId) {
+    // === ВАЛИДАЦИЯ ===
+    const parseResult = SessionIdSchema.safeParse(sessionId);
+    if (!parseResult.success) {
+      const errors = formatValidationErrors(parseResult.error);
+      await logWarn("API", "State request validation failed", { errors });
       return NextResponse.json(
-        { error: "sessionId is required" },
+        { 
+          success: false,
+          error: "Validation failed", 
+          details: errors,
+        },
         { status: 400 }
       );
     }
 
+    const validatedSessionId = parseResult.data;
+
     const session = await db.gameSession.findUnique({
-      where: { id: sessionId },
+      where: { id: validatedSessionId },
       include: {
         character: {
           include: {
@@ -37,7 +49,13 @@ export async function GET(request: NextRequest) {
     });
 
     if (!session) {
-      return NextResponse.json({ error: "Session not found" }, { status: 404 });
+      return NextResponse.json(
+        { 
+          success: false,
+          error: "Session not found" 
+        },
+        { status: 404 }
+      );
     }
 
     // Форматируем время
@@ -82,9 +100,12 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Get state API error:", error);
+    await logError("API", "Get state error", {
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
     return NextResponse.json(
       {
+        success: false,
         error: "Internal server error",
         message: error instanceof Error ? error.message : "Unknown error",
       },
