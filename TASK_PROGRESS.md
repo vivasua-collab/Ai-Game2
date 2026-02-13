@@ -52,18 +52,18 @@
 
 | Подзадача | Статус | Время | Файл |
 |-----------|--------|-------|------|
-| 5.3.1.1 Создать src/services/GameService.ts | ⏳ | - | - |
-| 5.3.1.2 Создать src/services/CharacterService.ts | ⏳ | - | - |
-| 5.3.1.3 Создать src/services/MeditationService.ts | ⏳ | - | - |
+| 5.3.1.1 Создать src/services/GameService.ts | ✅ | 30 мин | Создан |
+| 5.3.1.2 Создать src/services/CharacterService.ts | ⏭️ | - | Включено в GameService |
+| 5.3.1.3 Создать src/services/MeditationService.ts | ✅ | 20 мин | Создан |
 
 ### 5.3.2 Создать репозитории
 
 | Подзадача | Статус | Время | Файл |
 |-----------|--------|-------|------|
-| 5.3.2.1 Создать src/repositories/ICharacterRepository.ts | ⏳ | - | - |
-| 5.3.2.2 Создать src/repositories/ISessionRepository.ts | ⏳ | - | - |
-| 5.3.2.3 Создать src/repositories/prisma/PrismaCharacterRepository.ts | ⏳ | - | - |
-| 5.3.2.4 Создать src/repositories/prisma/PrismaSessionRepository.ts | ⏳ | - | - |
+| 5.3.2.1 Создать src/repositories/ICharacterRepository.ts | ✅ | 10 мин | Создан |
+| 5.3.2.2 Создать src/repositories/ISessionRepository.ts | ✅ | 15 мин | Создан |
+| 5.3.2.3 Создать src/repositories/prisma/PrismaCharacterRepository.ts | ✅ | 15 мин | Создан |
+| 5.3.2.4 Создать src/repositories/prisma/PrismaSessionRepository.ts | ✅ | 20 мин | Создан |
 
 ### 5.3.3 Рефакторинг API-роутов
 
@@ -78,9 +78,9 @@
 
 | Подзадача | Статус | Время | Файл |
 |-----------|--------|-------|------|
-| 5.3.4.1 Создать src/services/ServiceFactory.ts | ⏳ | - | - |
+| 5.3.4.1 Создать src/services/ServiceFactory.ts | ✅ | 10 мин | Создан |
 
-**Статус задачи 5.3:** ⏳ Ожидает
+**Статус задачи 5.3:** ⏳ В процессе (7/11 подзадач)
 
 ---
 
@@ -128,9 +128,9 @@
 | Задача | Статус | Прогресс |
 |--------|--------|----------|
 | 1. Валидация (Zod) | ✅ ЗАВЕРШЕНА | 12/12 |
-| 5.3. Слой сервисов | ⏳ Ожидает | 0/11 |
+| 5.3. Слой сервисов | ⏳ В процессе | 7/11 |
 | 5.1. Вынос логики | ⏳ Ожидает | 0/11 |
-| **ИТОГО** | ⏳ В процессе | **12/34 (35%)** |
+| **ИТОГО** | ⏳ В процессе | **19/34 (56%)** |
 
 ---
 
@@ -147,12 +147,22 @@ src/validation/
     └── character.schema.ts     ✅ Схемы для Character
 ```
 
-### Обновлённые файлы
+### Задача 5.3: Сервисы и репозитории
 
-- `src/app/api/chat/route.ts` - добавлена валидация Zod
-- `src/app/api/game/start/route.ts` - добавлена валидация Zod
-- `src/app/api/game/state/route.ts` - добавлена валидация Zod
-- `src/app/api/game/save/route.ts` - добавлена валидация Zod
+```
+src/repositories/
+├── index.ts                    ✅ Экспорт репозиториев
+├── ICharacterRepository.ts     ✅ Интерфейс
+├── ISessionRepository.ts       ✅ Интерфейс
+└── prisma/
+    ├── PrismaCharacterRepository.ts  ✅ Имплементация
+    └── PrismaSessionRepository.ts     ✅ Имплементация
+
+src/services/
+├── GameService.ts              ✅ Главный сервис
+├── MeditationService.ts        ✅ Сервис медитации
+└── ServiceFactory.ts           ✅ Фабрика сервисов
+```
 
 ---
 
