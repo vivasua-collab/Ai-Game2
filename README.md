@@ -1,141 +1,238 @@
-# 🚀 Welcome to Z.ai Code Scaffold
+# 🌸 Cultivation World Simulator
 
-A modern, production-ready web application scaffold powered by cutting-edge technologies, designed to accelerate your development with [Z.ai](https://chat.z.ai)'s AI-powered coding assistance.
+Симулятор мира культивации — современное веб-приложение для управления персонажем в мире, вдохновлённом восточными фэнтези-играми с системой Ци.
 
-## ✨ Technology Stack
+## 📋 Описание проекта
 
-This scaffold provides a robust foundation built with:
+Cultivation World Simulator — это интерактивная игра-симулятор, где игроки управляют персонажем-культиватором. Основные возможности:
 
-### 🎯 Core Framework
-- **⚡ Next.js 16** - The React framework for production with App Router
-- **📘 TypeScript 5** - Type-safe JavaScript for better developer experience
-- **🎨 Tailwind CSS 4** - Utility-first CSS framework for rapid UI development
+- **Система культивации** — медитация, накопление Ци, прорывы на новые уровни
+- **Управление персонажем** — здоровье, энергия, аспекты культивации
+- **Исследование мира** — локации, события, взаимодействия
+- **Динамическое время** — внутриигровое время с сменой времени суток
+- **Система усталости** — реалистичное управление ресурсами персонажа
 
-### 🧩 UI Components & Styling
-- **🧩 shadcn/ui** - High-quality, accessible components built on Radix UI
-- **🎯 Lucide React** - Beautiful & consistent icon library
-- **🌈 Framer Motion** - Production-ready motion library for React
-- **🎨 Next Themes** - Perfect dark mode in 2 lines of code
+## ✨ Технологический стек
 
-### 📋 Forms & Validation
-- **🎣 React Hook Form** - Performant forms with easy validation
-- **✅ Zod** - TypeScript-first schema validation
+Этот проект построен на современных технологиях:
 
-### 🔄 State Management & Data Fetching
-- **🐻 Zustand** - Simple, scalable state management
-- **🔄 TanStack Query** - Powerful data synchronization for React
-- **🌐 Fetch** - Promise-based HTTP request
+### 🎯 Основной фреймворк
+- **⚡ Next.js 15** — React фреймворк для продакшена с App Router
+- **📘 TypeScript 5** — Типобезопасный JavaScript
+- **🎨 Tailwind CSS 4** — Utility-first CSS фреймворк
 
-### 🗄️ Database & Backend
-- **🗄️ Prisma** - Next-generation TypeScript ORM
-- **🔐 NextAuth.js** - Complete open-source authentication solution
+### 🧩 UI компоненты и стилизация
+- **🧩 shadcn/ui** — Качественные доступные компоненты на Radix UI
+- **🎯 Lucide React** — Красивая библиотека иконок
+- **🌈 Framer Motion** — Библиотека анимаций для React
 
-### 🎨 Advanced UI Features
-- **📊 TanStack Table** - Headless UI for building tables and datagrids
-- **🖱️ DND Kit** - Modern drag and drop toolkit for React
-- **📊 Recharts** - Redefined chart library built with React and D3
-- **🖼️ Sharp** - High performance image processing
+### 🔄 Управление состоянием
+- **🐻 Zustand** — Простое, масштабируемое управление состоянием
+- **🔄 TanStack Query** — Мощная синхронизация данных для React
 
-### 🌍 Internationalization & Utilities
-- **🌍 Next Intl** - Internationalization library for Next.js
-- **📅 Date-fns** - Modern JavaScript date utility library
-- **🪝 ReactUse** - Collection of essential React hooks for modern development
+### 🗄️ База данных и бэкенд
+- **🗄️ Prisma** — TypeScript ORM нового поколения
+- **🔐 NextAuth.js** — Полное решение для аутентификации
 
-## 🎯 Why This Scaffold?
+### 🤖 AI интеграция
+- **🧠 z-ai-web-dev-sdk** — Интеграция с AI для генерации контента
 
-- **🏎️ Fast Development** - Pre-configured tooling and best practices
-- **🎨 Beautiful UI** - Complete shadcn/ui component library with advanced interactions
-- **🔒 Type Safety** - Full TypeScript configuration with Zod validation
-- **📱 Responsive** - Mobile-first design principles with smooth animations
-- **🗄️ Database Ready** - Prisma ORM configured for rapid backend development
-- **🔐 Auth Included** - NextAuth.js for secure authentication flows
-- **📊 Data Visualization** - Charts, tables, and drag-and-drop functionality
-- **🌍 i18n Ready** - Multi-language support with Next Intl
-- **🚀 Production Ready** - Optimized build and deployment settings
-- **🤖 AI-Friendly** - Structured codebase perfect for AI assistance
-
-## 🚀 Quick Start
+## 🚀 Установка
 
 ```bash
-# Install dependencies
-bun install
+# Клонирование репозитория
+git clone https://github.com/vivasua-collab/Ai-Game2.git
 
-# Start development server
-bun run dev
+# Переход в директорию проекта
+cd Ai-Game2
 
-# Build for production
-bun run build
-
-# Start production server
-bun start
+# Установка зависимостей
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to see your application running.
+## 🎮 Запуск
 
-## 🤖 Powered by Z.ai
+```bash
+# Запуск сервера разработки
+npm run dev
 
-This scaffold is optimized for use with [Z.ai](https://chat.z.ai) - your AI assistant for:
+# Сборка для продакшена
+npm run build
 
-- **💻 Code Generation** - Generate components, pages, and features instantly
-- **🎨 UI Development** - Create beautiful interfaces with AI assistance  
-- **🔧 Bug Fixing** - Identify and resolve issues with intelligent suggestions
-- **📝 Documentation** - Auto-generate comprehensive documentation
-- **🚀 Optimization** - Performance improvements and best practices
+# Запуск продакшен сервера
+npm start
 
-Ready to build something amazing? Start chatting with Z.ai at [chat.z.ai](https://chat.z.ai) and experience the future of AI-powered development!
+# Проверка качества кода
+npm run lint
+```
 
-## 📁 Project Structure
+Откройте [http://localhost:3000](http://localhost:3000) чтобы увидеть приложение.
+
+## 🏗️ Архитектура
+
+### Структура проекта
 
 ```
 src/
-├── app/                 # Next.js App Router pages
-├── components/          # Reusable React components
-│   └── ui/             # shadcn/ui components
-├── hooks/              # Custom React hooks
-└── lib/                # Utility functions and configurations
+├── app/                    # Next.js App Router страницы
+│   └── api/               # API роуты
+├── components/            # React компоненты
+│   ├── game/             # Игровые компоненты
+│   └── ui/               # shadcn/ui компоненты
+├── hooks/                 # Пользовательские React хуки
+├── lib/                   # Утилиты и конфигурации
+│   ├── game/             # Игровая логика
+│   └── validations/      # Zod схемы валидации
+├── services/              # Сервисный слой
+│   ├── game.service.ts   # Игровые действия
+│   ├── session.service.ts # Управление сессиями
+│   ├── character.service.ts # CRUD персонажа
+│   ├── world.service.ts  # Управление миром
+│   └── game-client.service.ts # Клиентские API вызовы
+├── stores/                # Zustand хранилища
+└── types/                 # TypeScript типы
 ```
 
-## 🎨 Available Features & Components
+### Ключевые принципы
 
-This scaffold includes a comprehensive set of modern web development tools:
+1. **Сервер — источник истины**
+   - Все расчёты происходят на сервере
+   - Клиент только отображает данные
+   - API возвращает полный `characterState`
 
-### 🧩 UI Components (shadcn/ui)
-- **Layout**: Card, Separator, Aspect Ratio, Resizable Panels
-- **Forms**: Input, Textarea, Select, Checkbox, Radio Group, Switch
-- **Feedback**: Alert, Toast (Sonner), Progress, Skeleton
-- **Navigation**: Breadcrumb, Menubar, Navigation Menu, Pagination
-- **Overlay**: Dialog, Sheet, Popover, Tooltip, Hover Card
-- **Data Display**: Badge, Avatar, Calendar
+2. **Разделение ответственности**
+   - `services/` — серверные действия (изменяют БД)
+   - `lib/game/` — общие функции расчёта
+   - `hooks/` — только управление состоянием React
+   - `stores/` — глобальное состояние Zustand
 
-### 📊 Advanced Data Features
-- **Tables**: Powerful data tables with sorting, filtering, pagination (TanStack Table)
-- **Charts**: Beautiful visualizations with Recharts
-- **Forms**: Type-safe forms with React Hook Form + Zod validation
+3. **Поток данных**
+   ```
+   User Action → API → Business Logic → Database → Response with characterState
+                    ↓
+              Client updates state from response
+   ```
 
-### 🎨 Interactive Features
-- **Animations**: Smooth micro-interactions with Framer Motion
-- **Drag & Drop**: Modern drag-and-drop functionality with DND Kit
-- **Theme Switching**: Built-in dark/light mode support
+## 📡 API
 
-### 🔐 Backend Integration
-- **Authentication**: Ready-to-use auth flows with NextAuth.js
-- **Database**: Type-safe database operations with Prisma
-- **API Client**: HTTP requests with Fetch + TanStack Query
-- **State Management**: Simple and scalable with Zustand
+### Основные эндпоинты
 
-### 🌍 Production Features
-- **Internationalization**: Multi-language support with Next Intl
-- **Image Optimization**: Automatic image processing with Sharp
-- **Type Safety**: End-to-end TypeScript with Zod validation
-- **Essential Hooks**: 100+ useful React hooks with ReactUse for common patterns
+| Эндпоинт | Метод | Описание |
+|----------|-------|----------|
+| `/api/game/start` | POST | Начать новую игру |
+| `/api/chat` | POST | Отправить действие/сообщение |
+| `/api/game/save` | POST | Сохранить игру |
+| `/api/game/state` | GET | Получить состояние игры |
 
-## 🤝 Get Started with Z.ai
+### Примеры запросов
 
-1. **Clone this scaffold** to jumpstart your project
-2. **Visit [chat.z.ai](https://chat.z.ai)** to access your AI coding assistant
-3. **Start building** with intelligent code generation and assistance
-4. **Deploy with confidence** using the production-ready setup
+**Начало игры:**
+```typescript
+POST /api/game/start
+{
+  "variant": "standard",
+  "characterName": "Имя персонажа"
+}
+```
+
+**Отправка действия:**
+```typescript
+POST /api/chat
+{
+  "sessionId": "uuid",
+  "message": "Начать медитацию на 1 час"
+}
+```
+
+**Сохранение игры:**
+```typescript
+POST /api/game/save
+{
+  "sessionId": "uuid",
+  "isPaused": false
+}
+```
+
+### Игровые типы
+
+```typescript
+// Основные типы персонажа
+interface Character {
+  id: string;
+  name: string;
+  realm: string;
+  stage: number;
+  currentQi: number;
+  coreCapacity: number;
+  health: number;
+  fatigue: number;
+  lifespan: number;
+}
+
+// Время мира
+interface WorldTime {
+  hour: number;
+  minute: number;
+  daysSinceStart: number;
+}
+```
+
+## 🛠️ Разработка
+
+### Требования
+- Node.js 18+
+- npm или bun
+
+### Скрипты
+
+```bash
+# Разработка
+npm run dev          # Запуск dev сервера (port 3000)
+npm run lint         # Проверка ESLint
+
+# База данных
+npm run db:push      # Применить схему Prisma
+npm run db:studio    # Открыть Prisma Studio
+```
+
+### Код-стайл
+
+- TypeScript во всём проекте со строгой типизацией
+- ES6+ import/export синтаксис
+- shadcn/ui компоненты предпочтительнее кастомных
+- Использование `'use client'` и `'use server'` директив
+
+### Валидация
+
+Все API роуты используют Zod валидацию:
+
+```typescript
+// Пример схемы валидации
+const sendMessageSchema = z.object({
+  sessionId: z.string().uuid(),
+  message: z.string().min(1).max(5000),
+});
+```
+
+### Тестирование
+
+Проект готов к unit-тестированию благодаря:
+- Сервисному слою без состояния
+- Dependency injection паттерну
+- Чистым функциям расчётов
+
+## 🤝 Участие в разработке
+
+1. Создайте форк репозитория
+2. Создайте ветку для фичи (`git checkout -b feature/amazing-feature`)
+3. Закоммитьте изменения (`git commit -m 'Add amazing feature'`)
+4. Запушьте в ветку (`git push origin feature/amazing-feature`)
+5. Откройте Pull Request
+
+## 📄 Лицензия
+
+Этот проект распространяется под MIT лицензией.
 
 ---
 
-Built with ❤️ for the developer community. Supercharged by [Z.ai](https://chat.z.ai) 🚀
+Построено с ❤️ командой Cultivation World. При поддержке [Z.ai](https://chat.z.ai) 🚀
