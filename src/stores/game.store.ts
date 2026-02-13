@@ -13,7 +13,7 @@
 
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { shallow } from 'zustand/shallow';
+import { useShallow } from 'zustand/react/shallow';
 import type { Character, Location, WorldTime, Message, GameState } from '@/types/game';
 import { GameClientService } from '@/services/game-client.service';
 
@@ -244,9 +244,9 @@ export const useGameError = () => useGameStore(s => s.error);
 
 // ==================== ACTION HOOKS ====================
 
-/** Hook for game actions - uses shallow comparison to prevent infinite loops */
+/** Hook for game actions - uses useShallow to prevent infinite loops */
 export const useGameActions = () => useGameStore(
-  state => ({
+  useShallow(state => ({
     startGame: state.startGame,
     loadGame: state.loadGame,
     sendAction: state.sendAction,
@@ -256,6 +256,5 @@ export const useGameActions = () => useGameStore(
     clearError: state.clearError,
     resetGame: state.resetGame,
     saveAndExit: state.saveAndExit,
-  }),
-  shallow
+  }))
 );
