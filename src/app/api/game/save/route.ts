@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { 
+  SaveGameRequestSchema, 
+  SessionIdSchema, 
+  formatValidationErrors 
+} from "@/validation";
+import { logError, logWarn } from "@/lib/logger";
 
 // GET - получить список сохранений
 export async function GET(request: NextRequest) {
@@ -56,9 +62,12 @@ export async function GET(request: NextRequest) {
       saves,
     });
   } catch (error) {
-    console.error("Get saves API error:", error);
+    await logError("API", "Get saves error", {
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
     return NextResponse.json(
       {
+        success: false,
         error: "Internal server error",
         message: error instanceof Error ? error.message : "Unknown error",
       },
@@ -83,16 +92,24 @@ export async function DELETE(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const sessionId = searchParams.get("sessionId");
 
-    if (!sessionId) {
+    // === ВАЛИДАЦИЯ ===
+    const parseResult = SessionIdSchema.safeParse(sessionId);
+    if (!parseResult.success) {
+      const errors = formatValidationErrors(parseResult.error);
+      await logWarn("API", "Delete save validation failed", { errors });
       return NextResponse.json(
-        { error: "sessionId is required" },
+        { 
+          success: false,
+          error: "Validation failed", 
+          details: errors,
+        },
         { status: 400 }
       );
     }
 
     // Каскадное удаление настроено в Prisma схеме
     await db.gameSession.delete({
-      where: { id: sessionId },
+      where: { id: parseResult.data },
     });
 
     return NextResponse.json({
@@ -100,9 +117,12 @@ export async function DELETE(request: NextRequest) {
       message: "Save deleted",
     });
   } catch (error) {
-    console.error("Delete save API error:", error);
+    await logError("API", "Delete save error", {
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
     return NextResponse.json(
       {
+        success: false,
         error: "Internal server error",
         message: error instanceof Error ? error.message : "Unknown error",
       },
@@ -115,18 +135,27 @@ export async function DELETE(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { sessionId, isPaused } = body;
-
-    if (!sessionId) {
+    
+    // === ВАЛИДАЦИЯ ===
+    const parseResult = SaveGameRequestSchema.safeParse(body);
+    if (!parseResult.success) {
+      const errors = formatValidationErrors(parseResult.error);
+      await logWarn("API", "Save game validation failed", { errors });
       return NextResponse.json(
-        { error: "sessionId is required" },
+        { 
+          success: false,
+          error: "Validation failed", 
+          details: errors,
+        },
         { status: 400 }
       );
     }
 
+    const { sessionId, isPaused } = parseResult.data;
+
     const session = await db.gameSession.update({
       where: { id: sessionId },
-      data: { isPaused },
+      data: { isPaused: isPaused ?? undefined },
     });
 
     return NextResponse.json({
@@ -137,9 +166,12 @@ export async function PUT(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Update save API error:", error);
+    await logError("API", "Update save error", {
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
     return NextResponse.json(
       {
+        success: false,
         error: "Internal server error",
         message: error instanceof Error ? error.message : "Unknown error",
       },

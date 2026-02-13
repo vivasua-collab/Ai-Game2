@@ -8,24 +8,14 @@ import {
 import { generateGameResponse, initializeLLM, isLLMReady } from "@/lib/llm";
 import { calculateBaseConductivity } from "@/data/cultivation-levels";
 import { logError, logInfo, logWarn, logDebug, LogTimer } from "@/lib/logger";
+import { 
+  StartGameRequestSchema,
+  formatValidationErrors,
+  type StartGameRequest 
+} from "@/validation";
 
 // Инициализируем LLM
 let llmInitialized = false;
-
-interface StartGameRequest {
-  variant: 1 | 2 | 3; // 1=секта, 2=случайный, 3=кастомный
-  characterName?: string; // Имя персонажа
-  customConfig?: {
-    location?: string;
-    age?: number;
-    coreCapacity?: number;
-    knowsAboutSystem?: boolean;
-    startQi?: number;
-    strength?: number;
-    agility?: number;
-    intelligence?: number;
-  };
-}
 
 // Генерация имени секты
 function generateSectName(): string {
@@ -147,8 +137,24 @@ export async function POST(request: NextRequest) {
       await logWarn("LLM", "LLM provider not ready for game start");
     }
 
-    const body: StartGameRequest = await request.json();
-    const { variant, characterName, customConfig } = body;
+    // === ВАЛИДАЦИЯ ВХОДНЫХ ДАННЫХ ===
+    const body = await request.json();
+    const parseResult = StartGameRequestSchema.safeParse(body);
+    
+    if (!parseResult.success) {
+      const errors = formatValidationErrors(parseResult.error);
+      await logWarn("API", "Validation failed", { errors });
+      return NextResponse.json(
+        { 
+          success: false,
+          error: "Validation failed", 
+          details: errors,
+        },
+        { status: 400 }
+      );
+    }
+    
+    const { variant, characterName, customConfig } = parseResult.data;
 
     // Определяем текстовый тип старта
     const startType = variant === 1 ? "sect" : variant === 2 ? "random" : "custom";
