@@ -8,24 +8,14 @@ import {
 import { generateGameResponse, initializeLLM, isLLMReady } from "@/lib/llm";
 import { calculateBaseConductivity } from "@/data/cultivation-levels";
 import { logError, logInfo, logWarn, logDebug, LogTimer } from "@/lib/logger";
+import {
+  startGameSchema,
+  validateOrError,
+  validationErrorResponse,
+} from "@/lib/validations/game";
 
 // Инициализируем LLM
 let llmInitialized = false;
-
-interface StartGameRequest {
-  variant: 1 | 2 | 3; // 1=секта, 2=случайный, 3=кастомный
-  characterName?: string; // Имя персонажа
-  customConfig?: {
-    location?: string;
-    age?: number;
-    coreCapacity?: number;
-    knowsAboutSystem?: boolean;
-    startQi?: number;
-    strength?: number;
-    agility?: number;
-    intelligence?: number;
-  };
-}
 
 // Генерация имени секты
 function generateSectName(): string {
@@ -147,8 +137,22 @@ export async function POST(request: NextRequest) {
       await logWarn("LLM", "LLM provider not ready for game start");
     }
 
-    const body: StartGameRequest = await request.json();
-    const { variant, characterName, customConfig } = body;
+    const body = await request.json();
+    
+    // Zod validation
+    const validation = validateOrError(startGameSchema, body);
+    if (!validation.success) {
+      await logWarn("API", "Start game validation failed", { 
+        error: validation.error,
+        body: { variant: body.variant, hasCustomConfig: !!body.customConfig },
+      });
+      return NextResponse.json(
+        validationErrorResponse(validation.error),
+        { status: 400 }
+      );
+    }
+    
+    const { variant, characterName, customConfig } = validation.data;
 
     // Определяем текстовый тип старта
     const startType = variant === 1 ? "sect" : variant === 2 ? "random" : "custom";

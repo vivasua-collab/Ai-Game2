@@ -26,6 +26,11 @@ import {
   getLocationDangerLevel,
   calculateInterruptionChance,
 } from "@/lib/game/meditation-interruption";
+import {
+  sendMessageSchema,
+  validateOrError,
+  validationErrorResponse,
+} from "@/lib/validations/game";
 
 // Инициализируем LLM при первом запросе
 let llmInitialized = false;
@@ -68,19 +73,21 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { sessionId, message } = body;
-
-    if (!sessionId || !message) {
-      await logWarn("API", "Missing required parameters", { 
-        hasSessionId: !!sessionId, 
-        hasMessage: !!message,
-        sessionId: sessionId || "missing",
+    
+    // Zod validation
+    const validation = validateOrError(sendMessageSchema, body);
+    if (!validation.success) {
+      await logWarn("API", "Validation failed", { 
+        error: validation.error,
+        body: { sessionId: body.sessionId ? 'present' : 'missing', messageLength: body.message?.length || 0 },
       });
       return NextResponse.json(
-        { error: "sessionId and message are required", component: "API_VALIDATION" },
+        validationErrorResponse(validation.error),
         { status: 400 }
       );
     }
+    
+    const { sessionId, message } = validation.data;
 
     await logDebug("API", "Chat request received", { sessionId, messageLength: message.length });
 

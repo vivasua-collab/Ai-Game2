@@ -9,12 +9,15 @@
  * 3. Получает обновлённое состояние от сервера
  * 
  * Все расчёты происходят НА СЕРВЕРЕ!
+ * 
+ * API calls are delegated to GameClientService for better separation of concerns.
  */
 
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
 import type { Character, Location, WorldTime, Message, GameState } from "@/types/game";
+import { GameClientService } from "@/services/game-client.service";
 
 // ==================== ИНИЦИАЛЬНОЕ СОСТОЯНИЕ ====================
 
@@ -30,62 +33,13 @@ const initialState: GameState = {
   daysSinceStart: 0,
 };
 
-// ==================== ТИПЫ ДЛЯ API ====================
-
-interface StartGameResponse {
-  success: boolean;
-  error?: string;
-  session: {
-    id: string;
-    character: Character;
-    worldYear: number;
-    worldMonth: number;
-    worldDay: number;
-    worldHour: number;
-    worldMinute: number;
-    isPaused: boolean;
-    daysSinceStart: number;
-  };
-  openingNarration: string;
-}
-
-interface LoadGameResponse {
-  success: boolean;
-  error?: string;
-  session: {
-    character: Character;
-    worldTime: WorldTime;
-    recentMessages: Message[];
-    isPaused: boolean;
-    daysSinceStart: number;
-  };
-}
-
-interface ActionResponse {
-  success: boolean;
-  error?: string;
-  response: {
-    type: string;
-    content: string;
-    characterState?: Partial<Character>;
-    timeAdvance?: {
-      minutes?: number;
-      hours?: number;
-      days?: number;
-    };
-    requiresRestart?: boolean;
-    interruption?: {
-      event: unknown;
-      options: unknown[];
-    };
-  };
-  updatedTime?: WorldTime & { daysSinceStart: number };
-}
-
 // ==================== ХУК ====================
 
 export function useGame() {
   const [state, setState] = useState<GameState>(initialState);
+
+  // Service instance - memoized to avoid recreation
+  const gameClient = useMemo(() => new GameClientService(), []);
 
   // ==================== НАЧАТЬ НОВУЮ ИГРУ ====================
   
@@ -94,13 +48,7 @@ export function useGame() {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
       try {
-        const response = await fetch("/api/game/start", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ variant, customConfig, characterName }),
-        });
-
-        const data: StartGameResponse = await response.json();
+        const data = await gameClient.startGame(variant, customConfig, characterName);
 
         if (!data.success) {
           throw new Error(data.error || "Failed to start game");
@@ -147,7 +95,7 @@ export function useGame() {
         return false;
       }
     },
-    []
+    [gameClient]
   );
 
   // ==================== ЗАГРУЗИТЬ СОХРАНЕНИЕ ====================
@@ -156,8 +104,7 @@ export function useGame() {
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
     try {
-      const response = await fetch(`/api/game/state?sessionId=${sessionId}`);
-      const data: LoadGameResponse = await response.json();
+      const data = await gameClient.loadGame(sessionId);
 
       if (!data.success) {
         throw new Error(data.error || "Failed to load game");
@@ -185,7 +132,7 @@ export function useGame() {
       }));
       return false;
     }
-  }, []);
+  }, [gameClient]);
 
   // ==================== ОТПРАВИТЬ ДЕЙСТВИЕ ====================
   
@@ -209,13 +156,7 @@ export function useGame() {
     }));
 
     try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId, message: action, ...payload }),
-      });
-
-      const data: ActionResponse = await response.json();
+      const data = await gameClient.sendAction(sessionId, action, payload);
 
       if (!data.success) {
         throw new Error(data.error || "Action failed");
@@ -283,7 +224,7 @@ export function useGame() {
         error: error instanceof Error ? error.message : "Unknown error",
       }));
     }
-  }, [state.sessionId]);
+  }, [state.sessionId, gameClient]);
 
   // ==================== УСТАРЕВШИЙ МЕТОД (для совместимости) ====================
   
@@ -297,33 +238,27 @@ export function useGame() {
     if (!state.sessionId) return;
 
     try {
-      await fetch("/api/game/save", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sessionId: state.sessionId,
-          isPaused: !state.isPaused,
-        }),
-      });
-
-      setState((prev) => ({ ...prev, isPaused: !prev.isPaused }));
+      const result = await gameClient.saveGame(state.sessionId, !state.isPaused);
+      
+      if (result.success) {
+        setState((prev) => ({ ...prev, isPaused: !prev.isPaused }));
+      }
     } catch (error) {
       console.error("Toggle pause error:", error);
     }
-  }, [state.sessionId, state.isPaused]);
+  }, [state.sessionId, state.isPaused, gameClient]);
 
   // ==================== СОХРАНЕНИЯ ====================
   
   const getSaves = useCallback(async () => {
     try {
-      const response = await fetch("/api/game/save");
-      const data = await response.json();
+      const data = await gameClient.getSaves();
       return data.saves || [];
     } catch (error) {
       console.error("Get saves error:", error);
       return [];
     }
-  }, []);
+  }, [gameClient]);
 
   // ==================== ОЧИСТКА ОШИБКИ ====================
   
@@ -347,20 +282,13 @@ export function useGame() {
     }
 
     try {
-      await fetch("/api/game/save", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          sessionId,
-          isPaused: true,
-        }),
-      });
+      await gameClient.saveGame(sessionId, true);
     } catch (error) {
       console.error("Save on exit error:", error);
     } finally {
       setState(initialState);
     }
-  }, [state.sessionId]);
+  }, [state.sessionId, gameClient]);
 
   return {
     ...state,

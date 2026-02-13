@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import {
+  saveGameSchema,
+  loadGameSchema,
+  validateOrError,
+  validationErrorResponse,
+} from "@/lib/validations/game";
 
 // GET - получить список сохранений
 export async function GET(request: NextRequest) {
@@ -83,9 +89,11 @@ export async function DELETE(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const sessionId = searchParams.get("sessionId");
 
-    if (!sessionId) {
+    // Zod validation for query params
+    const validation = validateOrError(loadGameSchema, { sessionId });
+    if (!validation.success) {
       return NextResponse.json(
-        { error: "sessionId is required" },
+        validationErrorResponse(validation.error),
         { status: 400 }
       );
     }
@@ -115,14 +123,17 @@ export async function DELETE(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
-    const { sessionId, isPaused } = body;
-
-    if (!sessionId) {
+    
+    // Zod validation
+    const validation = validateOrError(saveGameSchema, body);
+    if (!validation.success) {
       return NextResponse.json(
-        { error: "sessionId is required" },
+        validationErrorResponse(validation.error),
         { status: 400 }
       );
     }
+    
+    const { sessionId, isPaused } = validation.data;
 
     const session = await db.gameSession.update({
       where: { id: sessionId },

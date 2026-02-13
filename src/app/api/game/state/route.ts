@@ -1,20 +1,27 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import {
+  loadGameSchema,
+  validateOrError,
+  validationErrorResponse,
+} from "@/lib/validations/game";
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const sessionId = searchParams.get("sessionId");
 
-    if (!sessionId) {
+    // Zod validation for query params
+    const validation = validateOrError(loadGameSchema, { sessionId });
+    if (!validation.success) {
       return NextResponse.json(
-        { error: "sessionId is required" },
+        validationErrorResponse(validation.error),
         { status: 400 }
       );
     }
 
     const session = await db.gameSession.findUnique({
-      where: { id: sessionId },
+      where: { id: validation.data.sessionId },
       include: {
         character: {
           include: {
