@@ -1,89 +1,22 @@
+/**
+ * Хук управления игровым состоянием
+ * 
+ * АРХИТЕКТУРА: Сервер - единственный источник истины!
+ * 
+ * Клиент ТОЛЬКО:
+ * 1. Отображает данные от сервера
+ * 2. Отправляет действия на сервер
+ * 3. Получает обновлённое состояние от сервера
+ * 
+ * Все расчёты происходят НА СЕРВЕРЕ!
+ */
+
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { 
-  applyQiDelta, 
-  type QiDelta,
-  type QiCalculationResult 
-} from "@/lib/game/qi-client";
+import type { Character, Location, WorldTime, Message, GameState } from "@/types/game";
 
-// Типы
-export interface Character {
-  id: string;
-  name: string;
-  age: number;
-  cultivationLevel: number;
-  cultivationSubLevel: number;
-  currentQi: number;
-  coreCapacity: number;
-  accumulatedQi: number;       // Накопленная Ци для прорыва
-  strength: number;
-  agility: number;
-  intelligence: number;
-  conductivity: number;
-  health: number;
-  fatigue: number;
-  mentalFatigue: number;
-  hasAmnesia: boolean;
-  knowsAboutSystem: boolean;
-  sectRole: string | null;
-  currentLocation?: Location;
-  sect?: Sect;
-  skills?: Record<string, number>;  // Навыки: { "deep_meditation": 3, ... }
-}
-
-export interface Location {
-  id: string;
-  name: string;
-  distanceFromCenter: number;
-  qiDensity: number;
-  terrainType: string;
-}
-
-export interface Sect {
-  id: string;
-  name: string;
-  description?: string;
-  powerLevel: number;
-}
-
-export interface Message {
-  id: string;
-  type: string;
-  sender: string | null;
-  content: string;
-  createdAt: string;
-}
-
-export interface WorldTime {
-  year: number;
-  month: number;
-  day: number;
-  hour: number;
-  minute: number;
-  formatted: string;
-  season: string;
-}
-
-// Локальное состояние Ци (приоритет над сервером)
-export interface LocalQiState {
-  currentQi: number;
-  lastUpdate: number;
-  pendingDelta: number;
-}
-
-export interface GameState {
-  sessionId: string | null;
-  isLoading: boolean;
-  error: string | null;
-  character: Character | null;
-  worldTime: WorldTime | null;
-  location: Location | null;
-  messages: Message[];
-  isPaused: boolean;
-  daysSinceStart: number;
-  localQi: LocalQiState | null; // Локальное состояние Ци
-}
+// ==================== ИНИЦИАЛЬНОЕ СОСТОЯНИЕ ====================
 
 const initialState: GameState = {
   sessionId: null,
@@ -95,13 +28,67 @@ const initialState: GameState = {
   messages: [],
   isPaused: true,
   daysSinceStart: 0,
-  localQi: null,
 };
+
+// ==================== ТИПЫ ДЛЯ API ====================
+
+interface StartGameResponse {
+  success: boolean;
+  error?: string;
+  session: {
+    id: string;
+    character: Character;
+    worldYear: number;
+    worldMonth: number;
+    worldDay: number;
+    worldHour: number;
+    worldMinute: number;
+    isPaused: boolean;
+    daysSinceStart: number;
+  };
+  openingNarration: string;
+}
+
+interface LoadGameResponse {
+  success: boolean;
+  error?: string;
+  session: {
+    character: Character;
+    worldTime: WorldTime;
+    recentMessages: Message[];
+    isPaused: boolean;
+    daysSinceStart: number;
+  };
+}
+
+interface ActionResponse {
+  success: boolean;
+  error?: string;
+  response: {
+    type: string;
+    content: string;
+    characterState?: Partial<Character>;
+    timeAdvance?: {
+      minutes?: number;
+      hours?: number;
+      days?: number;
+    };
+    requiresRestart?: boolean;
+    interruption?: {
+      event: unknown;
+      options: unknown[];
+    };
+  };
+  updatedTime?: WorldTime & { daysSinceStart: number };
+}
+
+// ==================== ХУК ====================
 
 export function useGame() {
   const [state, setState] = useState<GameState>(initialState);
 
-  // Начать новую игру
+  // ==================== НАЧАТЬ НОВУЮ ИГРУ ====================
+  
   const startGame = useCallback(
     async (variant: 1 | 2 | 3, customConfig?: Record<string, unknown>, characterName?: string) => {
       setState((prev) => ({ ...prev, isLoading: true, error: null }));
@@ -113,7 +100,7 @@ export function useGame() {
           body: JSON.stringify({ variant, customConfig, characterName }),
         });
 
-        const data = await response.json();
+        const data: StartGameResponse = await response.json();
 
         if (!data.success) {
           throw new Error(data.error || "Failed to start game");
@@ -121,6 +108,7 @@ export function useGame() {
 
         const { session, openingNarration } = data;
 
+        // Формируем состояние ИЗ ОТВЕТА СЕРВЕРА
         setState({
           sessionId: session.id,
           isLoading: false,
@@ -135,7 +123,7 @@ export function useGame() {
             formatted: `${session.worldYear} Э.С.М., ${session.worldMonth} месяц, ${session.worldDay} день`,
             season: session.worldMonth <= 6 ? "тёплый" : "холодный",
           },
-          location: session.character.currentLocation,
+          location: session.character.currentLocation || null,
           messages: [
             {
               id: "opening",
@@ -147,12 +135,6 @@ export function useGame() {
           ],
           isPaused: session.isPaused,
           daysSinceStart: session.daysSinceStart,
-          // Инициализируем локальное состояние Ци
-          localQi: {
-            currentQi: session.character.currentQi,
-            lastUpdate: Date.now(),
-            pendingDelta: 0,
-          },
         });
 
         return true;
@@ -168,34 +150,30 @@ export function useGame() {
     []
   );
 
-  // Загрузить сохранение
+  // ==================== ЗАГРУЗИТЬ СОХРАНЕНИЕ ====================
+  
   const loadGame = useCallback(async (sessionId: string) => {
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
     try {
       const response = await fetch(`/api/game/state?sessionId=${sessionId}`);
-      const data = await response.json();
+      const data: LoadGameResponse = await response.json();
 
       if (!data.success) {
         throw new Error(data.error || "Failed to load game");
       }
 
+      // Формируем состояние ИЗ ОТВЕТА СЕРВЕРА
       setState({
         sessionId,
         isLoading: false,
         error: null,
         character: data.session.character,
         worldTime: data.session.worldTime,
-        location: data.session.character.currentLocation,
+        location: data.session.character.currentLocation || null,
         messages: data.session.recentMessages,
         isPaused: data.session.isPaused,
         daysSinceStart: data.session.daysSinceStart,
-        // Инициализируем локальное состояние Ци из сохранения
-        localQi: {
-          currentQi: data.session.character.currentQi,
-          lastUpdate: Date.now(),
-          pendingDelta: 0,
-        },
       });
 
       return true;
@@ -209,8 +187,9 @@ export function useGame() {
     }
   }, []);
 
-  // Отправить сообщение
-  const sendMessage = useCallback(async (message: string) => {
+  // ==================== ОТПРАВИТЬ ДЕЙСТВИЕ ====================
+  
+  const sendAction = useCallback(async (action: string, payload?: Record<string, unknown>) => {
     const sessionId = state.sessionId;
     if (!sessionId) return;
 
@@ -219,7 +198,7 @@ export function useGame() {
       id: `temp-${Date.now()}`,
       type: "player",
       sender: "player",
-      content: message,
+      content: action,
       createdAt: new Date().toISOString(),
     };
 
@@ -233,16 +212,16 @@ export function useGame() {
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ sessionId, message }),
+        body: JSON.stringify({ sessionId, message: action, ...payload }),
       });
 
-      const data = await response.json();
+      const data: ActionResponse = await response.json();
 
       if (!data.success) {
-        throw new Error(data.error || "Failed to send message");
+        throw new Error(data.error || "Action failed");
       }
 
-      // Добавляем ответ и обновляем состояние
+      // Добавляем ответ
       const aiMessage: Message = {
         id: `ai-${Date.now()}`,
         type: data.response.type,
@@ -253,7 +232,6 @@ export function useGame() {
 
       // === ПРОВЕРКА ПЕРЕЗАПУСКА МИРА ===
       if (data.response.requiresRestart) {
-        // Сбрасываем состояние и возвращаем на старт
         setState({
           ...initialState,
           messages: [aiMessage],
@@ -261,85 +239,15 @@ export function useGame() {
         return;
       }
 
+      // === ОБНОВЛЯЕМ СОСТОЯНИЕ ИЗ ОТВЕТА СЕРВЕРА ===
       setState((prev) => {
-        // === ЛОКАЛЬНЫЙ РАСЧЁТ ЦИ ===
-        // Приоритет: локальное состояние > данные от сервера
-        let updatedLocalQi = prev.localQi;
-        let qiChangeMessage = "";
-        let accumulatedQiGained = 0;
-        
-        if (data.response.qiDelta && prev.localQi && prev.character) {
-          const qiDelta: QiDelta = data.response.qiDelta;
-          const result = applyQiDelta(
-            prev.localQi.currentQi,
-            qiDelta,
-            prev.character.coreCapacity,
-            qiDelta.isBreakthrough || false
-          );
-          
-          updatedLocalQi = {
-            currentQi: result.newQi,
-            lastUpdate: Date.now(),
-            pendingDelta: 0,
+        // Обновляем персонажа если сервер прислал изменения
+        let updatedCharacter = prev.character;
+        if (data.response.characterState && prev.character) {
+          updatedCharacter = {
+            ...prev.character,
+            ...data.response.characterState,
           };
-          
-          // Если ядро было заполнено - сохраняем прирост accumulatedQi
-          if (qiDelta.accumulatedGain) {
-            accumulatedQiGained = qiDelta.accumulatedGain;
-          }
-          
-          // Формируем сообщение об изменении Ци
-          if (result.qiGained > 0) {
-            // Положительное изменение
-            if (qiDelta.accumulatedGain) {
-              // Ядро заполнено! Показываем прогресс прорыва
-              const newAccumulated = (prev.character?.accumulatedQi || 0) + qiDelta.accumulatedGain;
-              const currentFills = Math.floor(newAccumulated / prev.character!.coreCapacity);
-              const requiredFills = prev.character!.cultivationLevel * 10 + prev.character!.cultivationSubLevel;
-              qiChangeMessage = `\n\n⚡ Ядро заполнено! Прогресс: ${currentFills}/${requiredFills} заполнений\n⚠️ Потратьте Ци чтобы продолжить!`;
-            } else {
-              qiChangeMessage = `\n\n⚡ Ци: +${result.qiGained}`;
-              if (result.overflow > 0) {
-                qiChangeMessage += ` (${result.overflow} рассеялось в среду)`;
-              }
-            }
-          } else if (qiDelta.qiChange < 0) {
-            // Отрицательное изменение (затраты)
-            qiChangeMessage = `\n\n⚡ Ци: ${qiDelta.qiChange}`;
-          }
-        }
-        
-        // Обновляем персонажа с локальным значением Ци
-        let updatedCharacter = prev.character ? { ...prev.character } : null;
-        
-        if (updatedCharacter) {
-          // Используем ЛОКАЛЬНОЕ значение Ци (приоритет!)
-          if (updatedLocalQi) {
-            updatedCharacter.currentQi = updatedLocalQi.currentQi;
-          }
-          
-          // Обновляем accumulatedQi если был прирост
-          if (accumulatedQiGained > 0) {
-            updatedCharacter.accumulatedQi = (updatedCharacter.accumulatedQi || 0) + accumulatedQiGained;
-          }
-          
-          // Применяем изменение усталости (может быть + или -)
-          if (data.response.fatigueDelta) {
-            // fatigueDelta может быть отрицательным (медитация снимает) или положительным (бой добавляет)
-            updatedCharacter.fatigue = Math.max(0, Math.min(100, 
-              (updatedCharacter.fatigue || 0) + (data.response.fatigueDelta.physical || 0)
-            ));
-            updatedCharacter.mentalFatigue = Math.max(0, Math.min(100,
-              (updatedCharacter.mentalFatigue || 0) + (data.response.fatigueDelta.mental || 0)
-            ));
-          }
-          
-          // Совместимость со старым форматом stateUpdate
-          if (data.response.stateUpdate) {
-            // НЕ перезаписываем currentQi из stateUpdate если есть qiDelta!
-            const { currentQi, ...otherUpdates } = data.response.stateUpdate;
-            updatedCharacter = { ...updatedCharacter, ...otherUpdates };
-          }
         }
 
         // Обновляем время если оно изменилось
@@ -359,17 +267,13 @@ export function useGame() {
           updatedDaysSinceStart = data.updatedTime.daysSinceStart;
         }
 
-        // Добавляем информацию о Ци в контент если есть изменения
-        const finalContent = data.response.content + qiChangeMessage;
-
         return {
           ...prev,
-          messages: [...prev.messages, { ...aiMessage, content: finalContent }],
+          messages: [...prev.messages, aiMessage],
           isLoading: false,
           character: updatedCharacter,
           worldTime: updatedWorldTime,
           daysSinceStart: updatedDaysSinceStart,
-          localQi: updatedLocalQi,
         };
       });
     } catch (error) {
@@ -381,7 +285,14 @@ export function useGame() {
     }
   }, [state.sessionId]);
 
-  // Переключить паузу
+  // ==================== УСТАРЕВШИЙ МЕТОД (для совместимости) ====================
+  
+  const sendMessage = useCallback(async (message: string) => {
+    return sendAction(message);
+  }, [sendAction]);
+
+  // ==================== ПАУЗА ====================
+  
   const togglePause = useCallback(async () => {
     if (!state.sessionId) return;
 
@@ -401,7 +312,8 @@ export function useGame() {
     }
   }, [state.sessionId, state.isPaused]);
 
-  // Получить список сохранений
+  // ==================== СОХРАНЕНИЯ ====================
+  
   const getSaves = useCallback(async () => {
     try {
       const response = await fetch("/api/game/save");
@@ -413,39 +325,39 @@ export function useGame() {
     }
   }, []);
 
-  // Очистить ошибку
+  // ==================== ОЧИСТКА ОШИБКИ ====================
+  
   const clearError = useCallback(() => {
     setState((prev) => ({ ...prev, error: null }));
   }, []);
 
-  // Сбросить игру
+  // ==================== СБРОС ИГРЫ ====================
+  
   const resetGame = useCallback(() => {
     setState(initialState);
   }, []);
 
-  // Сохранить и выйти
+  // ==================== СОХРАНИТЬ И ВЫЙТИ ====================
+  
   const saveAndExit = useCallback(async () => {
     const sessionId = state.sessionId;
     if (!sessionId) {
-      // Если нет сессии, просто сбрасываем
       setState(initialState);
       return;
     }
 
     try {
-      // Сохраняем текущее состояние
       await fetch("/api/game/save", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           sessionId,
-          isPaused: true, // Ставим на паузу при выходе
+          isPaused: true,
         }),
       });
     } catch (error) {
       console.error("Save on exit error:", error);
     } finally {
-      // В любом случае сбрасываем состояние
       setState(initialState);
     }
   }, [state.sessionId]);
@@ -455,6 +367,7 @@ export function useGame() {
     startGame,
     loadGame,
     sendMessage,
+    sendAction,
     togglePause,
     getSaves,
     clearError,
@@ -462,3 +375,7 @@ export function useGame() {
     saveAndExit,
   };
 }
+
+// ==================== ЭКСПОРТ ТИПОВ ====================
+
+export type { Character, Location, WorldTime, Message, GameState };

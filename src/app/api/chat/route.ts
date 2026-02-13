@@ -12,11 +12,9 @@ import {
 } from "@/lib/game/request-router";
 import {
   performMeditation,
-  calculateQiAccumulationRate,
   attemptBreakthrough,
-  calculatePassiveQiGain,
-  type MeditationType,
 } from "@/lib/game/qi-system";
+import { calculateBreakthroughRequirements } from "@/lib/game/qi-shared";
 import {
   calculateFatigueFromAction,
   calculateEfficiencyModifiers,
@@ -34,6 +32,10 @@ let llmInitialized = false;
 
 export async function POST(request: NextRequest) {
   const timer = new LogTimer("API", "Chat request");
+  
+  // Инициализируем переменные для механик
+  let mechanicsUpdate: Record<string, unknown> = {};
+  const timeAdvanceForMechanics = { minutes: 0 };
   
   try {
     // Инициализируем LLM если ещё не сделали
@@ -178,24 +180,26 @@ export async function POST(request: NextRequest) {
           data: { ...mechanicsUpdate, updatedAt: new Date() },
         });
         
-        const qiDelta = { qiChange: 0, reason: "Прорыв", isBreakthrough: result.success };
+        // Получаем обновлённого персонажа из БД
+        const updatedCharacter = await db.character.findUnique({
+          where: { id: session.characterId },
+        });
         
         return NextResponse.json({
           success: true,
           response: {
             type: "narration",
             content: result.success 
-              ? `${result.message}\n\n💎 Ёмкость ядра: ${result.newCoreCapacity}\n⚡ Накопленная Ци: ${session.character.accumulatedQi - result.qiConsumed}`
+              ? `${result.message}\n\n💎 Ёмкость ядра: ${result.newCoreCapacity}\n⚡ Накопленная Ци: ${updatedCharacter?.accumulatedQi || 0}`
               : `❌ ${result.message}`,
-            qiDelta,
-            stateUpdate: mechanicsUpdate,
+            characterState: mechanicsUpdate,
             timeAdvance: { minutes: 30 },
           },
           updatedTime: null,
         });
       } else {
         // Накопление Ци через медитацию
-        const meditationType: MeditationType = "accumulation";
+        const meditationType = "accumulation" as const;
         
         // === ПРОВЕРКА ПРЕРЫВАНИЯ МЕДИТАЦИИ ===
         const worldTime = {
@@ -289,16 +293,7 @@ export async function POST(request: NextRequest) {
             response: {
               type: "interruption",
               content: responseContent,
-              qiDelta: {
-                qiChange: partialResult.qiGained,
-                reason: "Медитация прервана",
-                isBreakthrough: false,
-              },
-              fatigueDelta: {
-                physical: -partialResult.fatigueGained.physical,
-                mental: -partialResult.fatigueGained.mental,
-              },
-              stateUpdate: mechanicsUpdate,
+              characterState: mechanicsUpdate,
               timeAdvance: { minutes: interruptedMinutes },
               interruption: {
                 event: event,
@@ -362,17 +357,7 @@ export async function POST(request: NextRequest) {
           response: {
             type: "narration",
             content: responseContent,
-            qiDelta: {
-              qiChange: result.qiGained,
-              reason: result.coreWasFilled ? "Ядро заполнено! Потратьте Ци для продолжения." : "Медитация",
-              isBreakthrough: false,
-              accumulatedGain: result.accumulatedQiGained,
-            },
-            fatigueDelta: {
-              physical: -result.fatigueGained.physical,
-              mental: -result.fatigueGained.mental,
-            },
-            stateUpdate: mechanicsUpdate,
+            characterState: mechanicsUpdate,
             timeAdvance: { minutes: result.duration },
           },
           updatedTime: null,
@@ -390,7 +375,7 @@ export async function POST(request: NextRequest) {
         response: {
           type: "system",
           content: formatLocalResponse(routing.localData, requestType),
-          stateUpdate: null,
+          characterState: null,
           timeAdvance: null,
         },
         updatedTime: null,
@@ -441,7 +426,7 @@ export async function POST(request: NextRequest) {
             `**Локация:** ${verifyResult.location?.name || "Неизвестно"}\n` +
             (verifyResult.location ? `- Плотность Ци: ${verifyResult.location.qiDensity} ед/м³\n` : "") +
             `\n**Время:** ${verifyResult.worldTime.year} г., ${verifyResult.worldTime.month} мес., ${verifyResult.worldTime.day} д., ${verifyResult.worldTime.hour}:${verifyResult.worldTime.minute.toString().padStart(2, "0")}`,
-          stateUpdate: null,
+          characterState: null,
           timeAdvance: null,
         },
         updatedTime: null,
