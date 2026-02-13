@@ -1,3 +1,5 @@
+// Prisma database client
+// Force reimport after schema changes
 import { PrismaClient } from '@prisma/client'
 
 const globalForPrisma = globalThis as unknown as {
