@@ -32,6 +32,55 @@ import {
   validationErrorResponse,
 } from "@/lib/validations/game";
 
+// ==================== HELPER FUNCTIONS ====================
+
+/**
+ * Вычисляет обновлённое время на основе текущего и смещения в минутах
+ * Используется для синхронизации времени между сервером и клиентом
+ */
+function calculateUpdatedTime(
+  session: { worldYear: number; worldMonth: number; worldDay: number; worldHour: number; worldMinute: number; daysSinceStart: number },
+  minutesToAdd: number
+): { year: number; month: number; day: number; hour: number; minute: number; daysSinceStart: number } {
+  let newMinute = session.worldMinute + minutesToAdd;
+  let newHour = session.worldHour;
+  let newDay = session.worldDay;
+  let newMonth = session.worldMonth;
+  let newYear = session.worldYear;
+  let daysSinceStart = session.daysSinceStart;
+
+  // Обрабатываем переполнение
+  while (newMinute >= 60) {
+    newMinute -= 60;
+    newHour++;
+  }
+
+  while (newHour >= 24) {
+    newHour -= 24;
+    newDay++;
+    daysSinceStart++;
+  }
+
+  while (newDay > 30) {
+    newDay -= 30;
+    newMonth++;
+  }
+
+  while (newMonth > 12) {
+    newMonth -= 12;
+    newYear++;
+  }
+
+  return {
+    year: newYear,
+    month: newMonth,
+    day: newDay,
+    hour: newHour,
+    minute: newMinute,
+    daysSinceStart,
+  };
+}
+
 // Инициализируем LLM при первом запросе
 let llmInitialized = false;
 
@@ -176,8 +225,8 @@ export async function POST(request: NextRequest) {
             cultivationSubLevel: result.newSubLevel,
             coreCapacity: result.newCoreCapacity,
             accumulatedQi: Math.max(0, session.character.accumulatedQi - result.qiConsumed),
-            fatigue: Math.max(0, session.character.fatigue - result.fatigueGained.physical),
-            mentalFatigue: Math.max(0, (session.character.mentalFatigue || 0) - result.fatigueGained.mental),
+            fatigue: Math.min(100, Math.max(0, session.character.fatigue + result.fatigueGained.physical)),
+            mentalFatigue: Math.min(100, Math.max(0, (session.character.mentalFatigue || 0) + result.fatigueGained.mental)),
           };
         }
         timeAdvanceForMechanics.minutes = 30;
@@ -202,7 +251,7 @@ export async function POST(request: NextRequest) {
             characterState: mechanicsUpdate,
             timeAdvance: { minutes: 30 },
           },
-          updatedTime: null,
+          updatedTime: calculateUpdatedTime(session, 30),
         });
       } else {
         // Накопление Ци через медитацию
@@ -307,7 +356,7 @@ export async function POST(request: NextRequest) {
                 options: options,
               },
             },
-            updatedTime: null,
+            updatedTime: calculateUpdatedTime(session, interruptedMinutes),
           });
         }
         
@@ -367,7 +416,7 @@ export async function POST(request: NextRequest) {
             characterState: mechanicsUpdate,
             timeAdvance: { minutes: result.duration },
           },
-          updatedTime: null,
+          updatedTime: calculateUpdatedTime(session, result.duration),
         });
       }
     }
@@ -444,20 +493,16 @@ export async function POST(request: NextRequest) {
     if (message.trim().toLowerCase() === "-- перезапуск мира!") {
       await logInfo("GAME", "World restart requested", { sessionId });
       
-      // Удаляем старую сессию и все связанные данные
+      // Удаляем старую сессию и все связанные данные (атомарно через транзакцию)
       try {
-        // Удаляем сообщения
-        await db.message.deleteMany({ where: { sessionId } });
-        // Удаляем NPC
-        await db.nPC.deleteMany({ where: { sessionId } });
-        // Удаляем локации
-        await db.location.deleteMany({ where: { sessionId } });
-        // Удаляем секты (если есть)
-        await db.sect.deleteMany({ where: { sessionId } });
-        // Удаляем персонажа
-        await db.character.deleteMany({ where: { id: session.characterId } });
-        // Удаляем сессию
-        await db.gameSession.delete({ where: { id: sessionId } });
+        await db.$transaction([
+          db.message.deleteMany({ where: { sessionId } }),
+          db.nPC.deleteMany({ where: { sessionId } }),
+          db.location.deleteMany({ where: { sessionId } }),
+          db.sect.deleteMany({ where: { sessionId } }),
+          db.character.deleteMany({ where: { id: session.characterId } }),
+          db.gameSession.delete({ where: { id: sessionId } }),
+        ]);
         
         await logInfo("GAME", "World deleted successfully", { sessionId });
       } catch (dbError) {

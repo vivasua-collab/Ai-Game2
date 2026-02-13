@@ -1,33 +1,29 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, memo, useMemo, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { Message, Character, WorldTime, Location } from "@/hooks/useGame";
-
-interface GameChatProps {
-  messages: Message[];
-  character: Character | null;
-  worldTime: WorldTime | null;
-  location: Location | null;
-  isLoading: boolean;
-  isPaused: boolean;
-  daysSinceStart: number;
-  onSendMessage: (message: string) => void;
-  onTogglePause: () => void;
-  onNewGame: () => void;
-  onSaveAndExit: () => void;
-}
+import type { Message } from "@/types/game";
+import {
+  useGameCharacter,
+  useGameMessages,
+  useGameTime,
+  useGameLocation,
+  useGameLoading,
+  useGamePaused,
+  useGameDaysSinceStart,
+  useGameActions,
+} from "@/stores/game.store";
 
 // Типы боковых панелей
 type PanelType = "character" | "inventory" | "techniques" | "map" | "quests" | "relations" | null;
 
-// Компонент одного сообщения
-function MessageBubble({ message }: { message: Message }) {
+// Компонент одного сообщения - мемоизирован
+const MessageBubble = memo(function MessageBubble({ message }: { message: Message }) {
   const isPlayer = message.sender === "player";
   const isSystem = message.type === "system";
   const isError = message.type === "error";
@@ -58,24 +54,24 @@ function MessageBubble({ message }: { message: Message }) {
       </div>
     </div>
   );
-}
+}, (prevProps, nextProps) => prevProps.message.id === nextProps.message.id);
 
-// Статус-бар
-function StatusBar({
-  character,
-  worldTime,
-  location,
-  daysSinceStart,
-}: {
-  character: Character | null;
-  worldTime: WorldTime | null;
-  location: Location | null;
-  daysSinceStart: number;
-}) {
+// Статус-бар - использует store напрямую, мемоизирован
+const StatusBar = memo(function StatusBar() {
+  const character = useGameCharacter();
+  const worldTime = useGameTime();
+  const location = useGameLocation();
+  const daysSinceStart = useGameDaysSinceStart();
+
+  // Мемоизированные расчёты
+  const qiPercent = useMemo(() => 
+    character ? (character.currentQi / character.coreCapacity) * 100 : 0,
+    [character?.currentQi, character?.coreCapacity]
+  );
+  
+  const healthPercent = useMemo(() => character?.health ?? 0, [character?.health]);
+
   if (!character) return null;
-
-  const qiPercent = (character.currentQi / character.coreCapacity) * 100;
-  const healthPercent = character.health;
 
   return (
     <div className="bg-slate-800/80 border-b border-slate-700 px-4 py-2 ml-12">
@@ -135,10 +131,12 @@ function StatusBar({
       </div>
     </div>
   );
-}
+});
 
-// Панель характеристик
-function CharacterPanel({ character, isOpen, onClose }: { character: Character | null; isOpen: boolean; onClose: () => void }) {
+// Панель характеристик - использует store напрямую, мемоизирована
+const CharacterPanel = memo(function CharacterPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const character = useGameCharacter();
+
   if (!character || !isOpen) return null;
 
   return (
@@ -199,10 +197,10 @@ function CharacterPanel({ character, isOpen, onClose }: { character: Character |
       </CardContent>
     </Card>
   );
-}
+});
 
-// Панель инвентаря
-function InventoryPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+// Панель инвентаря - мемоизирована
+const InventoryPanel = memo(function InventoryPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   if (!isOpen) return null;
 
   return (
@@ -221,10 +219,10 @@ function InventoryPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
       </CardContent>
     </Card>
   );
-}
+});
 
-// Панель техник
-function TechniquesPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+// Панель техник - мемоизирована
+const TechniquesPanel = memo(function TechniquesPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   if (!isOpen) return null;
 
   return (
@@ -243,10 +241,12 @@ function TechniquesPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => 
       </CardContent>
     </Card>
   );
-}
+});
 
-// Панель карты
-function MapPanel({ isOpen, onClose, location }: { isOpen: boolean; onClose: () => void; location: Location | null }) {
+// Панель карты - использует store напрямую, мемоизирована
+const MapPanel = memo(function MapPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const location = useGameLocation();
+
   if (!isOpen) return null;
 
   return (
@@ -266,10 +266,10 @@ function MapPanel({ isOpen, onClose, location }: { isOpen: boolean; onClose: () 
       </CardContent>
     </Card>
   );
-}
+});
 
-// Панель квестов
-function QuestsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+// Панель квестов - мемоизирована
+const QuestsPanel = memo(function QuestsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   if (!isOpen) return null;
 
   return (
@@ -288,10 +288,10 @@ function QuestsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void
       </CardContent>
     </Card>
   );
-}
+});
 
-// Панель отношений
-function RelationsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+// Панель отношений - мемоизирована
+const RelationsPanel = memo(function RelationsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   if (!isOpen) return null;
 
   return (
@@ -310,10 +310,10 @@ function RelationsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
       </CardContent>
     </Card>
   );
-}
+});
 
-// Боковое меню с иконками
-function SideMenu({ 
+// Боковое меню с иконками - мемоизировано
+const SideMenu = memo(function SideMenu({ 
   activePanel, 
   setActivePanel 
 }: { 
@@ -347,43 +347,53 @@ function SideMenu({
       ))}
     </div>
   );
+});
+
+// Props for GameChat - now minimal, just callbacks for navigation
+interface GameChatProps {
+  onNewGame: () => void;
+  onSaveAndExit: () => void;
 }
 
-export function GameChat({
-  messages,
-  character,
-  worldTime,
-  location,
-  isLoading,
-  isPaused,
-  daysSinceStart,
-  onSendMessage,
-  onTogglePause,
-  onNewGame,
-  onSaveAndExit,
-}: GameChatProps) {
+export function GameChat({ onNewGame, onSaveAndExit }: GameChatProps) {
   const [input, setInput] = useState("");
   const [activePanel, setActivePanel] = useState<PanelType>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Get state from store using selectors
+  const messages = useGameMessages();
+  const isLoading = useGameLoading();
+  const isPaused = useGamePaused();
+
+  // Get actions from store
+  const { sendMessage, togglePause } = useGameActions();
 
   // Автопрокрутка к новым сообщениям
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSend = () => {
+  // Мемоизированные обработчики
+  const handleSend = useCallback(() => {
     if (input.trim() && !isLoading) {
-      onSendMessage(input.trim());
+      sendMessage(input.trim());
       setInput("");
     }
-  };
+  }, [input, isLoading, sendMessage]);
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
-  };
+  }, [handleSend]);
+
+  const handleTogglePause = useCallback(() => {
+    togglePause();
+  }, [togglePause]);
+
+  // Стабильный обработчик для закрытия панелей
+  const handleClosePanel = useCallback(() => setActivePanel(null), []);
 
   return (
     <div className="h-screen flex flex-col bg-slate-900 text-white relative">
@@ -393,30 +403,28 @@ export function GameChat({
       {/* Панели */}
       <div className="relative">
         <CharacterPanel 
-          character={character} 
           isOpen={activePanel === "character"} 
-          onClose={() => setActivePanel(null)} 
+          onClose={handleClosePanel} 
         />
         <InventoryPanel 
           isOpen={activePanel === "inventory"} 
-          onClose={() => setActivePanel(null)} 
+          onClose={handleClosePanel} 
         />
         <TechniquesPanel 
           isOpen={activePanel === "techniques"} 
-          onClose={() => setActivePanel(null)} 
+          onClose={handleClosePanel} 
         />
         <MapPanel 
           isOpen={activePanel === "map"} 
-          onClose={() => setActivePanel(null)}
-          location={location}
+          onClose={handleClosePanel}
         />
         <QuestsPanel 
           isOpen={activePanel === "quests"} 
-          onClose={() => setActivePanel(null)} 
+          onClose={handleClosePanel} 
         />
         <RelationsPanel 
           isOpen={activePanel === "relations"} 
-          onClose={() => setActivePanel(null)} 
+          onClose={handleClosePanel} 
         />
       </div>
 
@@ -431,7 +439,7 @@ export function GameChat({
               variant="outline"
               size="sm"
               className="border-slate-600 text-slate-300 hover:bg-slate-700 min-w-[90px]"
-              onClick={onTogglePause}
+              onClick={handleTogglePause}
             >
               {isPaused ? "▶️ Запуск" : "⏸️ Пауза"}
             </Button>
@@ -456,18 +464,13 @@ export function GameChat({
       </header>
 
       {/* Статус-бар */}
-      <StatusBar
-        character={character}
-        worldTime={worldTime}
-        location={location}
-        daysSinceStart={daysSinceStart}
-      />
+      <StatusBar />
 
       {/* Основная область с ограничением ширины чата */}
       <div className="flex-1 overflow-y-auto p-4 flex justify-center ml-12">
         <div className="w-full max-w-[100ch]">
           {messages.map((message) => (
-            <MessageBubble key={message.id} message={message} />
+            <MessageBubble key={String(message.id)} message={message} />
           ))}
           {isLoading && (
             <div className="flex justify-start mb-3">

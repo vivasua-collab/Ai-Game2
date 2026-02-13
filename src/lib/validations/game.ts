@@ -24,6 +24,23 @@ export type SendMessageInput = z.infer<typeof sendMessageSchema>;
 // ==================== GAME START ====================
 
 /**
+ * Schema for custom game configuration
+ * Validates all custom start parameters
+ */
+export const customConfigSchema = z.object({
+  location: z.string().max(200).optional(),
+  age: z.number().int().min(10).max(1000).optional(),
+  coreCapacity: z.number().int().min(100).max(1000000).optional(),
+  knowsAboutSystem: z.boolean().optional(),
+  startQi: z.number().int().min(0).max(1000000).optional(),
+  strength: z.number().min(1).max(100).optional(),
+  agility: z.number().min(1).max(100).optional(),
+  intelligence: z.number().min(1).max(100).optional(),
+});
+
+export type CustomConfig = z.infer<typeof customConfigSchema>;
+
+/**
  * Schema for starting a new game
  */
 export const startGameSchema = z.object({
@@ -34,7 +51,7 @@ export const startGameSchema = z.object({
   ], {
     errorMap: () => ({ message: "Variant must be 1, 2, or 3" }),
   }),
-  customConfig: z.record(z.unknown()).optional(),
+  customConfig: customConfigSchema.optional(),
   characterName: z.string()
     .min(1, "Character name must be at least 1 character")
     .max(50, "Character name is too long (max 50 characters)")

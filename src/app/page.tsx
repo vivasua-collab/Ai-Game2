@@ -1,49 +1,59 @@
 "use client";
 
 import { useState } from "react";
-import { useGame } from "@/hooks/useGame";
 import { StartScreen } from "@/components/start/StartScreen";
 import { GameChat } from "@/components/game/GameChat";
+import {
+  useGameSessionId,
+  useGameLoading,
+  useGameActions,
+} from "@/stores/game.store";
 
 export default function Home() {
-  const game = useGame();
   const [showStartScreen, setShowStartScreen] = useState(true);
+
+  // Get state from store
+  const sessionId = useGameSessionId();
+  const isLoading = useGameLoading();
+
+  // Get actions from store
+  const { startGame, loadGame, resetGame, saveAndExit } = useGameActions();
 
   const handleStartGame = async (
     variant: 1 | 2 | 3,
     customConfig?: Record<string, unknown>,
     characterName?: string
   ) => {
-    const success = await game.startGame(variant, customConfig, characterName);
+    const success = await startGame(variant, customConfig, characterName);
     if (success) {
       setShowStartScreen(false);
     }
   };
 
-  const handleLoadGame = async (sessionId: string) => {
-    const success = await game.loadGame(sessionId);
+  const handleLoadGame = async (sessionIdParam: string) => {
+    const success = await loadGame(sessionIdParam);
     if (success) {
       setShowStartScreen(false);
     }
   };
 
   const handleNewGame = () => {
-    game.resetGame();
+    resetGame();
     setShowStartScreen(true);
   };
 
   const handleSaveAndExit = async () => {
-    await game.saveAndExit();
+    await saveAndExit();
     setShowStartScreen(true);
   };
 
   // Показываем экран старта
-  if (showStartScreen || !game.sessionId) {
+  if (showStartScreen || !sessionId) {
     return (
       <StartScreen
         onStartGame={handleStartGame}
         onLoadGame={handleLoadGame}
-        isLoading={game.isLoading}
+        isLoading={isLoading}
       />
     );
   }
@@ -51,15 +61,6 @@ export default function Home() {
   // Показываем игровой чат
   return (
     <GameChat
-      messages={game.messages}
-      character={game.character}
-      worldTime={game.worldTime}
-      location={game.location}
-      isLoading={game.isLoading}
-      isPaused={game.isPaused}
-      daysSinceStart={game.daysSinceStart}
-      onSendMessage={game.sendMessage}
-      onTogglePause={game.togglePause}
       onNewGame={handleNewGame}
       onSaveAndExit={handleSaveAndExit}
     />

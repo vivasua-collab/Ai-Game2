@@ -3,10 +3,12 @@
  * Единый источник типов для фронтенда и бэкенда
  */
 
+import type { SessionId, CharacterId, LocationId, MessageId, SectId } from './branded';
+
 // ==================== ПЕРСОНАЖ ====================
 
 export interface Character {
-  id: string;
+  id: CharacterId;
   name: string;
   age: number;
   
@@ -37,7 +39,9 @@ export interface Character {
   
   // Принадлежность
   sectRole: string | null;
+  currentLocationId?: LocationId;
   currentLocation?: Location;
+  sectId?: SectId;
   sect?: Sect;
   
   // Навыки
@@ -47,7 +51,7 @@ export interface Character {
 // ==================== ЛОКАЦИЯ ====================
 
 export interface Location {
-  id: string;
+  id: LocationId;
   name: string;
   distanceFromCenter: number;
   qiDensity: number;
@@ -57,7 +61,7 @@ export interface Location {
 // ==================== СЕКТА ====================
 
 export interface Sect {
-  id: string;
+  id: SectId;
   name: string;
   description?: string;
   powerLevel: number;
@@ -78,7 +82,7 @@ export interface WorldTime {
 // ==================== СООБЩЕНИЯ ====================
 
 export interface Message {
-  id: string;
+  id: MessageId;
   type: string;
   sender: string | null;
   content: string;
@@ -88,7 +92,7 @@ export interface Message {
 // ==================== ИГРОВОЕ СОСТОЯНИЕ ====================
 
 export interface GameState {
-  sessionId: string | null;
+  sessionId: SessionId | null;
   isLoading: boolean;
   error: string | null;
   character: Character | null;
