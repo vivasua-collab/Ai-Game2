@@ -235,4 +235,4 @@ const sendMessageSchema = z.object({
 
 ---
 
-Построено с ❤️ командой Cultivation World. При поддержке [Z.ai](https://chat.z.ai) 🚀
+Построено с ❤️ командой Cultivation World. 
