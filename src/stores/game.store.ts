@@ -13,7 +13,7 @@
 
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
-import { useShallow } from 'zustand/react/shallow';
+import { useShallow } from 'zustand/shallow';
 import type { Character, Location, WorldTime, Message, GameState } from '@/types/game';
 import { GameClientService } from '@/services/game-client.service';
 

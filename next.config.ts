@@ -6,11 +6,6 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
-  experimental: {
-    turbo: {
-      root: __dirname,
-    },
-  },
 };
 
 export default nextConfig;
