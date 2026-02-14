@@ -6,6 +6,7 @@ import {
   createBackup,
   getBackups,
   restoreFromBackup,
+  cleanupOldBackups,
   SCHEMA_VERSION,
 } from "@/lib/migrations";
 import { logInfo, logError } from "@/lib/logger";
@@ -111,15 +112,35 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// DELETE - удалить старые бэкапы
-export async function DELETE() {
+// DELETE - удалить бэкапы
+export async function DELETE(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url);
+    const backupName = searchParams.get("backupName");
+
+    // Удаление конкретного бэкапа
+    if (backupName) {
+      const { deleteBackup } = await import("@/lib/migrations");
+      const deleted = deleteBackup(backupName);
+
+      if (deleted) {
+        return NextResponse.json({
+          success: true,
+          message: `Backup ${backupName} deleted`,
+        });
+      } else {
+        return NextResponse.json(
+          { success: false, error: "Backup not found or could not be deleted" },
+          { status: 404 }
+        );
+      }
+    }
+
+    // Удаление старых бэкапов (оставить последние N)
+    const keepCount = parseInt(searchParams.get("keep") || "3");
     const backups = getBackups();
-    const keepCount = 3;
     const deletedCount = Math.max(0, backups.length - keepCount);
 
-    // Импортируем функцию очистки
-    const { cleanupOldBackups } = await import("@/lib/migrations");
     cleanupOldBackups(keepCount);
 
     return NextResponse.json({

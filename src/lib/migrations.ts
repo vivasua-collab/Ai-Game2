@@ -9,6 +9,7 @@
 
 import { existsSync, copyFileSync, unlinkSync, readdirSync, mkdirSync, statSync } from "fs";
 import { join } from "path";
+import { execSync } from "child_process";
 
 // Версия схемы БД (увеличивать при изменениях в schema.prisma)
 // v1: Базовая схема
@@ -156,6 +157,25 @@ export function cleanupOldBackups(keepLast: number = 5): void {
 }
 
 /**
+ * Удалить конкретный бэкап
+ */
+export function deleteBackup(backupName: string): boolean {
+  const backupPath = join(BACKUP_DIR, backupName);
+  
+  if (!existsSync(backupPath)) {
+    return false;
+  }
+  
+  try {
+    unlinkSync(backupPath);
+    return true;
+  } catch (e) {
+    console.error(`Failed to delete backup ${backupName}:`, e);
+    return false;
+  }
+}
+
+/**
  * Восстановить из резервной копии
  */
 export async function restoreFromBackup(backupName: string): Promise<boolean> {
@@ -235,6 +255,20 @@ export async function runMigration(): Promise<MigrationResult> {
       console.log(`[Migration] Backup created: ${backupPath}`);
     }
 
+    // Запускаем prisma db push для применения изменений схемы
+    try {
+      console.log(`[Migration] Running prisma db push...`);
+      execSync("bun run db:push", {
+        cwd: process.cwd(),
+        stdio: "pipe",
+        timeout: 60000,
+      });
+      console.log(`[Migration] prisma db push completed`);
+    } catch (e) {
+      console.log(`[Migration] prisma db push warning:`, e);
+      // Продолжаем даже если есть предупреждения
+    }
+
     // Записываем новую версию
     await setDatabaseVersion(SCHEMA_VERSION);
     
@@ -287,9 +321,39 @@ export async function resetDatabase(): Promise<{ success: boolean; backupPath?: 
       console.log(`[Reset] Backup created: ${backupPath}`);
     }
 
-    // Удаляем текущую БД
-    if (existsSync(DB_PATH)) {
-      unlinkSync(DB_PATH);
+    // Отключаем Prisma от базы
+    try {
+      const { db } = await import("./db");
+      await db.$disconnect();
+      console.log(`[Reset] Prisma disconnected`);
+    } catch (e) {
+      console.log(`[Reset] Disconnect warning:`, e);
+    }
+
+    // Удаляем текущую БД и связанные файлы
+    const filesToDelete = [DB_PATH, DB_PATH + "-journal", DB_PATH + "-wal", DB_PATH + "-shm"];
+    for (const file of filesToDelete) {
+      if (existsSync(file)) {
+        try {
+          unlinkSync(file);
+          console.log(`[Reset] Deleted: ${file}`);
+        } catch (e) {
+          console.log(`[Reset] Could not delete ${file}:`, e);
+        }
+      }
+    }
+
+    // Запускаем prisma db push для создания новой базы
+    try {
+      console.log(`[Reset] Running prisma db push...`);
+      execSync("bun run db:push", {
+        cwd: process.cwd(),
+        stdio: "pipe",
+        timeout: 60000,
+      });
+      console.log(`[Reset] Database recreated`);
+    } catch (e) {
+      console.log(`[Reset] db:push warning:`, e);
     }
 
     return { success: true, backupPath };

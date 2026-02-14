@@ -758,6 +758,34 @@ function DatabasePanel() {
     }
   };
 
+  const handleDeleteBackup = async (backupName: string) => {
+    if (!confirm(`Удалить бэкап ${backupName}?`)) {
+      return;
+    }
+
+    setIsLoading(true);
+    setMessage(null);
+
+    try {
+      const response = await fetch(`/api/database/migrate?backupName=${encodeURIComponent(backupName)}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        setMessage(`✅ Бэкап удалён: ${backupName}`);
+        await loadStatus();
+      } else {
+        setMessage(`❌ Ошибка: ${data.error}`);
+      }
+    } catch (error) {
+      setMessage(`❌ Ошибка: ${error instanceof Error ? error.message : "Unknown"}`);
+    } finally {
+      setIsLoading(false);
+      setTimeout(() => setMessage(null), 5000);
+    }
+  };
+
   return (
     <Card className="bg-slate-800/50 border-slate-700 w-full max-w-md">
       <CardHeader className="pb-2">
@@ -841,14 +869,25 @@ function DatabasePanel() {
                   className="flex justify-between items-center text-xs bg-slate-900/30 p-1 rounded"
                 >
                   <span className="text-slate-400 truncate flex-1">{backup.replace("backup-", "").replace(".db", "")}</span>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="h-5 px-2 text-xs text-slate-500 hover:text-slate-300"
-                    onClick={() => handleRestore(backup)}
-                  >
-                    Восст.
-                  </Button>
+                  <div className="flex gap-1">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-5 px-2 text-xs text-slate-500 hover:text-slate-300"
+                      onClick={() => handleRestore(backup)}
+                    >
+                      Восст.
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="h-5 px-2 text-xs text-red-500 hover:text-red-300 hover:bg-red-900/30"
+                      onClick={() => handleDeleteBackup(backup)}
+                      title="Удалить бэкап"
+                    >
+                      ✕
+                    </Button>
+                  </div>
                 </div>
               ))}
             </div>
