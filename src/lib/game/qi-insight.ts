@@ -12,6 +12,11 @@ import {
   INSIGHT_CONSTANTS 
 } from './constants';
 import type { TechniquePreset } from '@/data/presets/technique-presets';
+// Импортируем типы техник из единого источника
+import type { TechniqueType, TechniqueElement } from './techniques';
+
+// Реэкспорт для удобства
+export type { TechniqueType, TechniqueElement };
 
 // ==================== ТИПЫ ====================
 
@@ -38,9 +43,6 @@ export interface GeneratedTechnique {
   description: string;
   source: 'insight' | 'analysis';
 }
-
-export type TechniqueType = 'combat' | 'cultivation' | 'support' | 'movement' | 'sensory' | 'healing';
-export type TechniqueElement = 'fire' | 'water' | 'earth' | 'air' | 'lightning' | 'void' | 'neutral';
 
 export interface CharacterForInsight {
   id: string;

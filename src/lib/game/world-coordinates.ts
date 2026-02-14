@@ -209,9 +209,10 @@ export function toMapPosition(pos: WorldPosition): WorldPosition2D {
 }
 
 /**
- * Расчёт пути между точками (упрощённый)
+ * Расчёт времени пути между 3D позициями
+ * Использует WorldPosition (x, y, z координаты)
  */
-export function calculateTravelTime(
+export function calculatePositionTravelTime(
   from: WorldPosition,
   to: WorldPosition,
   speedKmPerHour: number = 5

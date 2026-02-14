@@ -168,8 +168,11 @@ export function calculateEnvironmentInfluence(
   };
 }
 
-// Расчёт времени путешествия между локациями
-export function calculateTravelTime(
+/**
+ * Расчёт времени путешествия между локациями
+ * Использует distanceFromCenter и terrainType из Location
+ */
+export function calculateLocationTravelTime(
   fromLocation: Location,
   toLocation: Location,
   character: Character

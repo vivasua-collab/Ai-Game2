@@ -60,8 +60,8 @@ export interface LLMProviderStatus {
   lastChecked?: Date;
 }
 
-// Типы для игры
-export interface GameAction {
+// Типы для парсинга ввода пользователя
+export interface ParsedInput {
   type: "action" | "command" | "query";
   input: string;
   command?: string; // Для команд: "!!", "--", "---", "--ПМ"

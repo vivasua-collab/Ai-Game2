@@ -35,7 +35,7 @@ export type TechniqueType =
 
 export type TechniqueRarity = "common" | "uncommon" | "rare" | "legendary";
 
-export type TechniqueElement = "fire" | "water" | "earth" | "air" | "void" | "neutral";
+export type TechniqueElement = "fire" | "water" | "earth" | "air" | "lightning" | "void" | "neutral";
 
 // ============================================
 // ИНТЕРФЕЙСЫ ТЕХНИК
