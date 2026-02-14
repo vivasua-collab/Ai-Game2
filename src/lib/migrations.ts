@@ -278,25 +278,27 @@ export async function initializeDatabase(): Promise<{ success: boolean; error?: 
     const dbDir = join(process.cwd(), "db");
     if (!existsSync(dbDir)) {
       mkdirSync(dbDir, { recursive: true });
+      console.log(`[Init] Created db directory: ${dbDir}`);
     }
     
     // Создаём директорию для бэкапов
     if (!existsSync(BACKUP_DIR)) {
       mkdirSync(BACKUP_DIR, { recursive: true });
+      console.log(`[Init] Created backups directory: ${BACKUP_DIR}`);
     }
 
-    // Запускаем prisma db push для создания БД
-    console.log(`[Init] Running prisma db push...`);
-    try {
-      execSync("bun run db:push", {
-        cwd: process.cwd(),
-        stdio: "pipe",
-        timeout: 60000,
-      });
-      console.log(`[Init] Database created`);
-    } catch (e) {
-      console.log(`[Init] db:push warning:`, e);
-    }
+    // Импортируем Prisma и создаём БД
+    const { db } = await import("./db");
+    
+    // Prisma автоматически создаст файл БД при первом запросе
+    // Выполняем простой запрос для инициализации
+    console.log(`[Init] Initializing database...`);
+    await db.$connect();
+    console.log(`[Init] Database connected`);
+
+    // Проверяем что БД работает
+    await db.$queryRaw`SELECT 1`;
+    console.log(`[Init] Database verified`);
 
     // Устанавливаем актуальную версию схемы
     await setDatabaseVersion(SCHEMA_VERSION);
