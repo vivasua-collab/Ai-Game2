@@ -18,10 +18,6 @@ const rootDir = path.resolve(__dirname, '..');
 const dbDir = path.join(rootDir, 'db');
 const dbFile = path.join(dbDir, 'custom.db');
 const envFile = path.join(rootDir, '.env');
-const envExample = path.join(rootDir, '.env.example');
-
-// Кроссплатформенный путь для SQLite
-const dbRelativePath = './db/custom.db';
 
 console.log('');
 console.log('🔧 Проверка окружения...');
@@ -39,12 +35,15 @@ if (!fs.existsSync(dbDir)) {
 
 // 2. Создаём .env из .env.example если не существует
 if (!fs.existsSync(envFile)) {
+  // Используем абсолютный путь для надёжности
+  const absoluteDbPath = path.join(dbDir, 'custom.db');
   const envContent = `# Конфигурация базы данных
-# Путь к файлу БД (относительно корня проекта)
-DATABASE_URL=file:${dbRelativePath}
+# Абсолютный путь к файлу БД
+DATABASE_URL=file:${absoluteDbPath.replace(/\\/g, '/')}
 `;
   fs.writeFileSync(envFile, envContent, 'utf8');
   console.log('✅ Создан файл .env');
+  console.log(`   DATABASE_URL=file:${absoluteDbPath.replace(/\\/g, '/')}`);
 } else {
   console.log('✅ Файл .env существует');
 }

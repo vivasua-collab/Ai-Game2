@@ -338,9 +338,30 @@ export async function initializeDatabase(): Promise<{ success: boolean; error?: 
     const dbPath = join(process.cwd(), "db", "custom.db");
     if (existsSync(dbPath)) {
       const stats = statSync(dbPath);
+      console.log(`[Init] Database file created: ${dbPath}`);
       console.log(`[Init] Database file size: ${stats.size} bytes`);
     } else {
-      console.log(`[Init] WARNING: Database file not found at ${dbPath}`);
+      // Проверяем альтернативные пути где Prisma мог создать файл
+      const prismaDefaultPath = join(process.cwd(), "prisma", "custom.db");
+      const rootDbPath = join(process.cwd(), "custom.db");
+      
+      if (existsSync(prismaDefaultPath)) {
+        console.log(`[Init] Database found at alternative path: ${prismaDefaultPath}`);
+        console.log(`[Init] Moving to correct location...`);
+        // Копируем в правильное место
+        copyFileSync(prismaDefaultPath, dbPath);
+        unlinkSync(prismaDefaultPath);
+        console.log(`[Init] Database moved to: ${dbPath}`);
+      } else if (existsSync(rootDbPath)) {
+        console.log(`[Init] Database found at root: ${rootDbPath}`);
+        console.log(`[Init] Moving to correct location...`);
+        copyFileSync(rootDbPath, dbPath);
+        unlinkSync(rootDbPath);
+        console.log(`[Init] Database moved to: ${dbPath}`);
+      } else {
+        console.log(`[Init] WARNING: Database file not found at ${dbPath}`);
+        console.log(`[Init] Also checked: ${prismaDefaultPath}, ${rootDbPath}`);
+      }
     }
 
     return { success: true };
