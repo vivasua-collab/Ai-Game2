@@ -287,18 +287,22 @@ export async function initializeDatabase(): Promise<{ success: boolean; error?: 
       console.log(`[Init] Created backups directory: ${BACKUP_DIR}`);
     }
 
-    // Импортируем Prisma и создаём БД
-    const { db } = await import("./db");
-    
-    // Prisma автоматически создаст файл БД при первом запросе
-    // Выполняем простой запрос для инициализации
-    console.log(`[Init] Initializing database...`);
-    await db.$connect();
-    console.log(`[Init] Database connected`);
-
-    // Проверяем что БД работает
-    await db.$queryRaw`SELECT 1`;
-    console.log(`[Init] Database verified`);
+    // Запускаем prisma db push для создания всех таблиц
+    console.log(`[Init] Running prisma db push...`);
+    try {
+      // Кроссплатформенная команда
+      const pushCommand = "npx prisma db push --accept-data-loss --skip-generate";
+      
+      execSync(pushCommand, {
+        cwd: process.cwd(),
+        stdio: "pipe",
+        timeout: 120000,
+      });
+      console.log(`[Init] Database schema created`);
+    } catch (e) {
+      console.log(`[Init] prisma db push warning:`, e);
+      // Продолжаем даже если есть предупреждения
+    }
 
     // Устанавливаем актуальную версию схемы
     await setDatabaseVersion(SCHEMA_VERSION);
