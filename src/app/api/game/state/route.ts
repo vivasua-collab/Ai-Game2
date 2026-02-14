@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
         },
         messages: {
           orderBy: { createdAt: "desc" },
-          take: 50,
+          take: 10, // Оптимизация: берём только нужное количество
         },
         events: {
           where: { processed: false },
@@ -84,7 +84,7 @@ export async function GET(request: NextRequest) {
           ...session.character,
           cultivationInfo,
         },
-        recentMessages: session.messages.slice(0, 10).reverse(),
+        recentMessages: session.messages.reverse(), // Уже ограничено take: 10
         pendingEvents: session.events,
       },
     });
