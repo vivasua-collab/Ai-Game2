@@ -60,3 +60,6 @@ worklog.md
 TASKS_*.md
 REFACTORING_PLAN.md
 TODO_FIXES.md
+
+# Session context (contains sensitive data)
+.session-context
