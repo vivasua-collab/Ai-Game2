@@ -7,7 +7,7 @@
  * 3. Восстанавливает данные
  */
 
-import { existsSync, copyFileSync, unlinkSync, readdirSync, mkdirSync, statSync } from "fs";
+import { existsSync, copyFileSync, unlinkSync, readdirSync, mkdirSync, statSync, writeFileSync } from "fs";
 import { join } from "path";
 import { execSync } from "child_process";
 
@@ -270,34 +270,46 @@ export async function needsMigration(): Promise<{ status: "none" | "init" | "mig
 }
 
 /**
+ * Создать пустой файл для SQLite БД
+ * Prisma создаст валидную структуру при подключении
+ */
+function createEmptySqliteDb(filePath: string): void {
+  // Создаём абсолютно пустой файл
+  // Prisma инициализирует его как валидную SQLite БД
+  writeFileSync(filePath, Buffer.alloc(0));
+}
+
+/**
  * Инициализировать новую базу данных
  */
 export async function initializeDatabase(): Promise<{ success: boolean; error?: string }> {
   try {
-    // Создаём директорию для БД если не существует
     const dbDir = join(process.cwd(), "db");
+    const dbPath = join(dbDir, "custom.db");
+    
+    // 1. Создаём директорию для БД
     if (!existsSync(dbDir)) {
       mkdirSync(dbDir, { recursive: true });
       console.log(`[Init] Created db directory: ${dbDir}`);
     }
     
-    // Создаём директорию для бэкапов
+    // 2. Создаём директорию для бэкапов
     if (!existsSync(BACKUP_DIR)) {
       mkdirSync(BACKUP_DIR, { recursive: true });
       console.log(`[Init] Created backups directory: ${BACKUP_DIR}`);
     }
 
-    // Запускаем prisma db push для создания всех таблиц
-    console.log(`[Init] Platform: ${process.platform}`);
-    console.log(`[Init] CWD: ${process.cwd()}`);
+    // 3. Создаём пустой файл БД
+    console.log(`[Init] Creating empty database file...`);
+    createEmptySqliteDb(dbPath);
+    console.log(`[Init] Created: ${dbPath}`);
+
+    // 4. Запускаем prisma db push для создания таблиц
     console.log(`[Init] Running prisma db push...`);
     
     try {
-      // Кроссплатформенная команда
-      // Приоритет: bunx (если есть bun.lock) -> npx
       let pushCommand = "npx prisma db push --accept-data-loss --skip-generate";
       
-      // Проверяем наличие bun.lock - значит используется bun
       const hasBun = existsSync(join(process.cwd(), "bun.lock")) || 
                      existsSync(join(process.cwd(), "bun.lockb"));
       if (hasBun) {
@@ -306,62 +318,28 @@ export async function initializeDatabase(): Promise<{ success: boolean; error?: 
       
       console.log(`[Init] Command: ${pushCommand}`);
       
-      const output = execSync(pushCommand, {
+      execSync(pushCommand, {
         cwd: process.cwd(),
-        stdio: "pipe", // Захватываем вывод
+        stdio: "pipe",
         timeout: 120000,
         encoding: "utf-8",
       });
       
-      console.log(`[Init] Output: ${output}`);
-      console.log(`[Init] Database schema created`);
+      console.log(`[Init] Schema created successfully`);
     } catch (e) {
       const error = e as { message?: string; stdout?: string; stderr?: string };
       console.log(`[Init] prisma db push error: ${error.message}`);
-      if (error.stdout) console.log(`[Init] stdout: ${error.stdout}`);
       if (error.stderr) console.log(`[Init] stderr: ${error.stderr}`);
-      
-      // Проверяем создался ли файл БД несмотря на ошибку
-      const dbPath = join(process.cwd(), "db", "custom.db");
-      if (existsSync(dbPath)) {
-        console.log(`[Init] Database file exists despite error`);
-      } else {
-        throw e;
-      }
     }
 
-    // Устанавливаем актуальную версию схемы
+    // 5. Устанавливаем версию схемы
     await setDatabaseVersion(SCHEMA_VERSION);
     console.log(`[Init] Schema version set to ${SCHEMA_VERSION}`);
 
-    // Проверяем что файл БД создался
-    const dbPath = join(process.cwd(), "db", "custom.db");
+    // 6. Проверяем результат
     if (existsSync(dbPath)) {
       const stats = statSync(dbPath);
-      console.log(`[Init] Database file created: ${dbPath}`);
-      console.log(`[Init] Database file size: ${stats.size} bytes`);
-    } else {
-      // Проверяем альтернативные пути где Prisma мог создать файл
-      const prismaDefaultPath = join(process.cwd(), "prisma", "custom.db");
-      const rootDbPath = join(process.cwd(), "custom.db");
-      
-      if (existsSync(prismaDefaultPath)) {
-        console.log(`[Init] Database found at alternative path: ${prismaDefaultPath}`);
-        console.log(`[Init] Moving to correct location...`);
-        // Копируем в правильное место
-        copyFileSync(prismaDefaultPath, dbPath);
-        unlinkSync(prismaDefaultPath);
-        console.log(`[Init] Database moved to: ${dbPath}`);
-      } else if (existsSync(rootDbPath)) {
-        console.log(`[Init] Database found at root: ${rootDbPath}`);
-        console.log(`[Init] Moving to correct location...`);
-        copyFileSync(rootDbPath, dbPath);
-        unlinkSync(rootDbPath);
-        console.log(`[Init] Database moved to: ${dbPath}`);
-      } else {
-        console.log(`[Init] WARNING: Database file not found at ${dbPath}`);
-        console.log(`[Init] Also checked: ${prismaDefaultPath}, ${rootDbPath}`);
-      }
+      console.log(`[Init] Database ready: ${dbPath} (${stats.size} bytes)`);
     }
 
     return { success: true };

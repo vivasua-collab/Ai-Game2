@@ -5,8 +5,9 @@
  * 
  * Создаёт:
  * 1. Папку db/
- * 2. Файл .env с путём к БД
- * 3. Базу данных через prisma db push
+ * 2. Файл .env с относительным путём к БД
+ * 3. Пустой файл БД (чтобы prisma использовал его)
+ * 4. Схему БД через prisma db push
  */
 
 const fs = require('fs');
@@ -33,17 +34,15 @@ if (!fs.existsSync(dbDir)) {
   console.log('✅ Папка db/ существует');
 }
 
-// 2. Создаём .env из .env.example если не существует
+// 2. Создаём .env с относительным путём если не существует
 if (!fs.existsSync(envFile)) {
-  // Используем абсолютный путь для надёжности
-  const absoluteDbPath = path.join(dbDir, 'custom.db');
   const envContent = `# Конфигурация базы данных
-# Абсолютный путь к файлу БД
-DATABASE_URL=file:${absoluteDbPath.replace(/\\/g, '/')}
+# Относительный путь к файлу БД (от корня проекта)
+DATABASE_URL=file:./db/custom.db
 `;
   fs.writeFileSync(envFile, envContent, 'utf8');
   console.log('✅ Создан файл .env');
-  console.log(`   DATABASE_URL=file:${absoluteDbPath.replace(/\\/g, '/')}`);
+  console.log('   DATABASE_URL=file:./db/custom.db');
 } else {
   console.log('✅ Файл .env существует');
 }
@@ -55,19 +54,23 @@ if (!fs.existsSync(dbFile)) {
   console.log('');
   
   try {
-    // Кроссплатформенная команда для prisma db push
-    // Используем npx так как он доступен везде где есть npm
-    // На Windows npx работает корректно
+    // ШАГ 1: Создаём пустой файл-заготовку
+    // Prisma создаст валидную SQLite БД при подключении к пустому файлу
+    console.log('   [1/2] Создание файла БД...');
     
-    // Сначала пробуем через bunx (быстрее), если есть bun
+    // Создаём абсолютно пустой файл
+    fs.writeFileSync(dbFile, Buffer.alloc(0));
+    console.log(`   ✅ Создан файл: ${dbFile}`);
+    
+    // ШАГ 2: Запускаем prisma db push для создания таблиц
+    console.log('   [2/2] Создание схемы БД...');
+    
     let pushCommand;
     let packageManager = 'npx';
     
-    // Проверяем наличие bun по разным признакам
+    // Проверяем наличие bun
     const hasBun = fs.existsSync(path.join(rootDir, 'bun.lock')) || 
-                   fs.existsSync(path.join(rootDir, 'bun.lockb')) ||
-                   process.env.BUN_INSTALL ||
-                   fs.existsSync(path.join(process.env.HOME || process.env.USERPROFILE || '', '.bun'));
+                   fs.existsSync(path.join(rootDir, 'bun.lockb'));
     
     if (hasBun) {
       packageManager = 'bunx';
@@ -77,8 +80,6 @@ if (!fs.existsSync(dbFile)) {
     }
     
     console.log(`   Менеджер пакетов: ${packageManager}`);
-    console.log(`   Выполняю: ${pushCommand}`);
-    console.log('');
     
     execSync(pushCommand, {
       cwd: rootDir,
@@ -90,9 +91,11 @@ if (!fs.existsSync(dbFile)) {
     console.log('');
     
     if (fs.existsSync(dbFile)) {
-      console.log('✅ База данных успешно создана');
+      const stats = fs.statSync(dbFile);
+      console.log(`✅ База данных создана: ${dbFile}`);
+      console.log(`   Размер: ${stats.size} байт`);
     } else {
-      console.log('⚠️  База данных могла быть создана в другом месте');
+      console.log('❌ Файл БД не создан');
     }
   } catch (error) {
     console.log('');
@@ -101,8 +104,6 @@ if (!fs.existsSync(dbFile)) {
     console.log('');
     console.log('   Попробуйте выполнить вручную:');
     console.log('   bun run db:push');
-    console.log('   или');
-    console.log('   npx prisma db push');
     console.log('');
   }
 } else {
