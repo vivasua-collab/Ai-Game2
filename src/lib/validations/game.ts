@@ -32,7 +32,7 @@ export const customConfigSchema = z.object({
   age: z.number().int().min(10).max(1000).optional(),
   coreCapacity: z.number().int().min(100).max(1000000).optional(),
   knowsAboutSystem: z.boolean().optional(),
-  startQi: z.number().int().min(0).max(1000000).optional(),
+  // startQi удалён - игрок всегда начинает с 0 Qi (дизайн игры культивации)
   strength: z.number().min(1).max(100).optional(),
   agility: z.number().min(1).max(100).optional(),
   intelligence: z.number().min(1).max(100).optional(),

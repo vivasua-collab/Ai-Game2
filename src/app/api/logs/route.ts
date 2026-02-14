@@ -48,7 +48,35 @@ function isSystemLogAvailable(database: DbWithSystemLog | null): boolean {
   return database !== null && typeof database.systemLog?.findMany === 'function';
 }
 
-// GET - получить логи
+/**
+ * Проверка авторизации для административных операций
+ * Требуется токен из заголовка X-Admin-Token или query-параметра adminToken
+ */
+function checkAdminAuth(request: NextRequest): boolean {
+  const adminToken = process.env.ADMIN_TOKEN;
+  
+  // Если токен не настроен в env - разрешаем (для разработки)
+  if (!adminToken) {
+    return true;
+  }
+  
+  // Проверяем заголовок
+  const headerToken = request.headers.get('X-Admin-Token');
+  if (headerToken === adminToken) {
+    return true;
+  }
+  
+  // Проверяем query-параметр
+  const { searchParams } = new URL(request.url);
+  const queryToken = searchParams.get('adminToken');
+  if (queryToken === adminToken) {
+    return true;
+  }
+  
+  return false;
+}
+
+// GET - получить логи (только чтение, без авторизации)
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -134,8 +162,16 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST - управление настройками логирования
+// POST - управление настройками логирования (требует авторизации)
 export async function POST(request: NextRequest) {
+  // Проверка авторизации
+  if (!checkAdminAuth(request)) {
+    return NextResponse.json(
+      { success: false, error: "Unauthorized", message: "Admin token required" },
+      { status: 401 }
+    );
+  }
+  
   try {
     const body = await request.json();
     const { action, enabled, level } = body;
@@ -198,8 +234,16 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// DELETE - очистить логи
+// DELETE - очистить логи (требует авторизации)
 export async function DELETE(request: NextRequest) {
+  // Проверка авторизации
+  if (!checkAdminAuth(request)) {
+    return NextResponse.json(
+      { success: false, error: "Unauthorized", message: "Admin token required" },
+      { status: 401 }
+    );
+  }
+  
   try {
     const { searchParams } = new URL(request.url);
     const clearAll = searchParams.get("all") === "true";
