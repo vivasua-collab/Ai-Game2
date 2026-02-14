@@ -34,8 +34,8 @@ if (!fs.existsSync(dbFile)) {
   // Пустой файл для prisma
   fs.writeFileSync(dbFile, Buffer.alloc(0));
   
-  // Запуск prisma
-  const prismaBin = path.join(rootDir, 'node_modules', '.bin', 'prisma');
+  // Прямой путь к prisma (работает на Windows и Linux)
+  const prismaBin = path.join(rootDir, 'node_modules', 'prisma', 'build', 'index.js');
   execSync(`node "${prismaBin}" db push --accept-data-loss`, {
     cwd: rootDir,
     stdio: 'inherit'
