@@ -227,6 +227,3 @@ export function getAvailableSkills(
     return check.canLearn;
   });
 }
-
-// Экспорт
-export { CULTIVATION_SKILLS };
