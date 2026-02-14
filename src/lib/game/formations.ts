@@ -226,6 +226,3 @@ export function getAvailableFormations(
     return true;
   });
 }
-
-// Экспорт
-export { FORMATIONS };
