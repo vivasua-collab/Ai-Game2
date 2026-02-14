@@ -832,8 +832,9 @@ function DatabasePanel() {
               className="bg-amber-600 hover:bg-amber-700 text-white"
               onClick={handleMigrate}
               disabled={isLoading}
+              title="Обновить схему БД до актуальной версии (для старых сохранений)"
             >
-              {isLoading ? "⏳..." : "🔄 Обновить"}
+              {isLoading ? "⏳..." : "🔄 Миграция"}
             </Button>
           )}
           
@@ -853,10 +854,18 @@ function DatabasePanel() {
             className="border-red-600 text-red-400 hover:bg-red-900/30"
             onClick={handleReset}
             disabled={isLoading}
+            title="Полный сброс базы данных с созданием бэкапа"
           >
             🗑️ Сброс
           </Button>
         </div>
+
+        {/* Подсказка для миграции */}
+        {status?.needsMigration && (
+          <p className="text-xs text-amber-400/80">
+            ⚠️ Обнаружена старая версия БД. Миграция нужна для продолжения игры после обновления клиента.
+          </p>
+        )}
 
         {/* Список бэкапов */}
         {status && status.backups.length > 0 && (

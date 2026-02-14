@@ -356,6 +356,10 @@ export async function resetDatabase(): Promise<{ success: boolean; backupPath?: 
       console.log(`[Reset] db:push warning:`, e);
     }
 
+    // Устанавливаем актуальную версию схемы
+    await setDatabaseVersion(SCHEMA_VERSION);
+    console.log(`[Reset] Schema version set to ${SCHEMA_VERSION}`);
+
     return { success: true, backupPath };
   } catch (error) {
     return {
