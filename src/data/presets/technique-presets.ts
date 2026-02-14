@@ -3,51 +3,30 @@
  * ПРЕСЕТЫ ТЕХНИК
  * ============================================================================
  * 
- * ИНСТРУКЦИЯ ПО СОЗДАНИЮ СТАРТОВЫХ ТЕХНИК:
+ * ИНСТРУКЦИЯ ПО СОЗДАНИЮ ТЕХНИК:
  * 
  * 1. ОПРЕДЕЛИТЕ ТИП ТЕХНИКИ:
  *    - combat: Боевые (атаки, защита)
  *    - cultivation: Культивационные (накопление Ци)
  *    - support: Вспомогательные (баффы, дебаффы)
- *    - movement: Передвижения (ускорение, полёт)
+ *    - movement: Передвижения (ускорение, полёт, телепортация)
  *    - sensory: Восприятия (обнаружение, анализ)
  *    - healing: Исцеления (восстановление здоровья)
  * 
- * 2. ОПРЕДЕЛИТЕ УРОВЕНЬ ТЕХНИКИ (1-9):
- *    - Уровень техники определяет её мощность
- *    - Техники выше уровня персонажа изучаются со штрафом
- *    - Рекомендуется: стартовые техники уровня 1-2
+ * 2. ОПРЕДЕЛИТЕ УРОВЕНЬ ТЕХНИКИ:
+ *    - level: Текущий уровень (1-9)
+ *    - minLevel: Минимальный уровень развития
+ *    - maxLevel: Максимальный уровень развития
+ *    - Некоторые техники нельзя развить до 9-го уровня!
  * 
  * 3. УСТАНОВИТЕ ТРЕБОВАНИЯ К ХАРАКТЕРИСТИКАМ:
  *    - Физические техники: strength, agility
  *    - Техники Ци: intelligence, conductivity
- *    - Требования должны быть достижимы для стартовых персонажей
  * 
  * 4. НАСТРОЙТЕ МАСШТАБИРОВАНИЕ (statScaling):
  *    - strength: +X% эффекта за каждую единицу выше 10
- *    - agility: +X% эффекта за каждую единицу выше 10
  *    - intelligence: +X% эффекта за каждую единицу выше 10
  *    - conductivity: +X% эффекта за каждую единицу проводимости
- * 
- * 5. ПРИМЕР СОЗДАНИЯ ТЕХНИКИ:
- *    {
- *      id: "fire_strike",
- *      name: "Огненный удар",
- *      description: "Удар, усиленный огненной Ци",
- *      type: "combat",
- *      element: "fire",
- *      rarity: "uncommon",
- *      level: 2,
- *      minCultivationLevel: 2,
- *      qiCost: 15,
- *      fatigueCost: { physical: 3, mental: 2 },
- *      statRequirements: { strength: 10, conductivity: 0.3 },
- *      statScaling: { strength: 0.04, conductivity: 0.08 },
- *      effects: { damage: 25 },
- *      masteryProgress: 0,
- *      masteryBonus: 0.4,
- *      source: "preset",
- *    }
  * 
  * ============================================================================
  */
@@ -72,7 +51,11 @@ export interface TechniquePreset {
   type: TechniqueType;
   element: TechniqueElement;
   rarity: TechniqueRarity;
-  level: number;  // Уровень техники (1-9)
+  level: number;  // Текущий уровень техники (1-9)
+  
+  // Схема развития техники
+  minLevel: number;  // Минимальный уровень (обычно 1)
+  maxLevel: number;  // Максимальный уровень развития (1-9)
   
   // Требования
   minCultivationLevel: number;
@@ -104,6 +87,7 @@ export interface TechniquePreset {
     healing?: number;
     qiRegen?: number;
     duration?: number;
+    distance?: number;  // Дальность телепортации (в метрах)
     statModifiers?: {
       strength?: number;
       agility?: number;
@@ -115,7 +99,7 @@ export interface TechniquePreset {
   masteryBonus: number;
   
   // Категория для UI
-  category?: "basic" | "advanced" | "rare";
+  category?: "basic" | "advanced" | "rare" | "legendary";
 }
 
 // ============================================
@@ -131,6 +115,8 @@ export const BASIC_TECHNIQUES: TechniquePreset[] = [
     element: "neutral",
     rarity: "common",
     level: 1,
+    minLevel: 1,
+    maxLevel: 9,  // Можно развить до максимума
     minCultivationLevel: 1,
     qiCost: 0,
     fatigueCost: { physical: 0.05, mental: 0.1 },
@@ -150,6 +136,8 @@ export const BASIC_TECHNIQUES: TechniquePreset[] = [
     element: "neutral",
     rarity: "common",
     level: 1,
+    minLevel: 1,
+    maxLevel: 5,  // Ограничено до 5 уровня
     minCultivationLevel: 1,
     qiCost: 5,
     fatigueCost: { physical: 2, mental: 1 },
@@ -176,6 +164,8 @@ export const ADVANCED_TECHNIQUES: TechniquePreset[] = [
     element: "neutral",
     rarity: "uncommon",
     level: 2,
+    minLevel: 1,
+    maxLevel: 6,
     minCultivationLevel: 2,
     qiCost: 10,
     fatigueCost: { physical: 0.5, mental: 3 },
@@ -196,6 +186,8 @@ export const ADVANCED_TECHNIQUES: TechniquePreset[] = [
     element: "air",
     rarity: "uncommon",
     level: 2,
+    minLevel: 1,
+    maxLevel: 5,
     minCultivationLevel: 2,
     qiCost: 15,
     fatigueCost: { physical: 3, mental: 2 },
@@ -218,6 +210,8 @@ export const ADVANCED_TECHNIQUES: TechniquePreset[] = [
     element: "neutral",
     rarity: "rare",
     level: 3,
+    minLevel: 1,
+    maxLevel: 7,
     minCultivationLevel: 3,
     qiCost: 30,
     fatigueCost: { physical: 1, mental: 5 },
@@ -238,6 +232,8 @@ export const ADVANCED_TECHNIQUES: TechniquePreset[] = [
     element: "fire",
     rarity: "uncommon",
     level: 2,
+    minLevel: 1,
+    maxLevel: 6,
     minCultivationLevel: 2,
     qiCost: 15,
     fatigueCost: { physical: 3, mental: 2 },
@@ -258,6 +254,8 @@ export const ADVANCED_TECHNIQUES: TechniquePreset[] = [
     element: "water",
     rarity: "uncommon",
     level: 2,
+    minLevel: 1,
+    maxLevel: 5,
     minCultivationLevel: 2,
     qiCost: 12,
     fatigueCost: { physical: 1, mental: 3 },
@@ -285,6 +283,8 @@ export const RARE_TECHNIQUES: TechniquePreset[] = [
     element: "air",
     rarity: "rare",
     level: 4,
+    minLevel: 1,
+    maxLevel: 6,
     minCultivationLevel: 4,
     qiCost: 50,
     fatigueCost: { physical: 5, mental: 8 },
@@ -308,6 +308,8 @@ export const RARE_TECHNIQUES: TechniquePreset[] = [
     element: "earth",
     rarity: "rare",
     level: 3,
+    minLevel: 1,
+    maxLevel: 7,
     minCultivationLevel: 3,
     qiCost: 25,
     fatigueCost: { physical: 2, mental: 4 },
@@ -331,6 +333,8 @@ export const RARE_TECHNIQUES: TechniquePreset[] = [
     element: "void",
     rarity: "legendary",
     level: 6,
+    minLevel: 1,
+    maxLevel: 9,
     minCultivationLevel: 6,
     qiCost: 100,
     fatigueCost: { physical: 10, mental: 15 },
@@ -348,6 +352,85 @@ export const RARE_TECHNIQUES: TechniquePreset[] = [
 ];
 
 // ============================================
+// ЛЕГЕНДАРНЫЕ ТЕХНИКИ (телепортация и другие)
+// ============================================
+
+export const LEGENDARY_TECHNIQUES: TechniquePreset[] = [
+  {
+    id: "spatial_shift",
+    name: "Пространственный сдвиг",
+    description: "Телепортация в пределах видимости. Доступна с 7-го уровня культивации.",
+    type: "movement",
+    element: "void",
+    rarity: "legendary",
+    level: 7,
+    minLevel: 7,
+    maxLevel: 9,  // Развивается с 7 до 9 уровня
+    minCultivationLevel: 7,
+    qiCost: 200,
+    fatigueCost: { physical: 15, mental: 25 },
+    statRequirements: { intelligence: 25, conductivity: 3.0 },
+    statScaling: {
+      intelligence: 0.08,
+      conductivity: 0.2,
+    },
+    effects: {
+      distance: 1000,  // 1 км на 7-м уровне
+    },
+    masteryBonus: 1.0,
+    category: "legendary",
+  },
+  {
+    id: "heavenly_transmission",
+    name: "Небесная передача",
+    description: "Дальняя телепортация в ранее посещённые места. Требует метку места.",
+    type: "movement",
+    element: "void",
+    rarity: "legendary",
+    level: 8,
+    minLevel: 8,
+    maxLevel: 9,
+    minCultivationLevel: 8,
+    qiCost: 500,
+    fatigueCost: { physical: 25, mental: 40 },
+    statRequirements: { intelligence: 30, conductivity: 4.0 },
+    statScaling: {
+      intelligence: 0.1,
+      conductivity: 0.25,
+    },
+    effects: {
+      distance: 50000,  // 50 км на 8-м уровне
+    },
+    masteryBonus: 1.2,
+    category: "legendary",
+  },
+  {
+    id: "void_march",
+    name: "Марш пустоты",
+    description: "Мгновенная телепортация на любую дистанцию в пределах мира. Высшая техника перемещения.",
+    type: "movement",
+    element: "void",
+    rarity: "legendary",
+    level: 9,
+    minLevel: 9,
+    maxLevel: 9,  // Только 9-й уровень
+    minCultivationLevel: 9,
+    qiCost: 1000,
+    fatigueCost: { physical: 40, mental: 60 },
+    statRequirements: { intelligence: 35, conductivity: 5.0 },
+    statScaling: {
+      intelligence: 0.12,
+      conductivity: 0.3,
+    },
+    effects: {
+      distance: 500000,  // 500 км - в пределах мира
+    },
+    masteryBonus: 1.5,
+    category: "legendary",
+  },
+];
+
+// ============================================
 // ЭКСПОРТ ВСЕХ ТЕХНИК
 // ============================================
 
@@ -355,6 +438,7 @@ export const ALL_TECHNIQUE_PRESETS: TechniquePreset[] = [
   ...BASIC_TECHNIQUES,
   ...ADVANCED_TECHNIQUES,
   ...RARE_TECHNIQUES,
+  ...LEGENDARY_TECHNIQUES,
 ];
 
 // ============================================
@@ -401,4 +485,24 @@ export function getBasicTechniques(): TechniquePreset[] {
  */
 export function getAvailableTechniquePresets(cultivationLevel: number): TechniquePreset[] {
   return ALL_TECHNIQUE_PRESETS.filter(t => t.minCultivationLevel <= cultivationLevel);
+}
+
+/**
+ * Получить техники телепортации (7+ уровень)
+ */
+export function getTeleportationTechniques(): TechniquePreset[] {
+  return LEGENDARY_TECHNIQUES.filter(t => t.type === "movement" && t.effects.distance);
+}
+
+/**
+ * Рассчитать дальность телепортации
+ */
+export function calculateTeleportDistance(technique: TechniquePreset, techniqueLevel: number): number {
+  if (!technique.effects.distance) return 0;
+  
+  // Базовая дистанция умножается на уровень техники
+  const baseDistance = technique.effects.distance;
+  const levelMultiplier = 1 + (techniqueLevel - technique.minLevel) * 0.5;  // +50% за уровень
+  
+  return Math.floor(baseDistance * levelMultiplier);
 }

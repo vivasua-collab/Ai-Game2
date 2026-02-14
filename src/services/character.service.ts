@@ -88,6 +88,14 @@ export class CharacterService {
       if (data.hasAmnesia !== undefined) updateData.hasAmnesia = data.hasAmnesia;
       if (data.knowsAboutSystem !== undefined) updateData.knowsAboutSystem = data.knowsAboutSystem;
       if (data.sectRole !== undefined) updateData.sectRole = data.sectRole;
+      
+      // Новые поля v4
+      if (data.cultivationSkills !== undefined) updateData.cultivationSkills = JSON.stringify(data.cultivationSkills);
+      if (data.qiUnderstanding !== undefined) updateData.qiUnderstanding = data.qiUnderstanding;
+      if (data.qiUnderstandingCap !== undefined) updateData.qiUnderstandingCap = data.qiUnderstandingCap;
+      if (data.fatigueRecoveryMultiplier !== undefined) updateData.fatigueRecoveryMultiplier = data.fatigueRecoveryMultiplier;
+      if (data.contributionPoints !== undefined) updateData.contributionPoints = data.contributionPoints;
+      if (data.spiritStones !== undefined) updateData.spiritStones = data.spiritStones;
 
       // Always update timestamp
       updateData.updatedAt = new Date();

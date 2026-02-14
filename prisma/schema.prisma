@@ -311,7 +311,12 @@ model Technique {
   type     String  // combat, cultivation, support, movement, sensory, healing
   element  String  // fire, water, earth, air, void, neutral
   rarity   String  // common, uncommon, rare, legendary
-  level    Int     @default(1) // Уровень техники (1-9)
+  level    Int     @default(1) // Текущий уровень техники (1-9)
+  
+  // === Развитие техники ===
+  minLevel     Int @default(1) // Минимальный уровень техники
+  maxLevel     Int @default(9) // Максимальный уровень развития (не все можно развить до 9)
+  canEvolve    Boolean @default(true) // Можно ли развивать технику
   
   // === Требования ===
   minCultivationLevel Int     @default(1)
