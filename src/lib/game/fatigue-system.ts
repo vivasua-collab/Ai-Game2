@@ -9,10 +9,11 @@
  * - Влияет на эффективность действий
  * - При 100% физической - невозможны физические действия
  * - При 100% ментальной - невозможны действия с Ци
- * - Восстановление во сне
+ * - Восстановление во сне (8 часов = ~50% физической, ~40% ментальной)
  */
 
 import type { Character, Location } from "@/types/game";
+import { FATIGUE_CONSTANTS } from "./constants";
 
 // Типы действий для расчёта усталости
 export type ActionType = 
@@ -35,6 +36,7 @@ interface FatigueRates {
 }
 
 // Таблица усталости для разных действий
+// Отрицательные значения = восстановление
 const FATIGUE_RATES: Record<ActionType, FatigueRates> = {
   meditation_accumulation: { physicalPerMinute: 0.05, mentalPerMinute: 0.1 }, // 3%/6% за час
   meditation_breakthrough: { physicalPerMinute: 0.05, mentalPerMinute: 0.2 }, // 3%/12% за час
@@ -44,8 +46,15 @@ const FATIGUE_RATES: Record<ActionType, FatigueRates> = {
   technique_advanced: { physicalPerMinute: 0.15, mentalPerMinute: 0.3 }, // 9%/18% за час
   physical_travel: { physicalPerMinute: 0.15, mentalPerMinute: 0.02 }, // 9%/1.2% за час
   physical_labor: { physicalPerMinute: 0.25, mentalPerMinute: 0.05 }, // 15%/3% за час
-  rest_light: { physicalPerMinute: -0.1, mentalPerMinute: -0.05 }, // восстановление
-  rest_sleep: { physicalPerMinute: -0.5, mentalPerMinute: -0.4 }, // активное восстановление
+  // Восстановление - берём из констант
+  rest_light: { 
+    physicalPerMinute: -FATIGUE_CONSTANTS.REST_LIGHT_PHYSICAL, 
+    mentalPerMinute: -FATIGUE_CONSTANTS.REST_LIGHT_MENTAL 
+  },
+  rest_sleep: { 
+    physicalPerMinute: -FATIGUE_CONSTANTS.SLEEP_PHYSICAL_RECOVERY, 
+    mentalPerMinute: -FATIGUE_CONSTANTS.SLEEP_MENTAL_RECOVERY 
+  },
   qi_expenditure: { physicalPerMinute: 0.02, mentalPerMinute: 0.15 }, // трата Ци без медитации
 };
 
@@ -91,24 +100,24 @@ export function calculateFatigueFromAction(
   if (action !== "rest_light" && action !== "rest_sleep") {
     // Физические действия требуют физической энергии
     const physicalActions: ActionType[] = ["combat_light", "combat_heavy", "physical_travel", "physical_labor"];
-    if (physicalActions.includes(action) && newPhysical >= 90) {
+    if (physicalActions.includes(action) && newPhysical >= FATIGUE_CONSTANTS.CRITICAL_FATIGUE_THRESHOLD) {
       warnings.push("Критическая физическая усталость. Действие невозможно.");
       canPerform = false;
     }
     
     // Ментальные действия требуют ментальной энергии
     const mentalActions: ActionType[] = ["meditation_accumulation", "meditation_breakthrough", "technique_basic", "technique_advanced", "qi_expenditure"];
-    if (mentalActions.includes(action) && newMental >= 90) {
+    if (mentalActions.includes(action) && newMental >= FATIGUE_CONSTANTS.CRITICAL_FATIGUE_THRESHOLD) {
       warnings.push("Критическая ментальная усталость. Действие невозможно.");
       canPerform = false;
     }
   }
   
   // Предупреждения
-  if (newPhysical >= 70 && newPhysical < 90) {
+  if (newPhysical >= FATIGUE_CONSTANTS.HIGH_FATIGUE_THRESHOLD && newPhysical < FATIGUE_CONSTANTS.CRITICAL_FATIGUE_THRESHOLD) {
     warnings.push("Высокая физическая усталость. Эффективность снижена.");
   }
-  if (newMental >= 70 && newMental < 90) {
+  if (newMental >= FATIGUE_CONSTANTS.HIGH_FATIGUE_THRESHOLD && newMental < FATIGUE_CONSTANTS.CRITICAL_FATIGUE_THRESHOLD) {
     warnings.push("Высокая ментальная усталость. Контроль Ци затруднён.");
   }
   
@@ -172,9 +181,9 @@ export function calculatePassiveRecovery(
   character: Character,
   deltaTimeMinutes: number
 ): { physicalRecovered: number; mentalRecovered: number } {
-  // Пассивное восстановление очень медленное: 0.5% за час
-  const passivePhysicalRate = 0.5 / 60; // за минуту
-  const passiveMentalRate = 0.3 / 60;
+  // Пассивное восстановление из констант (% в час → % в минуту)
+  const passivePhysicalRate = FATIGUE_CONSTANTS.PASSIVE_PHYSICAL_RATE / 60;
+  const passiveMentalRate = FATIGUE_CONSTANTS.PASSIVE_MENTAL_RATE / 60;
   
   return {
     physicalRecovered: Math.min(passivePhysicalRate * deltaTimeMinutes, character.fatigue),
