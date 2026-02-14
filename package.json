@@ -3,9 +3,9 @@
   "version": "0.3.0",
   "private": true,
   "scripts": {
-    "postinstall": "prisma generate && node scripts/init-env.js",
-    "dev": "node scripts/init-env.js && bunx next dev -p 3000",
-    "build": "prisma generate && bunx next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/",
+    "postinstall": "node ./node_modules/prisma/build/index.js generate && node scripts/init-env.js",
+    "dev": "node scripts/init-env.js && node ./node_modules/next/dist/bin/next dev -p 3000",
+    "build": "prisma generate && node ./node_modules/next/dist/bin/next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/",
     "start": "NODE_ENV=production bun .next/standalone/server.js",
     "lint": "eslint .",
     "db:push": "prisma db push",

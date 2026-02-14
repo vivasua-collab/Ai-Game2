@@ -28,11 +28,20 @@ console.log('');
 
 // 0. Проверяем наличие зависимостей
 const nodeModulesDir = path.join(rootDir, 'node_modules');
+const nextBinPath = path.join(rootDir, 'node_modules', 'next', 'dist', 'bin', 'next');
+
 if (!fs.existsSync(nodeModulesDir)) {
   console.log('⚠️  Зависимости не установлены!');
   console.log('   Выполните: bun install');
   console.log('');
-  process.exit(0); // Не ошибка, просто предупреждение
+  process.exit(1);
+}
+
+if (!fs.existsSync(nextBinPath)) {
+  console.log('⚠️  Next.js не найден в node_modules!');
+  console.log('   Выполните: bun install');
+  console.log('');
+  process.exit(1);
 }
 
 // 1. Создаём папку db/ если не существует
@@ -74,21 +83,11 @@ if (!fs.existsSync(dbFile)) {
     // ШАГ 2: Запускаем prisma db push для создания таблиц
     console.log('   [2/2] Создание схемы БД...');
     
-    let pushCommand;
-    let packageManager = 'npx';
+    // Используем локальный prisma из node_modules
+    const prismaBinPath = path.join(rootDir, 'node_modules', '.bin', 'prisma');
+    const pushCommand = `node "${prismaBinPath}" db push --accept-data-loss`;
     
-    // Проверяем наличие bun
-    const hasBun = fs.existsSync(path.join(rootDir, 'bun.lock')) || 
-                   fs.existsSync(path.join(rootDir, 'bun.lockb'));
-    
-    if (hasBun) {
-      packageManager = 'bunx';
-      pushCommand = 'bunx prisma db push --accept-data-loss';
-    } else {
-      pushCommand = 'npx prisma db push --accept-data-loss';
-    }
-    
-    console.log(`   Менеджер пакетов: ${packageManager}`);
+    console.log(`   Запуск: prisma db push`);
     
     execSync(pushCommand, {
       cwd: rootDir,
