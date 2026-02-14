@@ -288,25 +288,62 @@ export async function initializeDatabase(): Promise<{ success: boolean; error?: 
     }
 
     // Запускаем prisma db push для создания всех таблиц
+    console.log(`[Init] Platform: ${process.platform}`);
+    console.log(`[Init] CWD: ${process.cwd()}`);
     console.log(`[Init] Running prisma db push...`);
+    
     try {
       // Кроссплатформенная команда
-      const pushCommand = "npx prisma db push --accept-data-loss --skip-generate";
+      // На Windows используем npx, на Linux/macOS можно использовать bunx если есть
+      let pushCommand = "npx prisma db push --accept-data-loss --skip-generate";
       
-      execSync(pushCommand, {
+      // Проверяем наличие bun на Linux/macOS
+      if (process.platform !== "win32") {
+        const hasBun = existsSync(join(process.cwd(), "bun.lock")) || 
+                       existsSync(join(process.cwd(), "bun.lockb"));
+        if (hasBun) {
+          pushCommand = "bunx prisma db push --accept-data-loss --skip-generate";
+        }
+      }
+      
+      console.log(`[Init] Command: ${pushCommand}`);
+      
+      const output = execSync(pushCommand, {
         cwd: process.cwd(),
-        stdio: "pipe",
+        stdio: "pipe", // Захватываем вывод
         timeout: 120000,
+        encoding: "utf-8",
       });
+      
+      console.log(`[Init] Output: ${output}`);
       console.log(`[Init] Database schema created`);
     } catch (e) {
-      console.log(`[Init] prisma db push warning:`, e);
-      // Продолжаем даже если есть предупреждения
+      const error = e as { message?: string; stdout?: string; stderr?: string };
+      console.log(`[Init] prisma db push error: ${error.message}`);
+      if (error.stdout) console.log(`[Init] stdout: ${error.stdout}`);
+      if (error.stderr) console.log(`[Init] stderr: ${error.stderr}`);
+      
+      // Проверяем создался ли файл БД несмотря на ошибку
+      const dbPath = join(process.cwd(), "db", "custom.db");
+      if (existsSync(dbPath)) {
+        console.log(`[Init] Database file exists despite error`);
+      } else {
+        throw e;
+      }
     }
 
     // Устанавливаем актуальную версию схемы
     await setDatabaseVersion(SCHEMA_VERSION);
     console.log(`[Init] Schema version set to ${SCHEMA_VERSION}`);
+
+    // Проверяем что файл БД создался
+    const dbPath = join(process.cwd(), "db", "custom.db");
+    if (existsSync(dbPath)) {
+      const stats = statSync(dbPath);
+      console.log(`[Init] Database file size: ${stats.size} bytes`);
+    } else {
+      console.log(`[Init] WARNING: Database file not found at ${dbPath}`);
+    }
 
     return { success: true };
   } catch (error) {
