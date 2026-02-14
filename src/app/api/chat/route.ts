@@ -493,14 +493,39 @@ export async function POST(request: NextRequest) {
     if (message.trim().toLowerCase() === "-- перезапуск мира!") {
       await logInfo("GAME", "World restart requested", { sessionId });
       
-      // Удаляем старую сессию и все связанные данные (атомарно через транзакцию)
+      /**
+       * Стратегия удаления мира:
+       * 
+       * Порядок важен из-за FK связей без onDelete: Cascade:
+       * 1. NPC (ссылается на Sect, Location)
+       * 2. Sect (ссылается на Location)
+       * 3. CharacterTechnique (ссылается на Character)
+       * 4. InventoryItem (ссылается на Character)
+       * 
+       * Остальное удалится каскадом при удалении GameSession:
+       * - Message (onDelete: Cascade)
+       * - WorldEvent (onDelete: Cascade)
+       * - Location (onDelete: Cascade)
+       * - Character (onDelete: Cascade)
+       * 
+       * ВАЖНО: Character нельзя удалять явно - он удалится каскадом!
+       */
       try {
         await db.$transaction([
-          db.message.deleteMany({ where: { sessionId } }),
+          // 1. Сначала зависимые от Sect и Location
           db.nPC.deleteMany({ where: { sessionId } }),
-          db.location.deleteMany({ where: { sessionId } }),
+          // 2. Sect ссылается на Location
           db.sect.deleteMany({ where: { sessionId } }),
-          db.character.deleteMany({ where: { id: session.characterId } }),
+          // 3. Техники персонажа (CharacterTechnique)
+          db.characterTechnique.deleteMany({ 
+            where: { characterId: session.characterId } 
+          }),
+          // 4. Инвентарь персонажа
+          db.inventoryItem.deleteMany({ 
+            where: { characterId: session.characterId } 
+          }),
+          // 5. Root-сущность - всё остальное удалится каскадом:
+          // - Message, WorldEvent, Location, Character
           db.gameSession.delete({ where: { id: sessionId } }),
         ]);
         
