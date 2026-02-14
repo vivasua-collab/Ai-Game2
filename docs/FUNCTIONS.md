@@ -4,29 +4,23 @@
 
 ---
 
-## Дубликаты
+## Решённые дубликаты
 
-В проекте обнаружены следующие дубликаты типов и функций:
+Следующие дубликаты были устранены:
 
-### TechniqueType
-- `src/lib/game/qi-insight.ts:42` — `'combat' | 'cultivation' | 'support' | 'movement' | 'sensory' | 'healing'`
-- `src/lib/game/techniques.ts:28` — `'combat' | 'cultivation' | 'support' | 'movement' | 'sensory' | 'healing'`
+| Проблема | Решение | Дата |
+|----------|---------|------|
+| **TechniqueType** в 2 файлах | qi-insight.ts импортирует из techniques.ts | ✅ Исправлено |
+| **TechniqueElement** без lightning | Добавлен `lightning` в techniques.ts, qi-insight.ts импортирует | ✅ Исправлено |
+| **GameAction** в llm/types.ts | Переименован в `ParsedInput` | ✅ Исправлено |
+| **calculateTravelTime** × 2 | Переименованы в `calculateLocationTravelTime` и `calculatePositionTravelTime` | ✅ Исправлено |
 
-### TechniqueElement
-- `src/lib/game/qi-insight.ts:43` — `'fire' | 'water' | 'earth' | 'air' | 'lightning' | 'void' | 'neutral'`
-- `src/lib/game/techniques.ts:38` — `'fire' | 'water' | 'earth' | 'air' | 'void' | 'neutral'`
+### Оставшиеся deprecated-функции (для совместимости)
 
-### GameAction
-- `src/lib/llm/types.ts:64` — интерфейс с полями `type`, `input`, `command?`, `content?`
-- `src/types/game.ts:120` — интерфейс с полями `type`, `payload?`
-
-### calculateTravelTime
-- `src/lib/game/environment-system.ts:172` — расчёт времени путешествия между локациями
-- `src/lib/game/world-coordinates.ts:214` — расчёт времени пути между 3D позициями
-
-### calculateTimeToFull
-- `src/lib/game/qi-shared.ts:74` — расчёт времени до полного ядра (в секундах)
-- `src/lib/game/qi-system.ts:157` — устаревшая версия (@deprecated)
+| Функция | Файл | Статус |
+|---------|------|--------|
+| `calculateTimeToFull` | qi-system.ts:157 | @deprecated, использовать из qi-shared.ts |
+| `calculateQiAccumulationRate` | qi-system.ts:146 | @deprecated, использовать calculateQiRates из qi-shared.ts |
 
 ---
 
@@ -86,7 +80,7 @@
 | `isPositionAccessible` | :155 | Проверка доступности позиции для уровня культивации |
 | `generateRandomPosition` | :189 | Генерация случайной позиции в радиусе от центра |
 | `toMapPosition` | :207 | Конвертация в 2D для карты |
-| `calculateTravelTime` | :214 | Расчёт пути между точками |
+| `calculatePositionTravelTime` | :215 | Расчёт пути между 3D позициями |
 | `isValidPosition` | :231 | Проверка валидности позиции |
 
 ---
@@ -268,11 +262,13 @@
 #### Интерфейсы
 | Имя | Файл:строка | Описание |
 |-----|-------------|----------|
-| `InsightResult` | :18 | Результат прозрения |
+| `InsightResult` | :23 | Результат прозрения |
 | `AnalysisResult` | :25 | Результат разбора техники |
-| `GeneratedTechnique` | :33 | Сгенерированная техника |
-| `CharacterForInsight` | :45 | Интерфейс персонажа для прозрения |
+| `GeneratedTechnique` | :38 | Сгенерированная техника |
+| `CharacterForInsight` | :47 | Интерфейс персонажа для прозрения |
 | `TechniqueForAnalysis` | :55 | Интерфейс техники для разбора |
+
+**Примечание:** `TechniqueType` и `TechniqueElement` импортируются из `techniques.ts` (см. раздел "Решённые дубликаты")
 
 #### Функции
 | Имя | Файл:строка | Описание |
@@ -398,7 +394,7 @@
 | Имя | Файл:строка | Описание |
 |-----|-------------|----------|
 | `calculateEnvironmentInfluence` | :120 | Расчёт влияния окружения |
-| `calculateTravelTime` | :172 | Расчёт времени путешествия между локациями |
+| `calculateLocationTravelTime` | :175 | Расчёт времени путешествия между локациями |
 | `canDetectLeylines` | :213 | Обнаружение лей-линий |
 | `calculateLeylineBreakthroughBonus` | :219 | Расчёт бонуса от лей-линии для прорыва |
 | `checkTechniqueAvailability` | :235 | Проверка доступности техник |
@@ -430,7 +426,7 @@
 | `LLMAvailability` | :43 | Результат проверки доступности |
 | `LLMStatus` | :50 | Статус провайдеров |
 | `LLMProviderStatus` | :56 | Статус провайдера |
-| `GameAction` | :64 | Игровое действие |
+| `ParsedInput` | :64 | Распарсенный ввод пользователя (ранее GameAction) |
 | `GameResponse` | :71 | Ответ игры |
 | `CharacterState` | :87 | Состояние персонажа |
 | `TimeAdvance` | :107 | Продвижение времени |
