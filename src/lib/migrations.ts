@@ -294,16 +294,14 @@ export async function initializeDatabase(): Promise<{ success: boolean; error?: 
     
     try {
       // Кроссплатформенная команда
-      // На Windows используем npx, на Linux/macOS можно использовать bunx если есть
+      // Приоритет: bunx (если есть bun.lock) -> npx
       let pushCommand = "npx prisma db push --accept-data-loss --skip-generate";
       
-      // Проверяем наличие bun на Linux/macOS
-      if (process.platform !== "win32") {
-        const hasBun = existsSync(join(process.cwd(), "bun.lock")) || 
-                       existsSync(join(process.cwd(), "bun.lockb"));
-        if (hasBun) {
-          pushCommand = "bunx prisma db push --accept-data-loss --skip-generate";
-        }
+      // Проверяем наличие bun.lock - значит используется bun
+      const hasBun = existsSync(join(process.cwd(), "bun.lock")) || 
+                     existsSync(join(process.cwd(), "bun.lockb"));
+      if (hasBun) {
+        pushCommand = "bunx prisma db push --accept-data-loss --skip-generate";
       }
       
       console.log(`[Init] Command: ${pushCommand}`);
