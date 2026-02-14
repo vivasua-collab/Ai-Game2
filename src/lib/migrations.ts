@@ -104,8 +104,9 @@ export async function getDatabaseTables(): Promise<string[]> {
 
 /**
  * Создать резервную копию БД
+ * @param type - тип бэкапа: 'auto' (обычный), 'mig' (перед миграцией), 'reset' (перед сбросом)
  */
-export async function createBackup(): Promise<string> {
+export async function createBackup(type: 'auto' | 'mig' | 'reset' = 'auto'): Promise<string> {
   if (!existsSync(DB_PATH)) {
     throw new Error("Database file not found");
   }
@@ -115,9 +116,10 @@ export async function createBackup(): Promise<string> {
     mkdirSync(BACKUP_DIR, { recursive: true });
   }
 
-  // Имя файла бэкапа
+  // Имя файла бэкапа с типом
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-  const backupPath = join(BACKUP_DIR, `backup-${timestamp}.db`);
+  const prefix = type === 'auto' ? 'backup' : `${type}-backup`;
+  const backupPath = join(BACKUP_DIR, `${prefix}-${timestamp}.db`);
 
   // Копируем файл
   copyFileSync(DB_PATH, backupPath);
@@ -126,7 +128,7 @@ export async function createBackup(): Promise<string> {
 }
 
 /**
- * Получить список бэкапов
+ * Получить список бэкапов (все типы)
  */
 export function getBackups(): string[] {
   if (!existsSync(BACKUP_DIR)) {
@@ -134,9 +136,18 @@ export function getBackups(): string[] {
   }
 
   return readdirSync(BACKUP_DIR)
-    .filter((f) => f.startsWith("backup-") && f.endsWith(".db"))
+    .filter((f) => (f.startsWith("backup-") || f.startsWith("mig-") || f.startsWith("reset-")) && f.endsWith(".db"))
     .sort()
     .reverse();
+}
+
+/**
+ * Получить тип бэкапа из имени файла
+ */
+export function getBackupType(filename: string): 'auto' | 'mig' | 'reset' {
+  if (filename.startsWith('mig-')) return 'mig';
+  if (filename.startsWith('reset-')) return 'reset';
+  return 'auto';
 }
 
 /**
@@ -249,9 +260,9 @@ export async function runMigration(): Promise<MigrationResult> {
   let backupPath: string | undefined;
 
   try {
-    // Создаём резервную копию
+    // Создаём резервную копию (с пометкой миграции)
     if (existsSync(DB_PATH)) {
-      backupPath = await createBackup();
+      backupPath = await createBackup('mig');
       console.log(`[Migration] Backup created: ${backupPath}`);
     }
 
@@ -315,9 +326,9 @@ export async function resetDatabase(): Promise<{ success: boolean; backupPath?: 
   try {
     let backupPath: string | undefined;
 
-    // Создаём бэкап перед сбросом
+    // Создаём бэкап перед сбросом (с пометкой reset)
     if (existsSync(DB_PATH)) {
-      backupPath = await createBackup();
+      backupPath = await createBackup('reset');
       console.log(`[Reset] Backup created: ${backupPath}`);
     }
 

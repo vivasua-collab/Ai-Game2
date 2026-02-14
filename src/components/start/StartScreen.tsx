@@ -872,33 +872,50 @@ function DatabasePanel() {
           <div className="space-y-1">
             <Label className="text-xs text-slate-500">Последние бэкапы:</Label>
             <div className="max-h-24 overflow-y-auto space-y-1">
-              {status.backups.slice(0, 5).map((backup) => (
-                <div
-                  key={backup}
-                  className="flex justify-between items-center text-xs bg-slate-900/30 p-1 rounded"
-                >
-                  <span className="text-slate-400 truncate flex-1">{backup.replace("backup-", "").replace(".db", "")}</span>
-                  <div className="flex gap-1">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-5 px-2 text-xs text-slate-500 hover:text-slate-300"
-                      onClick={() => handleRestore(backup)}
-                    >
-                      Восст.
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="h-5 px-2 text-xs text-red-500 hover:text-red-300 hover:bg-red-900/30"
-                      onClick={() => handleDeleteBackup(backup)}
-                      title="Удалить бэкап"
-                    >
-                      ✕
-                    </Button>
+              {status.backups.slice(0, 5).map((backup) => {
+                // Определяем тип бэкапа
+                const isMigration = backup.startsWith('mig-');
+                const isReset = backup.startsWith('reset-');
+                const typeLabel = isMigration ? '📦' : isReset ? '🔄' : '💾';
+                const typeName = isMigration ? 'мигр.' : isReset ? 'сброс' : '';
+                // Убираем префикс для отображения
+                const displayName = backup
+                  .replace('mig-backup-', '')
+                  .replace('reset-backup-', '')
+                  .replace('backup-', '')
+                  .replace('.db', '');
+                
+                return (
+                  <div
+                    key={backup}
+                    className="flex justify-between items-center text-xs bg-slate-900/30 p-1 rounded"
+                  >
+                    <div className="flex items-center gap-1 flex-1 min-w-0">
+                      <span title={isMigration ? 'Перед миграцией' : isReset ? 'Перед сбросом' : 'Ручной бэкап'}>{typeLabel}</span>
+                      <span className="text-slate-400 truncate">{displayName}</span>
+                    </div>
+                    <div className="flex gap-1 flex-shrink-0">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-5 px-2 text-xs text-slate-500 hover:text-slate-300"
+                        onClick={() => handleRestore(backup)}
+                      >
+                        Восст.
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-5 px-2 text-xs text-red-500 hover:text-red-300 hover:bg-red-900/30"
+                        onClick={() => handleDeleteBackup(backup)}
+                        title="Удалить бэкап"
+                      >
+                        ✕
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
