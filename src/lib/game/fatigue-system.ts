@@ -1,19 +1,24 @@
 /**
- * Система усталости - клиентская математика
+ * Система усталости - серверная математика
  * 
  * Два типа усталости:
  * - Физическая: от действий с телом (движение, бой, физический труд)
  * - Ментальная: от действий с Ци (трата Ци, техники, культивация)
  * 
- * Влияние:
- * - Влияет на эффективность действий
- * - При 100% физической - невозможны физические действия
- * - При 100% ментальной - невозможны действия с Ци
- * - Восстановление во сне (8 часов = ~50% физической, ~40% ментальной)
+ * Влияние уровня культивации:
+ * - Чем выше уровень, тем медленнее накапливается усталость
+ * - Чем выше уровень, тем быстрее восстанавливается
+ * - Практик 9-го уровня может не спать неделями!
+ * 
+ * Восстановление во сне (8 часов = ~50% для базового уровня)
  */
 
 import type { Character, Location } from "@/types/game";
-import { FATIGUE_CONSTANTS } from "./constants";
+import { 
+  FATIGUE_CONSTANTS, 
+  FATIGUE_RECOVERY_BY_LEVEL, 
+  FATIGUE_ACCUMULATION_BY_LEVEL 
+} from "./constants";
 
 // Типы действий для расчёта усталости
 export type ActionType = 
@@ -68,6 +73,20 @@ export interface FatigueResult {
   canPerform: boolean;
 }
 
+/**
+ * Получить множитель накопления усталости для уровня персонажа
+ */
+export function getFatigueAccumulationMultiplier(cultivationLevel: number): number {
+  return FATIGUE_ACCUMULATION_BY_LEVEL[cultivationLevel] || 1.0;
+}
+
+/**
+ * Получить множитель восстановления усталости для уровня персонажа
+ */
+export function getFatigueRecoveryMultiplier(cultivationLevel: number): number {
+  return FATIGUE_RECOVERY_BY_LEVEL[cultivationLevel] || 1.0;
+}
+
 // Расчёт усталости от действия
 export function calculateFatigueFromAction(
   character: Character,
@@ -79,13 +98,32 @@ export function calculateFatigueFromAction(
   const warnings: string[] = [];
   let canPerform = true;
   
+  // Получаем множители от уровня культивации
+  const accumulationMultiplier = getFatigueAccumulationMultiplier(character.cultivationLevel);
+  const recoveryMultiplier = getFatigueRecoveryMultiplier(character.cultivationLevel);
+  
   // Базовое изменение
   let physicalChange = rates.physicalPerMinute * durationMinutes;
   let mentalChange = rates.mentalPerMinute * durationMinutes;
   
-  // Дополнительная ментальная усталость от траты Ци
+  // Применяем множители в зависимости от типа действия
+  if (physicalChange > 0) {
+    // Накопление усталости - чем выше уровень, тем медленнее накапливается
+    physicalChange *= accumulationMultiplier;
+  } else {
+    // Восстановление - чем выше уровень, тем быстрее восстанавливается
+    physicalChange *= recoveryMultiplier;
+  }
+  
+  if (mentalChange > 0) {
+    mentalChange *= accumulationMultiplier;
+  } else {
+    mentalChange *= recoveryMultiplier;
+  }
+  
+  // Дополнительная ментальная усталость от траты Ци (также зависит от уровня)
   if (qiSpent > 0) {
-    mentalChange += qiSpent * 0.01; // 1% ментальной усталости за 100 Ци
+    mentalChange += qiSpent * 0.01 * accumulationMultiplier; // 1% ментальной усталости за 100 Ци
   }
   
   // Новые значения с ограничением 0-100
@@ -131,7 +169,7 @@ export function calculateFatigueFromAction(
   };
 }
 
-// Расчёт восстановления во сне
+// Расчёт восстановления во сне (с учётом уровня культивации)
 export function calculateRestRecovery(
   character: Character,
   durationMinutes: number,
@@ -139,8 +177,11 @@ export function calculateRestRecovery(
 ): { physicalRecovered: number; mentalRecovered: number } {
   const rates = isSleep ? FATIGUE_RATES.rest_sleep : FATIGUE_RATES.rest_light;
   
-  const physicalRecovered = Math.abs(rates.physicalPerMinute * durationMinutes);
-  const mentalRecovered = Math.abs(rates.mentalPerMinute * durationMinutes);
+  // Применяем множитель восстановления от уровня культивации
+  const recoveryMultiplier = getFatigueRecoveryMultiplier(character.cultivationLevel);
+  
+  const physicalRecovered = Math.abs(rates.physicalPerMinute * durationMinutes) * recoveryMultiplier;
+  const mentalRecovered = Math.abs(rates.mentalPerMinute * durationMinutes) * recoveryMultiplier;
   
   return {
     physicalRecovered: Math.min(physicalRecovered, character.fatigue),
@@ -176,7 +217,7 @@ export function calculateEfficiencyModifiers(
   };
 }
 
-// Автоматическое восстановление (каждый тик)
+// Автоматическое восстановление (каждый тик) с учётом уровня культивации
 export function calculatePassiveRecovery(
   character: Character,
   deltaTimeMinutes: number
@@ -185,8 +226,11 @@ export function calculatePassiveRecovery(
   const passivePhysicalRate = FATIGUE_CONSTANTS.PASSIVE_PHYSICAL_RATE / 60;
   const passiveMentalRate = FATIGUE_CONSTANTS.PASSIVE_MENTAL_RATE / 60;
   
+  // Применяем множитель восстановления от уровня культивации
+  const recoveryMultiplier = getFatigueRecoveryMultiplier(character.cultivationLevel);
+  
   return {
-    physicalRecovered: Math.min(passivePhysicalRate * deltaTimeMinutes, character.fatigue),
-    mentalRecovered: Math.min(passiveMentalRate * deltaTimeMinutes, character.mentalFatigue),
+    physicalRecovered: Math.min(passivePhysicalRate * deltaTimeMinutes * recoveryMultiplier, character.fatigue),
+    mentalRecovered: Math.min(passiveMentalRate * deltaTimeMinutes * recoveryMultiplier, character.mentalFatigue),
   };
 }

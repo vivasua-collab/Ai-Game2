@@ -15,7 +15,7 @@
  */
 
 import type { Character, Location, WorldTime } from "@/types/game";
-import type { Technique } from "./technique-system";
+import type { Technique } from "./techniques";
 
 // Типы запросов
 export type RequestType =

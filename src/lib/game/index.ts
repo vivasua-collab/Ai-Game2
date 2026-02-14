@@ -5,7 +5,9 @@
  * - qiSystem: система Ци
  * - fatigueSystem: система усталости
  * - environmentSystem: система окружения
- * - techniqueSystem: система техник
+ * - techniqueSystem: система техник (активные способности)
+ * - cultivationSkills: система навыков культивации (пассивные)
+ * - formations: система формаций (объекты мира)
  * - requestRouter: маршрутизатор запросов
  * - entitySystem: система персонажей/монстров
  */
@@ -19,8 +21,14 @@ export * from "./fatigue-system";
 // Система окружения
 export * from "./environment-system";
 
-// Система техник
-export * from "./technique-system";
+// Система техник (активные способности)
+export * from "./techniques";
+
+// Навыки культивации (пассивные)
+export * from "./cultivation-skills";
+
+// Формации (объекты мира)
+export * from "./formations";
 
 // Маршрутизатор запросов
 export * from "./request-router";

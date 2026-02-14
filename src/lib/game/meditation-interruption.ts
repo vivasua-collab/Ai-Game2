@@ -13,10 +13,12 @@
 
 import type { Character, Location, WorldTime } from "@/types/game";
 import { 
-  calculateSkillsInterruptionModifier,
+  calculateSkillsInterruptionModifier
+} from "./cultivation-skills";
+import { 
   calculateFormationInterruptionModifier,
   type FormationType
-} from "./cultivation-skills";
+} from "./formations";
 
 // ============================================
 // ТИПЫ И ИНТЕРФЕЙСЫ

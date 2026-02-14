@@ -1,8 +1,9 @@
 // Prisma schema for Cultivation World Simulator
-// Version: 3
+// Version: 4
 // v1: Базовая схема
 // v2: Добавлена система логирования (SystemLog)
 // v3: Добавлены поля worldId, worldName, startType в GameSession; name в Character
+// v4: Добавлены навыки культивации, система обучения техникам, 3D координаты, система усталости
 
 generator client {
   provider = "prisma-client-js"
@@ -103,6 +104,16 @@ model Character {
   // === Ресурсы ===
   contributionPoints Int @default(0) // Очки вклада (ОВ)
   spiritStones       Int @default(0) // Духовные камни
+  
+  // === Навыки культивации (JSON: {"skill_id": level}) ===
+  cultivationSkills String @default("{}")
+  
+  // === Понимание Ци (аккумулятор прозрения) ===
+  qiUnderstanding    Int @default(0)    // Текущее значение
+  qiUnderstandingCap Int @default(100)  // Максимум (растёт с уровнем)
+  
+  // === Множитель восстановления усталости ===
+  fatigueRecoveryMultiplier Float @default(1.0)
   
   // Связи
   sessions   GameSession[]
@@ -211,11 +222,11 @@ model Location {
   name        String
   description String?
   
-  // === Координаты ===
-  // Км от центра мира
-  distanceFromCenter Int    @default(50000)
-  x                  Float?
-  y                  Float?
+  // === Координаты (3D: метры от центра мира) ===
+  x Int @default(0)  // Восток(+)/Запад(-)
+  y Int @default(0)  // Север(+)/Юг(-)
+  z Int @default(0)  // Высота(+)/Глубина(-)
+  distanceFromCenter Int @default(50000) // Вычисляемое расстояние
   
   // === Характеристики места ===
   qiDensity  Int @default(100) // ед/м³
@@ -300,6 +311,7 @@ model Technique {
   type     String  // combat, cultivation, support, movement, sensory, healing
   element  String  // fire, water, earth, air, void, neutral
   rarity   String  // common, uncommon, rare, legendary
+  level    Int     @default(1) // Уровень техники (1-9)
   
   // === Требования ===
   minCultivationLevel Int     @default(1)
@@ -307,11 +319,17 @@ model Technique {
   physicalFatigueCost Float   @default(0)
   mentalFatigueCost   Float   @default(0)
   
+  // === Требования к характеристикам (JSON) ===
+  statRequirements String? // { strength, agility, intelligence, conductivity }
+  
+  // === Масштабирование (JSON) ===
+  statScaling String? // { strength, agility, intelligence, conductivity }
+  
   // === Эффекты (JSON) ===
   effects String? // { damage, healing, qiRegen, duration, statModifiers }
   
   // === Источник ===
-  source String @default("created") // learned, created, inherited
+  source String @default("created") // preset, npc, scroll, insight, created
   
   // Связи
   characterTechniques CharacterTechnique[]
@@ -330,6 +348,11 @@ model CharacterTechnique {
   
   // === Мастерство ===
   mastery Float @default(0.0) // 0-100%
+  
+  // === Прогресс изучения ===
+  learningProgress Float @default(0.0)   // 0-100%
+  learningSource  String @default("")   // preset, npc, scroll, insight
+  learningStartedAt DateTime?            // Когда начали изучать
   
   @@unique([characterId, techniqueId])
 }
