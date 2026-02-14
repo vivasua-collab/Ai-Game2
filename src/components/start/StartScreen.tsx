@@ -278,7 +278,7 @@ function LLMStatusIndicator() {
   };
 
   // Получаем список доступных провайдеров
-  const availableProviders = status ? Object.entries(status.providers)
+  const availableProviders = status?.providers ? Object.entries(status.providers)
     .filter(([_, p]) => p.available)
     .map(([key]) => key === "zai" ? "z-ai" : key) : [];
 
@@ -453,9 +453,9 @@ function LLMStatusIndicator() {
           )}
 
           {/* Доступные провайдеры */}
-          {status && (
+          {status?.providers && (
             <div className="mt-3 flex flex-wrap gap-1">
-              {status.providers.zai.available && (
+              {status.providers.zai?.available && (
                 <Badge 
                   variant="outline" 
                   className={`text-xs cursor-pointer transition-all ${
@@ -468,7 +468,7 @@ function LLMStatusIndicator() {
                   Z-AI {selectedProvider === "z-ai" ? "★" : "✓"}
                 </Badge>
               )}
-              {status.providers.local.available && (
+              {status.providers.local?.available && (
                 <Badge 
                   variant="outline" 
                   className={`text-xs cursor-pointer transition-all ${
@@ -481,7 +481,7 @@ function LLMStatusIndicator() {
                   Ollama {selectedProvider === "local" ? "★" : "✓"}
                 </Badge>
               )}
-              {status.providers.api.available && (
+              {status.providers.api?.available && (
                 <Badge 
                   variant="outline" 
                   className={`text-xs cursor-pointer transition-all ${
@@ -494,7 +494,7 @@ function LLMStatusIndicator() {
                   API {selectedProvider === "api" ? "★" : "✓"}
                 </Badge>
               )}
-              {!status.providers.zai.available && !status.providers.local.available && !status.providers.api.available && (
+              {!status.providers.zai?.available && !status.providers.local?.available && !status.providers.api?.available && (
                 <Badge variant="outline" className="text-xs border-red-600 text-red-400">
                   Нет доступных
                 </Badge>
@@ -568,19 +568,19 @@ function LLMStatusIndicator() {
               <div className="space-y-2 text-sm">
                 {status?.providers && (
                   <>
-                    {!status.providers.zai.available && (
+                    {!status.providers.zai?.available && (
                       <div className="text-slate-400">
-                        • <span className="text-amber-400">Z-AI:</span> {status.providers.zai.error || "недоступен"}
+                        • <span className="text-amber-400">Z-AI:</span> {status.providers.zai?.error || "недоступен"}
                       </div>
                     )}
-                    {!status.providers.local.available && (
+                    {!status.providers.local?.available && (
                       <div className="text-slate-400">
-                        • <span className="text-amber-400">Ollama:</span> {status.providers.local.error || "не запущен"}
+                        • <span className="text-amber-400">Ollama:</span> {status.providers.local?.error || "не запущен"}
                       </div>
                     )}
-                    {!status.providers.api.available && (
+                    {!status.providers.api?.available && (
                       <div className="text-slate-400">
-                        • <span className="text-amber-400">API:</span> {status.providers.api.error || "не настроен"}
+                        • <span className="text-amber-400">API:</span> {status.providers.api?.error || "не настроен"}
                       </div>
                     )}
                   </>
@@ -611,12 +611,15 @@ function LLMStatusIndicator() {
 
 // Интерфейс информации о БД
 interface DatabaseStatus {
+  exists: boolean;
   version: number;
   schemaVersion: number;
   size: number;
   sizeFormatted: string;
   tables: string[];
   needsMigration: boolean;
+  needsInit: boolean;
+  migrationStatus: "none" | "init" | "migrate";
   lastBackup: string | null;
   backups: string[];
 }
@@ -641,6 +644,33 @@ function DatabasePanel() {
       }
     } catch (error) {
       console.error("Failed to load database status:", error);
+    }
+  };
+
+  // Инициализация новой БД
+  const handleInit = async () => {
+    setIsLoading(true);
+    setMessage(null);
+
+    try {
+      const response = await fetch("/api/database/migrate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "init" }),
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        setMessage("✅ База данных создана");
+        await loadStatus();
+      } else {
+        setMessage(`❌ Ошибка: ${data.error}`);
+      }
+    } catch (error) {
+      setMessage(`❌ Ошибка: ${error instanceof Error ? error.message : "Unknown"}`);
+    } finally {
+      setIsLoading(false);
+      setTimeout(() => setMessage(null), 5000);
     }
   };
 
@@ -791,6 +821,11 @@ function DatabasePanel() {
       <CardHeader className="pb-2">
         <CardTitle className="text-sm text-slate-300 flex items-center gap-2">
           💾 База данных
+          {status?.needsInit && (
+            <Badge variant="outline" className="text-xs border-blue-500 text-blue-400">
+              Не создана
+            </Badge>
+          )}
           {status?.needsMigration && (
             <Badge variant="outline" className="text-xs border-amber-500 text-amber-400">
               Требуется обновление
@@ -802,30 +837,52 @@ function DatabasePanel() {
         {/* Статус */}
         {status && (
           <div className="text-xs text-slate-400 space-y-1 bg-slate-900/50 p-2 rounded">
-            <div className="flex justify-between">
-              <span>Версия схемы:</span>
-              <span className={status.needsMigration ? "text-amber-400" : "text-green-400"}>
-                {status.version} / {status.schemaVersion}
-                {status.needsMigration && " ⚠️"}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span>Размер:</span>
-              <span>{status.sizeFormatted}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Таблиц:</span>
-              <span>{status.tables.length}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Бэкапов:</span>
-              <span>{status.backups.length}</span>
-            </div>
+            {!status.exists ? (
+              <div className="text-blue-400 text-center py-1">
+                База данных не создана
+              </div>
+            ) : (
+              <>
+                <div className="flex justify-between">
+                  <span>Версия схемы:</span>
+                  <span className={status.needsMigration ? "text-amber-400" : "text-green-400"}>
+                    {status.version} / {status.schemaVersion}
+                    {status.needsMigration && " ⚠️"}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Размер:</span>
+                  <span>{status.sizeFormatted}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Таблиц:</span>
+                  <span>{status.tables.length}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Бэкапов:</span>
+                  <span>{status.backups.length}</span>
+                </div>
+              </>
+            )}
           </div>
         )}
 
         {/* Кнопки действий */}
         <div className="grid grid-cols-2 gap-2">
+          {/* Кнопка создания БД */}
+          {status?.needsInit && (
+            <Button
+              size="sm"
+              className="bg-blue-600 hover:bg-blue-700 text-white"
+              onClick={handleInit}
+              disabled={isLoading}
+              title="Создать базу данных"
+            >
+              {isLoading ? "⏳..." : "✨ Создать БД"}
+            </Button>
+          )}
+          
+          {/* Кнопка миграции */}
           {status?.needsMigration && (
             <Button
               size="sm"
@@ -838,32 +895,44 @@ function DatabasePanel() {
             </Button>
           )}
           
-          <Button
-            size="sm"
-            variant="outline"
-            className="border-slate-600 text-slate-300"
-            onClick={handleBackup}
-            disabled={isLoading}
-          >
-            📦 Бэкап
-          </Button>
-          
-          <Button
-            size="sm"
-            variant="outline"
-            className="border-red-600 text-red-400 hover:bg-red-900/30"
-            onClick={handleReset}
-            disabled={isLoading}
-            title="Полный сброс базы данных с созданием бэкапа"
-          >
-            🗑️ Сброс
-          </Button>
+          {/* Кнопки для существующей БД */}
+          {status?.exists && (
+            <>
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-slate-600 text-slate-300"
+                onClick={handleBackup}
+                disabled={isLoading}
+              >
+                📦 Бэкап
+              </Button>
+              
+              <Button
+                size="sm"
+                variant="outline"
+                className="border-red-600 text-red-400 hover:bg-red-900/30"
+                onClick={handleReset}
+                disabled={isLoading}
+                title="Полный сброс базы данных с созданием бэкапа"
+              >
+                🗑️ Сброс
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Подсказка для миграции */}
         {status?.needsMigration && (
           <p className="text-xs text-amber-400/80">
             ⚠️ Обнаружена старая версия БД. Миграция нужна для продолжения игры после обновления клиента.
+          </p>
+        )}
+        
+        {/* Подсказка для инициализации */}
+        {status?.needsInit && (
+          <p className="text-xs text-blue-400/80">
+            ℹ️ База данных не найдена. Нажмите "Создать БД" для начала работы.
           </p>
         )}
 

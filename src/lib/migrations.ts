@@ -41,10 +41,22 @@ export interface DatabaseInfo {
 }
 
 /**
+ * Проверить, существует ли файл базы данных
+ */
+export function databaseExists(): boolean {
+  return existsSync(DB_PATH);
+}
+
+/**
  * Получить текущую версию схемы БД
  */
 export async function getDatabaseVersion(): Promise<number> {
   try {
+    // Если БД не существует, возвращаем -1 (признак отсутствия БД)
+    if (!databaseExists()) {
+      return -1;
+    }
+    
     const { db } = await import("./db");
     // Проверяем существует ли таблица версий
     const result = await db.$queryRaw<{ version: number }[]>`
@@ -52,7 +64,7 @@ export async function getDatabaseVersion(): Promise<number> {
     `;
     return result[0]?.version || 0;
   } catch {
-    // Таблица не существует - это старая версия или новая БД
+    // Таблица не существует - это старая версия
     return 0;
   }
 }
@@ -211,19 +223,21 @@ export async function restoreFromBackup(backupName: string): Promise<boolean> {
 /**
  * Получить информацию о базе данных
  */
-export async function getDatabaseInfo(): Promise<DatabaseInfo> {
+export async function getDatabaseInfo(): Promise<DatabaseInfo & { exists: boolean }> {
+  const exists = databaseExists();
   const version = await getDatabaseVersion();
-  const tables = await getDatabaseTables();
+  const tables = exists ? await getDatabaseTables() : [];
   const backups = getBackups();
 
   let size = 0;
-  if (existsSync(DB_PATH)) {
+  if (exists) {
     const stats = statSync(DB_PATH);
     size = stats.size;
   }
 
   return {
-    version,
+    exists,
+    version: version === -1 ? 0 : version,
     size,
     tables,
     lastBackup: backups[0] || null,
@@ -233,10 +247,69 @@ export async function getDatabaseInfo(): Promise<DatabaseInfo> {
 
 /**
  * Проверить, нужна ли миграция
+ * Возвращает:
+ *  - "none" - БД актуальна
+ *  - "init" - БД не существует, нужна инициализация
+ *  - "migrate" - БД существует, но старая версия
  */
-export async function needsMigration(): Promise<boolean> {
+export async function needsMigration(): Promise<{ status: "none" | "init" | "migrate"; currentVersion: number }> {
   const currentVersion = await getDatabaseVersion();
-  return currentVersion < SCHEMA_VERSION;
+  
+  // БД не существует
+  if (currentVersion === -1) {
+    return { status: "init", currentVersion: 0 };
+  }
+  
+  // БД существует и актуальна
+  if (currentVersion >= SCHEMA_VERSION) {
+    return { status: "none", currentVersion };
+  }
+  
+  // БД существует, но старая версия
+  return { status: "migrate", currentVersion };
+}
+
+/**
+ * Инициализировать новую базу данных
+ */
+export async function initializeDatabase(): Promise<{ success: boolean; error?: string }> {
+  try {
+    // Создаём директорию для БД если не существует
+    const dbDir = join(process.cwd(), "db");
+    if (!existsSync(dbDir)) {
+      mkdirSync(dbDir, { recursive: true });
+    }
+    
+    // Создаём директорию для бэкапов
+    if (!existsSync(BACKUP_DIR)) {
+      mkdirSync(BACKUP_DIR, { recursive: true });
+    }
+
+    // Запускаем prisma db push для создания БД
+    console.log(`[Init] Running prisma db push...`);
+    try {
+      execSync("bun run db:push", {
+        cwd: process.cwd(),
+        stdio: "pipe",
+        timeout: 60000,
+      });
+      console.log(`[Init] Database created`);
+    } catch (e) {
+      console.log(`[Init] db:push warning:`, e);
+    }
+
+    // Устанавливаем актуальную версию схемы
+    await setDatabaseVersion(SCHEMA_VERSION);
+    console.log(`[Init] Schema version set to ${SCHEMA_VERSION}`);
+
+    return { success: true };
+  } catch (error) {
+    console.error("[Init] Failed:", error);
+    return {
+      success: false,
+      error: error instanceof Error ? error.message : "Unknown error",
+    };
+  }
 }
 
 /**
@@ -246,6 +319,18 @@ export async function needsMigration(): Promise<boolean> {
 export async function runMigration(): Promise<MigrationResult> {
   const currentVersion = await getDatabaseVersion();
   const tablesAffected: string[] = [];
+
+  // Если БД не существует - это инициализация, не миграция
+  if (currentVersion === -1) {
+    const result = await initializeDatabase();
+    return {
+      success: result.success,
+      fromVersion: 0,
+      toVersion: SCHEMA_VERSION,
+      error: result.error,
+      tablesAffected: [],
+    };
+  }
 
   // Если версия совпадает - ничего не делаем
   if (currentVersion >= SCHEMA_VERSION) {

@@ -8,6 +8,7 @@ import {
   restoreFromBackup,
   cleanupOldBackups,
   SCHEMA_VERSION,
+  initializeDatabase,
 } from "@/lib/migrations";
 import { logInfo, logError } from "@/lib/logger";
 
@@ -15,14 +16,16 @@ import { logInfo, logError } from "@/lib/logger";
 export async function GET() {
   try {
     const info = await getDatabaseInfo();
-    const needsUpdate = await needsMigration();
+    const migrationStatus = await needsMigration();
 
     return NextResponse.json({
       success: true,
       database: {
         ...info,
         schemaVersion: SCHEMA_VERSION,
-        needsMigration: needsUpdate,
+        needsMigration: migrationStatus.status === "migrate",
+        needsInit: migrationStatus.status === "init",
+        migrationStatus: migrationStatus.status,
         sizeFormatted: formatBytes(info.size),
       },
     });
@@ -44,6 +47,19 @@ export async function POST(request: NextRequest) {
     const action = body.action || "migrate";
 
     switch (action) {
+      case "init": {
+        await logInfo("DATABASE", "Initializing new database");
+        const result = await initializeDatabase();
+
+        if (result.success) {
+          await logInfo("DATABASE", "Database initialized successfully");
+        } else {
+          await logError("DATABASE", "Database initialization failed", { error: result.error });
+        }
+
+        return NextResponse.json({ success: result.success, error: result.error });
+      }
+
       case "migrate": {
         await logInfo("DATABASE", "Starting migration");
         const result = await runMigration();

@@ -1,18 +1,31 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkLLMStatus, initializeLLM, getLLMManager, setPreferredProvider, updateLLMConfig } from "@/lib/llm";
-import { db } from "@/lib/db";
 
 // GET - проверка статуса LLM провайдеров
 export async function GET() {
+  // Значения по умолчанию для ответа
+  const defaultProviders = {
+    zai: { available: false, error: undefined as string | undefined, model: undefined as string | undefined },
+    local: { available: false, error: undefined as string | undefined, model: undefined as string | undefined },
+    api: { available: false, error: undefined as string | undefined, model: undefined as string | undefined },
+  };
+
   try {
-    // Загружаем настройки из БД
-    const settings = await db.gameSettings.findFirst();
+    // Пытаемся загрузить настройки из БД (если БД существует)
+    let savedEndpoint: string | null = null;
+    try {
+      const { db } = await import("@/lib/db");
+      const settings = await db.gameSettings.findFirst();
+      savedEndpoint = settings?.llmEndpoint || null;
+    } catch {
+      // БД не существует или недоступна - игнорируем
+    }
     
     // Если есть кастомный endpoint для Ollama, применяем его
-    if (settings?.llmEndpoint) {
+    if (savedEndpoint) {
       try {
         initializeLLM();
-        updateLLMConfig({ localEndpoint: settings.llmEndpoint });
+        updateLLMConfig({ localEndpoint: savedEndpoint });
       } catch {
         // Игнорируем ошибки
       }
@@ -26,10 +39,26 @@ export async function GET() {
     }
 
     // Получаем статус всех провайдеров
-    const status = await checkLLMStatus();
+    let status: Record<string, { available: boolean; error?: string; model?: string }>;
+    try {
+      status = await checkLLMStatus();
+    } catch (e) {
+      // Если проверка статуса не удалась, возвращаем дефолтные значения
+      console.error("Failed to check LLM status:", e);
+      return NextResponse.json({
+        success: true,
+        available: false,
+        currentProvider: "z-ai",
+        currentModel: "default",
+        preferredProvider: null,
+        providers: defaultProviders,
+        savedEndpoint,
+        error: e instanceof Error ? e.message : "Failed to check providers",
+      });
+    }
     
     // Получаем выбранный провайдер
-    let preferredProvider = null;
+    let preferredProvider: string | null = null;
     try {
       const manager = getLLMManager();
       preferredProvider = manager.getPreferredProvider();
@@ -98,19 +127,19 @@ export async function GET() {
       activeProvider: currentProvider,
       activeModel: models[currentProvider] || "default",
       // Сохраненный endpoint
-      savedEndpoint: settings?.llmEndpoint || null,
+      savedEndpoint,
     });
   } catch (error) {
-    return NextResponse.json(
-      {
-        success: false,
-        available: false,
-        error: error instanceof Error ? error.message : "Unknown error",
-        currentProvider: "unknown",
-        currentModel: "unknown",
-      },
-      { status: 500 }
-    );
+    console.error("LLM status API error:", error);
+    return NextResponse.json({
+      success: true, // Возвращаем success=true чтобы не ломать UI
+      available: false,
+      currentProvider: "z-ai",
+      currentModel: "default",
+      preferredProvider: null,
+      providers: defaultProviders,
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
   }
 }
 
