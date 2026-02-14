@@ -26,6 +26,15 @@ console.log(`   Платформа: ${process.platform}`);
 console.log(`   Корневая директория: ${rootDir}`);
 console.log('');
 
+// 0. Проверяем наличие зависимостей
+const nodeModulesDir = path.join(rootDir, 'node_modules');
+if (!fs.existsSync(nodeModulesDir)) {
+  console.log('⚠️  Зависимости не установлены!');
+  console.log('   Выполните: bun install');
+  console.log('');
+  process.exit(0); // Не ошибка, просто предупреждение
+}
+
 // 1. Создаём папку db/ если не существует
 if (!fs.existsSync(dbDir)) {
   fs.mkdirSync(dbDir, { recursive: true });
@@ -74,9 +83,9 @@ if (!fs.existsSync(dbFile)) {
     
     if (hasBun) {
       packageManager = 'bunx';
-      pushCommand = 'bunx prisma db push --accept-data-loss --skip-generate';
+      pushCommand = 'bunx prisma db push --accept-data-loss';
     } else {
-      pushCommand = 'npx prisma db push --accept-data-loss --skip-generate';
+      pushCommand = 'npx prisma db push --accept-data-loss';
     }
     
     console.log(`   Менеджер пакетов: ${packageManager}`);
