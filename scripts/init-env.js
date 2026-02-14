@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 /**
- * Простой скрипт инициализации БД
+ * Скрипт инициализации БД
  * Создаёт .env, папку db/ и базу данных
+ * Кроссплатформенный: Windows, Linux, macOS
  */
 
 const fs = require('fs');
@@ -12,8 +13,10 @@ const rootDir = path.resolve(__dirname, '..');
 const dbDir = path.join(rootDir, 'db');
 const dbFile = path.join(dbDir, 'custom.db');
 const envFile = path.join(rootDir, '.env');
+const isWindows = process.platform === 'win32';
 
-console.log('\n🔧 Инициализация...\n');
+console.log('\n🔧 Инициализация...');
+console.log(`   Платформа: ${process.platform} (${isWindows ? 'Windows' : 'Unix-like'})\n`);
 
 // 1. Папка db/
 if (!fs.existsSync(dbDir)) {
@@ -34,9 +37,24 @@ if (!fs.existsSync(dbFile)) {
   // Пустой файл для prisma
   fs.writeFileSync(dbFile, Buffer.alloc(0));
   
-  // Прямой путь к prisma (работает на Windows и Linux)
-  const prismaBin = path.join(rootDir, 'node_modules', 'prisma', 'build', 'index.js');
-  execSync(`node "${prismaBin}" db push --accept-data-loss`, {
+  // Выбор пути к prisma в зависимости от платформы
+  let prismaPath;
+  
+  if (isWindows) {
+    // Windows: прямой путь к файлу (symlinks в .bin не работают)
+    prismaPath = path.join(rootDir, 'node_modules', 'prisma', 'build', 'index.js');
+  } else {
+    // Linux/macOS: используем прямой путь (надёжнее)
+    prismaPath = path.join(rootDir, 'node_modules', 'prisma', 'build', 'index.js');
+  }
+  
+  // Проверяем существование prisma
+  if (!fs.existsSync(prismaPath)) {
+    console.log('❌ Prisma не найдена. Выполните: bun install');
+    process.exit(1);
+  }
+  
+  execSync(`node "${prismaPath}" db push --accept-data-loss`, {
     cwd: rootDir,
     stdio: 'inherit'
   });
