@@ -113,14 +113,62 @@ export interface TimeAdvance {
 // Парсинг команд
 export interface ParsedCommand {
   isValid: boolean;
-  type: "player" | "world" | "strict" | "verify" | "none";
+  type: "player" | "world" | "strict" | "verify" | "cheat" | "none";
   content: string;
   raw: string;
+  cheatCommand?: string;      // Название чит-команды
+  cheatParams?: Record<string, unknown>; // Параметры чита
 }
 
 // Функция парсинга команд
 export function parseCommand(input: string): ParsedCommand {
   const trimmed = input.trim();
+
+  // /cheat - чит-команда (только для тестирования)
+  // Формат: /cheat command {params}
+  // Примеры:
+  //   /cheat set_level {"level":5}
+  //   /cheat add_qi 100
+  //   /cheat god_mode
+  if (trimmed.startsWith("/cheat ") || trimmed.startsWith("/чйт ")) {
+    const cheatContent = trimmed.replace(/^\/cheat\s+|^\/чйт\s+/i, '');
+    const parts = cheatContent.split(/\s+(.+)/);
+    const cheatCommand = parts[0]?.toLowerCase() || '';
+    let cheatParams: Record<string, unknown> = {};
+
+    // Парсим параметры
+    if (parts[1]) {
+      // Пробуем распарсить как JSON
+      if (parts[1].startsWith('{')) {
+        try {
+          cheatParams = JSON.parse(parts[1]);
+        } catch {
+          // Если не JSON, оставляем как есть
+        }
+      } else {
+        // Простой формат: key value или просто value
+        const simpleParts = parts[1].split(/\s+/);
+        if (simpleParts.length === 1 && !isNaN(Number(simpleParts[0]))) {
+          // Одно число - это amount или value
+          cheatParams = { amount: Number(simpleParts[0]) };
+        } else if (simpleParts.length === 2) {
+          // key value
+          cheatParams = { [simpleParts[0]]: isNaN(Number(simpleParts[1])) ? simpleParts[1] : Number(simpleParts[1]) };
+        } else {
+          cheatParams = { raw: parts[1] };
+        }
+      }
+    }
+
+    return {
+      isValid: true,
+      type: "cheat",
+      content: cheatContent,
+      raw: trimmed,
+      cheatCommand,
+      cheatParams,
+    };
+  }
 
   // !! - команда для ГГ
   if (trimmed.startsWith("!!")) {

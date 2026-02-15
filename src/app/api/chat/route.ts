@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { generateGameResponse, initializeLLM, isLLMReady } from "@/lib/llm";
 import { buildGameMasterPrompt } from "@/data/prompts/game-master";
 import type { LLMMessage } from "@/lib/llm/types";
+import { parseCommand } from "@/lib/llm/types";
 import { logError, logInfo, logWarn, logDebug, LogTimer } from "@/lib/logger";
 import {
   identifyRequestType,
@@ -31,6 +32,7 @@ import {
   validateOrError,
   validationErrorResponse,
 } from "@/lib/validations/game";
+import { executeCheat, isCheatsEnabled, type CheatCommand } from "@/services/cheats.service";
 
 // ==================== HELPER FUNCTIONS ====================
 
@@ -196,6 +198,49 @@ export async function POST(request: NextRequest) {
       } catch (e) {
         await logWarn("DATABASE", "Failed to fetch location", { locationId: session.character.currentLocationId });
       }
+    }
+
+    // === ОБРАБОТКА ЧИТ-КОМАНД ===
+    const parsedCommand = parseCommand(message);
+    if (parsedCommand.type === "cheat") {
+      if (!isCheatsEnabled()) {
+        return NextResponse.json({
+          success: false,
+          response: {
+            type: "system",
+            content: "⛔ Читы отключены. Установите NODE_ENV=development или ENABLE_CHEATS=true",
+          },
+        });
+      }
+
+      const cheatResult = await executeCheat(
+        parsedCommand.cheatCommand as CheatCommand,
+        session.character.id,
+        parsedCommand.cheatParams || {}
+      );
+
+      // Получаем обновлённого персонажа
+      const updatedCharacter = await db.character.findUnique({
+        where: { id: session.character.id },
+      });
+
+      return NextResponse.json({
+        success: cheatResult.success,
+        response: {
+          type: "system",
+          content: cheatResult.message,
+          characterState: updatedCharacter,
+          cheatData: cheatResult.data,
+        },
+        updatedTime: {
+          year: session.worldYear,
+          month: session.worldMonth,
+          day: session.worldDay,
+          hour: session.worldHour,
+          minute: session.worldMinute,
+          daysSinceStart: session.daysSinceStart,
+        },
+      });
     }
 
     // Определяем тип запроса через маршрутизатор

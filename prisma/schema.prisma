@@ -119,6 +119,7 @@ model Character {
   sessions   GameSession[]
   inventory  InventoryItem[]
   techniques CharacterTechnique[]
+  techniquePools TechniquePool[]
 }
 
 // ==================== MESSAGE ====================
@@ -424,6 +425,52 @@ model SystemLog {
   @@index([level])
   @@index([category])
   @@index([createdAt])
+}
+
+// ==================== TECHNIQUE POOL ====================
+
+// Пул сгенерированных техник для выбора игроком
+model TechniquePool {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // === Привязка к персонажу ===
+  characterId String
+  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  // === Параметры генерации ===
+  targetLevel Int      // Уровень техник в пуле (обычно = уровень культивации)
+  triggerType String   // breakthrough, insight, scroll, npc - источник генерации
+  isConsumed  Boolean  @default(false) // Пул выбран/исчерпан
+
+  // === Связи ===
+  techniques TechniquePoolItem[]
+
+  @@index([characterId])
+  @@index([targetLevel])
+}
+
+// Техника в пуле
+model TechniquePoolItem {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  // === Привязка к пулу ===
+  poolId String
+  pool   TechniquePool @relation(fields: [poolId], references: [id], onDelete: Cascade)
+
+  // === Данные техники (JSON) ===
+  techniqueData String // Полный JSON техники
+
+  // === Статус ===
+  isSelected  Boolean @default(false) // Игрок выбрал эту технику
+  isRevealed  Boolean @default(false) // Игрок видел описание
+
+  // === Связь с изученной техникой (после выбора) ===
+  learnedTechniqueId String?
+
+  @@index([poolId])
 }
 
 // ==================== ENCOUNTERED ENTITIES ====================
