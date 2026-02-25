@@ -63,3 +63,6 @@ TODO_FIXES.md
 
 # Upload folder
 upload/
+
+# Session context
+.session-context
