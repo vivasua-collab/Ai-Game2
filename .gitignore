@@ -63,6 +63,3 @@ TODO_FIXES.md
 
 # Upload folder
 upload/
-
-# Session context (contains sensitive data)
-.session-context
