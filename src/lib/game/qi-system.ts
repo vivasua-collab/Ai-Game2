@@ -1,11 +1,15 @@
 /**
- * Система Ци - серверная логика
+ * Система Ци — Серверные действия
  * 
- * ВНИМАНИЕ: Вся логика расчётов находится в qi-shared.ts!
- * Этот файл содержит только серверные действия (meditation, breakthrough)
- * которые применяют расчёты к персонажу и базе данных.
+ * Этот модуль содержит ТОЛЬКО функции, которые:
+ * - Выполняют действия над персонажем
+ * - Возвращают данные для обновления в БД
+ * - Не могут использоваться на клиенте
  * 
- * ИСТОЧНИК ИСТИНЫ: Сервер - единственный источник данных о состоянии!
+ * Для расчётов используйте qi-shared.ts!
+ * 
+ * @module qi-system
+ * @see qi-shared — чистые расчёты
  */
 
 import type { Character, MeditationResult, BreakthroughResult } from '@/types/game';
@@ -125,18 +129,3 @@ export function attemptBreakthrough(
     character.accumulatedQi
   );
 }
-
-// ==================== ЭКСПОРТ ОБЩИХ ФУНКЦИЙ ====================
-// Все функции расчётов находятся в qi-shared.ts
-
-export {
-  calculateCoreGenerationRate,
-  calculateEnvironmentalAbsorptionRate,
-  calculateQiRates,
-  calculateBreakthroughRequirements,
-  getCultivationLevelName,
-  calculateMeditationFatigue,
-  calculateQiCost,
-  calculatePassiveQiGain,
-  calculateTimeToFull,
-} from './qi-shared';

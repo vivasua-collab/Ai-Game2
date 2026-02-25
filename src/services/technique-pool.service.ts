@@ -6,6 +6,7 @@
  * - Хранение неиспользованных техник
  * - Выбор техники игроком
  * - Автоматическое пополнение при прорыве
+ * - Интеграция с системой прозрения (qi-insight)
  */
 
 import { db } from '@/lib/db';
@@ -14,6 +15,12 @@ import { validateNewTechnique, generateTechniqueId } from '@/lib/game/techniques
 import { getLLMManager } from '@/lib/llm';
 import { buildTechniqueGenerationPrompt } from '@/prompts';
 import { logInfo, logError } from '@/lib/logger';
+import {
+  addQiUnderstanding,
+  calculateQiUnderstandingGain,
+  type CharacterForInsight,
+  type InsightResult,
+} from '@/lib/game/qi-insight';
 
 // Типы
 export type TriggerType = 'breakthrough' | 'insight' | 'scroll' | 'npc';
@@ -31,6 +38,7 @@ export interface TechniqueSelectionResult {
   learnedId?: string;
   remaining?: number;
   error?: string;
+  insight?: InsightResult; // Результат прозрения при изучении
 }
 
 // Размер пула по умолчанию
@@ -356,6 +364,82 @@ export async function selectTechniqueFromPool(
       },
     });
 
+    // === ИНТЕГРАЦИЯ С СИСТЕМОЙ ПРОЗРЕНИЯ ===
+    // Получаем персонажа для обновления понимания Ци
+    const character = await db.character.findUnique({
+      where: { id: characterId },
+    });
+
+    let insightResult: InsightResult | undefined;
+
+    if (character) {
+      // Формируем данные для системы прозрения
+      const characterForInsight: CharacterForInsight = {
+        id: character.id,
+        cultivationLevel: character.cultivationLevel,
+        qiUnderstanding: character.qiUnderstanding,
+        qiUnderstandingCap: character.qiUnderstandingCap,
+        intelligence: character.intelligence,
+        conductivity: character.conductivity,
+        cultivationSkills: character.cultivationSkills as Record<string, number> || {},
+      };
+
+      // Рассчитываем прирост понимания от изучения техники
+      const qiGain = calculateQiUnderstandingGain(technique.level);
+      
+      // Проверяем прозрение
+      insightResult = addQiUnderstanding(characterForInsight, qiGain);
+
+      // Обновляем понимание Ци персонажа
+      await db.character.update({
+        where: { id: characterId },
+        data: {
+          qiUnderstanding: insightResult.newQiUnderstanding,
+          qiUnderstandingCap: character.qiUnderstandingCap, // Cap не меняется
+        },
+      });
+
+      // Если прозрение сработало - создаём технику прозрения
+      if (insightResult.triggered && insightResult.newTechnique) {
+        const insightTechnique = insightResult.newTechnique;
+        
+        await logInfo('INSIGHT', `Character ${characterId} achieved insight! New technique: ${insightTechnique.name}`);
+
+        // Создаём технику прозрения в каталоге
+        await db.technique.create({
+          data: {
+            name: insightTechnique.name,
+            nameId: generateTechniqueId(insightTechnique.name),
+            description: insightTechnique.description,
+            type: insightTechnique.type,
+            element: insightTechnique.element,
+            rarity: 'rare', // Техники прозрения всегда редкие
+            level: insightTechnique.level,
+            minCultivationLevel: Math.max(1, insightTechnique.level - 1),
+            qiCost: insightTechnique.level * 10,
+            physicalFatigueCost: 3,
+            mentalFatigueCost: 5,
+            effects: { source: 'insight' },
+            source: 'insight',
+          },
+        });
+
+        // Добавляем технику прозрения персонажу
+        await db.characterTechnique.create({
+          data: {
+            characterId,
+            techniqueId: (await db.technique.findFirst({
+              where: { name: insightTechnique.name },
+              orderBy: { createdAt: 'desc' },
+            }))!.id,
+            mastery: 0,
+            learningProgress: 100,
+            learningSource: 'insight',
+          },
+        });
+      }
+    }
+
     // Отмечаем как выбранную
     await db.techniquePoolItem.update({
       where: { id: poolItemId },
@@ -388,6 +472,7 @@ export async function selectTechniqueFromPool(
       technique,
       learnedId: learnedTechnique.id,
       remaining,
+      insight: insightResult,
     };
   } catch (error) {
     await logError('TECHNIQUE_POOL', 'Failed to select technique', { error: error instanceof Error ? error : String(error) });

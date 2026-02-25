@@ -17,6 +17,7 @@ import {
   attemptBreakthrough,
 } from "@/lib/game/qi-system";
 import { calculateBreakthroughRequirements } from "@/lib/game/qi-shared";
+import { getQiUnderstandingCap } from "@/lib/game/qi-insight";
 import {
   calculateFatigueFromAction,
   calculateEfficiencyModifiers,
@@ -329,6 +330,9 @@ export async function POST(request: NextRequest) {
         // Попытка прорыва
         const result = attemptBreakthrough(session.character);
         if (result.success) {
+          // Обновляем qiUnderstandingCap для нового уровня
+          const newQiUnderstandingCap = getQiUnderstandingCap(result.newLevel);
+          
           mechanicsUpdate = {
             cultivationLevel: result.newLevel,
             cultivationSubLevel: result.newSubLevel,
@@ -336,6 +340,7 @@ export async function POST(request: NextRequest) {
             accumulatedQi: Math.max(0, session.character.accumulatedQi - result.qiConsumed),
             fatigue: Math.min(100, Math.max(0, session.character.fatigue + result.fatigueGained.physical)),
             mentalFatigue: Math.min(100, Math.max(0, (session.character.mentalFatigue || 0) + result.fatigueGained.mental)),
+            qiUnderstandingCap: newQiUnderstandingCap,
           };
         }
         timeAdvanceForMechanics.minutes = 30;
@@ -350,13 +355,25 @@ export async function POST(request: NextRequest) {
           where: { id: session.characterId },
         });
         
+        // Формируем сообщение о прорыве с информацией о понимании Ци
+        let breakthroughMessage = result.success 
+          ? `${result.message}\n\n💎 Ёмкость ядра: ${result.newCoreCapacity}\n⚡ Накопленная Ци: ${updatedCharacter?.accumulatedQi || 0}`
+          : `❌ ${result.message}`;
+        
+        if (result.success && updatedCharacter) {
+          const qiProgress = Math.round((updatedCharacter.qiUnderstanding / updatedCharacter.qiUnderstandingCap) * 100);
+          breakthroughMessage += `\n\n🧠 Понимание Ци: ${updatedCharacter.qiUnderstanding}/${updatedCharacter.qiUnderstandingCap} (${qiProgress}%)`;
+          
+          if (result.newLevel >= 5) {
+            breakthroughMessage += `\n✨ Доступно прозрение!`;
+          }
+        }
+        
         return NextResponse.json({
           success: true,
           response: {
             type: "narration",
-            content: result.success 
-              ? `${result.message}\n\n💎 Ёмкость ядра: ${result.newCoreCapacity}\n⚡ Накопленная Ци: ${updatedCharacter?.accumulatedQi || 0}`
-              : `❌ ${result.message}`,
+            content: breakthroughMessage,
             characterState: mechanicsUpdate,
             timeAdvance: { minutes: 30 },
           },
