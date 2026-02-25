@@ -1,21 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  fallback: ["system-ui", "sans-serif"],
-  adjustFontFallback: true,
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  fallback: ["monospace", "Courier New"],
-  adjustFontFallback: true,
-});
+// Системные шрифты вместо Google Fonts
+// Это обеспечивает:
+// 1. Сборку без внешних зависимостей
+// 2. Работу в оффлайн-режиме
+// 3. Быструю загрузку (нет сетевых запросов)
 
 export const metadata: Metadata = {
   title: "🌸 Cultivation World Simulator",
@@ -44,9 +35,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased bg-background text-foreground`}
-      >
+      <body className="font-sans antialiased bg-background text-foreground">
         {children}
         <Toaster />
       </body>
