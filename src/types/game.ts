@@ -70,6 +70,15 @@ export interface Location {
   distanceFromCenter: number;
   qiDensity: number;
   terrainType: string;
+  // Новые поля для системы карты
+  locationType?: string;
+  width?: number;
+  height?: number;
+  x?: number;
+  y?: number;
+  z?: number;
+  qiFlowRate?: number;
+  description?: string;
 }
 
 // ==================== СЕКТА ====================

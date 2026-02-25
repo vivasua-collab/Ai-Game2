@@ -1,10 +1,11 @@
 // Prisma schema for Cultivation World Simulator
-// Version: 5
+// Version: 6
 // v1: Базовая схема
 // v2: Добавлена система логирования (SystemLog)
 // v3: Добавлены поля worldId, worldName, startType в GameSession; name в Character
 // v4: Добавлены навыки культивации, система обучения техникам, 3D координаты, система усталости
 // v5: Расширена модель InventoryItem (isConsumable, durability, qiCharge, effects, icon)
+// v6: Добавлены модели Building и WorldObject для системы карты
 
 generator client {
   provider = "prisma-client-js"
@@ -237,6 +238,13 @@ model Location {
   // === Тип местности ===
   terrainType String @default("plains") // mountains, plains, forest, sea, desert, etc.
   
+  // === Тип локации ===
+  locationType String @default("area") // region, area, building, room
+  
+  // === Размеры (для регионов) ===
+  width  Int? // Размер области в метрах (x)
+  height Int? // Размер области в метрах (y)
+  
   // === Связи ===
   characters     Character[]  @relation("CurrentLocation")
   npcs           NPC[]
@@ -244,6 +252,11 @@ model Location {
   parentLocation Location?    @relation("SubLocations", fields: [parentLocationId], references: [id])
   parentLocationId String?
   sects          Sect[]
+  buildings      Building[]
+  objects        WorldObject[]
+  rooms          Location[]   @relation("BuildingRooms")
+  buildingParent Location?    @relation("BuildingRooms", fields: [buildingParentId], references: [id])
+  buildingParentId String?
 }
 
 // ==================== SECT ====================
@@ -271,8 +284,9 @@ model Sect {
   resources String?
   
   // === Связи ===
-  members Character[]
-  npcs    NPC[]
+  members   Character[]
+  npcs      NPC[]
+  buildings Building[]
 }
 
 // ==================== INVENTORY ====================
@@ -554,4 +568,90 @@ model EntityMemory {
   impact  Float   // Влияние на disposition
   
   @@index([entityId])
+}
+
+// ==================== BUILDING ====================
+
+model Building {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // === Идентификация ===
+  name        String
+  nameId      String?   // Для поиска
+  description String?
+  buildingType String  @default("house") // house, shop, temple, cave, tower, sect_hq
+  
+  // === Координаты ===
+  locationId String
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  
+  // === Размеры ===
+  width  Int @default(10)  // Ширина (x) в метрах
+  length Int @default(10)  // Длина (y) в метрах
+  height Int @default(3)   // Высота (z) в метрах
+  
+  // === Свойства ===
+  isEnterable Boolean @default(true)
+  isOwned     Boolean @default(false)
+  ownerType   String? // player, npc, sect
+  ownerId     String?
+  
+  // === Бонусы ===
+  qiBonus Int @default(0)    // Бонус к медитации (%)
+  comfort Int @default(0)    // Комфорт (восстановление)
+  defense Int @default(0)    // Защита
+  
+  // === Связи ===
+  sectId String?
+  sect   Sect?   @relation(fields: [sectId], references: [id])
+  
+  @@index([buildingType])
+  @@index([locationId])
+}
+
+// ==================== WORLD OBJECT ====================
+
+model WorldObject {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // === Идентификация ===
+  name        String
+  nameId      String?
+  description String?
+  objectType  String  // resource, container, interactable, decoration
+  
+  // === Координаты ===
+  locationId String?
+  location   Location? @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  x          Int       @default(0)
+  y          Int       @default(0)
+  z          Int       @default(0)
+  
+  // === Свойства ===
+  isInteractable Boolean @default(true)
+  isCollectible  Boolean @default(false)
+  isDestructible Boolean @default(true)
+  
+  // === Состояние ===
+  health     Int @default(100)
+  maxHealth  Int @default(100)
+  durability Int @default(100)
+  
+  // === Ресурсы ===
+  resourceType  String? // herb, ore, wood, water
+  resourceCount Int     @default(1)
+  respawnTime   Int     @default(0) // в минутах
+  
+  // === Контейнер ===
+  inventory String? // JSON с предметами
+  
+  // === Визуал ===
+  icon String? // Эмодзи или путь
+  
+  @@index([objectType])
+  @@index([locationId])
 }
