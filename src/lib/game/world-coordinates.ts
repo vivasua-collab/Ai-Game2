@@ -202,6 +202,60 @@ export function generateRandomPosition(
 }
 
 /**
+ * Генерация позиции на точном расстоянии от центра мира
+ * Используется для стартовых локаций
+ * 
+ * @param exactDistance - Точное расстояние от центра в метрах
+ * @param minHeight - Минимальная высота (по умолчанию 0 - поверхность)
+ * @param maxHeight - Максимальная высота
+ */
+export function generatePositionAtDistance(
+  exactDistance: number,
+  minHeight: number = 0,
+  maxHeight: number = 100
+): WorldPosition {
+  const angle = Math.random() * 2 * Math.PI;
+  
+  return {
+    x: Math.round(Math.cos(angle) * exactDistance),
+    y: Math.round(Math.sin(angle) * exactDistance),
+    z: Math.round(minHeight + Math.random() * (maxHeight - minHeight)),
+  };
+}
+
+/**
+ * Генерация позиции в диапазоне расстояний от центра
+ * 
+ * @param minDistance - Минимальное расстояние от центра в метрах
+ * @param maxDistance - Максимальное расстояние от центра в метрах
+ * @param minHeight - Минимальная высота
+ * @param maxHeight - Максимальная высота
+ */
+export function generatePositionInRange(
+  minDistance: number,
+  maxDistance: number,
+  minHeight: number = 0,
+  maxHeight: number = 100
+): WorldPosition {
+  const angle = Math.random() * 2 * Math.PI;
+  const radius = minDistance + Math.random() * (maxDistance - minDistance);
+  
+  return {
+    x: Math.round(Math.cos(angle) * radius),
+    y: Math.round(Math.sin(angle) * radius),
+    z: Math.round(minHeight + Math.random() * (maxHeight - minHeight)),
+  };
+}
+
+/**
+ * Вычисление расстояния от центра мира по координатам
+ * Это значение должно храниться в distanceFromCenter
+ */
+export function calculateDistanceFromCenter(x: number, y: number): number {
+  return Math.round(Math.sqrt(x * x + y * y));
+}
+
+/**
  * Конвертация в 2D для карты
  */
 export function toMapPosition(pos: WorldPosition): WorldPosition2D {

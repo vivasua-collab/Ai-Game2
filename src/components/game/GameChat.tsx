@@ -97,6 +97,15 @@ const StatusBar = memo(function StatusBar() {
   );
   
   const healthPercent = useMemo(() => character?.health ?? 0, [character?.health]);
+  
+  // Прогресс прорыва: accumulatedQi / (coreCapacity * requiredFills)
+  const breakthroughProgress = useMemo(() => {
+    if (!character) return { percent: 0, fills: 0, required: 0 };
+    const requiredFills = character.cultivationLevel * 10 + character.cultivationSubLevel;
+    const currentFills = Math.floor(character.accumulatedQi / character.coreCapacity);
+    const percent = Math.min(100, (character.accumulatedQi / (character.coreCapacity * requiredFills)) * 100);
+    return { percent, fills: currentFills, required: requiredFills };
+  }, [character?.accumulatedQi, character?.coreCapacity, character?.cultivationLevel, character?.cultivationSubLevel]);
 
   if (!character) return null;
 
@@ -113,6 +122,13 @@ const StatusBar = memo(function StatusBar() {
               <div className="h-full bg-cyan-500 transition-all duration-300" style={{ width: `${qiPercent}%` }} />
             </div>
             <span className="text-xs text-slate-400">{character.currentQi}/{character.coreCapacity}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-slate-400">Прорыв:</span>
+            <div className="w-16 h-2 bg-slate-700 rounded-full overflow-hidden">
+              <div className="h-full bg-amber-500 transition-all duration-300" style={{ width: `${breakthroughProgress.percent}%` }} />
+            </div>
+            <span className="text-xs text-amber-400">{breakthroughProgress.fills}/{breakthroughProgress.required}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-slate-400">HP:</span>
@@ -139,6 +155,11 @@ const StatusBar = memo(function StatusBar() {
 const CharacterPanel = memo(function CharacterPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const character = useGameCharacter();
   if (!character || !isOpen) return null;
+  
+  // Расчёт прогресса прорыва
+  const requiredFills = character.cultivationLevel * 10 + character.cultivationSubLevel;
+  const currentFills = Math.floor(character.accumulatedQi / character.coreCapacity);
+  const breakthroughPercent = Math.min(100, (character.accumulatedQi / (character.coreCapacity * requiredFills)) * 100);
 
   return (
     <Card className="absolute left-14 top-[104px] w-72 bg-slate-800/95 border-slate-700 shadow-xl z-30">
@@ -156,6 +177,31 @@ const CharacterPanel = memo(function CharacterPanel({ isOpen, onClose }: { isOpe
         <div className="flex justify-between"><span className="text-slate-400">Проводимость:</span><span className="text-slate-200">{character.conductivity.toFixed(2)}/сек</span></div>
         <Separator className="bg-slate-700" />
         <div className="flex justify-between"><span className="text-slate-400">Ядро:</span><span className="text-slate-200">{character.coreCapacity} ед.</span></div>
+        <div className="flex justify-between items-center">
+          <span className="text-slate-400">Ци:</span>
+          <div className="flex items-center gap-2">
+            <div className="w-16 h-2 bg-slate-700 rounded-full overflow-hidden">
+              <div className="h-full bg-cyan-500" style={{ width: `${(character.currentQi / character.coreCapacity) * 100}%` }} />
+            </div>
+            <span className="text-slate-200 text-xs">{character.currentQi}/{character.coreCapacity}</span>
+          </div>
+        </div>
+        <Separator className="bg-slate-700" />
+        <div className="text-amber-400 text-xs font-medium">⚡ Прогресс прорыва</div>
+        <div className="flex justify-between items-center">
+          <span className="text-slate-400">Заполнений:</span>
+          <span className="text-amber-400">{currentFills}/{requiredFills}</span>
+        </div>
+        <div className="flex justify-between items-center">
+          <span className="text-slate-400">Накоплено:</span>
+          <div className="flex items-center gap-2">
+            <div className="w-16 h-2 bg-slate-700 rounded-full overflow-hidden">
+              <div className="h-full bg-amber-500" style={{ width: `${breakthroughPercent}%` }} />
+            </div>
+            <span className="text-slate-200 text-xs">{character.accumulatedQi}</span>
+          </div>
+        </div>
+        <Separator className="bg-slate-700" />
         <div className="flex justify-between items-center">
           <span className="text-slate-400">Физ. усталость:</span>
           <div className="flex items-center gap-2">
@@ -394,10 +440,103 @@ const SkillsPanel = memo(function SkillsPanel({
   );
 });
 
+// Типы для карты
+interface MapBuilding {
+  id: string;
+  name: string;
+  buildingType: string;
+  isEnterable: boolean;
+  qiBonus: number;
+  comfort: number;
+  defense: number;
+}
+
+interface MapObject {
+  id: string;
+  name: string;
+  objectType: string;
+  isInteractable: boolean;
+  isCollectible: boolean;
+  resourceType?: string;
+  resourceCount: number;
+  icon?: string;
+}
+
 // Панель карты
 const MapPanel = memo(function MapPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const location = useGameLocation();
+  const character = useGameCharacter();
+  const [buildings, setBuildings] = useState<MapBuilding[]>([]);
+  const [objects, setObjects] = useState<MapObject[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedTab, setSelectedTab] = useState<'info' | 'buildings' | 'objects'>('info');
+
+  // Загрузка данных карты
+  useEffect(() => {
+    if (isOpen && character?.id) {
+      let isMounted = true;
+      
+      fetch(`/api/map?characterId=${character.id}&action=current`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (isMounted && data.success) {
+            setBuildings(data.buildings || []);
+            setObjects(data.objects || []);
+          }
+        })
+        .catch(console.error)
+        .finally(() => {
+          if (isMounted) setLoading(false);
+        });
+      
+      return () => {
+        isMounted = false;
+      };
+    }
+  }, [isOpen, character?.id]);
+
   if (!isOpen) return null;
+
+  // Форматирование координат
+  const formatCoords = (x?: number, y?: number, z?: number) => {
+    if (x === undefined) return 'Неизвестно';
+    const formatNum = (n: number) => n >= 0 ? `+${n}` : `${n}`;
+    return `${formatNum(x)}, ${formatNum(y)}, ${formatNum(z)}м`;
+  };
+
+  // Названия типов строений
+  const buildingTypeNames: Record<string, string> = {
+    house: '🏠 Дом',
+    shop: '🏪 Лавка',
+    temple: '🛕 Храм',
+    cave: '🕳️ Пещера',
+    tower: '🗼 Башня',
+    sect_hq: '🏯 Штаб секты',
+    inn: '🏨 Постоялый двор',
+    warehouse: '📦 Склад',
+    alchemy_lab: '⚗️ Алхимическая лаборатория',
+    training_hall: '⚔️ Тренировочный зал',
+    meditation_pavilion: '🧘 Павильон медитации',
+    library: '📚 Библиотека',
+  };
+
+  // Названия типов объектов
+  const objectTypeNames: Record<string, string> = {
+    resource: '🌿 Ресурс',
+    container: '📦 Контейнер',
+    interactable: '🔔 Интерактивный',
+    decoration: '🎪 Декорация',
+  };
+
+  // Названия типов ресурсов
+  const resourceTypeNames: Record<string, string> = {
+    herb: '🌿 Трава',
+    ore: '💎 Руда',
+    wood: '🪵 Дерево',
+    water: '💧 Вода',
+    crystal: '🔮 Кристалл',
+    spirit: '👻 Духовный материал',
+  };
 
   return (
     <Card className="absolute left-14 top-[104px] w-96 bg-slate-800/95 border-slate-700 shadow-xl z-30">
@@ -406,10 +545,166 @@ const MapPanel = memo(function MapPanel({ isOpen, onClose }: { isOpen: boolean; 
         <Button variant="ghost" size="sm" className="h-6 w-6 p-0 text-slate-400" onClick={onClose}>✕</Button>
       </CardHeader>
       <CardContent>
-        <div className="text-sm text-slate-400 text-center py-8">
-          Карта мира
-          {location && <p className="text-xs mt-2 text-slate-300">📍 Текущая локация: {location.name}</p>}
-          <p className="text-xs mt-2">Исследуйте мир, чтобы открыть новые области</p>
+        {/* Табы */}
+        <div className="flex gap-1 mb-3">
+          {[
+            { id: 'info', label: '📍 Локация' },
+            { id: 'buildings', label: '🏠 Строения', count: buildings.length },
+            { id: 'objects', label: '📦 Объекты', count: objects.length },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setSelectedTab(tab.id as any)}
+              className={`px-2 py-1 text-xs rounded transition-colors ${
+                selectedTab === tab.id
+                  ? 'bg-amber-600/30 text-amber-400 border border-amber-500/30'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-700/50'
+              }`}
+            >
+              {tab.label}
+              {tab.count !== undefined && tab.count > 0 && (
+                <span className="ml-1 text-[10px]">({tab.count})</span>
+              )}
+            </button>
+          ))}
+        </div>
+
+        {loading ? (
+          <div className="text-sm text-slate-400 text-center py-4">Загрузка...</div>
+        ) : selectedTab === 'info' ? (
+          <div className="space-y-3">
+            {location ? (
+              <>
+                {/* Информация о локации */}
+                <div className="p-2 rounded bg-slate-700/30 border border-slate-600/30">
+                  <div className="font-medium text-slate-200 mb-1">📍 {location.name}</div>
+                  {location.description && (
+                    <p className="text-xs text-slate-400 mb-2">{location.description}</p>
+                  )}
+                  <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                      <span className="text-slate-500">Координаты:</span>
+                      <span className="text-slate-300 ml-1">
+                        {formatCoords(location.x, location.y, location.z)}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-slate-500">Тип:</span>
+                      <span className="text-slate-300 ml-1 capitalize">
+                        {location.locationType || 'area'}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-slate-500">Плотность Ци:</span>
+                      <span className="text-cyan-400 ml-1">{location.qiDensity}/м³</span>
+                    </div>
+                    <div>
+                      <span className="text-slate-500">Местность:</span>
+                      <span className="text-slate-300 ml-1 capitalize">
+                        {location.terrainType}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Статистика */}
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="p-2 rounded bg-slate-700/20 text-center">
+                    <div className="text-lg font-bold text-amber-400">{buildings.length}</div>
+                    <div className="text-xs text-slate-400">Строений</div>
+                  </div>
+                  <div className="p-2 rounded bg-slate-700/20 text-center">
+                    <div className="text-lg font-bold text-green-400">{objects.length}</div>
+                    <div className="text-xs text-slate-400">Объектов</div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="text-sm text-slate-400 text-center py-4">
+                Локация не определена
+              </div>
+            )}
+          </div>
+        ) : selectedTab === 'buildings' ? (
+          <ScrollArea className="h-48">
+            {buildings.length === 0 ? (
+              <div className="text-sm text-slate-400 text-center py-4">
+                Нет строений поблизости
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {buildings.map((b) => (
+                  <div
+                    key={b.id}
+                    className="p-2 rounded bg-slate-700/30 border border-slate-600/30 hover:bg-slate-700/50 cursor-pointer"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-200">
+                        {buildingTypeNames[b.buildingType] || b.buildingType} {b.name}
+                      </span>
+                      {b.isEnterable && (
+                        <Badge variant="outline" className="text-xs text-green-400 border-green-600/50">
+                          Вход
+                        </Badge>
+                      )}
+                    </div>
+                    {(b.qiBonus > 0 || b.comfort > 0 || b.defense > 0) && (
+                      <div className="flex gap-2 mt-1 text-xs">
+                        {b.qiBonus > 0 && <span className="text-cyan-400">+{b.qiBonus}% Ци</span>}
+                        {b.comfort > 0 && <span className="text-green-400">+{b.comfort} комфорт</span>}
+                        {b.defense > 0 && <span className="text-amber-400">+{b.defense} защита</span>}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </ScrollArea>
+        ) : (
+          <ScrollArea className="h-48">
+            {objects.length === 0 ? (
+              <div className="text-sm text-slate-400 text-center py-4">
+                Нет объектов поблизости
+              </div>
+            ) : (
+              <div className="space-y-2">
+                {objects.map((o) => (
+                  <div
+                    key={o.id}
+                    className="p-2 rounded bg-slate-700/30 border border-slate-600/30 hover:bg-slate-700/50 cursor-pointer"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-slate-200">
+                        {o.icon || '📦'} {o.name}
+                      </span>
+                      {o.isCollectible && (
+                        <Badge variant="outline" className="text-xs text-amber-400 border-amber-600/50">
+                          Можно собрать
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="flex gap-2 mt-1 text-xs text-slate-400">
+                      <span>{objectTypeNames[o.objectType] || o.objectType}</span>
+                      {o.resourceType && (
+                        <>
+                          <span>•</span>
+                          <span className="text-green-400">
+                            {resourceTypeNames[o.resourceType] || o.resourceType}
+                            {o.resourceCount > 1 && ` x${o.resourceCount}`}
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </ScrollArea>
+        )}
+
+        {/* Подсказка */}
+        <div className="mt-3 pt-2 border-t border-slate-700 text-xs text-slate-500 text-center">
+          💡 Исследуйте мир, чтобы открывать новые области
         </div>
       </CardContent>
     </Card>

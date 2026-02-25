@@ -12,13 +12,25 @@
  * - Диалогов с NPC
  * - Сложных взаимодействий
  * - Создания контента
+ * 
+ * @module request-router
  */
 
 import type { Character, WorldTime } from "@/types/game";
 import type { LocationData } from "@/types/game-shared";
 import type { Technique } from "./techniques";
+import {
+  buildStatusResponse,
+  buildTechniquesResponse,
+  buildStatsResponse,
+  buildLocationResponse,
+} from "./response-builders";
 
-// Типы запросов
+// ==================== ТИПЫ ====================
+
+/**
+ * Типы запросов
+ */
 export type RequestType =
   | "status"           // Статус персонажа - ЛОКАЛЬНО
   | "techniques"       // Список техник - ЛОКАЛЬНО
@@ -34,7 +46,9 @@ export type RequestType =
   | "exploration"      // Исследование - LLM
   | "creation";        // Создание контента - LLM
 
-// Результат маршрутизации
+/**
+ * Результат маршрутизации
+ */
 export interface RoutingResult {
   useLLM: boolean;
   localData?: unknown;
@@ -42,66 +56,94 @@ export interface RoutingResult {
   reason: string;
 }
 
-// Определение типа запроса
+// ==================== КОНСТАНТЫ ПАТТЕРНОВ ====================
+
+/**
+ * Паттерны для определения типа запроса
+ * Все паттерны работают с текстом в нижнем регистре
+ */
+const REQUEST_PATTERNS = {
+  /** Статус персонажа */
+  status: /^(статус|status|мой статус|показать статус|!\s*статус|!\s*status)$/,
+  
+  /** Список техник */
+  techniques: /^(техники|skills|скилы|скилл|мои техники|список техник|!\s*техники|!\s*skills)$/,
+  
+  /** Инвентарь */
+  inventory: /^(инвентарь|inventory|рюкзак|вещи|!\s*инвентарь|!\s*inventory)$/,
+  
+  /** Характеристики */
+  stats: /^(характеристики|stats|параметры|статы|!\s*характеристики|!\s*stats|!\s*параметры)$/,
+  
+  /** Информация о локации */
+  location_info: /^(где я|где я нахожусь|что вокруг|где нахожусь|локация|место|описание места|мо[ёе] местоположение|!\s*локация)$/,
+  
+  /** Медитация (культивация) */
+  cultivation: /медитир|культивир|накоп.*ци|прорыв/,
+  
+  /** Бой */
+  combat: /атак|бой|сража|удар|защит/,
+  
+  /** Диалог */
+  dialogue: /[«"']|скажи|спроси|ответь|говори/,
+  
+  /** Создание */
+  creation: /создай|изобрет|разработ|новая техника/,
+} as const;
+
+/** Типы запросов, обрабатываемые локально */
+const LOCAL_REQUEST_TYPES: RequestType[] = [
+  "status",
+  "techniques",
+  "inventory",
+  "stats",
+  "location_info",
+  "cultivation"  // Обрабатывается в chat/route.ts БЕЗ LLM (кроме прерываний)
+];
+
+// ==================== ФУНКЦИИ МАРШРУТИЗАЦИИ ====================
+
+/**
+ * Определение типа запроса по входному тексту
+ * 
+ * @param input - Входной текст запроса
+ * @returns Тип запроса
+ */
 export function identifyRequestType(input: string): RequestType {
-  // Приводим к нижнему регистру для унификации (работает и с русскими буквами)
   const lowerInput = input.toLowerCase().trim();
   
-  // Статус персонажа (работает в любом регистре: СТАТУС, Статус, статус)
-  if (/^(статус|status|мой статус|показать статус|!\s*статус|!\s*status)$/.test(lowerInput)) {
-    return "status";
-  }
+  // Проверка статических паттернов
+  if (REQUEST_PATTERNS.status.test(lowerInput)) return "status";
+  if (REQUEST_PATTERNS.techniques.test(lowerInput)) return "techniques";
+  if (REQUEST_PATTERNS.inventory.test(lowerInput)) return "inventory";
+  if (REQUEST_PATTERNS.stats.test(lowerInput)) return "stats";
+  if (REQUEST_PATTERNS.location_info.test(lowerInput)) return "location_info";
   
-  // Список техник
-  if (/^(техники|skills|скилы|скилл|мои техники|список техник|!\s*техники|!\s*skills)$/.test(lowerInput)) {
-    return "techniques";
-  }
-  
-  // Инвентарь
-  if (/^(инвентарь|inventory|рюкзак|вещи|!\s*инвентарь|!\s*inventory)$/.test(lowerInput)) {
-    return "inventory";
-  }
-  
-  // Характеристики
-  if (/^(характеристики|stats|параметры|статы|!\s*характеристики|!\s*stats|!\s*параметры)$/.test(lowerInput)) {
-    return "stats";
-  }
-  
-  // Информация о локации
-  if (/^(где я|где я нахожусь|что вокруг|где нахожусь|локация|место|описание места|мо[ёе] местоположение|!\s*локация)$/.test(lowerInput)) {
-    return "location_info";
-  }
-  
-  // Медитация (культивация)
-  if (/медитир|культивир|накоп.*ци|прорыв/.test(lowerInput)) {
-    return "cultivation";
-  }
-  
-  // Бой
-  if (/атак|бой|сража|удар|защит/.test(lowerInput)) {
-    return "combat";
-  }
-  
-  // Диалог (есть кавычки или обращение)
-  if (/[«"']|скажи|спроси|ответь|говори/.test(lowerInput)) {
-    return "dialogue";
-  }
+  // Проверка динамических паттернов
+  if (REQUEST_PATTERNS.cultivation.test(lowerInput)) return "cultivation";
+  if (REQUEST_PATTERNS.combat.test(lowerInput)) return "combat";
+  if (REQUEST_PATTERNS.dialogue.test(lowerInput)) return "dialogue";
+  if (REQUEST_PATTERNS.creation.test(lowerInput)) return "creation";
   
   // Команды с префиксом
   if (lowerInput.startsWith("!!") || lowerInput.startsWith("--")) {
     return "action";
   }
   
-  // Создание
-  if (/создай|изобрет|разработ|новая техника/.test(lowerInput)) {
-    return "creation";
-  }
-  
   // По умолчанию - повествование
   return "narration";
 }
 
-// Маршрутизация запроса
+/**
+ * Маршрутизация запроса
+ * 
+ * @param input - Входной текст запроса
+ * @param character - Данные персонажа
+ * @param location - Данные о локации
+ * @param worldTime - Мировое время
+ * @param techniques - Изученные техники
+ * @returns Результат маршрутизации
+ */
 export function routeRequest(
   input: string,
   character: Character | null,
@@ -148,11 +190,12 @@ export function routeRequest(
       };
       
     case "cultivation":
-      // Культивация: локальные расчёты + LLM для описания
+      // Культивация: ПОЛНОСТЬЮ локально (кроме прерываний медитации)
+      // Прерывания обрабатываются отдельно в chat/route.ts
       return {
-        useLLM: true,
-        llmPrompt: `Действие культивации: ${input}. Используй локальные расчёты для Ци и усталости.`,
-        reason: "Культивация: расчёты локально, описание через LLM",
+        useLLM: false,
+        localData: { message: "Медитация обрабатывается локально" },
+        reason: "Культивация: расчёты Ци и прорыв обрабатываются локально в chat/route.ts",
       };
       
     case "combat":
@@ -195,99 +238,13 @@ export function routeRequest(
   }
 }
 
-// Построение ответа о статусе
-function buildStatusResponse(
-  character: Character | null,
-  worldTime: WorldTime | null
-): object {
-  if (!character) {
-    return { error: "Персонаж не найден" };
-  }
-  
-  return {
-    type: "status",
-    character: {
-      cultivation: `${character.cultivationLevel}.${character.cultivationSubLevel}`,
-      qi: {
-        current: character.currentQi,
-        max: character.coreCapacity,
-        percent: Math.round((character.currentQi / character.coreCapacity) * 100),
-      },
-      health: character.health,
-      fatigue: character.fatigue,
-      age: character.age,
-    },
-    worldTime: worldTime ? {
-      year: worldTime.year,
-      month: worldTime.month,
-      day: worldTime.day,
-      time: `${worldTime.hour}:${worldTime.minute.toString().padStart(2, "0")}`,
-      season: worldTime.season,
-    } : null,
-  };
-}
-
-// Построение ответа о техниках
-function buildTechniquesResponse(techniques: Technique[]): object {
-  return {
-    type: "techniques",
-    count: techniques.length,
-    techniques: techniques.map(t => ({
-      name: t.name,
-      type: t.type,
-      element: t.element,
-      qiCost: t.qiCost,
-      mastery: t.masteryProgress,
-    })),
-    message: techniques.length === 0 
-      ? "Нет изученных техник" 
-      : `Изучено техник: ${techniques.length}`,
-  };
-}
-
-// Построение ответа о характеристиках
-function buildStatsResponse(character: Character | null): object {
-  if (!character) {
-    return { error: "Персонаж не найден" };
-  }
-  
-  return {
-    type: "stats",
-    stats: {
-      strength: character.strength,
-      agility: character.agility,
-      intelligence: character.intelligence,
-      conductivity: character.conductivity,
-    },
-    core: {
-      capacity: character.coreCapacity,
-      currentQi: character.currentQi,
-      accumulatedQi: character.accumulatedQi,
-    },
-  };
-}
-
-// Построение ответа о локации
-function buildLocationResponse(location: LocationData | null): object {
-  if (!location) {
-    return { error: "Локация не определена" };
-  }
-  
-  return {
-    type: "location",
-    location: {
-      name: location.name,
-      terrainType: location.terrainType,
-      qiDensity: location.qiDensity,
-      distanceFromCenter: location.distanceFromCenter,
-    },
-  };
-}
-
-// Проверка, нужен ли LLM для запроса
+/**
+ * Проверка, нужен ли LLM для обработки запроса
+ * 
+ * @param input - Входной текст запроса
+ * @returns true если нужен LLM, false если достаточно локальной обработки
+ */
 export function needsLLM(input: string): boolean {
   const requestType = identifyRequestType(input);
-  // cultivation обрабатывается ЛОКАЛЬНО (медитация, прорыв)
-  const localTypes: RequestType[] = ["status", "techniques", "inventory", "stats", "location_info", "cultivation"];
-  return !localTypes.includes(requestType);
+  return !LOCAL_REQUEST_TYPES.includes(requestType);
 }

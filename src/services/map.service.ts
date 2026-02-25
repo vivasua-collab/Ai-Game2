@@ -12,7 +12,7 @@ import type {
   CreateWorldObjectParams,
   SearchResult 
 } from '@/types/map';
-import { getDistance3D, type WorldPosition } from '@/lib/game/world-coordinates';
+import { getDistance3D, getDistanceFromCenter, type WorldPosition } from '@/lib/game/world-coordinates';
 
 // ==================== LOCATION ====================
 

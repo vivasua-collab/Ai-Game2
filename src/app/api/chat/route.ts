@@ -248,10 +248,73 @@ export async function POST(request: NextRequest) {
     const requestType = identifyRequestType(message);
     await logDebug("GAME", "Request identified", { requestType, message: message.substring(0, 50) });
 
+    // === ОБРАБОТКА ОТВЕТОВ НА ПРЕРЫВАНИЕ МЕДИТАЦИИ ===
+    // Игрок может выбрать: ignore, confront, hide
+    const lowerMessage = message.toLowerCase().trim();
+    const isInterruptionResponse = 
+      lowerMessage === "проигнорировать" || 
+      lowerMessage === "1" ||
+      lowerMessage === "встать и встретить" || 
+      lowerMessage === "2" ||
+      lowerMessage === "скрыться" || 
+      lowerMessage === "3" ||
+      lowerMessage.includes("игнорир") ||
+      lowerMessage.includes("встретить") ||
+      lowerMessage.includes("скрыть");
+    
+    if (isInterruptionResponse) {
+      // Получаем последнее сообщение о прерывании из истории
+      const lastInterruption = session.messages.find(m => 
+        m.type === "narration" && 
+        m.content && 
+        m.content.includes("Медитация прервана")
+      );
+      
+      if (lastInterruption) {
+        let responseContent = "";
+        let mechanicsUpdate: Record<string, unknown> = {};
+        let timeMinutes = 10;
+        
+        if (lowerMessage.includes("игнорир") || lowerMessage === "1") {
+          // Игнорировать - риск низкий, но может быть последствия
+          responseContent = `🙏 Ты пытаешься игнорировать происходящее и продолжить медитацию...`;
+          timeMinutes = 30;
+        } else if (lowerMessage.includes("встретить") || lowerMessage === "2") {
+          // Встать и встретить
+          mechanicsUpdate = {
+            fatigue: Math.min(100, session.character.fatigue + 5),
+          };
+          responseContent = `⚡ Ты резко встаёшь, готовый к действию!`;
+          timeMinutes = 15;
+        } else if (lowerMessage.includes("скрыть") || lowerMessage === "3") {
+          // Скрыться
+          responseContent = `🌿 Ты бесшумно скрываешься в укрытии...`;
+          timeMinutes = 10;
+        }
+        
+        if (Object.keys(mechanicsUpdate).length > 0) {
+          await db.character.update({
+            where: { id: session.characterId },
+            data: { ...mechanicsUpdate, updatedAt: new Date() },
+          });
+        }
+        
+        return NextResponse.json({
+          success: true,
+          response: {
+            type: "narration",
+            content: responseContent + `\n\n*Опиши что происходит дальше через LLM...*`,
+            characterState: mechanicsUpdate,
+            timeAdvance: { minutes: timeMinutes },
+          },
+          updatedTime: calculateUpdatedTime(session, timeMinutes),
+        });
+      }
+    }
+
     // === МЕДИТАЦИЯ И ПРОРЫВ - ОБРАБАТЫВАЕМ ЛОКАЛЬНО БЕЗ LLM ===
     // Это должно быть ПЕРЕД проверкой needsLLM
     if (requestType === "cultivation") {
-      const lowerMessage = message.toLowerCase();
       const isBreakthrough = /прорыв|breakthrough/.test(lowerMessage);
       const meditationMatch = lowerMessage.match(/(\d+)\s*(час|минут)/);
       
@@ -750,7 +813,13 @@ ${location ? `- Плотность Ци: ${location.qiDensity} ед/м³` : ""}
         gameResponse.timeAdvance.minutes
       : 0;
     
-    const totalMinutes = totalMinutesFromLLM + timeAdvanceForMechanics.minutes;
+    let totalMinutes = totalMinutesFromLLM + timeAdvanceForMechanics.minutes;
+    
+    // Если LLM не вернул время и это не локальный обработчик - добавляем дефолтное время
+    // Любое действие занимает минимум 3 минуты
+    if (totalMinutes === 0 && requestType !== "cultivation" && needsLLM(message)) {
+      totalMinutes = 5; // Дефолт: 5 минут на любое действие
+    }
 
     if (totalMinutes > 0) {
       let newMinute = session.worldMinute + totalMinutes;

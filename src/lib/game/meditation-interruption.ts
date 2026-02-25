@@ -442,6 +442,16 @@ export function calculateInterruptionChance(
 
 /**
  * Проверка прерывания на каждом часу медитации
+ * 
+ * ПРАВИЛА:
+ * - Медитации меньше 60 минут НЕ проверяются на прерывание
+ * - Медитации >= 60 минут проверяются каждый полный час (на 60, 120, 180... минуте)
+ * 
+ * @param character - Персонаж
+ * @param location - Локация
+ * @param worldTime - Мировое время
+ * @param durationMinutes - Длительность медитации в минутах
+ * @param options - Дополнительные опции (формация)
  */
 export function checkMeditationInterruption(
   character: Character,
@@ -455,11 +465,23 @@ export function checkMeditationInterruption(
 ): InterruptionCheckResult {
   const chanceCalc = calculateInterruptionChance(character, location, worldTime, options);
   
-  // Проверяем каждый час
-  const hours = Math.ceil(durationMinutes / 60);
+  // Медитации меньше 1 часа НЕ проверяются на прерывание
+  if (durationMinutes < 60) {
+    return {
+      interrupted: false,
+      event: null,
+      checkHour: 0,
+      baseChance: chanceCalc.baseChance,
+      finalChance: chanceCalc.finalChance,
+      modifiers: chanceCalc.modifiers,
+    };
+  }
   
-  for (let hour = 1; hour <= hours; hour++) {
-    // Шанс за этот час (можно сделать накопительный)
+  // Проверяем только каждый ПОЛНЫЙ час (floor вместо ceil)
+  const fullHours = Math.floor(durationMinutes / 60);
+  
+  for (let hour = 1; hour <= fullHours; hour++) {
+    // Шанс за этот час
     const roll = Math.random();
     
     if (roll < chanceCalc.finalChance) {
@@ -481,7 +503,7 @@ export function checkMeditationInterruption(
   return {
     interrupted: false,
     event: null,
-    checkHour: hours,
+    checkHour: fullHours,
     baseChance: chanceCalc.baseChance,
     finalChance: chanceCalc.finalChance,
     modifiers: chanceCalc.modifiers,

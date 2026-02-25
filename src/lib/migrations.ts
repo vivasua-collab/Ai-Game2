@@ -17,7 +17,8 @@ import { execSync } from "child_process";
 // v3: Добавлены поля worldId, worldName, startType в GameSession; name в Character
 // v4: Добавлены навыки культивации, система обучения техникам, 3D координаты, система усталости
 // v5: Расширена модель InventoryItem (isConsumable, durability, qiCharge, effects, icon)
-export const SCHEMA_VERSION = 5;
+// v6: Добавлены модели Building и WorldObject для системы карты
+export const SCHEMA_VERSION = 6;
 
 // Путь к базе данных
 const DB_PATH = join(process.cwd(), "db", "custom.db");

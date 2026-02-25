@@ -14,6 +14,7 @@ import {
   validationErrorResponse,
 } from "@/lib/validations/game";
 import { BASIC_TECHNIQUES } from "@/data/presets/technique-presets";
+import { generatePositionAtDistance, generatePositionInRange } from "@/lib/game/world-coordinates";
 
 // Инициализируем LLM
 let llmInitialized = false;
@@ -166,14 +167,23 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // 3. Создаём локацию
+      // 3. Создаём локацию с вычисленными координатами
+      // Генерируем позицию на основе distanceFromCenter
+      const startPos = variant === 1 
+        ? generatePositionAtDistance(startConfig.distanceFromCenter, 500, 1500) // Секта в горах
+        : generatePositionInRange(10000, 90000, 0, 100); // Случайное место
+      
       const location = await tx.location.create({
         data: {
           name: startConfig.locationName,
+          x: startPos.x,
+          y: startPos.y,
+          z: startPos.z,
           distanceFromCenter: startConfig.distanceFromCenter,
           qiDensity: startConfig.qiDensity,
           qiFlowRate: Math.floor(startConfig.qiDensity / 10),
           terrainType: variant === 1 ? "mountains" : "plains",
+          locationType: "area",
           sessionId: session.id,
         },
       });
