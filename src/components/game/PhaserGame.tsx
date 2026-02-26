@@ -145,7 +145,7 @@ const GameSceneConfig = {
       height: scene.cameras.main.height,
     });
 
-    // Top bar - will be repositioned on resize
+    // Top bar
     const topBar = scene.add.rectangle(0, 25, 0, 50, 0x000000, 0.7);
     uiContainer.add(topBar);
 
@@ -205,7 +205,6 @@ const GameSceneConfig = {
     const slotSize = 40;
     const slotSpacing = 5;
     const totalSlots = 12;
-    const slotsY = GAME_HEIGHT - 35;
 
     const combatSlotsContainer = scene.add.container(0, 0);
     uiContainer.add(combatSlotsContainer);
@@ -218,6 +217,8 @@ const GameSceneConfig = {
       slotBackgrounds.length = 0;
       slotTexts.length = 0;
 
+      const { width, height } = getScreenSize();
+
       const level = globalCharacter?.cultivationLevel || 0;
       const availableSlots = getCombatSlotsCount(level);
 
@@ -229,7 +230,8 @@ const GameSceneConfig = {
         }
       }
 
-      const startX = GAME_WIDTH / 2 - (totalSlots * (slotSize + slotSpacing)) / 2;
+      const slotsY = height - 35; // Dynamic position from bottom
+      const startX = width / 2 - (totalSlots * (slotSize + slotSpacing)) / 2;
 
       for (let i = 0; i < totalSlots; i++) {
         const x = startX + i * (slotSize + slotSpacing);
@@ -276,27 +278,60 @@ const GameSceneConfig = {
 
     // === MINIMAP (top-right) ===
     const minimapSize = 100;
-    const minimapX = GAME_WIDTH - minimapSize - 10;
-    const minimapY = 60 + minimapSize / 2;
 
-    const minimapBg = scene.add.rectangle(minimapX, minimapY, minimapSize, minimapSize, 0x000000, 0.7);
+    const minimapBg = scene.add.rectangle(0, 0, minimapSize, minimapSize, 0x000000, 0.7);
     minimapBg.setStrokeStyle(2, 0x4ade80);
     uiContainer.add(minimapBg);
 
-    const minimapPlayer = scene.add.circle(minimapX, minimapY, 3, 0x4ade80);
+    const minimapPlayer = scene.add.circle(0, 0, 3, 0x4ade80);
     uiContainer.add(minimapPlayer);
     scene.data.set('minimapPlayer', minimapPlayer);
-    scene.data.set('minimapX', minimapX);
-    scene.data.set('minimapY', minimapY);
     scene.data.set('minimapSize', minimapSize);
 
     // === INSTRUCTIONS ===
-    const instructions = scene.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 15,
+    const instructions = scene.add.text(0, 0,
       'WASD • Enter для чата • 1-9,0,-,= для техник', {
       fontSize: '12px',
       color: '#9ca3af',
     }).setOrigin(0.5);
     uiContainer.add(instructions);
+
+    // === UPDATE UI POSITIONS FUNCTION ===
+    const updateUIPositions = () => {
+      const { width, height } = getScreenSize();
+
+      // Update top bar
+      topBar.setPosition(width / 2, 25);
+      topBar.setSize(width, 50);
+      title.setPosition(width / 2, 15);
+      coords.setPosition(width / 2, 35);
+
+      // Update chat panel (bottom-left)
+      const chatX = chatWidth / 2 + 10;
+      const chatY = height - chatHeight / 2 - 10;
+      chatBg.setPosition(chatX, chatY);
+      chatTitle.setPosition(chatX - chatWidth / 2 + 5, chatY - chatHeight / 2 + 5);
+      chatMessagesText.setPosition(chatX - chatWidth / 2 + 10, chatY - chatHeight / 2 + 25);
+      inputBg.setPosition(chatX, chatY + chatHeight / 2 - 15);
+      chatInputDisplay.setPosition(chatX - chatWidth / 2 + 10, chatY + chatHeight / 2 - 22);
+
+      // Update minimap (top-right)
+      const minimapX = width - minimapSize / 2 - 10;
+      const minimapY = 60 + minimapSize / 2;
+      minimapBg.setPosition(minimapX, minimapY);
+      minimapPlayer.setPosition(minimapX, minimapY);
+      scene.data.set('minimapX', minimapX);
+      scene.data.set('minimapY', minimapY);
+
+      // Update instructions (bottom-center)
+      instructions.setPosition(width / 2, height - 15);
+
+      // Update combat slots
+      updateCombatSlots();
+    };
+
+    scene.data.set('updateUIPositions', updateUIPositions);
+    updateUIPositions(); // Initial positioning
 
     // === AMBIENT PARTICLES ===
     for (let i = 0; i < 30; i++) {

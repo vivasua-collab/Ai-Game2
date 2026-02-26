@@ -96,33 +96,23 @@ export async function POST(request: NextRequest) {
   const timeAdvanceForMechanics = { minutes: 0 };
   
   try {
-    // Инициализируем LLM если ещё не сделали
+    // Инициализируем LLM если ещё не сделали (необязательно для локальных запросов)
+    let llmAvailable = false;
     if (!llmInitialized) {
       try {
         initializeLLM();
         llmInitialized = true;
-        await logInfo("SYSTEM", "LLM provider initialized successfully");
+        llmAvailable = isLLMReady();
+        await logInfo("SYSTEM", "LLM provider initialized", { available: llmAvailable });
       } catch (initError) {
-        await logError("LLM", "Failed to initialize LLM provider", {
+        await logWarn("LLM", "LLM provider not available - local mode", {
           error: initError instanceof Error ? initError.message : "Unknown init error",
-          stack: initError instanceof Error ? initError.stack : undefined,
         });
-        return NextResponse.json(
-          { 
-            error: "LLM initialization failed", 
-            message: initError instanceof Error ? initError.message : "Unknown initialization error",
-            component: "LLM_PROVIDER",
-          },
-          { status: 503 }
-        );
+        // НЕ возвращаем ошибку - продолжаем для локальных запросов
+        llmAvailable = false;
       }
-    }
-
-    // Проверяем готовность LLM
-    if (!isLLMReady()) {
-      await logWarn("LLM", "LLM provider not ready", {
-        initialized: llmInitialized,
-      });
+    } else {
+      llmAvailable = isLLMReady();
     }
 
     const body = await request.json();
@@ -743,6 +733,40 @@ ${location ? `- Плотность Ци: ${location.qiDensity} ед/м³` : ""}
       // Продолжаем даже если не удалось сохранить
     }
 
+    // Проверяем доступность LLM для нелокальных запросов
+    if (!llmAvailable) {
+      await logWarn("GAME", "LLM not available for narration request", { requestType, message: message.substring(0, 50) });
+      
+      // Fallback: возвращаем базовый ответ без LLM
+      const fallbackResponse = generateFallbackResponse(message, session.character, location, requestType);
+      
+      // Сохраняем fallback ответ
+      try {
+        await db.message.create({
+          data: {
+            sessionId,
+            type: "narration",
+            sender: "narrator",
+            content: fallbackResponse.content,
+          },
+        });
+      } catch {
+        // Игнорируем ошибки сохранения
+      }
+      
+      return NextResponse.json({
+        success: true,
+        response: {
+          type: "narration",
+          content: fallbackResponse.content,
+          characterState: null,
+          timeAdvance: { minutes: 5 },
+        },
+        updatedTime: calculateUpdatedTime(session, 5),
+        warning: "LLM недоступен - использован fallback ответ",
+      });
+    }
+
     // Генерируем ответ
     let gameResponse;
     try {
@@ -761,14 +785,20 @@ ${location ? `- Плотность Ци: ${location.qiDensity} ед/м³` : ""}
         messageLength: message.length,
         historyLength: conversationHistory.length,
       });
-      return NextResponse.json(
-        { 
-          error: "LLM generation failed", 
-          message: llmError instanceof Error ? llmError.message : "AI response generation failed",
-          component: "LLM_GENERATION",
+      
+      // Fallback вместо ошибки
+      const fallbackResponse = generateFallbackResponse(message, session.character, location, requestType);
+      return NextResponse.json({
+        success: true,
+        response: {
+          type: "narration",
+          content: fallbackResponse.content,
+          characterState: null,
+          timeAdvance: { minutes: 5 },
         },
-        { status: 502 }
-      );
+        updatedTime: calculateUpdatedTime(session, 5),
+        warning: "LLM временно недоступен",
+      });
     }
 
     // Сохраняем ответ
@@ -1002,4 +1032,66 @@ ${(response.items as Array<Record<string, unknown>>)?.length > 0
     default:
       return JSON.stringify(data, null, 2);
   }
+}
+
+/**
+ * Генерация fallback ответа когда LLM недоступен
+ */
+function generateFallbackResponse(
+  message: string,
+  character: { name: string; cultivationLevel: number; currentQi: number; coreCapacity: number },
+  location: { name: string; qiDensity: number } | null,
+  requestType: RequestType
+): { content: string } {
+  const lowerMessage = message.toLowerCase();
+  
+  // Шаблоны ответов для разных типов действий
+  if (requestType === "action" || requestType === "narration") {
+    // Определяем тип действия по ключевым словам
+    if (lowerMessage.includes("иду") || lowerMessage.includes("идти") || lowerMessage.includes("путь")) {
+      return {
+        content: `🚶 **Путешествие**\n\n${character.name} продолжает путь...\n\n📍 Текущая локация: ${location?.name || "Неизвестно"}\n💫 Ци: ${character.currentQi}/${character.coreCapacity}\n\n*(LLM недоступен - базовое описание)*`,
+      };
+    }
+    
+    if (lowerMessage.includes("смотр") || lowerMessage.includes("осматриваю") || lowerMessage.includes("изучаю")) {
+      return {
+        content: `👀 **Осмотр**\n\n${character.name} внимательно осматривается вокруг.\n\n📍 Местность: ${location?.name || "Неизвестно"}\n🌊 Плотность Ци: ${location?.qiDensity || "?"} ед/м³\n\n*(LLM недоступен - базовое описание)*`,
+      };
+    }
+    
+    if (lowerMessage.includes("думаю") || lowerMessage.includes("размышляю")) {
+      return {
+        content: `💭 **Размышление**\n\n${character.name} погружается в раздумья...\n\n🧘 Уровень культивации: ${character.cultivationLevel}\n💫 Ци: ${character.currentQi}/${character.coreCapacity}\n\n*(LLM недоступен - базовое описание)*`,
+      };
+    }
+    
+    // Общий fallback
+    return {
+      content: `📜 **Действие выполнено**\n\n${character.name} выполняет действие.\n\n📍 Локация: ${location?.name || "Неизвестно"}\n💫 Ци: ${character.currentQi}/${character.coreCapacity}\n\n⚠️ *LLM временно недоступен. Попробуйте позже или используйте команды (статус, техники, медитация).*`,
+    };
+  }
+  
+  if (requestType === "dialogue") {
+    return {
+      content: `💬 **Диалог**\n\n${character.name} пытается что-то сказать...\n\n⚠️ *LLM недоступен для генерации диалога. Попробуйте позже.*`,
+    };
+  }
+  
+  if (requestType === "combat") {
+    return {
+      content: `⚔️ **Бой**\n\n${character.name} готовится к бою!\n\n💫 Ци: ${character.currentQi}/${character.coreCapacity}\n\n⚠️ *LLM недоступен для генерации боя. Используйте техники через меню.*`,
+    };
+  }
+  
+  if (requestType === "exploration") {
+    return {
+      content: `🔍 **Исследование**\n\n${character.name} исследует местность.\n\n📍 Локация: ${location?.name || "Неизвестно"}\n🌊 Плотность Ци: ${location?.qiDensity || "?"} ед/м³\n\n*(Базовое описание)*`,
+    };
+  }
+  
+  // Default fallback
+  return {
+    content: `📝 **Действие обработано**\n\n${character.name} находится в локации "${location?.name || "Неизвестно"}".\n\n💫 Ци: ${character.currentQi}/${character.coreCapacity}\n🧘 Уровень: ${character.cultivationLevel}\n\n⚠️ *LLM недоступен. Используйте команды: статус, техники, медитация, сон.*`,
+  };
 }
