@@ -24,7 +24,8 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useGameCharacter, useGameLocation, useGameTime, useGameActions } from '@/stores/game.store';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useGameCharacter, useGameLocation, useGameTime, useGameActions, useGameTechniques } from '@/stores/game.store';
 import {
   calculateQiRates,
   calculateTimeToFull,
@@ -113,6 +114,7 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
   const [duration, setDuration] = useState(TIME_CONSTANTS.MIN_MEDITATION_TICKS);
   const [inputValue, setInputValue] = useState(String(TIME_CONSTANTS.MIN_MEDITATION_TICKS));
   const [isActing, setIsActing] = useState(false);
+  const [selectedTechniqueId, setSelectedTechniqueId] = useState<string>('auto'); // 'auto' = из слота, или ID техники
   const [result, setResult] = useState<{ 
     message: string; 
     interrupted?: boolean;
@@ -127,6 +129,17 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
     };
   } | null>(null);
 
+  // Получаем техники культивации
+  const techniques = useGameTechniques();
+  const cultivationTechniques = useMemo(() => {
+    return techniques.filter(t => t.technique.type === 'cultivation');
+  }, [techniques]);
+
+  // Техника в слоте культивации
+  const slottedCultivationTechnique = useMemo(() => {
+    return techniques.find(t => t.quickSlot === 0 && t.technique.type === 'cultivation');
+  }, [techniques]);
+
   // Сброс при открытии
   useEffect(() => {
     if (open) {
@@ -134,6 +147,7 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
       setDuration(TIME_CONSTANTS.MIN_MEDITATION_TICKS);
       setInputValue(String(TIME_CONSTANTS.MIN_MEDITATION_TICKS));
       setResult(null);
+      setSelectedTechniqueId('auto');
     }
   }, [open]);
 
@@ -301,6 +315,11 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
 
       if (activityType !== 'meditation') {
         body.restType = activityType;
+      } else {
+        // Для медитации передаём выбранную технику
+        if (selectedTechniqueId !== 'auto') {
+          body.techniqueId = selectedTechniqueId;
+        }
       }
 
       const response = await fetch(endpoint, {
@@ -494,6 +513,48 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
                 <div className="text-xs text-slate-400">
                   Накопление Ци через концентрацию. Утомляет разум, тело отдыхает.
                 </div>
+                
+                {/* Выбор техники медитации */}
+                {cultivationTechniques.length > 0 && (
+                  <div className="space-y-2">
+                    <Label className="text-slate-300">🌀 Техника медитации:</Label>
+                    <Select value={selectedTechniqueId} onValueChange={setSelectedTechniqueId}>
+                      <SelectTrigger className="bg-slate-700 border-slate-600">
+                        <SelectValue placeholder="Выберите технику" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-700">
+                        <SelectItem value="auto">
+                          <div className="flex items-center gap-2">
+                            <span>🧘 Авто</span>
+                            <span className="text-slate-400 text-xs">
+                              {slottedCultivationTechnique 
+                                ? `(${slottedCultivationTechnique.technique.name})` 
+                                : '(без техники)'}
+                            </span>
+                          </div>
+                        </SelectItem>
+                        {cultivationTechniques.map((t) => (
+                          <SelectItem key={t.id} value={t.techniqueId}>
+                            <div className="flex items-center gap-2">
+                              <span>{t.technique.name}</span>
+                              {t.quickSlot === 0 && (
+                                <Badge variant="outline" className="text-xs border-purple-500 text-purple-400">
+                                  в слоте
+                                </Badge>
+                              )}
+                              <span className="text-cyan-400 text-xs">
+                                +{t.technique.effects?.qiRegenPercent || 0}%
+                              </span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className="text-xs text-slate-500">
+                      Техника увеличивает поглощение Ци и снижает шанс прерывания.
+                    </p>
+                  </div>
+                )}
               </TabsContent>
 
               <TabsContent value="light" className="space-y-3 mt-3">

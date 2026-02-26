@@ -27,12 +27,13 @@ interface MeditationRequest {
   durationMinutes: number;  // In ticks (1 tick = 1 minute)
   formationId?: string;     // Optional: active formation
   formationQuality?: number; // Optional: formation quality (1-5)
+  techniqueId?: string;     // Optional: specific technique to use (overrides slot)
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json() as MeditationRequest;
-    const { characterId, durationMinutes, formationId, formationQuality = 1 } = body;
+    const { characterId, durationMinutes, formationId, formationQuality = 1, techniqueId } = body;
     
     // Validate duration using time constants
     if (!characterId || !durationMinutes) {
@@ -64,6 +65,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Get character with location and session
+    // If techniqueId is provided, fetch that technique; otherwise use cultivation slot
     const character = await db.character.findUnique({
       where: { id: characterId },
       include: {
@@ -72,12 +74,19 @@ export async function POST(request: NextRequest) {
           take: 1,
           orderBy: { createdAt: 'desc' },
         },
-        techniques: {
-          where: { 
-            quickSlot: 0,  // Cultivation slot
-          },
-          include: { technique: true },
-        },
+        techniques: techniqueId 
+          ? {
+              where: { 
+                techniqueId: techniqueId,  // Specific technique requested
+              },
+              include: { technique: true },
+            }
+          : {
+              where: { 
+                quickSlot: 0,  // Cultivation slot (default)
+              },
+              include: { technique: true },
+            },
       },
     });
     
@@ -88,8 +97,8 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Get cultivation technique from slot
-    const cultivationTechnique = character.techniques.find(t => t.quickSlot === 0);
+    // Get cultivation technique (either from specific ID or from slot)
+    const cultivationTechnique = character.techniques[0];
     const techniqueData = cultivationTechnique?.technique;
     
     // Calculate technique bonuses
