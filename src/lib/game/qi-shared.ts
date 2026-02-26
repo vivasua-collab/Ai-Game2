@@ -8,7 +8,7 @@
  * Клиент использует эти функции только для ПРЕДПРОСМОТРА.
  */
 
-import { QI_CONSTANTS, BREAKTHROUGH_CONSTANTS, MEDITATION_CONSTANTS, CULTIVATION_LEVEL_NAMES, QI_COSTS } from './constants';
+import { QI_CONSTANTS, BREAKTHROUGH_CONSTANTS, MEDITATION_CONSTANTS, CULTIVATION_LEVEL_NAMES, QI_COSTS, MEDITATION_TYPE_CONSTANTS } from './constants';
 import type { Character, BreakthroughRequirements, BreakthroughResult, QiRates } from '@/types/game';
 import type { LocationData } from '@/types/game-shared';
 
@@ -221,19 +221,29 @@ export function calculateBreakthroughResult(
  * Расчёт усталости при медитации
  * Медитация = концентрация, даёт ментальную усталость
  * Физическая усталость НЕ меняется (сидячее положение)
+ * 
+ * Типы медитации:
+ * - accumulation: обычная накопительная (базовая усталость)
+ * - breakthrough: на прорыв (x2 ментальная усталость)
+ * - conductivity: на проводимость (x1.5 ментальная усталость)
  */
 export function calculateMeditationFatigue(
   durationMinutes: number,
-  type: 'accumulation' | 'breakthrough'
+  type: 'accumulation' | 'breakthrough' | 'conductivity'
 ): { physicalGain: number; mentalGain: number } {
   // Физическая: не меняется (сидячее положение, тело отдыхает)
   const physicalGain = 0;
   
   // Ментальная: концентрация утомляет разум
   const baseMentalRate = MEDITATION_CONSTANTS.MENTAL_FATIGUE_RATE;
-  const mentalMultiplier = type === 'breakthrough'
-    ? MEDITATION_CONSTANTS.MENTAL_FATIGUE_BREAKTHROUGH_MULTIPLIER
-    : 1.0;
+  
+  let mentalMultiplier = 1.0;
+  if (type === 'breakthrough') {
+    mentalMultiplier = MEDITATION_TYPE_CONSTANTS.BREAKTHROUGH_MENTAL_FATIGUE_MULTIPLIER;
+  } else if (type === 'conductivity') {
+    mentalMultiplier = MEDITATION_TYPE_CONSTANTS.CONDUCTIVITY_MENTAL_FATIGUE_MULTIPLIER;
+  }
+  
   const mentalGain = durationMinutes * baseMentalRate * mentalMultiplier;
   
   return { physicalGain, mentalGain };

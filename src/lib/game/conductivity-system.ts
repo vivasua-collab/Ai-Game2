@@ -12,11 +12,19 @@
  * 2. Прирост от медитации (небольшой)
  * 3. Прирост от использования техник Ци
  * 4. Специальные упражнения/тренировки
+ * 5. Медитации на проводимость (МедП) - +10% к базовой проводимости за каждую
  * 
  * Кап проводимости зависит от уровня культивации
+ * 
+ * ФОРМУЛА ПРОВОДИМОСТИ:
+ * Итоговая проводимость = базовая_проводимость_на_уровне + (МедП * коэффициент_экстрапроводимости%)
+ * Где:
+ * - базовая_проводимость_на_уровне = множитель_уровня * 0.1
+ * - МедП = количество медитаций на проводимость
+ * - коэффициент_экстрапроводимости% = 10% (константа CONDUCTIVITY_BONUS_PERCENT)
  */
 
-import { QI_CONSTANTS } from "./constants";
+import { QI_CONSTANTS, MEDITATION_TYPE_CONSTANTS } from "./constants";
 
 // ============================================
 // КОНСТАНТЫ РАЗВИТИЯ ПРОВОДИМОСТИ
@@ -77,6 +85,100 @@ export function getBaseConductivityForLevel(cultivationLevel: number): number {
   const multiplier = QI_CONSTANTS.CONDUCTIVITY_MULTIPLIERS[cultivationLevel] || 1.0;
   // Базовая проводимость = множитель уровня
   return multiplier * 0.1;
+}
+
+/**
+ * Получить максимальное количество медитаций на проводимость для уровня
+ */
+export function getMaxConductivityMeditations(cultivationLevel: number): number {
+  return MEDITATION_TYPE_CONSTANTS.MAX_CONDUCTIVITY_MEDITATIONS_BY_LEVEL[cultivationLevel] || 5;
+}
+
+/**
+ * Рассчитать бонус проводимости от медитаций на проводимость
+ * Формула: МедП * (базовая_проводимость * 10%)
+ * 
+ * @param conductivityMeditations - количество медитаций на проводимость (МедП)
+ * @param cultivationLevel - уровень культивации
+ * @returns бонус к проводимости
+ */
+export function calculateConductivityBonusFromMeditations(
+  conductivityMeditations: number,
+  cultivationLevel: number
+): number {
+  const baseConductivity = getBaseConductivityForLevel(cultivationLevel);
+  const bonusPercent = MEDITATION_TYPE_CONSTANTS.CONDUCTIVITY_BONUS_PERCENT / 100; // 0.1
+  
+  // Бонус = МедП * (базовая_проводимость * 10%)
+  return conductivityMeditations * (baseConductivity * bonusPercent);
+}
+
+/**
+ * Рассчитать ИТОГОВУЮ проводимость персонажа
+ * 
+ * ФОРМУЛА:
+ * Итоговая = базовая_проводимость_на_уровне + (МедП * коэффициент_экстрапроводимости%)
+ * 
+ * @param cultivationLevel - уровень культивации
+ * @param conductivityMeditations - количество медитаций на проводимость (МедП)
+ * @returns итоговая проводимость
+ */
+export function calculateTotalConductivity(
+  cultivationLevel: number,
+  conductivityMeditations: number
+): number {
+  const baseConductivity = getBaseConductivityForLevel(cultivationLevel);
+  const meditationBonus = calculateConductivityBonusFromMeditations(conductivityMeditations, cultivationLevel);
+  
+  return baseConductivity + meditationBonus;
+}
+
+/**
+ * Проверить, можно ли выполнить медитацию на проводимость
+ */
+export function canDoConductivityMeditation(
+  cultivationLevel: number,
+  conductivityMeditations: number
+): { canDo: boolean; reason?: string } {
+  const maxMeditations = getMaxConductivityMeditations(cultivationLevel);
+  
+  if (conductivityMeditations >= maxMeditations) {
+    return {
+      canDo: false,
+      reason: `Достигнут максимум медитаций на проводимость для уровня ${cultivationLevel}: ${maxMeditations}. Повысьте уровень для продолжения.`,
+    };
+  }
+  
+  return { canDo: true };
+}
+
+/**
+ * Получить информацию о прогрессе медитаций на проводимость
+ */
+export function getConductivityMeditationProgress(
+  cultivationLevel: number,
+  conductivityMeditations: number
+): {
+  current: number;
+  max: number;
+  percent: number;
+  currentBonus: number;
+  nextBonus: number;
+  toNextCap: number;
+} {
+  const max = getMaxConductivityMeditations(cultivationLevel);
+  const currentBonus = calculateConductivityBonusFromMeditations(conductivityMeditations, cultivationLevel);
+  const nextBonus = calculateConductivityBonusFromMeditations(conductivityMeditations + 1, cultivationLevel);
+  const baseConductivity = getBaseConductivityForLevel(cultivationLevel);
+  
+  return {
+    current: conductivityMeditations,
+    max,
+    percent: Math.round((conductivityMeditations / max) * 100),
+    currentBonus,
+    nextBonus,
+    toNextCap: max - conductivityMeditations,
+  };
 }
 
 /**

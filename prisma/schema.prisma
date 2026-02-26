@@ -114,6 +114,10 @@ model Character {
   qiUnderstanding    Int @default(0)    // Текущее значение
   qiUnderstandingCap Int @default(100)  // Максимум (растёт с уровнем)
   
+  // === Медитации на проводимость (МедП) ===
+  // Каждая медитация добавляет +10% к базовой проводимости на уровне
+  conductivityMeditations Int @default(0) // Счётчик медитаций на проводимость
+  
   // === Множитель восстановления усталости ===
   fatigueRecoveryMultiplier Float @default(1.0)
   

@@ -51,6 +51,9 @@ export interface Character {
   qiUnderstanding?: number;
   qiUnderstandingCap?: number;
   
+  // Медитации на проводимость (МедП)
+  conductivityMeditations?: number;
+  
   // Множители
   fatigueRecoveryMultiplier?: number;
   

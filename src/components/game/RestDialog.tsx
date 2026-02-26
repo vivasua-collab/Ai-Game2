@@ -2,9 +2,11 @@
  * Rest Dialog Component
  * 
  * Единый диалог для всех видов отдыха:
- * - 🧘 Медитация: накопление Ци + ментальная усталость (макс 8 часов)
- * - 🌿 Отдых: медленное восстановление усталости (макс 8 часов)
- * - 😴 Сон: быстрое восстановление усталости (макс 8 часов, полное восстановление)
+ * - 🧘 Медитация (накопление): накопление Ци + ментальная усталость
+ * - 🔥 Медитация на прорыв: заполнение ядра → опустошение в accumulatedQi
+ * - ⚡ Медитация на проводимость: +1 к МедП при заполнении ядра
+ * - 🌿 Отдых: медленное восстановление усталости
+ * - 😴 Сон: быстрое восстановление усталости
  * 
  * Техника культивации назначается через меню Техники → вкладка Культивация.
  */
@@ -40,6 +42,7 @@ import {
   FATIGUE_RECOVERY_BY_LEVEL,
   TIME_CONSTANTS,
   QI_CONSTANTS,
+  MEDITATION_TYPE_CONSTANTS,
 } from '@/lib/game/constants';
 import {
   formatTime,
@@ -48,42 +51,75 @@ import {
   roundMeditationTime,
 } from '@/lib/game/time-system';
 import type { WorldTime } from '@/lib/game/time-system';
+import {
+  getConductivityMeditationProgress,
+  getMaxConductivityMeditations,
+  calculateTotalConductivity,
+} from '@/lib/game/conductivity-system';
 
-type RestActivityType = 'meditation' | 'light' | 'sleep';
+type RestActivityType = 'meditation' | 'breakthrough' | 'conductivity' | 'light' | 'sleep';
 
-// Константы для разных типов (макс 8 часов для всех)
+// Константы для разных типов
 const ACTIVITY_CONFIG = {
   meditation: {
-    minDuration: TIME_CONSTANTS.MIN_MEDITATION_TICKS, // 30 мин
-    maxDuration: 480, // 8 часов
-    step: TIME_CONSTANTS.MEDITATION_TICK_STEP, // 30 мин
+    minDuration: TIME_CONSTANTS.MIN_MEDITATION_TICKS,
+    maxDuration: 480,
+    step: TIME_CONSTANTS.MEDITATION_TICK_STEP,
     icon: '🧘',
     title: 'Медитация',
     description: 'Накопление Ци через концентрацию. Утомляет разум.',
+    color: 'bg-purple-600 hover:bg-purple-700',
+    category: 'cultivation' as const,
+  },
+  breakthrough: {
+    minDuration: TIME_CONSTANTS.MIN_MEDITATION_TICKS,
+    maxDuration: 480,
+    step: TIME_CONSTANTS.MEDITATION_TICK_STEP,
+    icon: '🔥',
+    title: 'На прорыв',
+    description: 'Заполнение ядра → перенос в шкалу прорыва. x2 ментальная усталость.',
+    color: 'bg-orange-600 hover:bg-orange-700',
+    category: 'cultivation' as const,
+  },
+  conductivity: {
+    minDuration: TIME_CONSTANTS.MIN_MEDITATION_TICKS,
+    maxDuration: 480,
+    step: TIME_CONSTANTS.MEDITATION_TICK_STEP,
+    icon: '⚡',
+    title: 'На проводимость',
+    description: 'При заполнении ядра: +1 к МедП, проводимость растёт.',
+    color: 'bg-cyan-600 hover:bg-cyan-700',
+    category: 'cultivation' as const,
   },
   light: {
-    minDuration: 30, // 30 мин
-    maxDuration: 480, // 8 часов
-    step: 30, // 30 мин
+    minDuration: 30,
+    maxDuration: 480,
+    step: 30,
     icon: '🌿',
     title: 'Отдых',
-    description: 'Медленное восстановление сил. Можно прервать в любой момент.',
+    description: 'Медленное восстановление сил.',
+    color: 'bg-green-600 hover:bg-green-700',
+    category: 'rest' as const,
   },
   sleep: {
-    minDuration: 240, // 4 часа
-    maxDuration: 480, // 8 часов
-    step: 30, // 30 мин
+    minDuration: 240,
+    maxDuration: 480,
+    step: 30,
     icon: '😴',
     title: 'Сон',
-    description: 'Глубокое восстановление тела и разума. 8 часов = полное восстановление.',
+    description: 'Глубокое восстановление. 8ч = полное восстановление.',
+    color: 'bg-blue-600 hover:bg-blue-700',
+    category: 'rest' as const,
   },
 };
 
 // Быстрый выбор для разных типов
 const QUICK_DURATIONS = {
   meditation: [30, 60, 120, 180, 240, 480],
+  breakthrough: [60, 120, 180, 240, 480],
+  conductivity: [30, 60, 120, 180, 240],
   light: [30, 60, 120, 240, 480],
-  sleep: [240, 360, 480], // 4ч, 6ч, 8ч
+  sleep: [240, 360, 480],
 };
 
 interface RestDialogProps {
@@ -91,7 +127,6 @@ interface RestDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-// Конвертация worldTime из store в WorldTime для расчётов
 function toWorldTime(wt: { year: number; month: number; day: number; hour: number; minute: number } | null): WorldTime | null {
   if (!wt) return null;
   return {
@@ -128,7 +163,6 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
     };
   } | null>(null);
 
-  // Получаем технику из слота культивации для отображения
   const techniques = useGameTechniques();
   const slottedCultivationTechnique = useMemo(() => {
     return techniques.find(t => t.quickSlot === 0 && t.technique.type === 'cultivation');
@@ -144,10 +178,8 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
     }
   }, [open]);
 
-  // Конфигурация текущего типа
   const config = useMemo(() => ACTIVITY_CONFIG[activityType], [activityType]);
 
-  // Обработка смены типа активности
   const handleActivityTypeChange = useCallback((type: string) => {
     const newType = type as RestActivityType;
     setActivityType(newType);
@@ -157,7 +189,6 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
     setResult(null);
   }, []);
 
-  // Обработка ввода
   const handleInputChange = useCallback((value: string) => {
     setInputValue(value);
     const num = parseInt(value, 10);
@@ -168,7 +199,6 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
     }
   }, [config]);
 
-  // Обработка слайдера
   const handleSliderChange = useCallback((values: number[]) => {
     const rawValue = values[0];
     const newDuration = rawValue < config.minDuration 
@@ -181,42 +211,54 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
 
   // === РАСЧЁТЫ ДЛЯ МЕДИТАЦИИ ===
   const qiRates = useMemo(() => {
-    if (!character || activityType !== 'meditation') return null;
+    if (!character || !['meditation', 'breakthrough', 'conductivity'].includes(activityType)) return null;
     return calculateQiRates(character, location);
   }, [character, location, activityType]);
 
   const meditationEstimate = useMemo(() => {
-    if (!character || !qiRates || activityType !== 'meditation') {
+    if (!character || !qiRates || !['meditation', 'breakthrough', 'conductivity'].includes(activityType)) {
       return { qiGained: 0, willFillCore: false, timeToFull: 0 };
     }
 
     const durationSeconds = duration * 60;
     const totalGain = qiRates.total * durationSeconds;
     const qiGained = Math.floor(totalGain);
-
     const qiToFull = character.coreCapacity - character.currentQi;
     const willFillCore = qiToFull > 0 && (character.currentQi + qiGained) >= character.coreCapacity;
-
     const timeToFull = calculateTimeToFull(character.currentQi, character.coreCapacity, qiRates);
 
     return { qiGained, willFillCore, timeToFull };
   }, [character, qiRates, duration, activityType]);
 
   const meditationFatigue = useMemo(() => {
-    if (activityType !== 'meditation') return { physicalGain: 0, mentalGain: 0 };
-    return calculateMeditationFatigue(duration, 'accumulation');
+    if (!['meditation', 'breakthrough', 'conductivity'].includes(activityType)) {
+      return { physicalGain: 0, mentalGain: 0 };
+    }
+    
+    const type = activityType === 'meditation' ? 'accumulation' : 
+                 activityType === 'breakthrough' ? 'breakthrough' : 'conductivity';
+    return calculateMeditationFatigue(duration, type as any);
   }, [duration, activityType]);
 
   const canMeditateNow = useMemo(() => {
-    if (!character || activityType !== 'meditation') return true;
+    if (!character || !['meditation', 'breakthrough', 'conductivity'].includes(activityType)) return true;
     return canMeditate(character.currentQi, character.coreCapacity);
+  }, [character, activityType]);
+
+  // === ПРОГРЕСС МЕДИТАЦИЙ НА ПРОВОДИМОСТЬ ===
+  const conductivityProgress = useMemo(() => {
+    if (!character || activityType !== 'conductivity') return null;
+    return getConductivityMeditationProgress(
+      character.cultivationLevel,
+      character.conductivityMeditations || 0
+    );
   }, [character, activityType]);
 
   const qiPercent = character ? getCoreFillPercent(character.currentQi, character.coreCapacity) : 0;
 
   // === РАСЧЁТЫ ДЛЯ ОТДЫХА/СНА ===
   const fatigueRecovery = useMemo(() => {
-    if (!character || activityType === 'meditation') {
+    if (!character || !['light', 'sleep'].includes(activityType)) {
       return { physical: 0, mental: 0 };
     }
 
@@ -283,9 +325,16 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
   const handleAction = useCallback(async () => {
     if (!character || isActing) return;
 
-    if (activityType === 'meditation' && !canMeditateNow) {
+    if (['meditation', 'breakthrough', 'conductivity'].includes(activityType) && !canMeditateNow) {
       setResult({ message: '⚡ Ядро заполнено! Потратьте Ци чтобы продолжить накопление.' });
       return;
+    }
+
+    if (activityType === 'conductivity' && conductivityProgress) {
+      if (conductivityProgress.current >= conductivityProgress.max) {
+        setResult({ message: `⚡ Достигнут максимум медитаций на проводимость для уровня ${character.cultivationLevel}!` });
+        return;
+      }
     }
 
     if (activityType === 'sleep' && duration < ACTIVITY_CONFIG.sleep.minDuration) {
@@ -297,16 +346,36 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
     setResult(null);
 
     try {
-      const endpoint = activityType === 'meditation' ? '/api/meditation' : '/api/rest';
+      const endpoint = '/api/meditation';
       const body: Record<string, unknown> = {
         characterId: character.id,
         durationMinutes: duration,
       };
 
-      if (activityType !== 'meditation') {
-        body.restType = activityType;
+      if (['meditation', 'breakthrough', 'conductivity'].includes(activityType)) {
+        body.meditationType = activityType === 'meditation' ? 'accumulation' : activityType;
+      } else {
+        // Для отдыха и сна используем другой эндпоинт
+        const restResponse = await fetch('/api/rest', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            characterId: character.id,
+            durationMinutes: duration,
+            restType: activityType,
+          }),
+        });
+        const restData = await restResponse.json();
+        
+        if (restData.success) {
+          setResult({ message: restData.message });
+          await loadState();
+        } else {
+          setResult({ message: restData.error || 'Ошибка' });
+        }
+        setIsActing(false);
+        return;
       }
-      // Техника культивации берётся автоматически из слота (quickSlot === 0)
 
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -338,9 +407,8 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
     } finally {
       setIsActing(false);
     }
-  }, [character, duration, activityType, isActing, canMeditateNow, loadState]);
+  }, [character, duration, activityType, isActing, canMeditateNow, loadState, conductivityProgress]);
 
-  // Закрытие
   const handleClose = useCallback(() => {
     if (!isActing) {
       onOpenChange(false);
@@ -350,7 +418,7 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
   if (!character) return null;
 
   const isFullyRested = character.fatigue <= 0 && character.mentalFatigue <= 0;
-  const canAct = activityType === 'meditation'
+  const canAct = ['meditation', 'breakthrough', 'conductivity'].includes(activityType)
     ? canMeditateNow
     : !isFullyRested;
 
@@ -358,7 +426,7 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-lg">
+      <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="text-amber-400 flex items-center gap-2">
             {config.icon} {config.title}
@@ -368,7 +436,6 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
         <div className="space-y-4 py-4">
           {/* Текущее состояние */}
           <div className="bg-slate-700/50 rounded-lg p-3 space-y-2">
-            {/* Усталость */}
             <div className="grid grid-cols-2 gap-x-4 gap-y-1">
               <div className="flex justify-between text-sm">
                 <span className="text-slate-400">💚 Физ. усталость:</span>
@@ -384,8 +451,8 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
               </div>
             </div>
 
-            {/* Ци (для медитации) */}
-            {activityType === 'meditation' && (
+            {/* Ци (для медитаций) */}
+            {['meditation', 'breakthrough', 'conductivity'].includes(activityType) && (
               <div className="mt-2 pt-2 border-t border-slate-600/50">
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-slate-400">💫 Ци:</span>
@@ -395,7 +462,6 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
                 </div>
                 <Progress value={qiPercent} className="h-2" />
                 
-                {/* Плотность Ци и проводимость */}
                 <div className="grid grid-cols-2 gap-2 mt-2">
                   <div className="flex justify-between text-xs">
                     <span className="text-slate-500">Плотность Ци:</span>
@@ -407,7 +473,6 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
                   </div>
                 </div>
                 
-                {/* Активная техника */}
                 {slottedCultivationTechnique && (
                   <div className="flex justify-between text-xs mt-2 text-purple-400">
                     <span>🧘 Техника: {slottedCultivationTechnique.technique.name}</span>
@@ -423,16 +488,37 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
                 )}
               </div>
             )}
+
+            {/* Прогресс медитаций на проводимость */}
+            {activityType === 'conductivity' && conductivityProgress && (
+              <div className="mt-2 pt-2 border-t border-slate-600/50">
+                <div className="flex justify-between text-xs mb-1">
+                  <span className="text-cyan-400">⚡ МедП:</span>
+                  <span className="text-white">{conductivityProgress.current}/{conductivityProgress.max}</span>
+                </div>
+                <Progress value={conductivityProgress.percent} className="h-2" />
+                <div className="text-xs text-slate-500 mt-1">
+                  Текущий бонус: +{(conductivityProgress.currentBonus * 100).toFixed(1)}% проводимости
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Предупреждения */}
-          {activityType === 'meditation' && !canMeditateNow && (
+          {['meditation', 'breakthrough', 'conductivity'].includes(activityType) && !canMeditateNow && (
             <div className="bg-amber-900/30 border border-amber-600/50 rounded-lg p-3 text-sm text-amber-300">
               ⚡ Ядро заполнено! Потратьте Ци (техники, бой) чтобы продолжить накопление.
             </div>
           )}
 
-          {activityType !== 'meditation' && isFullyRested && (
+          {activityType === 'conductivity' && conductivityProgress && conductivityProgress.current >= conductivityProgress.max && (
+            <div className="bg-amber-900/30 border border-amber-600/50 rounded-lg p-3 text-sm text-amber-300">
+              ⚡ Достигнут максимум медитаций на проводимость для уровня {character.cultivationLevel}!
+              Повысьте уровень для продолжения.
+            </div>
+          )}
+
+          {['light', 'sleep'].includes(activityType) && isFullyRested && (
             <div className="bg-green-900/30 border border-green-600/50 rounded-lg p-3 text-sm text-green-300">
               ✨ Вы полностью отдохнули!
             </div>
@@ -447,7 +533,6 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
             }`}>
               <pre className="text-sm text-slate-200 whitespace-pre-wrap">{result.message}</pre>
               
-              {/* Детали прерывания */}
               {result.interrupted && result.interruptionEvent && (
                 <div className="mt-3 pt-3 border-t border-red-600/50">
                   <div className="flex items-center gap-2 mb-2">
@@ -464,14 +549,6 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
                   <p className="text-sm text-slate-300 mb-2">
                     {result.interruptionEvent.description}
                   </p>
-                  <div className="flex gap-2 text-xs text-slate-400">
-                    {result.interruptionEvent.canIgnore && (
-                      <span className="text-green-400">✓ Можно игнорировать</span>
-                    )}
-                    {result.interruptionEvent.canHide && (
-                      <span className="text-amber-400">👁 Можно скрыться</span>
-                    )}
-                  </div>
                 </div>
               )}
             </div>
@@ -479,81 +556,83 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
 
           {/* Выбор типа активности */}
           {!result && (
-            <Tabs value={activityType} onValueChange={handleActivityTypeChange}>
-              <TabsList className="grid w-full grid-cols-3 bg-slate-700">
-                <TabsTrigger
-                  value="meditation"
-                  className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
-                >
-                  🧘 Медитация
-                </TabsTrigger>
-                <TabsTrigger
-                  value="light"
-                  className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
-                >
-                  🌿 Отдых
-                </TabsTrigger>
-                <TabsTrigger
-                  value="sleep"
-                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
-                >
-                  😴 Сон
-                </TabsTrigger>
-              </TabsList>
+            <div className="space-y-3">
+              {/* Категория: Культивация */}
+              <div>
+                <Label className="text-purple-400 text-xs mb-2 block">🌀 Культивация</Label>
+                <div className="grid grid-cols-3 gap-2">
+                  <Button
+                    variant={activityType === 'meditation' ? 'default' : 'outline'}
+                    size="sm"
+                    className={`h-auto py-2 flex-col ${activityType === 'meditation' ? 'bg-purple-600 hover:bg-purple-700' : 'border-slate-600'}`}
+                    onClick={() => handleActivityTypeChange('meditation')}
+                    disabled={isActing}
+                  >
+                    <span className="text-lg">🧘</span>
+                    <span className="text-xs mt-1">Накопление</span>
+                  </Button>
+                  <Button
+                    variant={activityType === 'breakthrough' ? 'default' : 'outline'}
+                    size="sm"
+                    className={`h-auto py-2 flex-col ${activityType === 'breakthrough' ? 'bg-orange-600 hover:bg-orange-700' : 'border-slate-600'}`}
+                    onClick={() => handleActivityTypeChange('breakthrough')}
+                    disabled={isActing}
+                  >
+                    <span className="text-lg">🔥</span>
+                    <span className="text-xs mt-1">Прорыв</span>
+                  </Button>
+                  <Button
+                    variant={activityType === 'conductivity' ? 'default' : 'outline'}
+                    size="sm"
+                    className={`h-auto py-2 flex-col ${activityType === 'conductivity' ? 'bg-cyan-600 hover:bg-cyan-700' : 'border-slate-600'}`}
+                    onClick={() => handleActivityTypeChange('conductivity')}
+                    disabled={isActing}
+                  >
+                    <span className="text-lg">⚡</span>
+                    <span className="text-xs mt-1">Проводимость</span>
+                  </Button>
+                </div>
+              </div>
 
-              <TabsContent value="meditation" className="space-y-3 mt-3">
-                <div className="text-xs text-slate-400">
-                  Накопление Ци через концентрацию. Утомляет разум, тело отдыхает.
+              {/* Категория: Отдых */}
+              <div>
+                <Label className="text-green-400 text-xs mb-2 block">🌿 Отдых</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    variant={activityType === 'light' ? 'default' : 'outline'}
+                    size="sm"
+                    className={`h-auto py-2 flex-col ${activityType === 'light' ? 'bg-green-600 hover:bg-green-700' : 'border-slate-600'}`}
+                    onClick={() => handleActivityTypeChange('light')}
+                    disabled={isActing}
+                  >
+                    <span className="text-lg">🌿</span>
+                    <span className="text-xs mt-1">Отдых</span>
+                  </Button>
+                  <Button
+                    variant={activityType === 'sleep' ? 'default' : 'outline'}
+                    size="sm"
+                    className={`h-auto py-2 flex-col ${activityType === 'sleep' ? 'bg-blue-600 hover:bg-blue-700' : 'border-slate-600'}`}
+                    onClick={() => handleActivityTypeChange('sleep')}
+                    disabled={isActing}
+                  >
+                    <span className="text-lg">😴</span>
+                    <span className="text-xs mt-1">Сон</span>
+                  </Button>
                 </div>
-                
-                {/* Информация об активной технике */}
-                <div className="bg-purple-900/20 border border-purple-600/30 rounded-lg p-3">
-                  {slottedCultivationTechnique ? (
-                    <div className="space-y-1">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-purple-400">🧘 Активная техника:</span>
-                        <span className="text-white">{slottedCultivationTechnique.technique.name}</span>
-                      </div>
-                      <div className="flex justify-between text-xs">
-                        <span className="text-slate-400">Бонус поглощения:</span>
-                        <span className="text-cyan-400">+{slottedCultivationTechnique.technique.effects?.qiRegenPercent || 0}%</span>
-                      </div>
-                      <div className="flex justify-between text-xs">
-                        <span className="text-slate-400">Незаметность:</span>
-                        <span className="text-green-400">+{slottedCultivationTechnique.technique.effects?.unnoticeability || 0}%</span>
-                      </div>
-                      <div className="flex justify-between text-xs">
-                        <span className="text-slate-400">Мастерство:</span>
-                        <span className="text-amber-400">{slottedCultivationTechnique.mastery}%</span>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-sm text-slate-400">
-                      🧘 Нет активной техники. Назначьте технику через меню Техники → Культивация.
-                    </div>
-                  )}
-                </div>
-              </TabsContent>
+              </div>
 
-              <TabsContent value="light" className="space-y-3 mt-3">
-                <div className="text-xs text-slate-400">
-                  Медленное восстановление тела и разума. Минимум 30 минут, максимум 8 часов.
-                </div>
-              </TabsContent>
-
-              <TabsContent value="sleep" className="space-y-3 mt-3">
-                <div className="text-xs text-slate-400">
-                  Глубокое восстановление. 8 часов = полное восстановление усталости.
-                </div>
-              </TabsContent>
-            </Tabs>
+              {/* Описание текущего типа */}
+              <div className="text-xs text-slate-400 bg-slate-700/30 rounded p-2">
+                {config.description}
+              </div>
+            </div>
           )}
 
           {/* Выбор времени */}
           {!result && (
             <div className="space-y-3">
               <Label className="text-slate-300">
-                Время {activityType === 'meditation' ? 'медитации' : activityType === 'sleep' ? 'сна' : 'отдыха'}:
+                Время {config.title.toLowerCase()}:
               </Label>
 
               <div className="flex items-center gap-2">
@@ -591,7 +670,7 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
 
               {/* Быстрый выбор */}
               <div className="flex flex-wrap gap-2">
-                {QUICK_DURATIONS[activityType].map((mins) => (
+                {(QUICK_DURATIONS[activityType as keyof typeof QUICK_DURATIONS] || []).map((mins) => (
                   <Button
                     key={mins}
                     variant={duration === mins ? 'default' : 'outline'}
@@ -619,8 +698,8 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
             <div className="bg-slate-700/30 rounded-lg p-3 space-y-2 border border-slate-600/50">
               <div className="text-sm font-medium text-slate-300">📊 Прогноз:</div>
 
-              {/* Для медитации */}
-              {activityType === 'meditation' && (
+              {/* Для медитаций */}
+              {['meditation', 'breakthrough', 'conductivity'].includes(activityType) && (
                 <>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-400">Прирост Ци:</span>
@@ -628,9 +707,19 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
                       +{meditationEstimate.qiGained} Ци
                     </span>
                   </div>
-                  {meditationEstimate.willFillCore && (
-                    <div className="text-xs text-amber-400 flex items-center gap-1">
+                  {meditationEstimate.willFillCore && activityType === 'meditation' && (
+                    <div className="text-xs text-amber-400">
                       ⚡ Ядро будет заполнено!
+                    </div>
+                  )}
+                  {activityType === 'breakthrough' && (
+                    <div className="text-xs text-orange-400">
+                      🔥 При заполнении ядра → Ци в accumulatedQi
+                    </div>
+                  )}
+                  {activityType === 'conductivity' && (
+                    <div className="text-xs text-cyan-400">
+                      ⚡ При заполнении ядра → +1 МедП, проводимость растёт
                     </div>
                   )}
                   <div className="flex justify-between text-sm">
@@ -640,7 +729,9 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-400">Мент. усталость:</span>
                     <span className="text-amber-400">
-                      +{meditationFatigue.mentalGain.toFixed(1)}% (концентрация)
+                      +{meditationFatigue.mentalGain.toFixed(1)}% 
+                      {activityType === 'breakthrough' && ' (x2)'}
+                      {activityType === 'conductivity' && ' (x1.5)'}
                     </span>
                   </div>
                   {duration >= 60 && (
@@ -652,7 +743,7 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
               )}
 
               {/* Для отдыха/сна */}
-              {activityType !== 'meditation' && (
+              {['light', 'sleep'].includes(activityType) && (
                 <>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-400">Физ. усталость:</span>
@@ -716,21 +807,21 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
               <Button
                 onClick={handleAction}
                 disabled={isActing || !canAct}
-                className={`min-w-[140px] ${
-                  activityType === 'meditation'
-                    ? 'bg-purple-600 hover:bg-purple-700'
-                    : activityType === 'sleep'
-                      ? 'bg-blue-600 hover:bg-blue-700'
-                      : 'bg-green-600 hover:bg-green-700'
-                }`}
+                className={`min-w-[140px] ${config.color}`}
               >
                 {isActing ? (
                   <span className="flex items-center gap-2">
                     <span className="animate-spin">⏳</span>
-                    {activityType === 'meditation' ? 'Медитация...' : activityType === 'sleep' ? 'Сплю...' : 'Отдыхаю...'}
+                    {activityType === 'meditation' ? 'Медитация...' : 
+                     activityType === 'breakthrough' ? 'Прорыв...' :
+                     activityType === 'conductivity' ? 'Медитация...' :
+                     activityType === 'sleep' ? 'Сплю...' : 'Отдыхаю...'}
                   </span>
                 ) : (
-                  `${config.icon} ${activityType === 'meditation' ? 'Медитировать' : activityType === 'sleep' ? 'Спать' : 'Отдохнуть'}`
+                  `${config.icon} ${activityType === 'meditation' ? 'Медитировать' : 
+                    activityType === 'breakthrough' ? 'На прорыв' :
+                    activityType === 'conductivity' ? 'На проводимость' :
+                    activityType === 'sleep' ? 'Спать' : 'Отдохнуть'}`
                 )}
               </Button>
             </>
