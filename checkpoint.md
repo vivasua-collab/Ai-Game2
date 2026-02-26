@@ -16,6 +16,25 @@
   - География и социальная структура мира
   - Варианты старта ГГ (в секте / случайная область)
 
+- [x] **COMBAT_TECHNIQUES_SYSTEM.md** — система боевых техник
+  - Разделение на Melee (ближний бой) и Ranged (дальний бой)
+  - Melee: melee_strike (удары), melee_weapon (баффы оружия)
+  - Ranged: ranged_projectile, ranged_beam, ranged_aoe
+  - Формулы расчёта урона по дистанции
+  - Зоны дальности: полный урон → половинный → рассеивание
+
+- [x] **combat-system.ts** — функции расчёта урона
+  - calculateDamageAtDistance()
+  - calculateAttackDamage()
+  - calculateStatScaling()
+  - checkDodge()
+
+- [x] **Новые боевые техники**
+  - qi_bullet (Ци-снаряд) — базовая ranged
+  - blazing_blade (Пылающий клинок) — melee_weapon
+  - fire_ball (Огненный шар) — ranged_projectile
+  - Обновлены: reinforced_strike, fire_strike
+
 ### Архитектура
 - [x] Phaser 3 интеграция (v3.90.0)
 - [x] SSR совместимость (dynamic import)

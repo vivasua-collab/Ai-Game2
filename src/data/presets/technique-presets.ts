@@ -45,6 +45,34 @@ export interface TechniqueScaling {
 }
 
 /**
+ * Тип боевой техники
+ */
+export type CombatTechniqueType = 
+  | "melee_strike"       // Контактный удар
+  | "melee_weapon"       // Усиление оружия
+  | "ranged_projectile"  // Снаряд
+  | "ranged_beam"        // Луч
+  | "ranged_aoe";        // Область
+
+/**
+ * Параметры дальности для боевых техник
+ */
+export interface CombatRange {
+  fullDamage: number;   // Дальность полного урона (м)
+  halfDamage: number;   // Дальность 50% урона (м)
+  max: number;          // Максимальная дальность (м) - после урон = 0
+}
+
+/**
+ * Элементальный эффект
+ */
+export interface ElementalEffect {
+  type: PresetElement;
+  damagePerTurn?: number;  // Урон за ход (DoT)
+  duration: number;        // Длительность эффекта
+}
+
+/**
  * Эффекты техники
  */
 export interface TechniqueEffects {
@@ -55,12 +83,20 @@ export interface TechniqueEffects {
   unnoticeability?: number; // Процент снижения шанса прерывания (1-5%)
   castSpeed?: number;       // Скорость каста (зависит от проводимости)
   duration?: number;        // В минутах
-  distance?: number;        // Дальность (в метрах)
+  distance?: number;        // Дальность (в метрах) - legacy
   statModifiers?: {
     strength?: number;
     agility?: number;
     intelligence?: number;
   };
+  // === БОЕВЫЕ ТЕХНИКИ (новое) ===
+  combatType?: CombatTechniqueType;     // Тип боевой техники
+  range?: CombatRange;                   // Параметры дальности
+  contactRequired?: boolean;             // Требует контакта
+  aoeRadius?: number;                    // Радиус AOE (м)
+  elementalEffect?: ElementalEffect;     // Элементальный эффект
+  dodgeChance?: number;                  // Шанс уклонения (для projectile)
+  penetration?: number;                  // Пробитие защиты (%)
 }
 
 /**
@@ -168,11 +204,12 @@ export const BASIC_TECHNIQUES: TechniquePreset[] = [
     sources: ["preset", "sect"],
     icon: "🌀",
   },
+  // === БОЕВЫЕ ТЕХНИКИ: БЛИЖНИЙ БОЙ ===
   {
     id: "reinforced_strike",
     name: "Усиленный удар",
     nameEn: "Reinforced Strike",
-    description: "Простой удар с использованием Ци. Первая боевая техника.",
+    description: "Простой удар с использованием Ци. Первая боевая техника ближнего боя.",
     category: "basic",
     rarity: "common",
     techniqueType: "combat",
@@ -190,10 +227,48 @@ export const BASIC_TECHNIQUES: TechniquePreset[] = [
     scaling: {
       strength: 0.05,
     },
-    effects: { damage: 15 },
+    effects: { 
+      damage: 15,
+      combatType: "melee_strike",
+      contactRequired: true,
+      range: { fullDamage: 2, halfDamage: 2, max: 2 }  // Только контакт
+    },
     masteryBonus: 0.3,
     sources: ["preset", "sect"],
     icon: "👊",
+  },
+  // === БОЕВЫЕ ТЕХНИКИ: ДАЛЬНИЙ БОЙ ===
+  {
+    id: "qi_bullet",
+    name: "Ци-снаряд",
+    nameEn: "Qi Bullet",
+    description: "Базовая дистанционная атака. Выпускает сгусток Ци, который летит по прямой. Урон падает с расстоянием.",
+    category: "basic",
+    rarity: "common",
+    techniqueType: "combat",
+    element: "neutral",
+    level: 1,
+    minLevel: 1,
+    maxLevel: 5,
+    canEvolve: true,
+    requirements: {
+      cultivationLevel: 1,
+      stats: { conductivity: 0.2 },
+    },
+    qiCost: 8,
+    fatigueCost: { physical: 1, mental: 2 },
+    scaling: {
+      conductivity: 0.08,
+    },
+    effects: { 
+      damage: 12,
+      combatType: "ranged_projectile",
+      range: { fullDamage: 10, halfDamage: 20, max: 30 },
+      dodgeChance: 0.15  // 15% шанс уклонения
+    },
+    masteryBonus: 0.25,
+    sources: ["preset", "sect"],
+    icon: "💠",
   },
 ];
 
@@ -302,7 +377,7 @@ export const ADVANCED_TECHNIQUES: TechniquePreset[] = [
     id: "fire_strike",
     name: "Огненный удар",
     nameEn: "Fire Strike",
-    description: "Удар, усиленный огненной Ци.",
+    description: "Контактный удар, усиленный огненной Ци. Поджигает цель.",
     category: "advanced",
     rarity: "uncommon",
     techniqueType: "combat",
@@ -321,11 +396,101 @@ export const ADVANCED_TECHNIQUES: TechniquePreset[] = [
       strength: 0.04,
       conductivity: 0.08,
     },
-    effects: { damage: 25 },
+    effects: { 
+      damage: 25,
+      combatType: "melee_strike",
+      contactRequired: true,
+      range: { fullDamage: 2, halfDamage: 2, max: 2 },
+      elementalEffect: {
+        type: "fire",
+        damagePerTurn: 5,
+        duration: 2
+      }
+    },
     masteryBonus: 0.4,
     sources: ["sect", "scroll"],
     cost: {
       contributionPoints: 30,
+    },
+    icon: "🔥",
+  },
+  {
+    id: "blazing_blade",
+    name: "Пылающий клинок",
+    nameEn: "Blazing Blade",
+    description: "Усиление оружия огненной Ци. Добавляет огненный урон к атакам.",
+    category: "advanced",
+    rarity: "uncommon",
+    techniqueType: "combat",
+    element: "fire",
+    level: 2,
+    minLevel: 1,
+    maxLevel: 5,
+    canEvolve: true,
+    requirements: {
+      cultivationLevel: 2,
+      stats: { conductivity: 0.4 },
+    },
+    qiCost: 20,
+    fatigueCost: { physical: 1, mental: 3 },
+    scaling: {
+      conductivity: 0.06,
+    },
+    effects: { 
+      damage: 12,
+      combatType: "melee_weapon",
+      duration: 5,
+      elementalEffect: {
+        type: "fire",
+        damagePerTurn: 3,
+        duration: 1
+      }
+    },
+    masteryBonus: 0.35,
+    sources: ["sect", "scroll"],
+    cost: {
+      contributionPoints: 35,
+    },
+    icon: "🗡️",
+  },
+  {
+    id: "fire_ball",
+    name: "Огненный шар",
+    nameEn: "Fire Ball",
+    description: "Дистанционная атака огнём. Выпускает огненный шар, который взрывается при попадании.",
+    category: "advanced",
+    rarity: "uncommon",
+    techniqueType: "combat",
+    element: "fire",
+    level: 2,
+    minLevel: 1,
+    maxLevel: 6,
+    canEvolve: true,
+    requirements: {
+      cultivationLevel: 2,
+      stats: { conductivity: 0.5 },
+    },
+    qiCost: 18,
+    fatigueCost: { physical: 1, mental: 4 },
+    scaling: {
+      conductivity: 0.1,
+    },
+    effects: { 
+      damage: 30,
+      combatType: "ranged_projectile",
+      range: { fullDamage: 15, halfDamage: 30, max: 45 },
+      aoeRadius: 2,
+      dodgeChance: 0.1,
+      elementalEffect: {
+        type: "fire",
+        damagePerTurn: 5,
+        duration: 2
+      }
+    },
+    masteryBonus: 0.4,
+    sources: ["sect", "scroll"],
+    cost: {
+      contributionPoints: 40,
     },
     icon: "🔥",
   },

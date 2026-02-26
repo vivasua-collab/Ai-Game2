@@ -251,6 +251,49 @@ export interface InventoryItem {
 // ==================== ТЕХНИКИ ====================
 
 /**
+ * Тип боевой техники
+ */
+export type CombatTechniqueType = 
+  | "melee_strike"       // Контактный удар
+  | "melee_weapon"       // Усиление оружия
+  | "ranged_projectile"  // Снаряд
+  | "ranged_beam"        // Луч
+  | "ranged_aoe";        // Область
+
+/**
+ * Параметры дальности для боевых техник
+ */
+export interface CombatRange {
+  fullDamage: number;   // Дальность полного урона (м)
+  halfDamage: number;   // Дальность 50% урона (м)
+  max: number;          // Максимальная дальность (м) - после урон = 0
+}
+
+/**
+ * Элементальный эффект
+ */
+export interface ElementalEffect {
+  type: "fire" | "water" | "earth" | "air" | "lightning" | "void" | "neutral";
+  damagePerTurn?: number;  // Урон за ход (DoT)
+  duration: number;        // Длительность эффекта
+}
+
+/**
+ * Эффекты боевой техники
+ */
+export interface CombatTechniqueEffects {
+  damage: number;              // Базовый урон
+  combatType: CombatTechniqueType;
+  range?: CombatRange;         // Дальность (для ranged)
+  contactRequired?: boolean;   // Требует контакта с целью
+  aoeRadius?: number;          // Радиус AOE (м)
+  duration?: number;           // Длительность баффа (мин)
+  elementalEffect?: ElementalEffect;
+  dodgeChance?: number;        // Шанс уклонения (для projectile)
+  penetration?: number;        // Пробитие защиты (%)
+}
+
+/**
  * Флаги использования техник
  */
 export type TechniqueUsageFlag = 
@@ -328,8 +371,16 @@ export interface Technique {
     duration?: number;
     distance?: number;
     statModifiers?: Record<string, number>;
-    // Для боевых техник
-    isContact?: boolean;      // Контактная техника (требует близкого расстояния)
+    // === БОЕВЫЕ ТЕХНИКИ (новое) ===
+    combatType?: CombatTechniqueType;     // Тип боевой техники
+    range?: CombatRange;                   // Параметры дальности
+    contactRequired?: boolean;             // Требует контакта
+    aoeRadius?: number;                    // Радиус AOE
+    elementalEffect?: ElementalEffect;     // Элементальный эффект
+    dodgeChance?: number;                  // Шанс уклонения
+    penetration?: number;                  // Пробитие защиты
+    // Legacy
+    isContact?: boolean;      // Контактная техника (устарело, использовать combatType)
   };
 }
 
