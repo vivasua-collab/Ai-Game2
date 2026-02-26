@@ -20,13 +20,17 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { useGameCharacter, useGameTime, useGameTechniques, useGameSkills } from '@/stores/game.store';
+import { useGameCharacter, useGameTime, useGameTechniques, useGameSkills, useGameLocation } from '@/stores/game.store';
 import {
   getCultivationLevelName,
   getCoreFillPercent,
   getBreakthroughProgress,
   calculateQiRates,
+  calculateCoreGenerationRate,
+  calculateEnvironmentalAbsorptionRate,
+  getConductivityMultiplier,
 } from '@/lib/game/qi-shared';
+import { QI_CONSTANTS } from '@/lib/game/constants';
 import { CULTIVATION_LEVEL_NAMES, FATIGUE_CONSTANTS } from '@/lib/game/constants';
 import { formatTime, formatDate, getTimeOfDayName, getSeasonName } from '@/lib/game/time-system';
 import type { WorldTime } from '@/lib/game/time-system';
@@ -54,8 +58,23 @@ export function StatusDialog({ open, onOpenChange }: StatusDialogProps) {
   const worldTime = useGameTime();
   const techniques = useGameTechniques();
   const skills = useGameSkills();
+  const location = useGameLocation();
 
   const currentWorldTime = useMemo(() => toWorldTime(worldTime), [worldTime]);
+
+  // Расчёт скоростей Ци
+  const qiRates = useMemo(() => {
+    if (!character) return null;
+    return calculateQiRates(character, location);
+  }, [character, location]);
+
+  // Скорость пассивного прироста (только микроядро, до 90% капа)
+  const passiveQiRate = useMemo(() => {
+    if (!character) return null;
+    const coreRate = calculateCoreGenerationRate(character.coreCapacity);
+    // В минуту
+    return coreRate * 60;
+  }, [character]);
 
   if (!character) return null;
 
@@ -222,6 +241,48 @@ export function StatusDialog({ open, onOpenChange }: StatusDialogProps) {
                   <span className="text-slate-300">✨ Качество ядра</span>
                   <span className="text-purple-400">{character.coreQuality.toFixed(2)}</span>
                 </div>
+              </div>
+
+              {/* Скорость прироста Ци */}
+              <div className="bg-slate-700/50 rounded-lg p-3">
+                <div className="text-sm font-medium text-slate-300 mb-2">⚡ Скорость прироста Ци</div>
+                
+                {/* Пассивный прирост от микроядра */}
+                <div className="flex justify-between items-center text-sm">
+                  <span className="text-slate-400">Микроядро (пассивно):</span>
+                  <span className="text-cyan-400">
+                    +{passiveQiRate?.toFixed(2) || '0'} Ци/мин
+                  </span>
+                </div>
+                <div className="text-xs text-slate-500 mt-0.5 mb-2">
+                  Работает всегда, до {(QI_CONSTANTS.PASSIVE_QI_CAP * 100).toFixed(0)}% ёмкости
+                </div>
+                
+                {/* Поглощение из среды (при медитации) */}
+                {qiRates && qiRates.environmentalAbsorption > 0 && (
+                  <>
+                    <div className="flex justify-between items-center text-sm border-t border-slate-600/50 pt-2">
+                      <span className="text-slate-400">Из среды (медитация):</span>
+                      <span className="text-green-400">
+                        +{(qiRates.environmentalAbsorption * 60).toFixed(2)} Ци/мин
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center text-xs text-slate-500">
+                      <span>Плотность Ци: {location?.qiDensity || QI_CONSTANTS.DEFAULT_QI_DENSITY}</span>
+                      <span>Проводимость: {character.conductivity.toFixed(2)}</span>
+                    </div>
+                  </>
+                )}
+                
+                {/* Итого при медитации */}
+                {qiRates && (
+                  <div className="flex justify-between items-center text-sm border-t border-slate-600/50 pt-2 mt-2">
+                    <span className="text-amber-300">Итого (медитация):</span>
+                    <span className="text-amber-400 font-bold">
+                      +{(qiRates.total * 60).toFixed(2)} Ци/мин
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* Прогресс прорыва */}

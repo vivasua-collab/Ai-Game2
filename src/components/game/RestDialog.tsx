@@ -32,11 +32,13 @@ import {
   calculateMeditationFatigue,
   canMeditate,
   getCoreFillPercent,
+  getConductivityMultiplier,
 } from '@/lib/game/qi-shared';
 import {
   FATIGUE_CONSTANTS,
   FATIGUE_RECOVERY_BY_LEVEL,
   TIME_CONSTANTS,
+  QI_CONSTANTS,
 } from '@/lib/game/constants';
 import {
   formatTime,
@@ -366,6 +368,19 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
                   </span>
                 </div>
                 <Progress value={qiPercent} className="h-2" />
+                
+                {/* Плотность Ци и проводимость */}
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <div className="flex justify-between text-xs">
+                    <span className="text-slate-500">Плотность Ци:</span>
+                    <span className="text-green-400">{location?.qiDensity || QI_CONSTANTS.DEFAULT_QI_DENSITY}</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-slate-500">Проводимость:</span>
+                    <span className="text-cyan-400">{character.conductivity.toFixed(2)}</span>
+                  </div>
+                </div>
+                
                 {qiRates && (
                   <div className="flex justify-between text-xs text-slate-500 mt-1">
                     <span>Скорость: {(qiRates.total * 60).toFixed(1)} Ци/мин</span>

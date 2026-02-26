@@ -97,15 +97,25 @@ export async function POST(request: NextRequest) {
       sectRole: "candidate" as string | null,
     };
 
+    // Функция расчёта плотности Ци по градиенту
+    // Центр мира (0) = 50, край (100000) = 20
+    const calculateQiDensity = (distance: number): number => {
+      const maxDensity = 50;
+      const minDensity = 20;
+      const maxDistance = 100000;
+      const density = maxDensity - (distance / maxDistance) * (maxDensity - minDensity);
+      return Math.round(density);
+    };
+
     if (variant === 1) {
       startConfig.sectName = generateSectName();
       startConfig.locationName = `Секта "${startConfig.sectName}" - Зона кандидатов`;
-      startConfig.qiDensity = 20;
+      startConfig.qiDensity = calculateQiDensity(startConfig.distanceFromCenter); // ~23 на краю
       startConfig.distanceFromCenter = 99000;
     } else if (variant === 2) {
       startConfig.distanceFromCenter = Math.floor(Math.random() * 80000) + 10000;
       startConfig.locationName = "Неизвестная местность";
-      startConfig.qiDensity = Math.floor(Math.random() * 80) + 20;
+      startConfig.qiDensity = calculateQiDensity(startConfig.distanceFromCenter); // Градиент
       startConfig.knowsAboutSystem = true;
       startConfig.hasAmnesia = false;
       startConfig.sectRole = null;
@@ -116,6 +126,7 @@ export async function POST(request: NextRequest) {
       startConfig.hasAmnesia = !customConfig.knowsAboutSystem;
       startConfig.locationName = customConfig.location || "Неизвестная местность";
       startConfig.distanceFromCenter = Math.floor(Math.random() * 90000) + 1000;
+      startConfig.qiDensity = calculateQiDensity(startConfig.distanceFromCenter);
     }
 
     const conductivity = calculateBaseConductivity(startConfig.coreCapacity);
@@ -187,6 +198,34 @@ export async function POST(request: NextRequest) {
           sessionId: session.id,
         },
       });
+
+      // 3.5. Создаём дополнительные локации с градиентом плотности Ци (20-50)
+      const additionalLocations = [
+        { name: "Глубокие земли", distance: 5000, terrain: "forest" },
+        { name: "Срединные равнины", distance: 25000, terrain: "plains" },
+        { name: "Внутренние холмы", distance: 45000, terrain: "hills" },
+        { name: "Пограничные земли", distance: 65000, terrain: "plains" },
+        { name: "Внешние пустоши", distance: 85000, terrain: "wasteland" },
+      ];
+
+      for (const loc of additionalLocations) {
+        const pos = generatePositionAtDistance(loc.distance, 0, 100);
+        const density = calculateQiDensity(loc.distance);
+        await tx.location.create({
+          data: {
+            name: loc.name,
+            x: pos.x,
+            y: pos.y,
+            z: pos.z,
+            distanceFromCenter: loc.distance,
+            qiDensity: density,
+            qiFlowRate: Math.floor(density / 10),
+            terrainType: loc.terrain,
+            locationType: "area",
+            sessionId: session.id,
+          },
+        });
+      }
 
       // 4. Обновляем персонажа с локацией
       await tx.character.update({
