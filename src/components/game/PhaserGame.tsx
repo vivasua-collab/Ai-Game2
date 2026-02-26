@@ -17,11 +17,15 @@ import { useGameSessionId, useGameActions, useGameCharacter, useGameTechniques, 
 import type { Message, CharacterTechnique } from '@/types/game';
 import { getCombatSlotsCount } from '@/types/game';
 
-// Game dimensions (base resolution for rendering)
-const GAME_WIDTH = 1200;
-const GAME_HEIGHT = 700;
+// Game dimensions - will be dynamically resized
+const BASE_WIDTH = 1200;
+const BASE_HEIGHT = 700;
 const WORLD_WIDTH = 2000;
 const WORLD_HEIGHT = 2000;
+
+// Aliases for backward compatibility
+const GAME_WIDTH = BASE_WIDTH;
+const GAME_HEIGHT = BASE_HEIGHT;
 
 // Player settings
 const PLAYER_SIZE = 24;
@@ -135,17 +139,23 @@ const GameSceneConfig = {
     uiContainer.setScrollFactor(0);
     uiContainer.setDepth(100);
 
-    // Top bar
-    const topBar = scene.add.rectangle(GAME_WIDTH / 2, 25, GAME_WIDTH, 50, 0x000000, 0.7);
+    // Helper function to get current screen size
+    const getScreenSize = () => ({
+      width: scene.cameras.main.width,
+      height: scene.cameras.main.height,
+    });
+
+    // Top bar - will be repositioned on resize
+    const topBar = scene.add.rectangle(0, 25, 0, 50, 0x000000, 0.7);
     uiContainer.add(topBar);
 
-    const title = scene.add.text(GAME_WIDTH / 2, 15, '🌸 Cultivation World', {
+    const title = scene.add.text(0, 15, '🌸 Cultivation World', {
       fontSize: '18px',
       color: '#4ade80',
     }).setOrigin(0.5);
     uiContainer.add(title);
 
-    const coords = scene.add.text(GAME_WIDTH / 2, 35, 'X: 1000  Y: 1000', {
+    const coords = scene.add.text(0, 35, 'X: 1000  Y: 1000', {
       fontSize: '12px',
       color: '#9ca3af',
     }).setOrigin(0.5);
@@ -155,23 +165,21 @@ const GameSceneConfig = {
     // === CHAT PANEL (bottom-left) ===
     const chatWidth = 300;
     const chatHeight = 150;
-    const chatX = 10;
-    const chatY = GAME_HEIGHT - chatHeight - 50;
-
+    
     // Chat background
-    const chatBg = scene.add.rectangle(chatX + chatWidth / 2, chatY + chatHeight / 2, chatWidth, chatHeight, 0x000000, 0.8);
+    const chatBg = scene.add.rectangle(0, 0, chatWidth, chatHeight, 0x000000, 0.8);
     chatBg.setStrokeStyle(1, 0x4ade80, 0.5);
     uiContainer.add(chatBg);
 
     // Chat title
-    const chatTitle = scene.add.text(chatX + 10, chatY + 5, '💬 Чат [Enter]', {
+    const chatTitle = scene.add.text(0, 0, '💬 Чат [Enter]', {
       fontSize: '12px',
       color: '#fbbf24',
     });
     uiContainer.add(chatTitle);
 
     // Chat messages container
-    const chatMessagesText = scene.add.text(chatX + 10, chatY + 25, '', {
+    const chatMessagesText = scene.add.text(0, 0, '', {
       fontSize: '11px',
       color: '#e2e8f0',
       wordWrap: { width: chatWidth - 20 },
@@ -181,12 +189,12 @@ const GameSceneConfig = {
     scene.data.set('chatMessagesText', chatMessagesText);
 
     // Chat input background
-    const inputBg = scene.add.rectangle(chatX + chatWidth / 2, chatY + chatHeight - 15, chatWidth - 10, 24, 0x1e293b, 1);
+    const inputBg = scene.add.rectangle(0, 0, chatWidth - 10, 24, 0x1e293b, 1);
     inputBg.setStrokeStyle(1, 0x4ade80, 0.3);
     uiContainer.add(inputBg);
 
     // Chat input text
-    const chatInputDisplay = scene.add.text(chatX + 15, chatY + chatHeight - 22, '|', {
+    const chatInputDisplay = scene.add.text(0, 0, '|', {
       fontSize: '12px',
       color: '#ffffff',
     });
@@ -194,10 +202,10 @@ const GameSceneConfig = {
     scene.data.set('chatInputDisplay', chatInputDisplay);
 
     // === COMBAT SLOTS (bottom-center) ===
-    const slotsY = GAME_HEIGHT - 35;
     const slotSize = 40;
     const slotSpacing = 5;
     const totalSlots = 12;
+    const slotsY = GAME_HEIGHT - 35;
 
     const combatSlotsContainer = scene.add.container(0, 0);
     uiContainer.add(combatSlotsContainer);
@@ -595,7 +603,7 @@ export function PhaserGame() {
     return () => { globalOnCombatTechnique = null; };
   }, [handleCombatTechnique]);
 
-  // Initialize game
+  // Initialize game with fullscreen scaling
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -604,11 +612,16 @@ export function PhaserGame() {
         const PhaserModule = await import('phaser');
         const Phaser = PhaserModule.default;
 
+        // Get container size for initial setup
+        const container = containerRef.current!;
+        const width = container.clientWidth || BASE_WIDTH;
+        const height = container.clientHeight || BASE_HEIGHT;
+
         const config: Phaser.Types.Core.GameConfig = {
           type: Phaser.AUTO,
-          width: GAME_WIDTH,
-          height: GAME_HEIGHT,
-          parent: containerRef.current!,
+          width: width,
+          height: height,
+          parent: container,
           backgroundColor: '#0a1a0a',
           physics: {
             default: 'arcade',
@@ -619,12 +632,38 @@ export function PhaserGame() {
           },
           scene: [GameSceneConfig],
           scale: {
-            mode: Phaser.Scale.FIT,
+            mode: Phaser.Scale.RESIZE,
             autoCenter: Phaser.Scale.CENTER_BOTH,
+            width: width,
+            height: height,
           },
         };
 
         gameRef.current = new Phaser.Game(config);
+        
+        // Handle resize
+        const handleResize = () => {
+          if (!gameRef.current || !container) return;
+          
+          const newWidth = container.clientWidth;
+          const newHeight = container.clientHeight;
+          
+          gameRef.current.scale.resize(newWidth, newHeight);
+          
+          // Update UI positions in the scene
+          const scene = gameRef.current.scene.getScene('GameScene') as Phaser.Scene;
+          if (scene && scene.data) {
+            const updateUI = scene.data.get('updateUIPositions') as (() => void) | undefined;
+            if (updateUI) updateUI();
+          }
+        };
+        
+        // Add resize listener
+        window.addEventListener('resize', handleResize);
+        
+        // Initial resize after mount
+        setTimeout(handleResize, 100);
+        
         setIsLoaded(true);
       } catch (err) {
         console.error('Phaser init error:', err);
@@ -643,15 +682,15 @@ export function PhaserGame() {
   }, []);
 
   return (
-    <div className="relative w-full h-full flex items-center justify-center">
+    <div className="relative w-full h-full min-h-0 flex-1">
       <div
         ref={containerRef}
-        className="w-full h-full rounded-lg overflow-hidden border border-slate-700 bg-slate-900"
-        style={{ minHeight: 400 }}
+        className="w-full h-full bg-slate-900"
+        style={{ minHeight: '100%' }}
       />
 
       {!isLoaded && !error && (
-        <div className="absolute inset-0 flex items-center justify-center bg-slate-900/90 rounded-lg">
+        <div className="absolute inset-0 flex items-center justify-center bg-slate-900/90">
           <div className="text-center">
             <div className="w-10 h-10 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
             <p className="text-slate-400 text-sm">Загрузка игрового мира...</p>
@@ -660,7 +699,7 @@ export function PhaserGame() {
       )}
 
       {error && (
-        <div className="absolute inset-0 flex items-center justify-center bg-slate-900/90 rounded-lg">
+        <div className="absolute inset-0 flex items-center justify-center bg-slate-900/90">
           <p className="text-red-400">{error}</p>
         </div>
       )}

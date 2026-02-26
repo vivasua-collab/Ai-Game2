@@ -2,7 +2,6 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { PhaserGame } from "@/components/game/PhaserGame";
-import { ChatPanel } from "@/components/game/ChatPanel";
 import { ActionButtons } from "@/components/game/ActionButtons";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -148,7 +147,7 @@ export default function Home() {
     );
   }
 
-  // Main 2D mode with chat
+  // Main 2D mode - FULLSCREEN with chat inside Phaser
   return (
     <div className="h-screen flex flex-col bg-slate-900 text-white overflow-hidden">
       {/* Header */}
@@ -190,23 +189,15 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main content: Game + Chat */}
-      <div className="flex-1 flex overflow-hidden">
-        {/* Left: Phaser Game Canvas */}
-        <div className="flex-1 flex items-center justify-center p-4 bg-slate-900">
-          <PhaserGame />
-        </div>
-
-        {/* Right: Chat Panel */}
-        <div className="w-80 border-l border-slate-700 flex-shrink-0">
-          <ChatPanel />
-        </div>
+      {/* Main content: FULLSCREEN Phaser Game Canvas with integrated chat */}
+      <div className="flex-1 overflow-hidden">
+        <PhaserGame />
       </div>
 
       {/* Footer */}
       <footer className="bg-slate-800 border-t border-slate-700 px-4 py-1 text-center flex-shrink-0">
         <p className="text-xs text-slate-400">
-          WASD или ←↑↓→ для перемещения • Кнопки действий вверху • Введите действие в чате
+          WASD или ←↑↓→ для перемещения • Enter для чата • 1-9,0,-,= для техник
         </p>
       </footer>
     </div>
