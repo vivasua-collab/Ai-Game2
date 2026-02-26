@@ -93,8 +93,8 @@ export function performMeditation(
     }
   }
   
-  // Расчёт снятия усталости (медитация = отдых)
-  const fatigueRelief = calculateMeditationFatigue(actualDurationSeconds / 60, type);
+  // Расчёт усталости от концентрации (только ментальная)
+  const fatigueResult = calculateMeditationFatigue(actualDurationSeconds / 60, type);
   
   return {
     success: true,
@@ -105,8 +105,8 @@ export function performMeditation(
     wasInterrupted,
     interruptionReason,
     fatigueGained: {
-      physical: fatigueRelief.physicalRelief,
-      mental: fatigueRelief.mentalRelief,
+      physical: fatigueResult.physicalGain,
+      mental: fatigueResult.mentalGain,
     },
     breakdown: {
       coreGeneration: Math.floor(coreGain),

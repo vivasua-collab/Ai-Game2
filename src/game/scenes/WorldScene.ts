@@ -5,7 +5,7 @@
  * Player can click on locations to navigate.
  */
 
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import { BaseScene } from './BaseScene';
 import { LOCATION_ICONS, TERRAIN_COLORS } from '../config/assets.config';
 import { DEPTHS } from '../constants';

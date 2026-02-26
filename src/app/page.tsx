@@ -1,138 +1,214 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { StartScreen } from "@/components/start/StartScreen";
-import { GameChat } from "@/components/game/GameChat";
-import { GameContainer } from "@/components/game/GameContainer";
+import { useEffect, useState, useCallback } from "react";
+import { PhaserGame } from "@/components/game/PhaserGame";
+import { ChatPanel } from "@/components/game/ChatPanel";
+import { ActionButtons } from "@/components/game/ActionButtons";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import {
   useGameSessionId,
   useGameLoading,
+  useGameCharacter,
   useGameActions,
 } from "@/stores/game.store";
 
-type GameMode = "text" | "2d";
+// Ключ для localStorage
+const SESSION_STORAGE_KEY = "cultivation_session_id";
 
 export default function Home() {
-  const [showStartScreen, setShowStartScreen] = useState(true);
-  const [gameMode, setGameMode] = useState<GameMode>("text");
+  const [isInitializing, setIsInitializing] = useState(true);
+  const [initError, setInitError] = useState<string | null>(null);
 
   // Get state from store
   const sessionId = useGameSessionId();
   const isLoading = useGameLoading();
+  const character = useGameCharacter();
 
   // Get actions from store
   const { startGame, loadGame, resetGame, saveAndExit } = useGameActions();
 
-  const handleStartGame = async (
-    variant: 1 | 2 | 3,
-    customConfig?: Record<string, unknown>,
-    characterName?: string
-  ) => {
-    const success = await startGame(variant, customConfig, characterName);
-    if (success) {
-      setShowStartScreen(false);
-    }
-  };
+  // Auto-initialize session on mount
+  useEffect(() => {
+    const initSession = async () => {
+      try {
+        // Try to restore existing session from localStorage
+        const savedSessionId = localStorage.getItem(SESSION_STORAGE_KEY);
+        
+        if (savedSessionId) {
+          console.log("[Init] Found saved session:", savedSessionId);
+          const success = await loadGame(savedSessionId);
+          if (success) {
+            console.log("[Init] Session restored successfully");
+            setIsInitializing(false);
+            return;
+          }
+          console.log("[Init] Failed to restore session, creating new one");
+        }
 
-  const handleLoadGame = async (sessionIdParam: string) => {
-    const success = await loadGame(sessionIdParam);
-    if (success) {
-      setShowStartScreen(false);
-    }
-  };
+        // Create new session with default variant
+        console.log("[Init] Creating new session...");
+        const success = await startGame(1, undefined, "Путник");
+        
+        if (success) {
+          console.log("[Init] New session created");
+          // Save session ID to localStorage
+          const store = (await import("@/stores/game.store")).useGameStore.getState();
+          if (store.sessionId) {
+            localStorage.setItem(SESSION_STORAGE_KEY, store.sessionId);
+          }
+        } else {
+          setInitError("Не удалось создать игровую сессию");
+        }
+      } catch (error) {
+        console.error("[Init] Error:", error);
+        setInitError(error instanceof Error ? error.message : "Ошибка инициализации");
+      } finally {
+        setIsInitializing(false);
+      }
+    };
 
-  const handleNewGame = () => {
+    initSession();
+  }, [startGame, loadGame]);
+
+  // Save session ID when it changes
+  useEffect(() => {
+    if (sessionId) {
+      localStorage.setItem(SESSION_STORAGE_KEY, sessionId);
+    }
+  }, [sessionId]);
+
+  // Handle new game (reset)
+  const handleNewGame = useCallback(async () => {
+    localStorage.removeItem(SESSION_STORAGE_KEY);
     resetGame();
-    setShowStartScreen(true);
-  };
+    setIsInitializing(true);
+    setInitError(null);
+    
+    const success = await startGame(1, undefined, "Путник");
+    if (success) {
+      const store = (await import("@/stores/game.store")).useGameStore.getState();
+      if (store.sessionId) {
+        localStorage.setItem(SESSION_STORAGE_KEY, store.sessionId);
+      }
+    }
+    setIsInitializing(false);
+  }, [resetGame, startGame]);
 
-  const handleSaveAndExit = async () => {
+  // Handle save and exit
+  const handleSaveAndExit = useCallback(async () => {
     await saveAndExit();
-    setShowStartScreen(true);
-  };
+    localStorage.removeItem(SESSION_STORAGE_KEY);
+    setIsInitializing(true);
+    setInitError(null);
+    
+    // Create new session
+    const success = await startGame(1, undefined, "Путник");
+    if (success) {
+      const store = (await import("@/stores/game.store")).useGameStore.getState();
+      if (store.sessionId) {
+        localStorage.setItem(SESSION_STORAGE_KEY, store.sessionId);
+      }
+    }
+    setIsInitializing(false);
+  }, [saveAndExit, startGame]);
 
-  const toggleGameMode = useCallback(() => {
-    setGameMode((prev) => (prev === "text" ? "2d" : "text"));
-  }, []);
-
-  // Показываем экран старта
-  if (showStartScreen || !sessionId) {
+  // Loading screen during initialization
+  if (isInitializing) {
     return (
-      <StartScreen
-        onStartGame={handleStartGame}
-        onLoadGame={handleLoadGame}
-        isLoading={isLoading}
-      />
+      <div className="h-screen flex flex-col items-center justify-center bg-slate-900 text-white">
+        <div className="text-center space-y-4">
+          <h1 className="text-2xl font-bold text-amber-400">
+            🌸 Cultivation World
+          </h1>
+          <p className="text-slate-400">Инициализация мира...</p>
+          <Progress value={50} className="w-48 h-2" />
+        </div>
+      </div>
     );
   }
 
-  // 2D режим с Phaser
-  if (gameMode === "2d") {
+  // Error screen
+  if (initError) {
     return (
-      <div className="h-screen flex flex-col bg-slate-900 text-white">
-        {/* Header */}
-        <header className="bg-slate-800 border-b border-slate-700 px-4 py-2 flex-shrink-0">
-          <div className="flex items-center justify-between">
+      <div className="h-screen flex flex-col items-center justify-center bg-slate-900 text-white">
+        <div className="text-center space-y-4 max-w-md">
+          <h1 className="text-2xl font-bold text-red-400">
+            ⚠️ Ошибка инициализации
+          </h1>
+          <p className="text-slate-400">{initError}</p>
+          <Button
+            onClick={handleNewGame}
+            className="bg-amber-600 hover:bg-amber-700"
+          >
+            🔄 Начать заново
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Main 2D mode with chat
+  return (
+    <div className="h-screen flex flex-col bg-slate-900 text-white overflow-hidden">
+      {/* Header */}
+      <header className="bg-slate-800 border-b border-slate-700 px-4 py-2 flex-shrink-0">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
             <h1 className="text-lg font-semibold text-amber-400">
               🌸 Cultivation World
             </h1>
-            <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-slate-600 text-slate-300 hover:bg-slate-700"
-                onClick={toggleGameMode}
-              >
-                📝 Текстовый режим
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                className="border-amber-600 text-amber-400 hover:bg-amber-900/30"
-                onClick={handleNewGame}
-              >
-                🔄 Новая игра
-              </Button>
-            </div>
+            {character && (
+              <span className="text-xs text-slate-400">
+                {character.name} • Ур. {character.cultivationLevel}
+              </span>
+            )}
           </div>
-        </header>
+          <div className="flex items-center gap-2">
+            {/* Action buttons */}
+            <ActionButtons />
+            
+            <div className="w-px h-6 bg-slate-600 mx-1" />
+            
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-emerald-600 text-emerald-400 hover:bg-emerald-900/30"
+              onClick={handleSaveAndExit}
+            >
+              💾 Сохранить
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-amber-600 text-amber-400 hover:bg-amber-900/30"
+              onClick={handleNewGame}
+            >
+              🔄 Новая
+            </Button>
+          </div>
+        </div>
+      </header>
 
-        {/* Game Canvas */}
-        <div className="flex-1 flex items-center justify-center p-4">
-          <GameContainer
-            sessionId={sessionId}
-            onSceneChange={(scene) => console.log("Scene changed:", scene)}
-            className="shadow-xl"
-          />
+      {/* Main content: Game + Chat */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Left: Phaser Game Canvas */}
+        <div className="flex-1 flex items-center justify-center p-4 bg-slate-900">
+          <PhaserGame />
         </div>
 
-        {/* Footer hint */}
-        <footer className="bg-slate-800 border-t border-slate-700 px-4 py-2 text-center">
-          <p className="text-xs text-slate-400">
-            💡 Нажмите на локацию для перехода • ESC для меню
-          </p>
-        </footer>
-      </div>
-    );
-  }
-
-  // Текстовый режим (по умолчанию)
-  return (
-    <div className="relative">
-      {/* Mode switcher */}
-      <div className="absolute top-2 right-2 z-50">
-        <Button
-          variant="outline"
-          size="sm"
-          className="border-cyan-600 text-cyan-400 hover:bg-cyan-900/30"
-          onClick={toggleGameMode}
-        >
-          🎮 2D режим
-        </Button>
+        {/* Right: Chat Panel */}
+        <div className="w-80 border-l border-slate-700 flex-shrink-0">
+          <ChatPanel />
+        </div>
       </div>
 
-      <GameChat onNewGame={handleNewGame} onSaveAndExit={handleSaveAndExit} />
+      {/* Footer */}
+      <footer className="bg-slate-800 border-t border-slate-700 px-4 py-1 text-center flex-shrink-0">
+        <p className="text-xs text-slate-400">
+          WASD или ←↑↓→ для перемещения • Кнопки действий вверху • Введите действие в чате
+        </p>
+      </footer>
     </div>
   );
 }

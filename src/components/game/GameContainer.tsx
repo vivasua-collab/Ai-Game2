@@ -2,16 +2,26 @@
  * GameContainer - React wrapper for Phaser game
  * 
  * Manages Phaser lifecycle and provides React integration.
+ * Uses dynamic imports to avoid SSR issues with Phaser.
  */
 
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
-import Phaser from 'phaser';
-import { GAME_CONFIG, GAME_WIDTH, GAME_HEIGHT } from '@/game/config/game.config';
+import { useEffect, useRef, useState } from 'react';
+import { GAME_WIDTH, GAME_HEIGHT } from '@/game/config/game.constants';
 import { GameBridge } from '@/services/game-bridge.service';
-import { BootScene } from '@/game/scenes/BootScene';
-import { WorldScene } from '@/game/scenes/WorldScene';
+
+// Types for Phaser (imported dynamically)
+type PhaserGame = {
+  destroy: (removeCanvas: boolean) => void;
+  events: {
+    once: (event: string, callback: () => void) => void;
+    emit: (event: string, data?: unknown) => void;
+  };
+  scene: {
+    start: (name: string, data?: object) => void;
+  };
+};
 
 interface GameContainerProps {
   sessionId?: string;
@@ -29,69 +39,88 @@ export function GameContainer({
   className = '',
 }: GameContainerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const gameRef = useRef<Phaser.Game | null>(null);
+  const gameRef = useRef<PhaserGame | null>(null);
   const initRef = useRef(false);
   const [isReady, setIsReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  
-  // Initialize game - only once
+
+  // Initialize game - only once, client-side only
   useEffect(() => {
-    // Prevent double initialization
+    // Prevent double initialization and ensure client-side
     if (initRef.current) return;
+    if (typeof window === 'undefined') return;
     if (!containerRef.current) return;
-    
+
     initRef.current = true;
-    
-    // Create game config with scenes
-    const config: Phaser.Types.Core.GameConfig = {
-      ...GAME_CONFIG,
-      parent: containerRef.current,
-      scene: [BootScene, WorldScene],
+
+    // Dynamic import of Phaser and scenes (client-side only)
+    let mounted = true;
+
+    const initGame = async () => {
+      try {
+        // Import Phaser dynamically
+        const Phaser = await import('phaser');
+        const { GAME_CONFIG } = await import('@/game/config/game.config');
+        const { BootScene } = await import('@/game/scenes/BootScene');
+        const { WorldScene } = await import('@/game/scenes/WorldScene');
+
+        if (!mounted) return;
+
+        // Create game config with scenes
+        const config: Phaser.Types.Core.GameConfig = {
+          ...GAME_CONFIG,
+          parent: containerRef.current!,
+          scene: [BootScene, WorldScene],
+        };
+
+        // Create game instance
+        const game = new Phaser.Game(config);
+        gameRef.current = game as unknown as PhaserGame;
+
+        // Register with bridge
+        const bridge = GameBridge.getInstance();
+        bridge.setGame(game as unknown as PhaserGame);
+
+        if (sessionId) {
+          bridge.setSessionId(sessionId);
+        }
+
+        // Setup event listeners
+        if (onSceneChange) {
+          bridge.on('scene-change', (data) => onSceneChange((data as { scene: string }).scene));
+        }
+
+        if (onStateUpdate) {
+          bridge.on('state-updated', onStateUpdate);
+        }
+
+        if (onChatToggle) {
+          bridge.on('chat-toggle', onChatToggle);
+        }
+
+        // Ready event
+        game.events.once('ready', () => {
+          if (mounted) setIsReady(true);
+        });
+
+        // Fallback ready check
+        setTimeout(() => {
+          if (mounted) setIsReady(true);
+        }, 2000);
+
+      } catch (err) {
+        console.error('Failed to initialize Phaser:', err);
+        if (mounted) {
+          setError('Ошибка инициализации игры. Попробуйте обновить страницу.');
+        }
+      }
     };
-    
-    // Create game instance
-    const game = new Phaser.Game(config);
-    gameRef.current = game;
-    
-    // Register with bridge
-    const bridge = GameBridge.getInstance();
-    bridge.setGame(game);
-    
-    if (sessionId) {
-      bridge.setSessionId(sessionId);
-    }
-    
-    // Setup event listeners
-    const unsubscribers: (() => void)[] = [];
-    
-    if (onSceneChange) {
-      unsubscribers.push(
-        bridge.on('scene-change', (data) => onSceneChange((data as { scene: string }).scene))
-      );
-    }
-    
-    if (onStateUpdate) {
-      unsubscribers.push(bridge.on('state-updated', onStateUpdate));
-    }
-    
-    if (onChatToggle) {
-      unsubscribers.push(bridge.on('chat-toggle', onChatToggle));
-    }
-    
-    // Ready event
-    game.events.once('ready', () => {
-      setIsReady(true);
-    });
-    
-    // Fallback ready check
-    const readyCheck = setTimeout(() => {
-      setIsReady(true);
-    }, 2000);
-    
+
+    initGame();
+
     // Cleanup
     return () => {
-      clearTimeout(readyCheck);
-      unsubscribers.forEach((unsub) => unsub());
+      mounted = false;
       if (gameRef.current) {
         gameRef.current.destroy(true);
         gameRef.current = null;
@@ -99,28 +128,29 @@ export function GameContainer({
       initRef.current = false;
       GameBridge.getInstance().destroy();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Intentionally empty - we only want to initialize once
-  
+
   // Update session ID separately
   useEffect(() => {
-    if (sessionId) {
+    if (sessionId && typeof window !== 'undefined') {
       GameBridge.getInstance().setSessionId(sessionId);
     }
   }, [sessionId]);
-  
+
   // Handle errors via error boundary or async
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     const handleError = (event: ErrorEvent) => {
       if (event.message.includes('Phaser') || event.message.includes('WebGL')) {
         setError('Ошибка инициализации графики. Попробуйте обновить страницу.');
       }
     };
-    
+
     window.addEventListener('error', handleError);
     return () => window.removeEventListener('error', handleError);
   }, []);
-  
+
   return (
     <div className={`relative ${className}`}>
       <div
@@ -129,7 +159,7 @@ export function GameContainer({
         className="w-full rounded-lg overflow-hidden border border-border bg-background"
         style={{ maxWidth: GAME_WIDTH, aspectRatio: `${GAME_WIDTH}/${GAME_HEIGHT}` }}
       />
-      
+
       {/* Loading overlay */}
       {!isReady && !error && (
         <div className="absolute inset-0 flex items-center justify-center bg-background/90 rounded-lg">
@@ -139,7 +169,7 @@ export function GameContainer({
           </div>
         </div>
       )}
-      
+
       {/* Error overlay */}
       {error && (
         <div className="absolute inset-0 flex items-center justify-center bg-background/90 rounded-lg">

@@ -7,7 +7,7 @@
  * - UI helpers
  */
 
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 
 // Forward declaration to avoid circular import
 type GameBridge = {

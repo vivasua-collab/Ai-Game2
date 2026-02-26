@@ -218,23 +218,25 @@ export function calculateBreakthroughResult(
 // ==================== РАСЧЁТ УСТАЛОСТИ ====================
 
 /**
- * Расчёт снятия усталости при медитации
- * Медитация = отдых, поэтому снимает усталость
+ * Расчёт усталости при медитации
+ * Медитация = концентрация, даёт ментальную усталость
+ * Физическая усталость НЕ меняется (сидячее положение)
  */
 export function calculateMeditationFatigue(
   durationMinutes: number,
   type: 'accumulation' | 'breakthrough'
-): { physicalRelief: number; mentalRelief: number } {
-  // Физическая: сидячее положение, расслабление
-  const physicalRelief = durationMinutes * MEDITATION_CONSTANTS.PHYSICAL_RELIEF_RATE;
+): { physicalGain: number; mentalGain: number } {
+  // Физическая: не меняется (сидячее положение, тело отдыхает)
+  const physicalGain = 0;
   
-  // Ментальная: зависит от типа медитации
-  const mentalRate = type === 'breakthrough'
-    ? MEDITATION_CONSTANTS.MENTAL_RELIEF_BREAKTHROUGH
-    : MEDITATION_CONSTANTS.MENTAL_RELIEF_ACCUMULATION;
-  const mentalRelief = durationMinutes * mentalRate;
+  // Ментальная: концентрация утомляет разум
+  const baseMentalRate = MEDITATION_CONSTANTS.MENTAL_FATIGUE_RATE;
+  const mentalMultiplier = type === 'breakthrough'
+    ? MEDITATION_CONSTANTS.MENTAL_FATIGUE_BREAKTHROUGH_MULTIPLIER
+    : 1.0;
+  const mentalGain = durationMinutes * baseMentalRate * mentalMultiplier;
   
-  return { physicalRelief, mentalRelief };
+  return { physicalGain, mentalGain };
 }
 
 // ==================== РАСЧЁТ ЗАТРАТ ЦИ ====================

@@ -5,7 +5,7 @@
  * Transitions to WorldScene when complete.
  */
 
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import { ASSETS } from '../config/assets.config';
 
 export class BootScene extends Phaser.Scene {

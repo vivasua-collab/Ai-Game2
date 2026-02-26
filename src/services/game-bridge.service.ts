@@ -5,9 +5,20 @@
  * - API calls from Phaser scenes
  * - State synchronization between Phaser and React
  * - Scene navigation events
+ * 
+ * Note: Phaser types are minimal to avoid SSR issues.
+ * Full Phaser is loaded dynamically on client only.
  */
 
-import Phaser from 'phaser';
+// Minimal Phaser types (avoid importing Phaser for SSR)
+interface PhaserGame {
+  events: {
+    emit: (event: string, data?: unknown) => void;
+  };
+  scene: {
+    start: (name: string, data?: object) => void;
+  };
+}
 
 // Types
 interface Location {
@@ -69,7 +80,7 @@ interface GameEvent {
 
 class GameBridgeImpl {
   private static instance: GameBridgeImpl;
-  private phaserGame: Phaser.Game | null = null;
+  private phaserGame: PhaserGame | null = null;
   private sessionId: string | null = null;
   private eventListeners: Map<GameEventType, Set<(data: unknown) => void>> = new Map();
   
@@ -84,11 +95,11 @@ class GameBridgeImpl {
   
   // ============ Game Management ============
   
-  setGame(game: Phaser.Game): void {
+  setGame(game: PhaserGame): void {
     this.phaserGame = game;
   }
   
-  getGame(): Phaser.Game | null {
+  getGame(): PhaserGame | null {
     return this.phaserGame;
   }
   

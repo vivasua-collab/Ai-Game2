@@ -1,110 +1,120 @@
 /**
  * ============================================================================
- * ПРЕСЕТЫ ПЕРСОНАЖЕЙ
+ * ПРЕСЕТЫ ПЕРСОНАЖЕЙ (Единый формат)
  * ============================================================================
  * 
- * ИНСТРУКЦИЯ ПО СОЗДАНИЮ СТАРТОВЫХ ПЕРСОНАЖЕЙ:
+ * Стартовые наборы для новых персонажей:
+ * - sect: Начало в секте (есть наставник, доступ к обучению)
+ * - random: Случайное начало (бродяга, без ресурсов)
+ * - custom: Кастомный старт (особые условия)
  * 
- * 1. ОПРЕДЕЛИТЕ ТИП СТАРТА:
- *    - sect: Начало в секте (есть наставник, доступ к обучению)
- *    - random: Случайное начало (бродяга, без ресурсов)
- *    - custom: Кастомный старт (особые условия)
- * 
- * 2. УСТАНОВИТЕ ХАРАКТЕРИСТИКИ:
- *    - Базовые: strength, agility, intelligence (обычно 8-14)
- *    - conductivity: проводимость (обычно 0.0-0.5 для старта)
- *    - cultivationLevel: уровень культивации (обычно 1.0 для старта)
- * 
- * 3. ОПРЕДЕЛИТЕ НАЧАЛЬНЫЕ НАВЫКИ:
- *    - skills: {"skill_id": level}
- *    - Базовые навыки: deep_meditation (уровень 1)
- * 
- * 4. ОПРЕДЕЛИТЕ НАЧАЛЬНЫЕ ТЕХНИКИ:
- *    - techniques: ["technique_id"]
- *    - Базовые техники: breath_of_qi, reinforced_strike
- * 
- * 5. ДОБАВЬТЕ ОСОБЕННОСТИ:
- *    - features: массив идентификаторов
- *    - amnesia: не помнит прошлое
- *    - fast_learner: +20% к изучению
- *    - gifted: бонус к характеристикам
+ * Особенности:
+ * - Каждый пресет определяет начальные характеристики
+ * - Базовые техники и навыки
+ * - Ресурсы и предметы
+ * - Предысторию
  * 
  * ============================================================================
  */
+
+import type { BasePreset, PresetCategory, PresetRarity } from "./base-preset";
 
 // ============================================
 // ТИПЫ
 // ============================================
 
+/**
+ * Тип старта персонажа
+ */
 export type StartType = "sect" | "random" | "custom";
 
-export interface CharacterPresetStats {
+/**
+ * Характеристики персонажа
+ */
+export interface CharacterStats {
   strength: number;
   agility: number;
   intelligence: number;
   conductivity: number;
 }
 
-export interface CharacterPresetCultivation {
+/**
+ * Параметры культивации
+ */
+export interface CharacterCultivation {
   level: number;
   subLevel: number;
   coreCapacity: number;
   currentQi?: number;
 }
 
-export interface CharacterPreset {
-  id: string;
-  name: string;
-  description: string;
+/**
+ * Ресурсы персонажа
+ */
+export interface CharacterResources {
+  contributionPoints?: number;
+  spiritStones?: number;
+  items?: string[];
+}
+
+/**
+ * Рекомендуемая локация старта
+ */
+export interface SuggestedLocation {
+  terrainType: string;
+  distanceFromCenter: number;
+}
+
+/**
+ * Пресет персонажа (Единый формат)
+ */
+export interface CharacterPreset extends BasePreset {
+  // === ТИП СТАРТА ===
   startType: StartType;
   
-  // Характеристики
-  stats: CharacterPresetStats;
+  // === ХАРАКТЕРИСТИКИ ===
+  stats: CharacterStats;
   
-  // Культивация
-  cultivation: CharacterPresetCultivation;
+  // === КУЛЬТИВАЦИЯ ===
+  cultivation: CharacterCultivation;
   
-  // Возраст
+  // === ВОЗРАСТ ===
   age: number;
   
-  // Начальные навыки (ID → уровень)
+  // === НАВЫКИ (ID → уровень) ===
   skills: Record<string, number>;
   
-  // Базовые техники (получаются автоматически)
+  // === БАЗОВЫЕ ТЕХНИКИ ===
   baseTechniques: string[];
   
-  // Дополнительные техники (опционально)
+  // === ДОПОЛНИТЕЛЬНЫЕ ТЕХНИКИ ===
   bonusTechniques?: string[];
   
-  // Особенности персонажа
+  // === ОСОБЕННОСТИ ===
   features: string[];
   
-  // Ресурсы
-  resources?: {
-    contributionPoints?: number;
-    spiritStones?: number;
-    items?: string[];
-  };
+  // === РЕСУРСЫ ===
+  resources?: CharacterResources;
   
-  // Лор/предыстория
+  // === ПРЕДЫСТОРИЯ ===
   backstory?: string;
   
-  // Рекомендуемая локация старта
-  suggestedLocation?: {
-    terrainType: string;
-    distanceFromCenter: number;
-  };
+  // === РЕКОМЕНДУЕМАЯ ЛОКАЦИЯ ===
+  suggestedLocation?: SuggestedLocation;
 }
 
 // ============================================
-// ПРЕСЕТЫ
+// ПРЕСЕТЫ ПЕРСОНАЖЕЙ
 // ============================================
 
 export const CHARACTER_PRESETS: CharacterPreset[] = [
   {
     id: "sect_disciple",
     name: "Ученик секты",
+    nameEn: "Sect Disciple",
     description: "Молодой культиватор, только принятый в небольшую секту. Есть наставник и доступ к базовым ресурсам.",
+    category: "basic",
+    rarity: "common",
     startType: "sect",
     stats: {
       strength: 10,
@@ -137,11 +147,15 @@ export const CHARACTER_PRESETS: CharacterPreset[] = [
       terrainType: "mountains",
       distanceFromCenter: 30000,
     },
+    icon: "🏯",
   },
   {
     id: "wandering_cultivator",
     name: "Странствующий практик",
+    nameEn: "Wandering Cultivator",
     description: "Бродячий культиватор без привязанности к секте. Свобода, но нет поддержки.",
+    category: "basic",
+    rarity: "common",
     startType: "random",
     stats: {
       strength: 11,
@@ -178,11 +192,15 @@ export const CHARACTER_PRESETS: CharacterPreset[] = [
       terrainType: "forest",
       distanceFromCenter: 50000,
     },
+    icon: "🚶",
   },
   {
     id: "talented_youth",
     name: "Одарённый юноша",
+    nameEn: "Talented Youth",
     description: "Молодой гений с высоким потенциалом. Привлёк внимание секты своими способностями.",
+    category: "advanced",
+    rarity: "uncommon",
     startType: "sect",
     stats: {
       strength: 9,
@@ -216,11 +234,15 @@ export const CHARACTER_PRESETS: CharacterPreset[] = [
       terrainType: "courtyard",
       distanceFromCenter: 20000,
     },
+    icon: "⭐",
   },
   {
     id: "fallen_noble",
     name: "Падший аристократ",
+    nameEn: "Fallen Noble",
     description: "Бывший дворянин, потерявший всё. Имеет хорошее образование, но теперь вынужден начать с нуля.",
+    category: "advanced",
+    rarity: "uncommon",
     startType: "random",
     stats: {
       strength: 10,
@@ -256,11 +278,15 @@ export const CHARACTER_PRESETS: CharacterPreset[] = [
       terrainType: "village",
       distanceFromCenter: 10000,
     },
+    icon: "👑",
   },
   {
     id: "hardened_warrior",
     name: "Закалённый воин",
+    nameEn: "Hardened Warrior",
     description: "Бывший солдат, переживший множество битв. Сильное тело, но ментальные шрамы.",
+    category: "advanced",
+    rarity: "uncommon",
     startType: "random",
     stats: {
       strength: 14,
@@ -293,11 +319,15 @@ export const CHARACTER_PRESETS: CharacterPreset[] = [
       terrainType: "plains",
       distanceFromCenter: 40000,
     },
+    icon: "⚔️",
   },
   {
     id: "spirit_touched",
     name: "Отмеченный духом",
+    nameEn: "Spirit Touched",
     description: "Человек, переживший встречу с духом. Получил необычные способности, но и проклятие.",
+    category: "master",
+    rarity: "rare",
     startType: "custom",
     stats: {
       strength: 9,
@@ -333,6 +363,7 @@ export const CHARACTER_PRESETS: CharacterPreset[] = [
       terrainType: "cave",
       distanceFromCenter: 60000,
     },
+    icon: "👻",
   },
 ];
 

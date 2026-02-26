@@ -24,6 +24,7 @@ interface GameStoreState extends GameState {
   // Actions
   startGame: (variant: 1|2|3, customConfig?: Record<string, unknown>, characterName?: string) => Promise<boolean>;
   loadGame: (sessionId: string) => Promise<boolean>;
+  loadState: () => Promise<void>;
   sendAction: (action: string, payload?: Record<string, unknown>) => Promise<void>;
   sendMessage: (message: string) => Promise<void>;
   togglePause: () => Promise<void>;
@@ -59,7 +60,7 @@ const initialState: Omit<GameStoreState, keyof GameStoreActions> = {
 };
 
 type GameStoreActions = Pick<GameStoreState, 
-  | 'startGame' | 'loadGame' | 'sendAction' | 'sendMessage' | 'togglePause' 
+  | 'startGame' | 'loadGame' | 'loadState' | 'sendAction' | 'sendMessage' | 'togglePause' 
   | 'getSaves' | 'clearError' | 'resetGame' | 'saveAndExit'
   | 'loadInventory' | 'loadTechniques' | 'loadSkills' | 'consumeItem' | 'setInputFromClick'
 >;
@@ -160,6 +161,41 @@ export const useGameStore = create<GameStoreState>()(
         } catch (error) {
           set({ isLoading: false, error: error instanceof Error ? error.message : "Unknown error" });
           return false;
+        }
+      },
+
+      loadState: async () => {
+        const sessionId = get().sessionId;
+        const character = get().character;
+        if (!sessionId || !character) return;
+        
+        try {
+          // Загружаем обновлённые данные персонажа и времени
+          const response = await fetch(`/api/game/state?sessionId=${sessionId}`);
+          const data = await response.json();
+          
+          if (data.success && data.session) {
+            const updates: Partial<GameStoreState> = {};
+            
+            // Character is inside session
+            if (data.session.character) {
+              updates.character = data.session.character;
+            }
+            
+            if (data.session.worldTime) {
+              updates.worldTime = data.session.worldTime;
+            }
+            
+            if (data.session.daysSinceStart !== undefined) {
+              updates.daysSinceStart = data.session.daysSinceStart;
+            }
+            
+            if (Object.keys(updates).length > 0) {
+              set(updates);
+            }
+          }
+        } catch (error) {
+          console.error('Failed to load state:', error);
         }
       },
 
@@ -392,6 +428,7 @@ export const useGameActions = () => useGameStore(
   useShallow(state => ({
     startGame: state.startGame,
     loadGame: state.loadGame,
+    loadState: state.loadState,
     sendAction: state.sendAction,
     sendMessage: state.sendMessage,
     togglePause: state.togglePause,

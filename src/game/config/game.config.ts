@@ -3,12 +3,14 @@
  * 
  * Main configuration for the Cultivation World Simulator game.
  * Uses WebGL renderer with Canvas fallback.
+ * 
+ * NOTE: This file imports Phaser and should only be loaded client-side.
  */
 
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
+import { GAME_WIDTH, GAME_HEIGHT } from './game.constants';
 
-export const GAME_WIDTH = 900;
-export const GAME_HEIGHT = 550;
+export { GAME_WIDTH, GAME_HEIGHT };
 
 export const GAME_CONFIG: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,

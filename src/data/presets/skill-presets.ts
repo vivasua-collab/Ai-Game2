@@ -1,5 +1,7 @@
 /**
- * Пресеты навыков культивации (пассивные способности)
+ * ============================================================================
+ * ПРЕСЕТЫ НАВЫКОВ КУЛЬТИВАЦИИ (Единый формат)
+ * ============================================================================
  * 
  * Навыки культивации - это пассивные способности, улучшающие практику:
  * - Глубокая медитация: снижает шанс прерывания
@@ -12,226 +14,266 @@
  * - Каждый навык имеет уровень (1-maxLevel)
  * - Навыки требуют определённый уровень культивации
  * - Некоторые навыки требуют изучение предыдущих
+ * 
+ * ============================================================================
  */
 
-import type { CultivationSkill } from "@/lib/game/cultivation-skills";
+import type { BasePreset, PresetCategory, PresetRarity, PresetSource } from "./base-preset";
 
 // ============================================
-// ИНТЕРФЕЙС ПРЕСЕТА НАВЫКА
+// ТИПЫ НАВЫКОВ
 // ============================================
 
-export interface SkillPreset extends CultivationSkill {
-  // Категория для UI
-  category?: "basic" | "advanced" | "master";
+/**
+ * Эффекты навыка (множители)
+ */
+export interface SkillEffects {
+  interruptionModifier?: number;    // Множитель прерывания (< 1 = лучше)
+  qiAbsorptionBonus?: number;       // Бонус к поглощению Ци
+  meditationSpeedBonus?: number;    // Бонус к скорости медитации
+  fatigueReliefBonus?: number;      // Бонус к снятию усталости
+  dangerDetectionRange?: number;    // Дальность обнаружения опасности (м)
+}
+
+/**
+ * Пресет навыка (Единый формат)
+ */
+export interface SkillPreset extends BasePreset {
+  // === УРОВЕНЬ НАВЫКА ===
+  maxLevel: number;        // Максимальный уровень навыка
   
-  // Стоимость изучения (очки вклада или духовные камни)
-  learnCost?: {
-    contributionPoints?: number;
-    spiritStones?: number;
-  };
+  // === ЭФФЕКТЫ ===
+  skillEffects: SkillEffects;
   
-  // Источник изучения
-  learnSource?: ("sect" | "scroll" | "insight")[];
+  // === ИСТОЧНИКИ ИЗУЧЕНИЯ ===
+  learnSources?: PresetSource[];
 }
 
 // ============================================
-// БАЗОВЫЕ НАВЫКИ (доступны с 1-2 уровня)
+// БАЗОВЫЕ НАВЫКИ
 // ============================================
 
 export const BASIC_SKILLS: SkillPreset[] = [
   {
     id: "deep_meditation",
-    name: "Deep Meditation",
-    nameRu: "Глубокая медитация",
+    name: "Глубокая медитация",
+    nameEn: "Deep Meditation",
     description: "Погружение в состояние глубокого покоя, снижающее вероятность прерывания медитации.",
+    category: "basic",
+    rarity: "common",
     maxLevel: 5,
-    effects: {
+    skillEffects: {
       interruptionModifier: 0.8,  // -20% за уровень
       fatigueReliefBonus: 0.1,    // +10% к снятию усталости за уровень
     },
-    prerequisites: {
+    requirements: {
       cultivationLevel: 1,
     },
-    category: "basic",
-    learnCost: {
-      contributionPoints: 0,  // Бесплатно для учеников
+    sources: ["sect"],
+    cost: {
+      contributionPoints: 0, // Бесплатно для учеников
     },
-    learnSource: ["sect"],
+    learnSources: ["sect"],
+    icon: "🧘",
   },
   {
     id: "qi_perception",
-    name: "Qi Perception",
-    nameRu: "Восприятие Ци",
+    name: "Восприятие Ци",
+    nameEn: "Qi Perception",
     description: "Улучшенное чувствование потоков Ци, увеличивающее поглощение из окружения.",
+    category: "basic",
+    rarity: "common",
     maxLevel: 5,
-    effects: {
-      qiAbsorptionBonus: 0.15,  // +15% за уровень
-      dangerDetectionRange: 50, // +50м за уровень
+    skillEffects: {
+      qiAbsorptionBonus: 0.15,   // +15% за уровень
+      dangerDetectionRange: 50,  // +50м за уровень
     },
-    prerequisites: {
+    requirements: {
       cultivationLevel: 2,
     },
-    category: "basic",
-    learnCost: {
+    sources: ["sect", "scroll"],
+    cost: {
       contributionPoints: 10,
     },
-    learnSource: ["sect", "scroll"],
+    learnSources: ["sect", "scroll"],
+    icon: "👁️",
   },
   {
     id: "concentration",
-    name: "Concentration",
-    nameRu: "Концентрация",
+    name: "Концентрация",
+    nameEn: "Concentration",
     description: "Сосредоточенность разума, ускоряющая накопление Ци во время медитации.",
+    category: "basic",
+    rarity: "common",
     maxLevel: 5,
-    effects: {
+    skillEffects: {
       meditationSpeedBonus: 0.1,   // +10% за уровень
-      interruptionModifier: 0.95, // -5% за уровень
+      interruptionModifier: 0.95,  // -5% за уровень
     },
-    prerequisites: {
+    requirements: {
       cultivationLevel: 2,
     },
-    category: "basic",
-    learnCost: {
+    sources: ["sect", "scroll"],
+    cost: {
       contributionPoints: 10,
     },
-    learnSource: ["sect", "scroll"],
+    learnSources: ["sect", "scroll"],
+    icon: "🎯",
   },
 ];
 
 // ============================================
-// ПРОДВИНУТЫЕ НАВЫКИ (доступны с 3-5 уровня)
+// ПРОДВИНУТЫЕ НАВЫКИ
 // ============================================
 
 export const ADVANCED_SKILLS: SkillPreset[] = [
   {
     id: "danger_sense",
-    name: "Danger Sense",
-    nameRu: "Чутьё опасности",
+    name: "Чутьё опасности",
+    nameEn: "Danger Sense",
     description: "Интуитивное ощущение приближающейся угрозы во время медитации.",
+    category: "advanced",
+    rarity: "uncommon",
     maxLevel: 3,
-    effects: {
+    skillEffects: {
       interruptionModifier: 0.85, // -15% за уровень
       dangerDetectionRange: 100,  // +100м за уровень
     },
-    prerequisites: {
+    requirements: {
       cultivationLevel: 3,
       skills: ["qi_perception"],
     },
-    category: "advanced",
-    learnCost: {
+    sources: ["sect", "scroll"],
+    cost: {
       contributionPoints: 30,
       spiritStones: 5,
     },
-    learnSource: ["sect", "scroll"],
+    learnSources: ["sect", "scroll"],
+    icon: "⚠️",
   },
   {
     id: "spirit_shield",
-    name: "Spirit Shield",
-    nameRu: "Духовный щит",
+    name: "Духовный щит",
+    nameEn: "Spirit Shield",
     description: "Пассивная защита от духовных сущностей во время медитации.",
+    category: "advanced",
+    rarity: "uncommon",
     maxLevel: 3,
-    effects: {
+    skillEffects: {
       interruptionModifier: 0.7, // -30% за уровень (только для духов)
     },
-    prerequisites: {
+    requirements: {
       cultivationLevel: 4,
       skills: ["deep_meditation"],
     },
-    category: "advanced",
-    learnCost: {
+    sources: ["sect", "scroll"],
+    cost: {
       contributionPoints: 50,
       spiritStones: 10,
     },
-    learnSource: ["sect", "scroll"],
+    learnSources: ["sect", "scroll"],
+    icon: "🛡️",
   },
   {
     id: "qi_circulation",
-    name: "Qi Circulation",
-    nameRu: "Циркуляция Ци",
+    name: "Циркуляция Ци",
+    nameEn: "Qi Circulation",
     description: "Автоматическая циркуляция Ци по меридианам, ускоряющая восстановление.",
+    category: "advanced",
+    rarity: "uncommon",
     maxLevel: 5,
-    effects: {
+    skillEffects: {
       qiAbsorptionBonus: 0.1,
       fatigueReliefBonus: 0.05,
     },
-    prerequisites: {
+    requirements: {
       cultivationLevel: 3,
       skills: ["qi_perception"],
     },
-    category: "advanced",
-    learnCost: {
+    sources: ["sect"],
+    cost: {
       contributionPoints: 40,
     },
-    learnSource: ["sect"],
+    learnSources: ["sect"],
+    icon: "🔄",
   },
 ];
 
 // ============================================
-// МАСТЕРСКИЕ НАВЫКИ (доступны с 6+ уровня)
+// МАСТЕРСКИЕ НАВЫКИ
 // ============================================
 
 export const MASTER_SKILLS: SkillPreset[] = [
   {
     id: "mind_calm",
-    name: "Mind Calm",
-    nameRu: "Покой разума",
+    name: "Покой разума",
+    nameEn: "Mind Calm",
     description: "Полная ментальная устойчивость. Усталость накопления снижена вдвое.",
+    category: "master",
+    rarity: "rare",
     maxLevel: 3,
-    effects: {
+    skillEffects: {
       interruptionModifier: 0.6,
       fatigueReliefBonus: 0.2,
     },
-    prerequisites: {
+    requirements: {
       cultivationLevel: 6,
       skills: ["deep_meditation", "concentration"],
     },
-    category: "master",
-    learnCost: {
+    sources: ["sect", "insight"],
+    cost: {
       contributionPoints: 100,
       spiritStones: 50,
     },
-    learnSource: ["sect", "insight"],
+    learnSources: ["sect", "insight"],
+    icon: "😌",
   },
   {
     id: "qi_mastery",
-    name: "Qi Mastery",
-    nameRu: "Мастерство Ци",
+    name: "Мастерство Ци",
+    nameEn: "Qi Mastery",
     description: "Глубокое понимание Ци. Значительно увеличивает эффективность всех техник.",
+    category: "master",
+    rarity: "rare",
     maxLevel: 5,
-    effects: {
+    skillEffects: {
       qiAbsorptionBonus: 0.25,
       meditationSpeedBonus: 0.15,
     },
-    prerequisites: {
+    requirements: {
       cultivationLevel: 7,
       skills: ["qi_perception", "qi_circulation", "concentration"],
     },
-    category: "master",
-    learnCost: {
+    sources: ["insight"],
+    cost: {
       contributionPoints: 200,
       spiritStones: 100,
     },
-    learnSource: ["insight"],
+    learnSources: ["insight"],
+    icon: "🌟",
   },
   {
     id: "void_perception",
-    name: "Void Perception",
-    nameRu: "Восприятие пустоты",
+    name: "Восприятие пустоты",
+    nameEn: "Void Perception",
     description: "Способность чувствовать потоки пустоты. Доступ к техникам пустоты.",
+    category: "master",
+    rarity: "legendary",
     maxLevel: 3,
-    effects: {
+    skillEffects: {
       dangerDetectionRange: 500,
       interruptionModifier: 0.5,
     },
-    prerequisites: {
+    requirements: {
       cultivationLevel: 8,
       skills: ["qi_mastery", "danger_sense"],
     },
-    category: "master",
-    learnCost: {
+    sources: ["insight"],
+    cost: {
       spiritStones: 500,
     },
-    learnSource: ["insight"],
+    learnSources: ["insight"],
+    icon: "🌀",
   },
 ];
 
@@ -277,14 +319,14 @@ export function getAvailableSkillPresets(
     }
     
     // Проверка уровня культивации
-    if (skill.prerequisites?.cultivationLevel && 
-        cultivationLevel < skill.prerequisites.cultivationLevel) {
+    if (skill.requirements?.cultivationLevel && 
+        cultivationLevel < skill.requirements.cultivationLevel) {
       return false;
     }
     
     // Проверка требуемых навыков
-    if (skill.prerequisites?.skills) {
-      for (const requiredSkill of skill.prerequisites.skills) {
+    if (skill.requirements?.skills) {
+      for (const requiredSkill of skill.requirements.skills) {
         if (!learnedSkills[requiredSkill]) {
           return false;
         }
@@ -298,8 +340,57 @@ export function getAvailableSkillPresets(
 /**
  * Получить навыки по источнику изучения
  */
-export function getSkillsBySource(source: "sect" | "scroll" | "insight"): SkillPreset[] {
+export function getSkillsBySource(source: PresetSource): SkillPreset[] {
   return ALL_SKILL_PRESETS.filter(skill => 
-    skill.learnSource?.includes(source)
+    skill.learnSources?.includes(source)
   );
+}
+
+/**
+ * Получить эффект навыка на определённом уровне
+ */
+export function getSkillEffectAtLevel(
+  skillId: string,
+  level: number
+): SkillEffects | null {
+  const skill = getSkillPresetById(skillId);
+  if (!skill || level < 1 || level > skill.maxLevel) return null;
+  
+  const result: SkillEffects = {};
+  
+  if (skill.skillEffects.interruptionModifier) {
+    result.interruptionModifier = 1 - (1 - skill.skillEffects.interruptionModifier) * level;
+  }
+  if (skill.skillEffects.qiAbsorptionBonus) {
+    result.qiAbsorptionBonus = skill.skillEffects.qiAbsorptionBonus * level;
+  }
+  if (skill.skillEffects.meditationSpeedBonus) {
+    result.meditationSpeedBonus = skill.skillEffects.meditationSpeedBonus * level;
+  }
+  if (skill.skillEffects.fatigueReliefBonus) {
+    result.fatigueReliefBonus = skill.skillEffects.fatigueReliefBonus * level;
+  }
+  if (skill.skillEffects.dangerDetectionRange) {
+    result.dangerDetectionRange = skill.skillEffects.dangerDetectionRange * level;
+  }
+  
+  return result;
+}
+
+/**
+ * Рассчитать множитель прерывания от навыков персонажа
+ */
+export function calculateSkillsInterruptionModifier(
+  learnedSkills: Record<string, number>
+): number {
+  let modifier = 1.0;
+  
+  for (const [skillId, level] of Object.entries(learnedSkills)) {
+    const effects = getSkillEffectAtLevel(skillId, level);
+    if (effects?.interruptionModifier) {
+      modifier *= effects.interruptionModifier;
+    }
+  }
+  
+  return modifier;
 }
