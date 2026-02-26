@@ -5,12 +5,11 @@
  * - Характеристики (сила, ловкость, интеллект, проводимость)
  * - Культивация (уровень, ядро, Ци)
  * - Усталость (физическая, ментальная)
- * - Навыки культивации
  */
 
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -20,18 +19,13 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
-import { useGameCharacter, useGameTime, useGameTechniques, useGameSkills, useGameLocation } from '@/stores/game.store';
+import { useGameCharacter, useGameTime } from '@/stores/game.store';
 import {
   getCultivationLevelName,
   getCoreFillPercent,
   getBreakthroughProgress,
-  calculateQiRates,
-  calculateCoreGenerationRate,
-  calculateEnvironmentalAbsorptionRate,
-  getConductivityMultiplier,
 } from '@/lib/game/qi-shared';
-import { QI_CONSTANTS } from '@/lib/game/constants';
-import { CULTIVATION_LEVEL_NAMES, FATIGUE_CONSTANTS } from '@/lib/game/constants';
+import { FATIGUE_CONSTANTS } from '@/lib/game/constants';
 import { formatTime, formatDate, getTimeOfDayName, getSeasonName } from '@/lib/game/time-system';
 import type { WorldTime } from '@/lib/game/time-system';
 
@@ -56,25 +50,8 @@ function toWorldTime(wt: { year: number; month: number; day: number; hour: numbe
 export function StatusDialog({ open, onOpenChange }: StatusDialogProps) {
   const character = useGameCharacter();
   const worldTime = useGameTime();
-  const techniques = useGameTechniques();
-  const skills = useGameSkills();
-  const location = useGameLocation();
 
   const currentWorldTime = useMemo(() => toWorldTime(worldTime), [worldTime]);
-
-  // Расчёт скоростей Ци
-  const qiRates = useMemo(() => {
-    if (!character) return null;
-    return calculateQiRates(character, location);
-  }, [character, location]);
-
-  // Скорость пассивного прироста (только микроядро, до 90% капа)
-  const passiveQiRate = useMemo(() => {
-    if (!character) return null;
-    const coreRate = calculateCoreGenerationRate(character.coreCapacity);
-    // В минуту
-    return coreRate * 60;
-  }, [character]);
 
   if (!character) return null;
 
@@ -134,7 +111,7 @@ export function StatusDialog({ open, onOpenChange }: StatusDialogProps) {
           </div>
 
           <Tabs defaultValue="stats" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 bg-slate-700">
+            <TabsList className="grid w-full grid-cols-3 bg-slate-700">
               <TabsTrigger value="stats" className="data-[state=active]:bg-amber-600">
                 💪 Характеристики
               </TabsTrigger>
@@ -143,9 +120,6 @@ export function StatusDialog({ open, onOpenChange }: StatusDialogProps) {
               </TabsTrigger>
               <TabsTrigger value="fatigue" className="data-[state=active]:bg-blue-600">
                 😴 Состояние
-              </TabsTrigger>
-              <TabsTrigger value="time" className="data-[state=active]:bg-cyan-600">
-                ⏰ Время
               </TabsTrigger>
             </TabsList>
 
@@ -215,6 +189,41 @@ export function StatusDialog({ open, onOpenChange }: StatusDialogProps) {
                 </div>
                 <Progress value={character.health} className="h-2" />
               </div>
+
+              {/* Ресурсы */}
+              <div className="bg-slate-700/50 rounded-lg p-3">
+                <div className="text-sm font-medium text-slate-300 mb-2">💰 Ресурсы:</div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-400">Духовные камни:</span>
+                    <span className="text-cyan-400">{character.spiritStones || 0}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-400">Очки вклада:</span>
+                    <span className="text-amber-400">{character.contributionPoints || 0}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Время */}
+              {currentWorldTime && (
+                <div className="bg-slate-700/50 rounded-lg p-3">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <div className="text-2xl font-bold text-white">
+                        {formatTime(currentWorldTime)}
+                      </div>
+                      <div className="text-slate-400 text-sm">
+                        {formatDate(currentWorldTime)}
+                      </div>
+                    </div>
+                    <div className="text-right text-sm">
+                      <div className="text-slate-400">{getTimeOfDayName(currentWorldTime)}</div>
+                      <div className="text-slate-500">{getSeasonName(currentWorldTime)}</div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </TabsContent>
 
             {/* Культивация */}
@@ -243,48 +252,6 @@ export function StatusDialog({ open, onOpenChange }: StatusDialogProps) {
                 </div>
               </div>
 
-              {/* Скорость прироста Ци */}
-              <div className="bg-slate-700/50 rounded-lg p-3">
-                <div className="text-sm font-medium text-slate-300 mb-2">⚡ Скорость прироста Ци</div>
-                
-                {/* Пассивный прирост от микроядра */}
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-slate-400">Микроядро (пассивно):</span>
-                  <span className="text-cyan-400">
-                    +{passiveQiRate?.toFixed(2) || '0'} Ци/мин
-                  </span>
-                </div>
-                <div className="text-xs text-slate-500 mt-0.5 mb-2">
-                  Работает всегда, до {(QI_CONSTANTS.PASSIVE_QI_CAP * 100).toFixed(0)}% ёмкости
-                </div>
-                
-                {/* Поглощение из среды (при медитации) */}
-                {qiRates && qiRates.environmentalAbsorption > 0 && (
-                  <>
-                    <div className="flex justify-between items-center text-sm border-t border-slate-600/50 pt-2">
-                      <span className="text-slate-400">Из среды (медитация):</span>
-                      <span className="text-green-400">
-                        +{(qiRates.environmentalAbsorption * 60).toFixed(2)} Ци/мин
-                      </span>
-                    </div>
-                    <div className="flex justify-between items-center text-xs text-slate-500">
-                      <span>Плотность Ци: {location?.qiDensity || QI_CONSTANTS.DEFAULT_QI_DENSITY}</span>
-                      <span>Проводимость: {character.conductivity.toFixed(2)}</span>
-                    </div>
-                  </>
-                )}
-                
-                {/* Итого при медитации */}
-                {qiRates && (
-                  <div className="flex justify-between items-center text-sm border-t border-slate-600/50 pt-2 mt-2">
-                    <span className="text-amber-300">Итого (медитация):</span>
-                    <span className="text-amber-400 font-bold">
-                      +{(qiRates.total * 60).toFixed(2)} Ци/мин
-                    </span>
-                  </div>
-                )}
-              </div>
-
               {/* Прогресс прорыва */}
               <div className="bg-slate-700/50 rounded-lg p-3">
                 <div className="flex justify-between items-center mb-2">
@@ -297,31 +264,6 @@ export function StatusDialog({ open, onOpenChange }: StatusDialogProps) {
                 <div className="text-xs text-slate-500 mt-1">
                   Накоплено Ци: {character.accumulatedQi} (для прорыва нужно {breakthroughProgress.required * character.coreCapacity})
                 </div>
-              </div>
-
-              {/* Техники */}
-              <div className="bg-slate-700/50 rounded-lg p-3">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-slate-300">⚔️ Изученные техники</span>
-                  <span className="text-green-400">{techniques.length}</span>
-                </div>
-                {techniques.length > 0 ? (
-                  <div className="space-y-1">
-                    {techniques.slice(0, 3).map((t) => (
-                      <div key={t.id} className="flex justify-between text-xs">
-                        <span className="text-slate-400">{t.technique.name}</span>
-                        <span className="text-amber-400">Мастерство: {t.mastery}%</span>
-                      </div>
-                    ))}
-                    {techniques.length > 3 && (
-                      <div className="text-xs text-slate-500">
-                        ...и ещё {techniques.length - 3} техник
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="text-xs text-slate-500">Нет изученных техник</div>
-                )}
               </div>
             </TabsContent>
 
@@ -370,50 +312,6 @@ export function StatusDialog({ open, onOpenChange }: StatusDialogProps) {
                     ✨ Состояние хорошее. Можно продолжать культивацию.
                   </div>
                 )}
-              </div>
-            </TabsContent>
-
-            {/* Время */}
-            <TabsContent value="time" className="space-y-3 mt-4">
-              {currentWorldTime && (
-                <>
-                  <div className="bg-slate-700/50 rounded-lg p-4">
-                    <div className="text-center">
-                      <div className="text-4xl font-bold text-white mb-2">
-                        {formatTime(currentWorldTime)}
-                      </div>
-                      <div className="text-slate-400">
-                        {formatDate(currentWorldTime)}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="bg-slate-700/50 rounded-lg p-3">
-                      <div className="text-slate-400 text-sm">Время суток</div>
-                      <div className="text-white font-medium">{getTimeOfDayName(currentWorldTime)}</div>
-                    </div>
-                    <div className="bg-slate-700/50 rounded-lg p-3">
-                      <div className="text-slate-400 text-sm">Сезон</div>
-                      <div className="text-white font-medium">{getSeasonName(currentWorldTime)}</div>
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {/* Ресурсы */}
-              <div className="bg-slate-700/50 rounded-lg p-3">
-                <div className="text-sm font-medium text-slate-300 mb-2">💰 Ресурсы:</div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-400">Духовные камни:</span>
-                    <span className="text-cyan-400">{character.spiritStones || 0}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-400">Очки вклада:</span>
-                    <span className="text-amber-400">{character.contributionPoints || 0}</span>
-                  </div>
-                </div>
               </div>
             </TabsContent>
           </Tabs>

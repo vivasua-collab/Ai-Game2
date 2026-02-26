@@ -7,13 +7,14 @@
  * - Integrated chat with Enter key toggle (bottom-left)
  * - Combat slots with keyboard shortcuts (bottom-center)
  * - Minimap (top-right)
+ * - World time display (top-left)
  * - Responsive UI that scales with window size
  */
 
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { useGameSessionId, useGameActions, useGameCharacter, useGameTechniques, useGameMessages, useGameLoading } from '@/stores/game.store';
+import { useGameSessionId, useGameActions, useGameCharacter, useGameTechniques, useGameMessages, useGameLoading, useGameTime } from '@/stores/game.store';
 import type { Message, CharacterTechnique } from '@/types/game';
 import { getCombatSlotsCount } from '@/types/game';
 
@@ -49,6 +50,7 @@ let globalCharacter: any = null;
 let globalTechniques: CharacterTechnique[] = [];
 let globalMessages: Message[] = [];
 let globalIsLoading: boolean = false;
+let globalWorldTime: { year: number; month: number; day: number; hour: number; minute: number } | null = null;
 
 // Scene config
 const GameSceneConfig = {
@@ -161,6 +163,16 @@ const GameSceneConfig = {
     }).setOrigin(0.5);
     uiContainer.add(coords);
     scene.data.set('coordsText', coords);
+
+    // World time display (top-left)
+    const worldTimeText = scene.add.text(10, 60, '', {
+      fontSize: '14px',
+      color: '#fbbf24',
+      backgroundColor: '#000000aa',
+      padding: { x: 8, y: 4 },
+    });
+    uiContainer.add(worldTimeText);
+    scene.data.set('worldTimeText', worldTimeText);
 
     // === CHAT PANEL (bottom-left) ===
     const chatWidth = 300;
@@ -446,6 +458,13 @@ const GameSceneConfig = {
     scene.time.addEvent({
       delay: 500,
       callback: () => {
+        // Update world time display
+        const worldTimeTextEl = scene.data.get('worldTimeText') as Phaser.GameObjects.Text;
+        if (worldTimeTextEl && globalWorldTime) {
+          const timeStr = `📅 ${globalWorldTime.day}.${globalWorldTime.month}.${globalWorldTime.year} ⏰ ${globalWorldTime.hour.toString().padStart(2, '0')}:${globalWorldTime.minute.toString().padStart(2, '0')}`;
+          worldTimeTextEl.setText(timeStr);
+        }
+        
         // Debug: log messages count
         if (globalMessages.length > 0) {
           console.log('[Chat] Messages:', globalMessages.length, globalMessages[0]?.content?.substring(0, 30));
@@ -577,6 +596,7 @@ export function PhaserGame() {
   const techniques = useGameTechniques();
   const messages = useGameMessages();
   const isLoading = useGameLoading();
+  const worldTime = useGameTime();
   const { loadState, sendMessage } = useGameActions();
 
   // Update global references
@@ -600,6 +620,10 @@ export function PhaserGame() {
   useEffect(() => {
     globalIsLoading = isLoading;
   }, [isLoading]);
+
+  useEffect(() => {
+    globalWorldTime = worldTime;
+  }, [worldTime]);
 
   // Handle movement
   const handleMovement = useCallback(async (tilesMoved: number) => {
