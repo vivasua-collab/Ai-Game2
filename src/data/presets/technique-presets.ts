@@ -50,9 +50,12 @@ export interface TechniqueScaling {
 export interface TechniqueEffects {
   damage?: number;
   healing?: number;
-  qiRegen?: number;
-  duration?: number;      // В минутах
-  distance?: number;      // Дальность (в метрах)
+  qiRegen?: number;         // Legacy: фиксированное значение Ци
+  qiRegenPercent?: number;  // Процент к поглощению Ци (для техник культивации)
+  unnoticeability?: number; // Процент снижения шанса прерывания (1-5%)
+  castSpeed?: number;       // Скорость каста (зависит от проводимости)
+  duration?: number;        // В минутах
+  distance?: number;        // Дальность (в метрах)
   statModifiers?: {
     strength?: number;
     agility?: number;
@@ -107,7 +110,7 @@ export const BASIC_TECHNIQUES: TechniquePreset[] = [
     id: "breath_of_qi",
     name: "Дыхание Ци",
     nameEn: "Breath of Qi",
-    description: "Базовая техника накопления Ци. Основа практики для любого культиватора.",
+    description: "Базовая техника накопления Ци. Основа практики для любого культиватора. Увеличивает поглощение Ци из среды и снижает шанс быть замеченным существами.",
     category: "basic",
     rarity: "common",
     techniqueType: "cultivation",
@@ -125,7 +128,11 @@ export const BASIC_TECHNIQUES: TechniquePreset[] = [
       intelligence: 0.02,
       conductivity: 0.1,
     },
-    effects: { qiRegen: 5 },
+    effects: { 
+      qiRegen: 5,          // Legacy: фиксированное значение (интерпретируется как % для техник культивации)
+      qiRegenPercent: 5,   // +5% к поглощению Ци из среды
+      unnoticeability: 3   // 3% снижение шанса прерывания
+    },
     masteryBonus: 0.5,
     sources: ["preset", "sect"],
     icon: "🧘",

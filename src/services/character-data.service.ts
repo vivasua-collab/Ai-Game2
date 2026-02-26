@@ -27,6 +27,7 @@ export async function getCharacterTechniques(characterId: string): Promise<Chara
     techniqueId: t.techniqueId,
     technique: mapTechniqueFromDb(t.technique),
     mastery: t.mastery,
+    quickSlot: t.quickSlot,
     learningProgress: t.learningProgress,
     learningSource: t.learningSource,
   }));
@@ -120,6 +121,7 @@ export async function learnTechnique(
         techniqueId: learned.techniqueId,
         technique: mapTechniqueFromDb(learned.technique),
         mastery: learned.mastery,
+        quickSlot: learned.quickSlot,
         learningProgress: learned.learningProgress,
         learningSource: learned.learningSource,
       };
@@ -144,6 +146,7 @@ export async function learnTechnique(
     techniqueId: learned.techniqueId,
     technique: mapTechniqueFromDb(learned.technique),
     mastery: learned.mastery,
+    quickSlot: learned.quickSlot,
     learningProgress: learned.learningProgress,
     learningSource: learned.learningSource,
   };

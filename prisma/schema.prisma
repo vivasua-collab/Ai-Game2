@@ -388,6 +388,9 @@ model CharacterTechnique {
   // === Мастерство ===
   mastery Float @default(0.0) // 0-100%
   
+  // === Слот быстрого доступа ===
+  quickSlot Int? // 0 = культивация, 1-12 = боевой слот, null = не назначен
+  
   // === Прогресс изучения ===
   learningProgress Float @default(0.0)   // 0-100%
   learningSource  String @default("")   // preset, npc, scroll, insight

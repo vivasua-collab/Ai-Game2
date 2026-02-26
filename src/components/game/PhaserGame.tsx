@@ -1,21 +1,25 @@
 /**
- * Game Scene - Main gameplay scene
+ * Game Scene - Main gameplay scene with integrated chat and combat slots
  * 
  * Features:
  * - Simple plane environment
  * - Character with movement (WASD/Arrow keys)
- * - Camera follows player
- * - Movement time tracking (tiles moved → time advanced)
+ * - Integrated chat with Enter key toggle (bottom-left)
+ * - Combat slots with keyboard shortcuts (bottom-center)
+ * - Minimap (top-right)
+ * - Responsive UI that scales with window size
  */
 
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { useGameSessionId, useGameActions } from '@/stores/game.store';
+import { useGameSessionId, useGameActions, useGameCharacter, useGameTechniques, useGameMessages, useGameLoading } from '@/stores/game.store';
+import type { Message, CharacterTechnique } from '@/types/game';
+import { getCombatSlotsCount } from '@/types/game';
 
-// Game dimensions
-const GAME_WIDTH = 900;
-const GAME_HEIGHT = 550;
+// Game dimensions (base resolution for rendering)
+const GAME_WIDTH = 1200;
+const GAME_HEIGHT = 700;
 const WORLD_WIDTH = 2000;
 const WORLD_HEIGHT = 2000;
 
@@ -23,37 +27,45 @@ const WORLD_HEIGHT = 2000;
 const PLAYER_SIZE = 24;
 const PLAYER_SPEED = 200;
 
-// Time tracking: accumulate distance and sync with server
-const TILE_SIZE = 64; // pixels per tile
-const TIME_SYNC_INTERVAL = 3000; // Sync every 3 seconds
-const MIN_TILES_FOR_SYNC = 1; // Minimum tiles moved before sync
+// Time tracking
+const TILE_SIZE = 64;
+const TIME_SYNC_INTERVAL = 3000;
+const MIN_TILES_FOR_SYNC = 1;
 
-// Store global reference for scene to access
+// Combat slots configuration
+const COMBAT_SLOT_KEYS = ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'ZERO', 'MINUS', 'EQUALS'];
+const BASE_COMBAT_SLOTS = 3;
+
+// Global references for scene access
 let globalSessionId: string | null = null;
 let globalOnMovement: ((tiles: number) => void) | null = null;
+let globalOnSendMessage: ((message: string) => void) | null = null;
+let globalOnCombatTechnique: ((techniqueId: string) => void) | null = null;
+let globalCharacter: any = null;
+let globalTechniques: CharacterTechnique[] = [];
+let globalMessages: Message[] = [];
+let globalIsLoading: boolean = false;
 
-// Scene config as object (no class for SSR compatibility)
+// Scene config
 const GameSceneConfig = {
   key: 'GameScene',
 
   preload(this: Phaser.Scene) {
-    // Create textures programmatically
+    const scene = this as Phaser.Scene;
+
     // Player texture
-    const playerGraphics = this.make.graphics({ x: 0, y: 0 });
-    // Body (circle)
-    playerGraphics.fillStyle(0x4ade80); // green
+    const playerGraphics = scene.make.graphics({ x: 0, y: 0 });
+    playerGraphics.fillStyle(0x4ade80);
     playerGraphics.fillCircle(PLAYER_SIZE, PLAYER_SIZE, PLAYER_SIZE);
-    // Inner detail (darker green)
     playerGraphics.fillStyle(0x22c55e);
     playerGraphics.fillCircle(PLAYER_SIZE, PLAYER_SIZE - 4, PLAYER_SIZE * 0.5);
-    // Direction indicator
     playerGraphics.fillStyle(0xffffff);
     playerGraphics.fillCircle(PLAYER_SIZE + 8, PLAYER_SIZE, 4);
     playerGraphics.generateTexture('player', PLAYER_SIZE * 2 + 16, PLAYER_SIZE * 2);
     playerGraphics.destroy();
 
     // Ground tile texture
-    const tileGraphics = this.make.graphics({ x: 0, y: 0 });
+    const tileGraphics = scene.make.graphics({ x: 0, y: 0 });
     tileGraphics.fillStyle(0x1a2a1a);
     tileGraphics.fillRect(0, 0, 64, 64);
     tileGraphics.lineStyle(1, 0x2a3a2a);
@@ -63,8 +75,9 @@ const GameSceneConfig = {
   },
 
   create(this: Phaser.Scene) {
-    // @ts-expect-error - Phaser types
     const scene = this as Phaser.Scene;
+    let isChatFocused = false;
+    let chatInputText = '';
 
     // Create world bounds
     scene.physics.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
@@ -97,7 +110,7 @@ const GameSceneConfig = {
     scene.cameras.main.startFollow(player, true, 0.1, 0.1);
     scene.cameras.main.setZoom(1);
 
-    // Input
+    // Input keys
     const cursors = scene.input.keyboard?.createCursorKeys();
     const wasd = scene.input.keyboard?.addKeys({
       up: Phaser.Input.Keyboard.KeyCodes.W,
@@ -111,13 +124,13 @@ const GameSceneConfig = {
     scene.data.set('playerLabel', playerLabel);
     scene.data.set('cursors', cursors);
     scene.data.set('wasd', wasd);
-
-    // Time tracking
+    scene.data.set('isChatFocused', isChatFocused);
+    scene.data.set('chatInputText', chatInputText);
     scene.data.set('lastPosition', { x: player.x, y: player.y });
     scene.data.set('accumulatedTiles', 0);
     scene.data.set('lastSyncTime', Date.now());
 
-    // UI - Instructions
+    // === UI CONTAINER (fixed on screen) ===
     const uiContainer = scene.add.container(0, 0);
     uiContainer.setScrollFactor(0);
     uiContainer.setDepth(100);
@@ -126,7 +139,7 @@ const GameSceneConfig = {
     const topBar = scene.add.rectangle(GAME_WIDTH / 2, 25, GAME_WIDTH, 50, 0x000000, 0.7);
     uiContainer.add(topBar);
 
-    const title = scene.add.text(GAME_WIDTH / 2, 15, '🌸 Cultivation World - Demo', {
+    const title = scene.add.text(GAME_WIDTH / 2, 15, '🌸 Cultivation World', {
       fontSize: '18px',
       color: '#4ade80',
     }).setOrigin(0.5);
@@ -139,39 +152,150 @@ const GameSceneConfig = {
     uiContainer.add(coords);
     scene.data.set('coordsText', coords);
 
-    // Instructions
-    const instructions = scene.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 20,
-      'WASD или ←↑↓→ для перемещения', {
-      fontSize: '14px',
-      color: '#ffffff',
-    }).setOrigin(0.5);
-    uiContainer.add(instructions);
+    // === CHAT PANEL (bottom-left) ===
+    const chatWidth = 300;
+    const chatHeight = 150;
+    const chatX = 10;
+    const chatY = GAME_HEIGHT - chatHeight - 50;
 
-    // Minimap (simple)
-    const minimapSize = 120;
+    // Chat background
+    const chatBg = scene.add.rectangle(chatX + chatWidth / 2, chatY + chatHeight / 2, chatWidth, chatHeight, 0x000000, 0.8);
+    chatBg.setStrokeStyle(1, 0x4ade80, 0.5);
+    uiContainer.add(chatBg);
+
+    // Chat title
+    const chatTitle = scene.add.text(chatX + 10, chatY + 5, '💬 Чат [Enter]', {
+      fontSize: '12px',
+      color: '#fbbf24',
+    });
+    uiContainer.add(chatTitle);
+
+    // Chat messages container
+    const chatMessagesText = scene.add.text(chatX + 10, chatY + 25, '', {
+      fontSize: '11px',
+      color: '#e2e8f0',
+      wordWrap: { width: chatWidth - 20 },
+      lineSpacing: 3,
+    });
+    uiContainer.add(chatMessagesText);
+    scene.data.set('chatMessagesText', chatMessagesText);
+
+    // Chat input background
+    const inputBg = scene.add.rectangle(chatX + chatWidth / 2, chatY + chatHeight - 15, chatWidth - 10, 24, 0x1e293b, 1);
+    inputBg.setStrokeStyle(1, 0x4ade80, 0.3);
+    uiContainer.add(inputBg);
+
+    // Chat input text
+    const chatInputDisplay = scene.add.text(chatX + 15, chatY + chatHeight - 22, '|', {
+      fontSize: '12px',
+      color: '#ffffff',
+    });
+    uiContainer.add(chatInputDisplay);
+    scene.data.set('chatInputDisplay', chatInputDisplay);
+
+    // === COMBAT SLOTS (bottom-center) ===
+    const slotsY = GAME_HEIGHT - 35;
+    const slotSize = 40;
+    const slotSpacing = 5;
+    const totalSlots = 12;
+
+    const combatSlotsContainer = scene.add.container(0, 0);
+    uiContainer.add(combatSlotsContainer);
+
+    const slotBackgrounds: Phaser.GameObjects.Rectangle[] = [];
+    const slotTexts: Phaser.GameObjects.Text[] = [];
+
+    const updateCombatSlots = () => {
+      combatSlotsContainer.removeAll(true);
+      slotBackgrounds.length = 0;
+      slotTexts.length = 0;
+
+      const level = globalCharacter?.cultivationLevel || 0;
+      const availableSlots = getCombatSlotsCount(level);
+
+      // Get equipped techniques by quickSlot
+      const equippedBySlot: Map<number, CharacterTechnique> = new Map();
+      for (const t of globalTechniques) {
+        if ((t.technique.type === 'combat' || t.technique.type === 'movement') && t.quickSlot !== null && t.quickSlot > 0) {
+          equippedBySlot.set(t.quickSlot, t);
+        }
+      }
+
+      const startX = GAME_WIDTH / 2 - (totalSlots * (slotSize + slotSpacing)) / 2;
+
+      for (let i = 0; i < totalSlots; i++) {
+        const x = startX + i * (slotSize + slotSpacing);
+        const isAvailable = i < availableSlots;
+        const equipped = equippedBySlot.get(i + 1); // quickSlot is 1-indexed
+        const slotKey = i < 9 ? String(i + 1) : (i === 9 ? '0' : i === 10 ? '-' : '=');
+
+        // Slot background
+        const slotBg = scene.add.rectangle(x, slotsY, slotSize, slotSize,
+          isAvailable ? (equipped ? 0x22c55e : 0x1e293b) : 0x0f172a, 1
+        );
+        slotBg.setStrokeStyle(2, isAvailable ? (equipped ? 0x22c55e : 0x4ade80) : 0x334155);
+        combatSlotsContainer.add(slotBg);
+        slotBackgrounds.push(slotBg);
+
+        // Slot key label
+        const keyLabel = scene.add.text(x, slotsY - slotSize / 2 - 8, slotKey, {
+          fontSize: '10px',
+          color: isAvailable ? '#9ca3af' : '#475569',
+        }).setOrigin(0.5);
+        combatSlotsContainer.add(keyLabel);
+
+        // Slot content
+        const slotContent = scene.add.text(x, slotsY, equipped ? '⚔️' : '', {
+          fontSize: '20px',
+        }).setOrigin(0.5);
+        combatSlotsContainer.add(slotContent);
+        slotTexts.push(slotContent);
+
+        // Interactive
+        if (isAvailable && equipped) {
+          slotBg.setInteractive();
+          slotBg.on('pointerdown', () => {
+            if (globalOnCombatTechnique) {
+              globalOnCombatTechnique(equipped.techniqueId);
+            }
+          });
+        }
+      }
+    };
+
+    scene.data.set('updateCombatSlots', updateCombatSlots);
+    updateCombatSlots();
+
+    // === MINIMAP (top-right) ===
+    const minimapSize = 100;
     const minimapX = GAME_WIDTH - minimapSize - 10;
-    const minimapY = GAME_HEIGHT - minimapSize - 30;
+    const minimapY = 60 + minimapSize / 2;
 
     const minimapBg = scene.add.rectangle(minimapX, minimapY, minimapSize, minimapSize, 0x000000, 0.7);
     minimapBg.setStrokeStyle(2, 0x4ade80);
     uiContainer.add(minimapBg);
 
-    const minimapPlayer = scene.add.circle(minimapX, minimapY, 4, 0x4ade80);
+    const minimapPlayer = scene.add.circle(minimapX, minimapY, 3, 0x4ade80);
     uiContainer.add(minimapPlayer);
     scene.data.set('minimapPlayer', minimapPlayer);
     scene.data.set('minimapX', minimapX);
     scene.data.set('minimapY', minimapY);
     scene.data.set('minimapSize', minimapSize);
 
-    // Ambient particles
+    // === INSTRUCTIONS ===
+    const instructions = scene.add.text(GAME_WIDTH / 2, GAME_HEIGHT - 15,
+      'WASD • Enter для чата • 1-9,0,-,= для техник', {
+      fontSize: '12px',
+      color: '#9ca3af',
+    }).setOrigin(0.5);
+    uiContainer.add(instructions);
+
+    // === AMBIENT PARTICLES ===
     for (let i = 0; i < 30; i++) {
       const x = Phaser.Math.Between(100, WORLD_WIDTH - 100);
       const y = Phaser.Math.Between(100, WORLD_HEIGHT - 100);
-      const size = Phaser.Math.Between(2, 4);
-
-      const particle = scene.add.circle(x, y, size, 0x4ade80, 0.3);
+      const particle = scene.add.circle(x, y, Phaser.Math.Between(2, 4), 0x4ade80, 0.3);
       particle.setDepth(1);
-
       scene.tweens.add({
         targets: particle,
         y: y - Phaser.Math.Between(10, 30),
@@ -182,10 +306,125 @@ const GameSceneConfig = {
         delay: Phaser.Math.Between(0, 500),
       });
     }
+
+    // === KEYBOARD HANDLING ===
+
+    // Handle Enter key for chat focus toggle
+    scene.input.keyboard?.on('keydown-ENTER', () => {
+      isChatFocused = !isChatFocused;
+      scene.data.set('isChatFocused', isChatFocused);
+
+      if (isChatFocused) {
+        chatBg.setFillStyle(0x000000, 0.9);
+        inputBg.setStrokeStyle(2, 0xfbbf24);
+        chatTitle.setText('💬 Чат [Enter - отправить]');
+      } else {
+        // Send message
+        const text = scene.data.get('chatInputText') as string;
+        if (text?.trim() && globalOnSendMessage) {
+          globalOnSendMessage(text.trim());
+        }
+        scene.data.set('chatInputText', '');
+        chatBg.setFillStyle(0x000000, 0.8);
+        inputBg.setStrokeStyle(1, 0x4ade80, 0.3);
+        chatTitle.setText('💬 Чат [Enter]');
+        chatInputDisplay.setText('|');
+      }
+    });
+
+    // Handle Escape to unfocus chat
+    scene.input.keyboard?.on('keydown-ESC', () => {
+      if (isChatFocused) {
+        isChatFocused = false;
+        scene.data.set('isChatFocused', false);
+        scene.data.set('chatInputText', '');
+        chatBg.setFillStyle(0x000000, 0.8);
+        inputBg.setStrokeStyle(1, 0x4ade80, 0.3);
+        chatTitle.setText('💬 Чат [Enter]');
+        chatInputDisplay.setText('|');
+      }
+    });
+
+    // Handle text input when chat is focused
+    scene.input.keyboard?.on('keydown', (event: KeyboardEvent) => {
+      if (!isChatFocused) return;
+
+      let currentText = (scene.data.get('chatInputText') as string) || '';
+
+      if (event.key === 'Backspace') {
+        currentText = currentText.slice(0, -1);
+      } else if (event.key.length === 1 && !event.ctrlKey && !event.metaKey) {
+        if (currentText.length < 100) {
+          currentText += event.key;
+        }
+      }
+
+      scene.data.set('chatInputText', currentText);
+      chatInputDisplay.setText(currentText + '|');
+    });
+
+    // Handle combat slot keys
+    COMBAT_SLOT_KEYS.forEach((keyName, index) => {
+      const keyCode = Phaser.Input.Keyboard.KeyCodes[keyName as keyof typeof Phaser.Input.Keyboard.KeyCodes];
+      scene.input.keyboard?.on(`keydown-${keyCode}`, () => {
+        if (isChatFocused) return;
+
+        const slotIndex = index + 1;
+        const level = globalCharacter?.cultivationLevel || 0;
+        const availableSlots = getCombatSlotsCount(level);
+
+        if (slotIndex <= availableSlots) {
+          // Find equipped technique
+          const equipped = globalTechniques.find(t => 
+            (t.technique.type === 'combat' || t.technique.type === 'movement') && 
+            t.quickSlot === slotIndex
+          );
+
+          if (equipped && globalOnCombatTechnique) {
+            globalOnCombatTechnique(equipped.techniqueId);
+
+            // Visual feedback
+            const slotBg = slotBackgrounds[index];
+            if (slotBg) {
+              scene.tweens.add({
+                targets: slotBg,
+                scaleX: 1.2,
+                scaleY: 1.2,
+                duration: 100,
+                yoyo: true,
+              });
+            }
+          }
+        }
+      });
+    });
+
+    // Update chat messages periodically
+    scene.time.addEvent({
+      delay: 500,
+      callback: () => {
+        if (chatMessagesText && globalMessages.length > 0) {
+          const recentMessages = globalMessages.slice(-5);
+          const text = recentMessages.map(m => {
+            const prefix = m.sender === 'player' ? '👤' : '📖';
+            const content = m.content.length > 50 ? m.content.slice(0, 50) + '...' : m.content;
+            return `${prefix} ${content}`;
+          }).join('\n');
+          chatMessagesText.setText(text);
+        }
+      },
+      loop: true,
+    });
+
+    // Update combat slots periodically
+    scene.time.addEvent({
+      delay: 1000,
+      callback: updateCombatSlots,
+      loop: true,
+    });
   },
 
   update(this: Phaser.Scene) {
-    // @ts-expect-error - Phaser types
     const scene = this as Phaser.Scene;
 
     const player = scene.data.get('player') as Phaser.Physics.Arcade.Sprite;
@@ -200,8 +439,15 @@ const GameSceneConfig = {
     const lastPosition = scene.data.get('lastPosition') as { x: number; y: number };
     const accumulatedTiles = scene.data.get('accumulatedTiles') as number;
     const lastSyncTime = scene.data.get('lastSyncTime') as number;
+    const isChatFocused = scene.data.get('isChatFocused') as boolean;
 
     if (!player || !cursors || !wasd) return;
+
+    // Skip movement when chat is focused
+    if (isChatFocused) {
+      player.setVelocity(0, 0);
+      return;
+    }
 
     // Movement
     let velocityX = 0;
@@ -241,31 +487,25 @@ const GameSceneConfig = {
     const miniY = minimapY - minimapSize / 2 + player.y * mapRatio;
     minimapPlayer.setPosition(miniX, miniY);
 
-    // === TIME TRACKING ===
-    // Calculate distance moved since last frame
+    // Time tracking
     const dx = player.x - lastPosition.x;
     const dy = player.y - lastPosition.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    // Update last position
     scene.data.set('lastPosition', { x: player.x, y: player.y });
 
-    // Accumulate tiles moved (1 tile = TILE_SIZE pixels)
     const tilesThisFrame = distance / TILE_SIZE;
     const newAccumulatedTiles = accumulatedTiles + tilesThisFrame;
     scene.data.set('accumulatedTiles', newAccumulatedTiles);
 
-    // Check if we should sync with server
     const now = Date.now();
     const timeSinceSync = now - lastSyncTime;
 
     if (newAccumulatedTiles >= MIN_TILES_FOR_SYNC && timeSinceSync >= TIME_SYNC_INTERVAL) {
-      // Sync with server
       const tilesToReport = Math.floor(newAccumulatedTiles);
       scene.data.set('accumulatedTiles', newAccumulatedTiles - tilesToReport);
       scene.data.set('lastSyncTime', now);
 
-      // Call global callback
       if (globalOnMovement && globalSessionId) {
         globalOnMovement(tilesToReport);
       }
@@ -280,14 +520,34 @@ export function PhaserGame() {
   const gameRef = useRef<Phaser.Game | null>(null);
 
   const sessionId = useGameSessionId();
-  const { loadState } = useGameActions();
+  const character = useGameCharacter();
+  const techniques = useGameTechniques();
+  const messages = useGameMessages();
+  const isLoading = useGameLoading();
+  const { loadState, sendMessage } = useGameActions();
 
-  // Update global sessionId when it changes
+  // Update global references
   useEffect(() => {
     globalSessionId = sessionId;
   }, [sessionId]);
 
-  // Handle movement - sync with server
+  useEffect(() => {
+    globalCharacter = character;
+  }, [character]);
+
+  useEffect(() => {
+    globalTechniques = techniques;
+  }, [techniques]);
+
+  useEffect(() => {
+    globalMessages = messages;
+  }, [messages]);
+
+  useEffect(() => {
+    globalIsLoading = isLoading;
+  }, [isLoading]);
+
+  // Handle movement
   const handleMovement = useCallback(async (tilesMoved: number) => {
     if (!sessionId) return;
 
@@ -295,16 +555,11 @@ export function PhaserGame() {
       const response = await fetch('/api/game/move', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sessionId,
-          tilesMoved,
-        }),
+        body: JSON.stringify({ sessionId, tilesMoved }),
       });
 
       const data = await response.json();
-
       if (data.success && data.timeAdvanced) {
-        // Reload state to update worldTime in store
         await loadState();
       }
     } catch (err) {
@@ -312,24 +567,43 @@ export function PhaserGame() {
     }
   }, [sessionId, loadState]);
 
-  // Set up global callback
+  // Handle chat message
+  const handleSendMessage = useCallback(async (message: string) => {
+    if (!message.trim()) return;
+    await sendMessage(message);
+  }, [sendMessage]);
+
+  // Handle combat technique
+  const handleCombatTechnique = useCallback(async (techniqueId: string) => {
+    console.log('Combat technique used:', techniqueId);
+    // TODO: Implement combat technique usage
+  }, []);
+
+  // Set up global callbacks
   useEffect(() => {
     globalOnMovement = handleMovement;
-    return () => {
-      globalOnMovement = null;
-    };
+    return () => { globalOnMovement = null; };
   }, [handleMovement]);
 
+  useEffect(() => {
+    globalOnSendMessage = handleSendMessage;
+    return () => { globalOnSendMessage = null; };
+  }, [handleSendMessage]);
+
+  useEffect(() => {
+    globalOnCombatTechnique = handleCombatTechnique;
+    return () => { globalOnCombatTechnique = null; };
+  }, [handleCombatTechnique]);
+
+  // Initialize game
   useEffect(() => {
     if (!containerRef.current) return;
 
     const initGame = async () => {
       try {
-        // Dynamic import Phaser
         const PhaserModule = await import('phaser');
         const Phaser = PhaserModule.default;
 
-        // Game config
         const config: Phaser.Types.Core.GameConfig = {
           type: Phaser.AUTO,
           width: GAME_WIDTH,
@@ -350,7 +624,6 @@ export function PhaserGame() {
           },
         };
 
-        // Create game
         gameRef.current = new Phaser.Game(config);
         setIsLoaded(true);
       } catch (err) {
@@ -370,11 +643,11 @@ export function PhaserGame() {
   }, []);
 
   return (
-    <div className="relative">
+    <div className="relative w-full h-full flex items-center justify-center">
       <div
         ref={containerRef}
-        className="w-full rounded-lg overflow-hidden border border-slate-700 bg-slate-900"
-        style={{ maxWidth: GAME_WIDTH, aspectRatio: `${GAME_WIDTH}/${GAME_HEIGHT}` }}
+        className="w-full h-full rounded-lg overflow-hidden border border-slate-700 bg-slate-900"
+        style={{ minHeight: 400 }}
       />
 
       {!isLoaded && !error && (

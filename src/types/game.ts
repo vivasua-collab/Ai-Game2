@@ -263,6 +263,9 @@ export interface Technique {
     damage?: number;
     healing?: number;
     qiRegen?: number;
+    qiRegenPercent?: number;  // Процент к поглощению Ци (для техник культивации)
+    unnoticeability?: number; // Процент снижения шанса прерывания
+    castSpeed?: number;       // Скорость каста
     duration?: number;
     distance?: number;
     statModifiers?: Record<string, number>;
@@ -274,8 +277,46 @@ export interface CharacterTechnique {
   techniqueId: string;
   technique: Technique;
   mastery: number;         // 0-100%
+  quickSlot: number | null; // 0 = культивация, 1-12 = боевой слот, null = не назначен
   learningProgress: number; // 0-100%
   learningSource: string;
+}
+
+// ==================== СЛОТЫ ТЕХНИК ====================
+
+/**
+ * Базовое количество боевых слотов
+ * Уровень 1 = 3 слота
+ * Уровень 2 = 4 слота
+ * Уровень N = 3 + (N-1) слотов
+ */
+export const BASE_COMBAT_SLOTS = 3;
+
+/**
+ * Возвращает количество боевых слотов для уровня культивации
+ * Уровень 1 = 3 слота, Уровень 2 = 4 слота и т.д.
+ */
+export function getCombatSlotsCount(cultivationLevel: number): number {
+  return BASE_COMBAT_SLOTS + Math.max(0, cultivationLevel - 1);
+}
+
+/**
+ * Создаёт структуру слотов техник
+ */
+export function createTechniqueSlots(cultivationLevel: number): TechniqueSlots {
+  const combatSlotCount = getCombatSlotsCount(cultivationLevel);
+  return {
+    cultivationSlot: null,
+    combatSlots: Array(combatSlotCount).fill(null),
+  };
+}
+
+/**
+ * Слоты для быстрых техник
+ */
+export interface TechniqueSlots {
+  cultivationSlot: string | null;     // ID техники культивации
+  combatSlots: (string | null)[];     // Динамические боевые слоты
 }
 
 // ==================== НАВЫКИ КУЛЬТИВАЦИИ ====================
