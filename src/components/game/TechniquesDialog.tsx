@@ -79,7 +79,7 @@ function getCombatSlotsCountLocal(level: number): number {
 export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) {
   const character = useGameCharacter();
   const techniques = useGameTechniques();
-  const { loadState } = useGameActions();
+  const { loadTechniques } = useGameActions();
 
   const [selectedTechnique, setSelectedTechnique] = useState<CharacterTechnique | null>(null);
   const [isUsing, setIsUsing] = useState(false);
@@ -144,7 +144,7 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
 
       const data = await response.json();
       if (data.success) {
-        await loadState();
+        await loadTechniques();
         setResult({ success: true, message: data.message });
       } else {
         setResult({ success: false, message: data.error });
@@ -152,7 +152,7 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
     } catch (error) {
       setResult({ success: false, message: 'Ошибка соединения' });
     }
-  }, [character, selectedTechnique, loadState]);
+  }, [character, selectedTechnique, loadTechniques]);
 
   // Очистить слот
   const handleClearSlot = useCallback(async (slotType: 'cultivation' | 'combat', slotIndex?: number) => {
@@ -172,7 +172,7 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
 
       const data = await response.json();
       if (data.success) {
-        await loadState();
+        await loadTechniques();
         setResult({ success: true, message: 'Слот очищен' });
       } else {
         setResult({ success: false, message: data.error });
@@ -180,7 +180,7 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
     } catch (error) {
       setResult({ success: false, message: 'Ошибка соединения' });
     }
-  }, [character, loadState]);
+  }, [character, loadTechniques]);
 
   // Проверка возможности использования (только формации!)
   const canUse = useMemo(() => {
@@ -225,7 +225,7 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
 
       if (data.success) {
         setResult({ success: true, message: data.message });
-        await loadState();
+        await loadTechniques();
       } else {
         setResult({ success: false, message: data.error || 'Ошибка использования' });
       }
@@ -235,7 +235,7 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
     } finally {
       setIsUsing(false);
     }
-  }, [character, selectedTechnique, canUse.canUse, loadState]);
+  }, [character, selectedTechnique, canUse.canUse, loadTechniques]);
 
   // Сброс при закрытии
   const handleClose = useCallback((open: boolean) => {

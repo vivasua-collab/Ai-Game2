@@ -14,6 +14,7 @@ import {
   validationErrorResponse,
 } from "@/lib/validations/game";
 import { BASIC_TECHNIQUES } from "@/data/presets/technique-presets";
+import { BASIC_FORMATIONS } from "@/data/presets/formation-presets";
 import { generatePositionAtDistance, generatePositionInRange } from "@/lib/game/world-coordinates";
 
 // Инициализируем LLM
@@ -340,6 +341,54 @@ export async function POST(request: NextRequest) {
             techniqueId: technique.id,
             mastery: 0,
             learningProgress: 100, // Базовые техники уже изучены
+            learningSource: "preset",
+          },
+        });
+      }
+
+      // 7. Создаём базовые формации для персонажа
+      for (const preset of BASIC_FORMATIONS) {
+        // Создаём или находим формацию в каталоге
+        const formation = await tx.technique.upsert({
+          where: { nameId: preset.id },
+          create: {
+            name: preset.name,
+            nameId: preset.id,
+            description: preset.description,
+            type: "formation",
+            element: "neutral",
+            rarity: preset.rarity,
+            level: 1,
+            minLevel: 1,
+            maxLevel: preset.qualityLevels,
+            canEvolve: true,
+            minCultivationLevel: preset.requirements?.cultivationLevel || 1,
+            qiCost: preset.requirements?.qiCost || 50,
+            physicalFatigueCost: 0,
+            mentalFatigueCost: 5,
+            statRequirements: null,
+            statScaling: null,
+            effects: JSON.stringify({
+              formationType: preset.formationType,
+              formationEffects: preset.formationEffects,
+              setupTime: preset.setupTime,
+              duration: preset.duration,
+              difficulty: preset.difficulty,
+            }),
+            source: "preset",
+          },
+          update: {
+            description: preset.description,
+          },
+        });
+
+        // Создаём связь персонажа с формацией
+        await tx.characterTechnique.create({
+          data: {
+            characterId: character.id,
+            techniqueId: formation.id,
+            mastery: 0,
+            learningProgress: 100, // Базовые формации уже изучены
             learningSource: "preset",
           },
         });

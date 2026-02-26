@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { RestDialog } from './RestDialog';
 import { StatusDialog } from './StatusDialog';
 import { TechniquesDialog } from './TechniquesDialog';
+import { CheatMenuDialog } from './CheatMenuDialog';
 
 interface ActionButtonsProps {
   className?: string;
@@ -20,6 +21,7 @@ export function ActionButtons({ className = '' }: ActionButtonsProps) {
   const [restOpen, setRestOpen] = useState(false);
   const [statusOpen, setStatusOpen] = useState(false);
   const [techniquesOpen, setTechniquesOpen] = useState(false);
+  const [cheatMenuOpen, setCheatMenuOpen] = useState(false);
 
   return (
     <>
@@ -66,6 +68,15 @@ export function ActionButtons({ className = '' }: ActionButtonsProps) {
         >
           🗺️ Карта
         </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="border-red-600/50 text-red-400 hover:bg-red-900/30 h-9"
+          onClick={() => setCheatMenuOpen(true)}
+          title="Чит меню (отладка)"
+        >
+          🛠️ Читы
+        </Button>
       </div>
 
       <RestDialog
@@ -81,6 +92,11 @@ export function ActionButtons({ className = '' }: ActionButtonsProps) {
       <TechniquesDialog
         open={techniquesOpen}
         onOpenChange={setTechniquesOpen}
+      />
+
+      <CheatMenuDialog
+        open={cheatMenuOpen}
+        onOpenChange={setCheatMenuOpen}
       />
     </>
   );
