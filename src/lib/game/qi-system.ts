@@ -265,7 +265,7 @@ export function performConductivityMeditation(
       fatigueGained: { physical: 0, mental: 0 },
       conductivityMeditationsGained: 0,
       newConductivityMeditations: currentConductivityMeditations,
-      newTotalConductivity: calculateTotalConductivity(character.cultivationLevel, currentConductivityMeditations),
+      newTotalConductivity: calculateTotalConductivity(character.coreCapacity, character.cultivationLevel, currentConductivityMeditations),
     };
   }
   
@@ -293,7 +293,7 @@ export function performConductivityMeditation(
       },
       conductivityMeditationsGained: 0,
       newConductivityMeditations: currentConductivityMeditations,
-      newTotalConductivity: calculateTotalConductivity(character.cultivationLevel, currentConductivityMeditations),
+      newTotalConductivity: calculateTotalConductivity(character.coreCapacity, character.cultivationLevel, currentConductivityMeditations),
       breakdown: {
         coreGeneration: Math.floor(rates.coreGeneration * actualSeconds),
         environmentalAbsorption: Math.floor(rates.environmentalAbsorption * actualSeconds),
@@ -303,7 +303,7 @@ export function performConductivityMeditation(
   
   // Ядро было заполнено!
   const newConductivityMeditations = currentConductivityMeditations + 1;
-  const newTotalConductivity = calculateTotalConductivity(character.cultivationLevel, newConductivityMeditations);
+  const newTotalConductivity = calculateTotalConductivity(character.coreCapacity, character.cultivationLevel, newConductivityMeditations);
   const fatigueResult = calculateMeditationFatigue(minutesToFull, 'conductivity');
   
   return {

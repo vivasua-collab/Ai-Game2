@@ -16,12 +16,26 @@
  * 
  * Кап проводимости зависит от уровня культивации
  * 
- * ФОРМУЛА ПРОВОДИМОСТИ:
- * Итоговая проводимость = базовая_проводимость_на_уровне + (МедП * коэффициент_экстрапроводимости%)
+ * ФОРМУЛА ПРОВОДИМОСТИ (из cultivation-levels.ts):
+ * ============================================
+ * Базовая проводимость = объём_ядра / 360 сек
+ * 
+ * Итоговая проводимость = базовая_проводимость * множитель_уровня + (МедП * базовая_проводимость * 10%)
+ * 
  * Где:
- * - базовая_проводимость_на_уровне = множитель_уровня * 0.1
+ * - объём_ядра = coreCapacity персонажа
+ * - множитель_уровня = conductivityMultiplier из cultivation-levels.ts
  * - МедП = количество медитаций на проводимость
- * - коэффициент_экстрапроводимости% = 10% (константа CONDUCTIVITY_BONUS_PERCENT)
+ * - 10% = константа CONDUCTIVITY_BONUS_PERCENT
+ * 
+ * ПРИМЕР для уровня 2, coreCapacity=1000, МедП=0:
+ * Базовая = 1000 / 360 = 2.778
+ * Итоговая = 2.778 * 1.2 = 3.333
+ * 
+ * ПРИМЕР для уровня 2, coreCapacity=1000, МедП=10:
+ * Базовая = 1000 / 360 = 2.778
+ * Бонус от МедП = 10 * (2.778 * 10%) = 2.778
+ * Итоговая = 2.778 * 1.2 + 2.778 = 6.111
  */
 
 import { QI_CONSTANTS, MEDITATION_TYPE_CONSTANTS } from "./constants";
@@ -33,17 +47,20 @@ import { QI_CONSTANTS, MEDITATION_TYPE_CONSTANTS } from "./constants";
 /**
  * Максимальная проводимость для каждого уровня культивации
  * (нельзя превысить без повышения уровня)
+ * 
+ * Формула: max_base_conductivity * multiplier + max_meditations_bonus
+ * При coreCapacity=1000: базовая = 2.778
  */
 export const MAX_CONDUCTIVITY_BY_LEVEL: Record<number, number> = {
-  1: 0.5,    // Уровень 1
-  2: 1.0,    // Уровень 2
-  3: 2.0,    // Уровень 3
-  4: 4.0,    // Уровень 4
-  5: 8.0,    // Уровень 5
-  6: 16.0,   // Уровень 6
-  7: 32.0,   // Уровень 7
-  8: 64.0,   // Уровень 8
-  9: 128.0,  // Уровень 9
+  1: 5,      // Уровень 1: 2.778 * 1 + 5 * 0.278 = 4.17
+  2: 10,     // Уровень 2: 2.778 * 1.2 + 10 * 0.278 = 6.11
+  3: 20,     // Уровень 3
+  4: 40,     // Уровень 4
+  5: 80,     // Уровень 5
+  6: 150,    // Уровень 6
+  7: 300,    // Уровень 7
+  8: 600,    // Уровень 8
+  9: 2000,   // Уровень 9
 };
 
 /**
@@ -78,13 +95,27 @@ export function getMaxConductivity(cultivationLevel: number): number {
 }
 
 /**
- * Получить базовую проводимость при повышении уровня
- * (из констант Ци)
+ * Получить базовую проводимость для объёма ядра
+ * Формула из cultivation-levels.ts: coreCapacity / 360
+ * 
+ * @param coreCapacity - ёмкость ядра персонажа
+ * @returns базовая проводимость (без множителя уровня)
  */
-export function getBaseConductivityForLevel(cultivationLevel: number): number {
-  const multiplier = QI_CONSTANTS.CONDUCTIVITY_MULTIPLIERS[cultivationLevel] || 1.0;
-  // Базовая проводимость = множитель уровня
-  return multiplier * 0.1;
+export function getBaseConductivity(coreCapacity: number): number {
+  return coreCapacity / 360;
+}
+
+/**
+ * Получить базовую проводимость с учётом множителя уровня
+ * 
+ * @param coreCapacity - ёмкость ядра персонажа
+ * @param cultivationLevel - уровень культивации
+ * @returns базовая проводимость с множителем уровня
+ */
+export function getBaseConductivityForLevel(coreCapacity: number, cultivationLevel: number): number {
+  const baseConductivity = getBaseConductivity(coreCapacity);
+  const multiplier = QI_CONSTANTS.CONDUCTIVITY_MULTIPLIERS[cultivationLevel] || 1;
+  return baseConductivity * multiplier;
 }
 
 /**
@@ -98,15 +129,18 @@ export function getMaxConductivityMeditations(cultivationLevel: number): number 
  * Рассчитать бонус проводимости от медитаций на проводимость
  * Формула: МедП * (базовая_проводимость * 10%)
  * 
+ * ВАЖНО: Бонус считается от базовой проводимости (coreCapacity / 360),
+ * а не от проводимости с множителем уровня!
+ * 
  * @param conductivityMeditations - количество медитаций на проводимость (МедП)
- * @param cultivationLevel - уровень культивации
+ * @param coreCapacity - ёмкость ядра персонажа
  * @returns бонус к проводимости
  */
 export function calculateConductivityBonusFromMeditations(
   conductivityMeditations: number,
-  cultivationLevel: number
+  coreCapacity: number
 ): number {
-  const baseConductivity = getBaseConductivityForLevel(cultivationLevel);
+  const baseConductivity = getBaseConductivity(coreCapacity);
   const bonusPercent = MEDITATION_TYPE_CONSTANTS.CONDUCTIVITY_BONUS_PERCENT / 100; // 0.1
   
   // Бонус = МедП * (базовая_проводимость * 10%)
@@ -117,20 +151,22 @@ export function calculateConductivityBonusFromMeditations(
  * Рассчитать ИТОГОВУЮ проводимость персонажа
  * 
  * ФОРМУЛА:
- * Итоговая = базовая_проводимость_на_уровне + (МедП * коэффициент_экстрапроводимости%)
+ * Итоговая = (coreCapacity / 360) * multiplier + (МедП * базовая * 10%)
  * 
+ * @param coreCapacity - ёмкость ядра персонажа
  * @param cultivationLevel - уровень культивации
  * @param conductivityMeditations - количество медитаций на проводимость (МедП)
  * @returns итоговая проводимость
  */
 export function calculateTotalConductivity(
+  coreCapacity: number,
   cultivationLevel: number,
   conductivityMeditations: number
 ): number {
-  const baseConductivity = getBaseConductivityForLevel(cultivationLevel);
-  const meditationBonus = calculateConductivityBonusFromMeditations(conductivityMeditations, cultivationLevel);
+  const baseWithMultiplier = getBaseConductivityForLevel(coreCapacity, cultivationLevel);
+  const meditationBonus = calculateConductivityBonusFromMeditations(conductivityMeditations, coreCapacity);
   
-  return baseConductivity + meditationBonus;
+  return baseWithMultiplier + meditationBonus;
 }
 
 /**
@@ -156,6 +192,7 @@ export function canDoConductivityMeditation(
  * Получить информацию о прогрессе медитаций на проводимость
  */
 export function getConductivityMeditationProgress(
+  coreCapacity: number,
   cultivationLevel: number,
   conductivityMeditations: number
 ): {
@@ -167,9 +204,9 @@ export function getConductivityMeditationProgress(
   toNextCap: number;
 } {
   const max = getMaxConductivityMeditations(cultivationLevel);
-  const currentBonus = calculateConductivityBonusFromMeditations(conductivityMeditations, cultivationLevel);
-  const nextBonus = calculateConductivityBonusFromMeditations(conductivityMeditations + 1, cultivationLevel);
-  const baseConductivity = getBaseConductivityForLevel(cultivationLevel);
+  const currentBonus = calculateConductivityBonusFromMeditations(conductivityMeditations, coreCapacity);
+  const nextBonus = calculateConductivityBonusFromMeditations(conductivityMeditations + 1, coreCapacity);
+  const baseConductivity = getBaseConductivity(coreCapacity);
   
   return {
     current: conductivityMeditations,

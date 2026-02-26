@@ -29,6 +29,7 @@ Cultivation World Simulator — это интерактивная игра-си�
 | **[docs/ELECTRON_MIGRATION.md](./docs/ELECTRON_MIGRATION.md)** | Анализ миграции на Electron |
 | **[docs/PROJECT_ROADMAP.md](./docs/PROJECT_ROADMAP.md)** | История развития, статус разработки, планы |
 | **[docs/Listing.md](./docs/Listing.md)** | Перечень всей документации |
+| **[docs/start_lore.md](./docs/start_lore.md)** | 🌸 Лор мира культивации (стартовый промпт) |
 
 ---
 

@@ -397,7 +397,7 @@ export async function POST(request: NextRequest) {
       
       // Calculate new conductivity
       const newConductivityMeditations = character.conductivityMeditations + result.conductivityMeditationsGained;
-      const newConductivity = calculateTotalConductivity(character.cultivationLevel, newConductivityMeditations);
+      const newConductivity = calculateTotalConductivity(character.coreCapacity, character.cultivationLevel, newConductivityMeditations);
       
       updateData = {
         currentQi: result.coreWasFilled ? 0 : character.currentQi + result.qiGained,

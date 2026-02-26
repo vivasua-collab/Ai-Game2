@@ -76,6 +76,104 @@ function getCombatSlotsCountLocal(level: number): number {
   return 3 + Math.max(0, level - 1);
 }
 
+/**
+ * Компонент для отображения эффектов формации
+ */
+function FormationEffectsDisplay({ technique }: { technique: Technique }) {
+  // Парсим effects если это строка
+  let effectsData: {
+    formationType?: string;
+    formationEffects?: {
+      unnoticeability?: number;
+      interruptionReduction?: number;  // Legacy field
+      qiBonus?: number;
+      qiDensityBonus?: number;
+      fatigueRecoveryBonus?: number;
+      spiritRepel?: number;
+    };
+    setupTime?: number;
+    duration?: number;
+    difficulty?: number;
+  } = {};
+  
+  try {
+    if (technique.effects) {
+      if (typeof technique.effects === 'string') {
+        effectsData = JSON.parse(technique.effects);
+      } else {
+        effectsData = technique.effects as typeof effectsData;
+      }
+    }
+  } catch {
+    // Ignore parse errors
+  }
+  
+  const formationEffects = effectsData.formationEffects || {};
+  const duration = effectsData.duration || 8;
+  const setupTime = effectsData.setupTime || 15;
+  
+  // Поддержка старого поля interruptionReduction
+  const unnoticeability = formationEffects.unnoticeability ?? formationEffects.interruptionReduction ?? 0;
+  
+  return (
+    <div className="bg-slate-700/50 rounded-lg p-3 space-y-2">
+      <div className="flex justify-between text-sm">
+        <span className="text-slate-400">Затраты Ци:</span>
+        <span className="text-cyan-400">{technique.qiCost}</span>
+      </div>
+      <div className="flex justify-between text-sm">
+        <span className="text-slate-400">Время установки:</span>
+        <span className="text-white">{setupTime} мин</span>
+      </div>
+      <div className="flex justify-between text-sm">
+        <span className="text-slate-400">Длительность:</span>
+        <span className="text-white">{duration === 0 ? 'Постоянная' : `${duration} ч`}</span>
+      </div>
+      
+      {/* Разделитель эффектов */}
+      {unnoticeability > 0 && (
+        <div className="flex justify-between text-sm pt-1 border-t border-slate-600">
+          <span className="text-slate-400">🛡️ Незаметность:</span>
+          <span className="text-green-400">+{unnoticeability}%</span>
+        </div>
+      )}
+      
+      {formationEffects.qiBonus && formationEffects.qiBonus > 0 && (
+        <div className="flex justify-between text-sm">
+          <span className="text-slate-400">💫 Бонус поглощения Ци:</span>
+          <span className="text-cyan-400">+{formationEffects.qiBonus}%</span>
+        </div>
+      )}
+      
+      {formationEffects.qiDensityBonus && formationEffects.qiDensityBonus > 0 && (
+        <div className="flex justify-between text-sm">
+          <span className="text-slate-400">🌀 Плотность Ци:</span>
+          <span className="text-purple-400">+{formationEffects.qiDensityBonus} ед.</span>
+        </div>
+      )}
+      
+      {formationEffects.fatigueRecoveryBonus && formationEffects.fatigueRecoveryBonus > 0 && (
+        <div className="flex justify-between text-sm">
+          <span className="text-slate-400">💚 Восстановление усталости:</span>
+          <span className="text-green-400">+{formationEffects.fatigueRecoveryBonus}%</span>
+        </div>
+      )}
+      
+      {formationEffects.spiritRepel && formationEffects.spiritRepel > 0 && (
+        <div className="flex justify-between text-sm">
+          <span className="text-slate-400">👻 Отпугивание духов:</span>
+          <span className="text-amber-400">+{formationEffects.spiritRepel}%</span>
+        </div>
+      )}
+      
+      <div className="flex justify-between text-sm pt-1 border-t border-slate-600">
+        <span className="text-slate-400">Мастерство:</span>
+        <span className="text-amber-400">{technique.level}</span>
+      </div>
+    </div>
+  );
+}
+
 export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) {
   const character = useGameCharacter();
   const techniques = useGameTechniques();
@@ -496,20 +594,7 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
                       <p className="text-sm text-slate-400">{selectedTechnique.technique.description}</p>
                       
                       {/* Параметры формации */}
-                      <div className="bg-slate-700/50 rounded-lg p-3 space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span className="text-slate-400">Затраты Ци:</span>
-                          <span className="text-cyan-400">{selectedTechnique.technique.qiCost}</span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-slate-400">Длительность:</span>
-                          <span className="text-white">8 часов</span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span className="text-slate-400">Снижение прерываний:</span>
-                          <span className="text-green-400">-30%</span>
-                        </div>
-                      </div>
+                      <FormationEffectsDisplay technique={selectedTechnique.technique} />
                       
                       {/* Кнопка использования */}
                       <Button

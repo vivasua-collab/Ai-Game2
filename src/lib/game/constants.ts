@@ -18,17 +18,20 @@ export const QI_CONSTANTS = {
   /** Базовая плотность Ци (ед/м³) */
   DEFAULT_QI_DENSITY: 20,
   
-  /** Множители проводимости по уровням культивации */
+  /** Множители проводимости по уровням культивации
+   * Источник: cultivation-levels.ts conductivityMultiplier
+   */
   CONDUCTIVITY_MULTIPLIERS: {
-    1: 1.0,
+    1: 1,
     2: 1.2,
     3: 1.5,
-    4: 2.0,
-    5: 2.5,
-    6: 3.0,
-    7: 4.0,
-    8: 5.0,
-    9: 6.0,
+    4: 2,
+    5: 3,
+    6: 5,
+    7: 8,
+    8: 15,
+    9: 50,
+    10: 100,
   } as Record<number, number>,
 } as const;
 

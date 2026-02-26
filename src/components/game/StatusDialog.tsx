@@ -27,7 +27,9 @@ import {
 } from '@/lib/game/qi-shared';
 import { 
   getConductivityMeditationProgress,
+  getBaseConductivity,
   getBaseConductivityForLevel,
+  calculateTotalConductivity,
 } from '@/lib/game/conductivity-system';
 import { 
   FATIGUE_CONSTANTS,
@@ -74,12 +76,23 @@ export function StatusDialog({ open, onOpenChange }: StatusDialogProps) {
 
   // Прогресс медитаций на проводимость
   const conductivityProgress = getConductivityMeditationProgress(
+    character.coreCapacity,
     character.cultivationLevel,
     character.conductivityMeditations || 0
   );
 
-  // Базовая проводимость на уровне
-  const baseConductivity = getBaseConductivityForLevel(character.cultivationLevel);
+  // Базовая проводимость (без множителя уровня)
+  const baseConductivity = getBaseConductivity(character.coreCapacity);
+  
+  // Базовая проводимость с множителем уровня
+  const baseConductivityAtLevel = getBaseConductivityForLevel(character.coreCapacity, character.cultivationLevel);
+  
+  // Итоговая проводимость (вычисленная по формуле)
+  const totalConductivity = calculateTotalConductivity(
+    character.coreCapacity,
+    character.cultivationLevel,
+    character.conductivityMeditations || 0
+  );
 
   // Название уровня
   const levelName = getCultivationLevelName(character.cultivationLevel);
@@ -220,16 +233,16 @@ export function StatusDialog({ open, onOpenChange }: StatusDialogProps) {
               <div className="bg-cyan-900/20 border border-cyan-600/30 rounded-lg p-3">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-cyan-400 font-medium">⚡ Проводимость меридиан</span>
-                  <span className="text-cyan-300 font-bold text-xl">{character.conductivity.toFixed(3)}</span>
+                  <span className="text-cyan-300 font-bold text-xl">{totalConductivity.toFixed(3)}</span>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div className="flex justify-between">
-                    <span className="text-slate-500">Базовая на уровне:</span>
+                    <span className="text-slate-500">Базовая (ядра/360):</span>
                     <span className="text-slate-400">{baseConductivity.toFixed(3)}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-500">Множитель уровня:</span>
-                    <span className="text-cyan-400">×{QI_CONSTANTS.CONDUCTIVITY_MULTIPLIERS[character.cultivationLevel] || 1.0}</span>
+                    <span className="text-slate-500">С множителем ур.:</span>
+                    <span className="text-cyan-400">{baseConductivityAtLevel.toFixed(3)}</span>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-xs mt-1">
