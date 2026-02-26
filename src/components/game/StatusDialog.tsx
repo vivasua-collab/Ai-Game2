@@ -2,9 +2,9 @@
  * Status Dialog Component
  * 
  * Полный статус персонажа:
- * - Характеристики (сила, ловкость, интеллект, проводимость)
- * - Культивация (уровень, ядро, Ци)
- * - Усталость (физическая, ментальная)
+ * - Характеристики (сила, ловкость, интеллект) - физические параметры тела
+ * - Культивация (уровень, ядро, Ци, проводимость)
+ * - Состояние (физическая, ментальная усталость)
  */
 
 'use client';
@@ -25,6 +25,10 @@ import {
   getCoreFillPercent,
   getBreakthroughProgress,
 } from '@/lib/game/qi-shared';
+import { 
+  getConductivityMeditationProgress,
+  getBaseConductivityForLevel,
+} from '@/lib/game/conductivity-system';
 import { FATIGUE_CONSTANTS } from '@/lib/game/constants';
 import { formatTime, formatDate, getTimeOfDayName, getSeasonName } from '@/lib/game/time-system';
 import type { WorldTime } from '@/lib/game/time-system';
@@ -34,7 +38,6 @@ interface StatusDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-// Конвертация worldTime из store
 function toWorldTime(wt: { year: number; month: number; day: number; hour: number; minute: number } | null): WorldTime | null {
   if (!wt) return null;
   return {
@@ -65,6 +68,15 @@ export function StatusDialog({ open, onOpenChange }: StatusDialogProps) {
     character.accumulatedQi,
     character.coreCapacity
   );
+
+  // Прогресс медитаций на проводимость
+  const conductivityProgress = getConductivityMeditationProgress(
+    character.cultivationLevel,
+    character.conductivityMeditations || 0
+  );
+
+  // Базовая проводимость на уровне
+  const baseConductivity = getBaseConductivityForLevel(character.cultivationLevel);
 
   // Название уровня
   const levelName = getCultivationLevelName(character.cultivationLevel);
@@ -123,59 +135,32 @@ export function StatusDialog({ open, onOpenChange }: StatusDialogProps) {
               </TabsTrigger>
             </TabsList>
 
-            {/* Характеристики */}
+            {/* Характеристики - только физические параметры тела */}
             <TabsContent value="stats" className="space-y-3 mt-4">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="text-xs text-slate-500 mb-2">
+                Физические параметры тела
+              </div>
+              
+              <div className="grid grid-cols-3 gap-3">
                 {/* Сила */}
-                <div className="bg-slate-700/50 rounded-lg p-3">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-slate-300 flex items-center gap-2">
-                      💪 Сила
-                    </span>
-                    <span className="text-white font-bold text-lg">{character.strength}</span>
-                  </div>
-                  <div className="text-xs text-slate-500">
-                    Влияет на физические техники, урон в ближнем бою
-                  </div>
+                <div className="bg-slate-700/50 rounded-lg p-3 text-center">
+                  <div className="text-2xl mb-1">💪</div>
+                  <div className="text-slate-400 text-xs">Сила</div>
+                  <div className="text-white font-bold text-xl">{character.strength.toFixed(1)}</div>
                 </div>
 
                 {/* Ловкость */}
-                <div className="bg-slate-700/50 rounded-lg p-3">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-slate-300 flex items-center gap-2">
-                      🏃 Ловкость
-                    </span>
-                    <span className="text-white font-bold text-lg">{character.agility}</span>
-                  </div>
-                  <div className="text-xs text-slate-500">
-                    Влияет на скорость, уклонение, техники движения
-                  </div>
+                <div className="bg-slate-700/50 rounded-lg p-3 text-center">
+                  <div className="text-2xl mb-1">🏃</div>
+                  <div className="text-slate-400 text-xs">Ловкость</div>
+                  <div className="text-white font-bold text-xl">{character.agility.toFixed(1)}</div>
                 </div>
 
                 {/* Интеллект */}
-                <div className="bg-slate-700/50 rounded-lg p-3">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-slate-300 flex items-center gap-2">
-                      🧠 Интеллект
-                    </span>
-                    <span className="text-white font-bold text-lg">{character.intelligence}</span>
-                  </div>
-                  <div className="text-xs text-slate-500">
-                    Влияет на техники Ци, скорость обучения, прозрение
-                  </div>
-                </div>
-
-                {/* Проводимость */}
-                <div className="bg-slate-700/50 rounded-lg p-3">
-                  <div className="flex justify-between items-center mb-1">
-                    <span className="text-slate-300 flex items-center gap-2">
-                      ⚡ Проводимость
-                    </span>
-                    <span className="text-cyan-400 font-bold text-lg">{character.conductivity.toFixed(2)}</span>
-                  </div>
-                  <div className="text-xs text-slate-500">
-                    Скорость поглощения Ци из среды. Растёт с культивацией
-                  </div>
+                <div className="bg-slate-700/50 rounded-lg p-3 text-center">
+                  <div className="text-2xl mb-1">🧠</div>
+                  <div className="text-slate-400 text-xs">Интеллект</div>
+                  <div className="text-white font-bold text-xl">{character.intelligence.toFixed(1)}</div>
                 </div>
               </div>
 
@@ -228,6 +213,31 @@ export function StatusDialog({ open, onOpenChange }: StatusDialogProps) {
 
             {/* Культивация */}
             <TabsContent value="cultivation" className="space-y-3 mt-4">
+              {/* Проводимость */}
+              <div className="bg-cyan-900/20 border border-cyan-600/30 rounded-lg p-3">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-cyan-400 font-medium">⚡ Проводимость меридиан</span>
+                  <span className="text-cyan-300 font-bold text-xl">{character.conductivity.toFixed(3)}</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Базовая на уровне:</span>
+                    <span className="text-slate-400">{baseConductivity.toFixed(3)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Бонус от МедП:</span>
+                    <span className="text-cyan-400">+{conductivityProgress.currentBonus.toFixed(3)}</span>
+                  </div>
+                </div>
+                <div className="mt-2 pt-2 border-t border-cyan-600/30">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-xs text-slate-500">Медитации на проводимость (МедП):</span>
+                    <span className="text-xs text-cyan-400">{conductivityProgress.current}/{conductivityProgress.max}</span>
+                  </div>
+                  <Progress value={conductivityProgress.percent} className="h-1.5" />
+                </div>
+              </div>
+
               {/* Ци */}
               <div className="bg-slate-700/50 rounded-lg p-3">
                 <div className="flex justify-between items-center mb-2">
@@ -240,15 +250,21 @@ export function StatusDialog({ open, onOpenChange }: StatusDialogProps) {
                 <div className="text-xs text-slate-500 mt-1">Заполнение: {qiPercent}%</div>
               </div>
 
-              {/* Ёмкость ядра */}
+              {/* Ядро */}
               <div className="bg-slate-700/50 rounded-lg p-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-300">🔷 Ёмкость ядра</span>
-                  <span className="text-purple-400">{character.coreCapacity} ед.</span>
+                <div className="text-sm font-medium text-purple-400 mb-2">🔷 Ядро</div>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-400">Ёмкость:</span>
+                    <span className="text-purple-400">{character.coreCapacity} ед.</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-400">Качество:</span>
+                    <span className="text-purple-400">{character.coreQuality.toFixed(3)}</span>
+                  </div>
                 </div>
-                <div className="flex justify-between items-center mt-1">
-                  <span className="text-slate-300">✨ Качество ядра</span>
-                  <span className="text-purple-400">{character.coreQuality.toFixed(2)}</span>
+                <div className="text-xs text-slate-500 mt-2">
+                  Качество ×100% = множитель ёмкости при прорыве
                 </div>
               </div>
 
@@ -267,7 +283,7 @@ export function StatusDialog({ open, onOpenChange }: StatusDialogProps) {
               </div>
             </TabsContent>
 
-            {/* Усталость */}
+            {/* Состояние */}
             <TabsContent value="fatigue" className="space-y-3 mt-4">
               {/* Физическая усталость */}
               <div className="bg-slate-700/50 rounded-lg p-3">

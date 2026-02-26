@@ -2,9 +2,7 @@
  * Rest Dialog Component
  * 
  * Единый диалог для всех видов отдыха:
- * - 🧘 Медитация (накопление): накопление Ци + ментальная усталость
- * - 🔥 Медитация на прорыв: заполнение ядра → опустошение в accumulatedQi
- * - ⚡ Медитация на проводимость: +1 к МедП при заполнении ядра
+ * - 🧘 Медитация: накопление Ци (3 типа на выбор)
  * - 🌿 Отдых: медленное восстановление усталости
  * - 😴 Сон: быстрое восстановление усталости
  * 
@@ -42,7 +40,6 @@ import {
   FATIGUE_RECOVERY_BY_LEVEL,
   TIME_CONSTANTS,
   QI_CONSTANTS,
-  MEDITATION_TYPE_CONSTANTS,
 } from '@/lib/game/constants';
 import {
   formatTime,
@@ -53,11 +50,10 @@ import {
 import type { WorldTime } from '@/lib/game/time-system';
 import {
   getConductivityMeditationProgress,
-  getMaxConductivityMeditations,
-  calculateTotalConductivity,
 } from '@/lib/game/conductivity-system';
 
-type RestActivityType = 'meditation' | 'breakthrough' | 'conductivity' | 'light' | 'sleep';
+type RestActivityType = 'meditation' | 'light' | 'sleep';
+type MeditationSubType = 'accumulation' | 'breakthrough' | 'conductivity';
 
 // Константы для разных типов
 const ACTIVITY_CONFIG = {
@@ -67,29 +63,8 @@ const ACTIVITY_CONFIG = {
     step: TIME_CONSTANTS.MEDITATION_TICK_STEP,
     icon: '🧘',
     title: 'Медитация',
-    description: 'Накопление Ци через концентрацию. Утомляет разум.',
+    description: 'Накопление Ци через концентрацию.',
     color: 'bg-purple-600 hover:bg-purple-700',
-    category: 'cultivation' as const,
-  },
-  breakthrough: {
-    minDuration: TIME_CONSTANTS.MIN_MEDITATION_TICKS,
-    maxDuration: 480,
-    step: TIME_CONSTANTS.MEDITATION_TICK_STEP,
-    icon: '🔥',
-    title: 'На прорыв',
-    description: 'Заполнение ядра → перенос в шкалу прорыва. x2 ментальная усталость.',
-    color: 'bg-orange-600 hover:bg-orange-700',
-    category: 'cultivation' as const,
-  },
-  conductivity: {
-    minDuration: TIME_CONSTANTS.MIN_MEDITATION_TICKS,
-    maxDuration: 480,
-    step: TIME_CONSTANTS.MEDITATION_TICK_STEP,
-    icon: '⚡',
-    title: 'На проводимость',
-    description: 'При заполнении ядра: +1 к МедП, проводимость растёт.',
-    color: 'bg-cyan-600 hover:bg-cyan-700',
-    category: 'cultivation' as const,
   },
   light: {
     minDuration: 30,
@@ -99,7 +74,6 @@ const ACTIVITY_CONFIG = {
     title: 'Отдых',
     description: 'Медленное восстановление сил.',
     color: 'bg-green-600 hover:bg-green-700',
-    category: 'rest' as const,
   },
   sleep: {
     minDuration: 240,
@@ -109,15 +83,34 @@ const ACTIVITY_CONFIG = {
     title: 'Сон',
     description: 'Глубокое восстановление. 8ч = полное восстановление.',
     color: 'bg-blue-600 hover:bg-blue-700',
-    category: 'rest' as const,
+  },
+};
+
+// Типы медитации
+const MEDITATION_TYPES = {
+  accumulation: {
+    icon: '🧘',
+    name: 'Накопление',
+    description: 'Заполнение ядра Ци. Базовая усталость.',
+    fatigueMultiplier: 1.0,
+  },
+  breakthrough: {
+    icon: '🔥',
+    name: 'На прорыв',
+    description: 'При заполнении → Ци в accumulatedQi. x2 усталость.',
+    fatigueMultiplier: 2.0,
+  },
+  conductivity: {
+    icon: '⚡',
+    name: 'На проводимость',
+    description: 'При заполнении → +1 МедП. x1.5 усталость.',
+    fatigueMultiplier: 1.5,
   },
 };
 
 // Быстрый выбор для разных типов
 const QUICK_DURATIONS = {
   meditation: [30, 60, 120, 180, 240, 480],
-  breakthrough: [60, 120, 180, 240, 480],
-  conductivity: [30, 60, 120, 180, 240],
   light: [30, 60, 120, 240, 480],
   sleep: [240, 360, 480],
 };
@@ -146,6 +139,7 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
   const { loadState } = useGameActions();
 
   const [activityType, setActivityType] = useState<RestActivityType>('meditation');
+  const [meditationType, setMeditationType] = useState<MeditationSubType>('accumulation');
   const [duration, setDuration] = useState(TIME_CONSTANTS.MIN_MEDITATION_TICKS);
   const [inputValue, setInputValue] = useState(String(TIME_CONSTANTS.MIN_MEDITATION_TICKS));
   const [isActing, setIsActing] = useState(false);
@@ -172,6 +166,7 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
   useEffect(() => {
     if (open) {
       setActivityType('meditation');
+      setMeditationType('accumulation');
       setDuration(TIME_CONSTANTS.MIN_MEDITATION_TICKS);
       setInputValue(String(TIME_CONSTANTS.MIN_MEDITATION_TICKS));
       setResult(null);
@@ -179,6 +174,7 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
   }, [open]);
 
   const config = useMemo(() => ACTIVITY_CONFIG[activityType], [activityType]);
+  const meditationConfig = useMemo(() => MEDITATION_TYPES[meditationType], [meditationType]);
 
   const handleActivityTypeChange = useCallback((type: string) => {
     const newType = type as RestActivityType;
@@ -211,12 +207,12 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
 
   // === РАСЧЁТЫ ДЛЯ МЕДИТАЦИИ ===
   const qiRates = useMemo(() => {
-    if (!character || !['meditation', 'breakthrough', 'conductivity'].includes(activityType)) return null;
+    if (!character || activityType !== 'meditation') return null;
     return calculateQiRates(character, location);
   }, [character, location, activityType]);
 
   const meditationEstimate = useMemo(() => {
-    if (!character || !qiRates || !['meditation', 'breakthrough', 'conductivity'].includes(activityType)) {
+    if (!character || !qiRates || activityType !== 'meditation') {
       return { qiGained: 0, willFillCore: false, timeToFull: 0 };
     }
 
@@ -231,34 +227,31 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
   }, [character, qiRates, duration, activityType]);
 
   const meditationFatigue = useMemo(() => {
-    if (!['meditation', 'breakthrough', 'conductivity'].includes(activityType)) {
+    if (activityType !== 'meditation') {
       return { physicalGain: 0, mentalGain: 0 };
     }
-    
-    const type = activityType === 'meditation' ? 'accumulation' : 
-                 activityType === 'breakthrough' ? 'breakthrough' : 'conductivity';
-    return calculateMeditationFatigue(duration, type as any);
-  }, [duration, activityType]);
+    return calculateMeditationFatigue(duration, meditationType);
+  }, [duration, activityType, meditationType]);
 
   const canMeditateNow = useMemo(() => {
-    if (!character || !['meditation', 'breakthrough', 'conductivity'].includes(activityType)) return true;
+    if (!character || activityType !== 'meditation') return true;
     return canMeditate(character.currentQi, character.coreCapacity);
   }, [character, activityType]);
 
   // === ПРОГРЕСС МЕДИТАЦИЙ НА ПРОВОДИМОСТЬ ===
   const conductivityProgress = useMemo(() => {
-    if (!character || activityType !== 'conductivity') return null;
+    if (!character || meditationType !== 'conductivity') return null;
     return getConductivityMeditationProgress(
       character.cultivationLevel,
       character.conductivityMeditations || 0
     );
-  }, [character, activityType]);
+  }, [character, meditationType]);
 
   const qiPercent = character ? getCoreFillPercent(character.currentQi, character.coreCapacity) : 0;
 
   // === РАСЧЁТЫ ДЛЯ ОТДЫХА/СНА ===
   const fatigueRecovery = useMemo(() => {
-    if (!character || !['light', 'sleep'].includes(activityType)) {
+    if (!character || activityType === 'meditation') {
       return { physical: 0, mental: 0 };
     }
 
@@ -325,12 +318,12 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
   const handleAction = useCallback(async () => {
     if (!character || isActing) return;
 
-    if (['meditation', 'breakthrough', 'conductivity'].includes(activityType) && !canMeditateNow) {
+    if (activityType === 'meditation' && !canMeditateNow) {
       setResult({ message: '⚡ Ядро заполнено! Потратьте Ци чтобы продолжить накопление.' });
       return;
     }
 
-    if (activityType === 'conductivity' && conductivityProgress) {
+    if (meditationType === 'conductivity' && conductivityProgress) {
       if (conductivityProgress.current >= conductivityProgress.max) {
         setResult({ message: `⚡ Достигнут максимум медитаций на проводимость для уровня ${character.cultivationLevel}!` });
         return;
@@ -346,17 +339,36 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
     setResult(null);
 
     try {
-      const endpoint = '/api/meditation';
-      const body: Record<string, unknown> = {
-        characterId: character.id,
-        durationMinutes: duration,
-      };
+      if (activityType === 'meditation') {
+        const response = await fetch('/api/meditation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            characterId: character.id,
+            durationMinutes: duration,
+            meditationType: meditationType,
+          }),
+        });
+        const data = await response.json();
 
-      if (['meditation', 'breakthrough', 'conductivity'].includes(activityType)) {
-        body.meditationType = activityType === 'meditation' ? 'accumulation' : activityType;
+        if (data.success) {
+          if (data.interrupted && data.result?.interruption) {
+            const event = data.result.interruption.event;
+            setResult({ 
+              message: data.message,
+              interrupted: true,
+              interruptionEvent: event,
+            });
+          } else {
+            setResult({ message: data.message });
+          }
+          await loadState();
+        } else {
+          setResult({ message: data.error || 'Ошибка' });
+        }
       } else {
-        // Для отдыха и сна используем другой эндпоинт
-        const restResponse = await fetch('/api/rest', {
+        // Отдых или сон
+        const response = await fetch('/api/rest', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -365,41 +377,14 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
             restType: activityType,
           }),
         });
-        const restData = await restResponse.json();
+        const data = await response.json();
         
-        if (restData.success) {
-          setResult({ message: restData.message });
+        if (data.success) {
+          setResult({ message: data.message });
           await loadState();
         } else {
-          setResult({ message: restData.error || 'Ошибка' });
+          setResult({ message: data.error || 'Ошибка' });
         }
-        setIsActing(false);
-        return;
-      }
-
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        if (data.interrupted && data.result?.interruption) {
-          const int = data.result.interruption;
-          const event = int.event;
-          setResult({ 
-            message: data.message,
-            interrupted: true,
-            interruptionEvent: event,
-          });
-        } else {
-          setResult({ message: data.message });
-        }
-        await loadState();
-      } else {
-        setResult({ message: data.error || 'Ошибка' });
       }
     } catch (error) {
       console.error('Activity error:', error);
@@ -407,7 +392,7 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
     } finally {
       setIsActing(false);
     }
-  }, [character, duration, activityType, isActing, canMeditateNow, loadState, conductivityProgress]);
+  }, [character, duration, activityType, meditationType, isActing, canMeditateNow, loadState, conductivityProgress]);
 
   const handleClose = useCallback(() => {
     if (!isActing) {
@@ -418,7 +403,7 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
   if (!character) return null;
 
   const isFullyRested = character.fatigue <= 0 && character.mentalFatigue <= 0;
-  const canAct = ['meditation', 'breakthrough', 'conductivity'].includes(activityType)
+  const canAct = activityType === 'meditation'
     ? canMeditateNow
     : !isFullyRested;
 
@@ -451,8 +436,8 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
               </div>
             </div>
 
-            {/* Ци (для медитаций) */}
-            {['meditation', 'breakthrough', 'conductivity'].includes(activityType) && (
+            {/* Ци (для медитации) */}
+            {activityType === 'meditation' && (
               <div className="mt-2 pt-2 border-t border-slate-600/50">
                 <div className="flex justify-between text-sm mb-1">
                   <span className="text-slate-400">💫 Ци:</span>
@@ -490,35 +475,31 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
             )}
 
             {/* Прогресс медитаций на проводимость */}
-            {activityType === 'conductivity' && conductivityProgress && (
+            {activityType === 'meditation' && meditationType === 'conductivity' && conductivityProgress && (
               <div className="mt-2 pt-2 border-t border-slate-600/50">
                 <div className="flex justify-between text-xs mb-1">
                   <span className="text-cyan-400">⚡ МедП:</span>
                   <span className="text-white">{conductivityProgress.current}/{conductivityProgress.max}</span>
                 </div>
                 <Progress value={conductivityProgress.percent} className="h-2" />
-                <div className="text-xs text-slate-500 mt-1">
-                  Текущий бонус: +{(conductivityProgress.currentBonus * 100).toFixed(1)}% проводимости
-                </div>
               </div>
             )}
           </div>
 
           {/* Предупреждения */}
-          {['meditation', 'breakthrough', 'conductivity'].includes(activityType) && !canMeditateNow && (
+          {activityType === 'meditation' && !canMeditateNow && (
             <div className="bg-amber-900/30 border border-amber-600/50 rounded-lg p-3 text-sm text-amber-300">
               ⚡ Ядро заполнено! Потратьте Ци (техники, бой) чтобы продолжить накопление.
             </div>
           )}
 
-          {activityType === 'conductivity' && conductivityProgress && conductivityProgress.current >= conductivityProgress.max && (
+          {activityType === 'meditation' && meditationType === 'conductivity' && conductivityProgress && conductivityProgress.current >= conductivityProgress.max && (
             <div className="bg-amber-900/30 border border-amber-600/50 rounded-lg p-3 text-sm text-amber-300">
               ⚡ Достигнут максимум медитаций на проводимость для уровня {character.cultivationLevel}!
-              Повысьте уровень для продолжения.
             </div>
           )}
 
-          {['light', 'sleep'].includes(activityType) && isFullyRested && (
+          {activityType !== 'meditation' && isFullyRested && (
             <div className="bg-green-900/30 border border-green-600/50 rounded-lg p-3 text-sm text-green-300">
               ✨ Вы полностью отдохнули!
             </div>
@@ -554,85 +535,101 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
             </div>
           )}
 
-          {/* Выбор типа активности */}
+          {/* Выбор типа активности - 3 вкладки */}
           {!result && (
-            <div className="space-y-3">
-              {/* Категория: Культивация */}
-              <div>
-                <Label className="text-purple-400 text-xs mb-2 block">🌀 Культивация</Label>
-                <div className="grid grid-cols-3 gap-2">
-                  <Button
-                    variant={activityType === 'meditation' ? 'default' : 'outline'}
-                    size="sm"
-                    className={`h-auto py-2 flex-col ${activityType === 'meditation' ? 'bg-purple-600 hover:bg-purple-700' : 'border-slate-600'}`}
-                    onClick={() => handleActivityTypeChange('meditation')}
-                    disabled={isActing}
-                  >
-                    <span className="text-lg">🧘</span>
-                    <span className="text-xs mt-1">Накопление</span>
-                  </Button>
-                  <Button
-                    variant={activityType === 'breakthrough' ? 'default' : 'outline'}
-                    size="sm"
-                    className={`h-auto py-2 flex-col ${activityType === 'breakthrough' ? 'bg-orange-600 hover:bg-orange-700' : 'border-slate-600'}`}
-                    onClick={() => handleActivityTypeChange('breakthrough')}
-                    disabled={isActing}
-                  >
-                    <span className="text-lg">🔥</span>
-                    <span className="text-xs mt-1">Прорыв</span>
-                  </Button>
-                  <Button
-                    variant={activityType === 'conductivity' ? 'default' : 'outline'}
-                    size="sm"
-                    className={`h-auto py-2 flex-col ${activityType === 'conductivity' ? 'bg-cyan-600 hover:bg-cyan-700' : 'border-slate-600'}`}
-                    onClick={() => handleActivityTypeChange('conductivity')}
-                    disabled={isActing}
-                  >
-                    <span className="text-lg">⚡</span>
-                    <span className="text-xs mt-1">Проводимость</span>
-                  </Button>
-                </div>
-              </div>
+            <Tabs value={activityType} onValueChange={handleActivityTypeChange}>
+              <TabsList className="grid w-full grid-cols-3 bg-slate-700">
+                <TabsTrigger
+                  value="meditation"
+                  className="data-[state=active]:bg-purple-600 data-[state=active]:text-white"
+                >
+                  🧘 Медитация
+                </TabsTrigger>
+                <TabsTrigger
+                  value="light"
+                  className="data-[state=active]:bg-green-600 data-[state=active]:text-white"
+                >
+                  🌿 Отдых
+                </TabsTrigger>
+                <TabsTrigger
+                  value="sleep"
+                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                >
+                  😴 Сон
+                </TabsTrigger>
+              </TabsList>
 
-              {/* Категория: Отдых */}
-              <div>
-                <Label className="text-green-400 text-xs mb-2 block">🌿 Отдых</Label>
-                <div className="grid grid-cols-2 gap-2">
-                  <Button
-                    variant={activityType === 'light' ? 'default' : 'outline'}
-                    size="sm"
-                    className={`h-auto py-2 flex-col ${activityType === 'light' ? 'bg-green-600 hover:bg-green-700' : 'border-slate-600'}`}
-                    onClick={() => handleActivityTypeChange('light')}
-                    disabled={isActing}
-                  >
-                    <span className="text-lg">🌿</span>
-                    <span className="text-xs mt-1">Отдых</span>
-                  </Button>
-                  <Button
-                    variant={activityType === 'sleep' ? 'default' : 'outline'}
-                    size="sm"
-                    className={`h-auto py-2 flex-col ${activityType === 'sleep' ? 'bg-blue-600 hover:bg-blue-700' : 'border-slate-600'}`}
-                    onClick={() => handleActivityTypeChange('sleep')}
-                    disabled={isActing}
-                  >
-                    <span className="text-lg">😴</span>
-                    <span className="text-xs mt-1">Сон</span>
-                  </Button>
+              {/* Медитация */}
+              <TabsContent value="meditation" className="space-y-3 mt-3">
+                <div className="text-xs text-slate-400">
+                  Накопление Ци через концентрацию.
                 </div>
-              </div>
+                
+                {/* Выбор типа медитации */}
+                <div className="space-y-2">
+                  <Label className="text-slate-300 text-xs">Тип медитации:</Label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {(Object.keys(MEDITATION_TYPES) as MeditationSubType[]).map((type) => (
+                      <Button
+                        key={type}
+                        variant={meditationType === type ? 'default' : 'outline'}
+                        size="sm"
+                        className={`h-auto py-2 flex-col ${
+                          meditationType === type 
+                            ? type === 'accumulation' ? 'bg-purple-600 hover:bg-purple-700' :
+                              type === 'breakthrough' ? 'bg-orange-600 hover:bg-orange-700' :
+                              'bg-cyan-600 hover:bg-cyan-700'
+                            : 'border-slate-600'
+                        }`}
+                        onClick={() => setMeditationType(type)}
+                        disabled={isActing}
+                      >
+                        <span className="text-lg">{MEDITATION_TYPES[type].icon}</span>
+                        <span className="text-xs mt-0.5">{MEDITATION_TYPES[type].name}</span>
+                      </Button>
+                    ))}
+                  </div>
+                  <div className="text-xs text-slate-500">
+                    {meditationConfig.description}
+                  </div>
+                </div>
 
-              {/* Описание текущего типа */}
-              <div className="text-xs text-slate-400 bg-slate-700/30 rounded p-2">
-                {config.description}
-              </div>
-            </div>
+                {/* Активная техника */}
+                <div className="bg-purple-900/20 border border-purple-600/30 rounded-lg p-2">
+                  {slottedCultivationTechnique ? (
+                    <div className="flex justify-between text-xs">
+                      <span className="text-purple-400">🧘 Активная техника:</span>
+                      <span className="text-white">{slottedCultivationTechnique.technique.name}</span>
+                    </div>
+                  ) : (
+                    <div className="text-xs text-slate-400">
+                      🧘 Нет активной техники. Назначьте через меню Техники.
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+
+              {/* Отдых */}
+              <TabsContent value="light" className="space-y-3 mt-3">
+                <div className="text-xs text-slate-400">
+                  Медленное восстановление тела и разума. Минимум 30 минут.
+                </div>
+              </TabsContent>
+
+              {/* Сон */}
+              <TabsContent value="sleep" className="space-y-3 mt-3">
+                <div className="text-xs text-slate-400">
+                  Глубокое восстановление. 8 часов = полное восстановление усталости.
+                </div>
+              </TabsContent>
+            </Tabs>
           )}
 
           {/* Выбор времени */}
           {!result && (
             <div className="space-y-3">
               <Label className="text-slate-300">
-                Время {config.title.toLowerCase()}:
+                Время {activityType === 'meditation' ? 'медитации' : activityType === 'sleep' ? 'сна' : 'отдыха'}:
               </Label>
 
               <div className="flex items-center gap-2">
@@ -670,7 +667,7 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
 
               {/* Быстрый выбор */}
               <div className="flex flex-wrap gap-2">
-                {(QUICK_DURATIONS[activityType as keyof typeof QUICK_DURATIONS] || []).map((mins) => (
+                {(QUICK_DURATIONS[activityType] || []).map((mins) => (
                   <Button
                     key={mins}
                     variant={duration === mins ? 'default' : 'outline'}
@@ -698,8 +695,8 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
             <div className="bg-slate-700/30 rounded-lg p-3 space-y-2 border border-slate-600/50">
               <div className="text-sm font-medium text-slate-300">📊 Прогноз:</div>
 
-              {/* Для медитаций */}
-              {['meditation', 'breakthrough', 'conductivity'].includes(activityType) && (
+              {/* Для медитации */}
+              {activityType === 'meditation' && (
                 <>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-400">Прирост Ци:</span>
@@ -707,21 +704,23 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
                       +{meditationEstimate.qiGained} Ци
                     </span>
                   </div>
-                  {meditationEstimate.willFillCore && activityType === 'meditation' && (
+                  
+                  {meditationType === 'accumulation' && meditationEstimate.willFillCore && (
                     <div className="text-xs text-amber-400">
                       ⚡ Ядро будет заполнено!
                     </div>
                   )}
-                  {activityType === 'breakthrough' && (
+                  {meditationType === 'breakthrough' && (
                     <div className="text-xs text-orange-400">
-                      🔥 При заполнении ядра → Ци в accumulatedQi
+                      🔥 При заполнении → Ци в accumulatedQi
                     </div>
                   )}
-                  {activityType === 'conductivity' && (
+                  {meditationType === 'conductivity' && (
                     <div className="text-xs text-cyan-400">
-                      ⚡ При заполнении ядра → +1 МедП, проводимость растёт
+                      ⚡ При заполнении → +1 МедП, проводимость растёт
                     </div>
                   )}
+                  
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-400">Физ. усталость:</span>
                     <span className="text-slate-500">без изменений</span>
@@ -729,9 +728,10 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-400">Мент. усталость:</span>
                     <span className="text-amber-400">
-                      +{meditationFatigue.mentalGain.toFixed(1)}% 
-                      {activityType === 'breakthrough' && ' (x2)'}
-                      {activityType === 'conductivity' && ' (x1.5)'}
+                      +{meditationFatigue.mentalGain.toFixed(1)}%
+                      {meditationConfig.fatigueMultiplier > 1 && (
+                        <span className="text-slate-500 ml-1">(x{meditationConfig.fatigueMultiplier})</span>
+                      )}
                     </span>
                   </div>
                   {duration >= 60 && (
@@ -743,7 +743,7 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
               )}
 
               {/* Для отдыха/сна */}
-              {['light', 'sleep'].includes(activityType) && (
+              {activityType !== 'meditation' && (
                 <>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-400">Физ. усталость:</span>
@@ -812,16 +812,10 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
                 {isActing ? (
                   <span className="flex items-center gap-2">
                     <span className="animate-spin">⏳</span>
-                    {activityType === 'meditation' ? 'Медитация...' : 
-                     activityType === 'breakthrough' ? 'Прорыв...' :
-                     activityType === 'conductivity' ? 'Медитация...' :
-                     activityType === 'sleep' ? 'Сплю...' : 'Отдыхаю...'}
+                    {activityType === 'meditation' ? 'Медитация...' : activityType === 'sleep' ? 'Сплю...' : 'Отдыхаю...'}
                   </span>
                 ) : (
-                  `${config.icon} ${activityType === 'meditation' ? 'Медитировать' : 
-                    activityType === 'breakthrough' ? 'На прорыв' :
-                    activityType === 'conductivity' ? 'На проводимость' :
-                    activityType === 'sleep' ? 'Спать' : 'Отдохнуть'}`
+                  `${config.icon} ${activityType === 'meditation' ? 'Медитировать' : activityType === 'sleep' ? 'Спать' : 'Отдохнуть'}`
                 )}
               </Button>
             </>
