@@ -446,14 +446,24 @@ const GameSceneConfig = {
     scene.time.addEvent({
       delay: 500,
       callback: () => {
-        if (chatMessagesText && globalMessages.length > 0) {
-          const recentMessages = globalMessages.slice(-5);
-          const text = recentMessages.map(m => {
-            const prefix = m.sender === 'player' ? '👤' : '📖';
-            const content = m.content.length > 50 ? m.content.slice(0, 50) + '...' : m.content;
-            return `${prefix} ${content}`;
-          }).join('\n');
-          chatMessagesText.setText(text);
+        // Debug: log messages count
+        if (globalMessages.length > 0) {
+          console.log('[Chat] Messages:', globalMessages.length, globalMessages[0]?.content?.substring(0, 30));
+        }
+        
+        if (chatMessagesText) {
+          if (globalMessages.length > 0) {
+            const recentMessages = globalMessages.slice(-5);
+            const text = recentMessages.map(m => {
+              const prefix = m.sender === 'player' ? '👤' : '📖';
+              const content = m.content.length > 50 ? m.content.slice(0, 50) + '...' : m.content;
+              return `${prefix} ${content}`;
+            }).join('\n');
+            chatMessagesText.setText(text);
+          } else {
+            // Show placeholder when no messages
+            chatMessagesText.setText('Нет сообщений');
+          }
         }
       },
       loop: true,
@@ -584,6 +594,7 @@ export function PhaserGame() {
 
   useEffect(() => {
     globalMessages = messages;
+    console.log('[PhaserGame] globalMessages updated:', messages.length);
   }, [messages]);
 
   useEffect(() => {
