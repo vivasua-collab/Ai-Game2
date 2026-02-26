@@ -48,11 +48,17 @@ export interface TechniqueScaling {
  * Тип боевой техники
  */
 export type CombatTechniqueType = 
-  | "melee_strike"       // Контактный удар
-  | "melee_weapon"       // Усиление оружия
+  // === БЛИЖНИЙ БОЙ ===
+  | "melee_strike"       // Контактный удар (без оружия)
+  | "melee_weapon"       // Усиление оружия / удар с оружием
+  // === ДАЛЬНИЙ БОЙ ===
   | "ranged_projectile"  // Снаряд
   | "ranged_beam"        // Луч
-  | "ranged_aoe";        // Область
+  | "ranged_aoe"         // Область
+  // === ЗАЩИТНЫЕ ===
+  | "defense_block"      // Блок (снижение урона)
+  | "defense_shield"     // Энергетический щит (поглощение)
+  | "defense_dodge";     // Уклонение (реакция)
 
 /**
  * Параметры дальности для боевых техник
@@ -89,7 +95,7 @@ export interface TechniqueEffects {
     agility?: number;
     intelligence?: number;
   };
-  // === БОЕВЫЕ ТЕХНИКИ (новое) ===
+  // === БОЕВЫЕ ТЕХНИКИ ===
   combatType?: CombatTechniqueType;     // Тип боевой техники
   range?: CombatRange;                   // Параметры дальности
   contactRequired?: boolean;             // Требует контакта
@@ -97,6 +103,14 @@ export interface TechniqueEffects {
   elementalEffect?: ElementalEffect;     // Элементальный эффект
   dodgeChance?: number;                  // Шанс уклонения (для projectile)
   penetration?: number;                  // Пробитие защиты (%)
+  // === ЗАЩИТНЫЕ ТЕХНИКИ ===
+  damageReduction?: number;   // Снижение урона (%)
+  blockChance?: number;       // Шанс блока (%)
+  durability?: number;        // Прочность блока
+  shieldHP?: number;          // Здоровье щита
+  regeneration?: number;      // Регенерация щита/ход
+  qiDrainPerHit?: number;     // Расход Ци при попадании
+  counterBonus?: number;      // Бонус к контратаке (%)
 }
 
 /**
@@ -498,10 +512,10 @@ export const ADVANCED_TECHNIQUES: TechniquePreset[] = [
     id: "water_shield",
     name: "Водяной щит",
     nameEn: "Water Shield",
-    description: "Защитный барьер из водяной Ци.",
+    description: "Защитный барьер из водяной Ци. Поглощает урон за счёт щита.",
     category: "advanced",
     rarity: "uncommon",
-    techniqueType: "support",
+    techniqueType: "combat",
     element: "water",
     level: 2,
     minLevel: 1,
@@ -511,19 +525,130 @@ export const ADVANCED_TECHNIQUES: TechniquePreset[] = [
       cultivationLevel: 2,
       stats: { intelligence: 12, conductivity: 0.4 },
     },
-    qiCost: 12,
+    qiCost: 20,
     fatigueCost: { physical: 1, mental: 3 },
     scaling: {
-      intelligence: 0.03,
-      conductivity: 0.06,
+      intelligence: 0.05,
     },
-    effects: { duration: 8 },
+    effects: { 
+      combatType: "defense_shield",
+      shieldHP: 50,
+      regeneration: 5,
+      qiDrainPerHit: 3,
+      duration: 5 
+    },
     masteryBonus: 0.35,
     sources: ["sect", "scroll"],
     cost: {
-      contributionPoints: 25,
+      contributionPoints: 30,
     },
     icon: "💧",
+  },
+  // === ЗАЩИТНЫЕ ТЕХНИКИ ===
+  {
+    id: "turtle_stance",
+    name: "Стойка черепахи",
+    nameEn: "Turtle Stance",
+    description: "Защитная стойка, значительно снижающая входящий урон. Требует оружие или щит.",
+    category: "basic",
+    rarity: "common",
+    techniqueType: "combat",
+    element: "earth",
+    level: 1,
+    minLevel: 1,
+    maxLevel: 5,
+    canEvolve: true,
+    requirements: {
+      cultivationLevel: 1,
+      stats: { strength: 8 },
+    },
+    qiCost: 10,
+    fatigueCost: { physical: 3, mental: 1 },
+    scaling: {
+      intelligence: 0.05,
+    },
+    effects: { 
+      combatType: "defense_block",
+      damageReduction: 40,
+      blockChance: 70,
+      durability: 50,
+      duration: 1
+    },
+    masteryBonus: 0.3,
+    sources: ["preset", "sect"],
+    icon: "🛡️",
+  },
+  {
+    id: "ghost_shadow",
+    name: "Тень призрака",
+    nameEn: "Ghost Shadow",
+    description: "Техника уклонения. Увеличивает шанс избежать атаки.",
+    category: "advanced",
+    rarity: "uncommon",
+    techniqueType: "combat",
+    element: "air",
+    level: 2,
+    minLevel: 1,
+    maxLevel: 5,
+    canEvolve: true,
+    requirements: {
+      cultivationLevel: 2,
+      stats: { agility: 12, intelligence: 10 },
+    },
+    qiCost: 15,
+    fatigueCost: { physical: 5, mental: 2 },
+    scaling: {
+      intelligence: 0.05,
+    },
+    effects: { 
+      combatType: "defense_dodge",
+      dodgeChance: 25,
+      counterBonus: 15,
+      duration: 3
+    },
+    masteryBonus: 0.35,
+    sources: ["sect", "scroll"],
+    cost: {
+      contributionPoints: 35,
+    },
+    icon: "👻",
+  },
+  {
+    id: "iron_wall",
+    name: "Железная стена",
+    nameEn: "Iron Wall",
+    description: "Мощный блок, способный выдержать значительный урон.",
+    category: "advanced",
+    rarity: "rare",
+    techniqueType: "combat",
+    element: "earth",
+    level: 3,
+    minLevel: 1,
+    maxLevel: 6,
+    canEvolve: true,
+    requirements: {
+      cultivationLevel: 3,
+      stats: { strength: 14, intelligence: 12 },
+    },
+    qiCost: 25,
+    fatigueCost: { physical: 4, mental: 2 },
+    scaling: {
+      intelligence: 0.05,
+    },
+    effects: { 
+      combatType: "defense_block",
+      damageReduction: 60,
+      blockChance: 85,
+      durability: 100,
+      duration: 1
+    },
+    masteryBonus: 0.4,
+    sources: ["scroll", "insight"],
+    cost: {
+      contributionPoints: 60,
+      spiritStones: 10,
+    },
+    icon: "🏰",
   },
 ];
 

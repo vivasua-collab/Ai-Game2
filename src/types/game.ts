@@ -254,11 +254,17 @@ export interface InventoryItem {
  * Тип боевой техники
  */
 export type CombatTechniqueType = 
-  | "melee_strike"       // Контактный удар
-  | "melee_weapon"       // Усиление оружия
+  // === БЛИЖНИЙ БОЙ ===
+  | "melee_strike"       // Контактный удар (без оружия)
+  | "melee_weapon"       // Усиление оружия / удар с оружием
+  // === ДАЛЬНИЙ БОЙ ===
   | "ranged_projectile"  // Снаряд
   | "ranged_beam"        // Луч
-  | "ranged_aoe";        // Область
+  | "ranged_aoe"         // Область
+  // === ЗАЩИТНЫЕ ===
+  | "defense_block"      // Блок (снижение урона)
+  | "defense_shield"     // Энергетический щит (поглощение)
+  | "defense_dodge";     // Уклонение (реакция)
 
 /**
  * Параметры дальности для боевых техник
@@ -371,7 +377,7 @@ export interface Technique {
     duration?: number;
     distance?: number;
     statModifiers?: Record<string, number>;
-    // === БОЕВЫЕ ТЕХНИКИ (новое) ===
+    // === БОЕВЫЕ ТЕХНИКИ ===
     combatType?: CombatTechniqueType;     // Тип боевой техники
     range?: CombatRange;                   // Параметры дальности
     contactRequired?: boolean;             // Требует контакта
@@ -379,8 +385,16 @@ export interface Technique {
     elementalEffect?: ElementalEffect;     // Элементальный эффект
     dodgeChance?: number;                  // Шанс уклонения
     penetration?: number;                  // Пробитие защиты
+    // === ЗАЩИТНЫЕ ТЕХНИКИ ===
+    damageReduction?: number;   // Снижение урона (%)
+    blockChance?: number;       // Шанс блока (%)
+    durability?: number;        // Прочность блока
+    shieldHP?: number;          // Здоровье щита
+    regeneration?: number;      // Регенерация щита/ход
+    qiDrainPerHit?: number;     // Расход Ци при попадании
+    counterBonus?: number;      // Бонус к контратаке (%)
     // Legacy
-    isContact?: boolean;      // Контактная техника (устарело, использовать combatType)
+    isContact?: boolean;        // Контактная техника (устарело)
   };
 }
 
