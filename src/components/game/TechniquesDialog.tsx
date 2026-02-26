@@ -2,10 +2,12 @@
  * Techniques Dialog Component
  * 
  * UI для просмотра и использования техник:
- * - Список изученных техник
- * - Просмотр деталей техники
- * - Использование техники (тратит Ци)
- * - Управление слотами (культивация и бой)
+ * - 3 категории: Культивация, Формации, Бой
+ * - Культивация: 1 слот, используется автоматически при медитации
+ * - Формации: можно использовать из меню
+ * - Бой: 3+ слота (зависит от уровня), быстрый вызов
+ * 
+ * Слоты интегрированы в каждую категорию (отдельная вкладка убрана)
  */
 
 'use client';
@@ -25,7 +27,6 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useGameCharacter, useGameTechniques, useGameActions } from '@/stores/game.store';
 import { canUseTechnique, calculateTechniqueEffectiveness } from '@/lib/game/techniques';
-import { getCombatSlotsCount } from '@/types/game';
 import type { CharacterTechnique, Technique } from '@/types/game';
 
 interface TechniquesDialogProps {
@@ -40,6 +41,7 @@ const TYPE_COLORS: Record<string, string> = {
   movement: 'border-green-500 text-green-400',
   sensory: 'border-cyan-500 text-cyan-400',
   healing: 'border-pink-500 text-pink-400',
+  formation: 'border-amber-500 text-amber-400',
 };
 
 const TYPE_NAMES: Record<string, string> = {
@@ -49,12 +51,8 @@ const TYPE_NAMES: Record<string, string> = {
   movement: '🏃 Перемещение',
   sensory: '👁️ Восприятие',
   healing: '💚 Исцеление',
+  formation: '⭕ Формация',
 };
-
-// Функция для получения количества боевых слотов
-function getCombatSlotsCountLocal(level: number): number {
-  return 3 + Math.max(0, level - 1);
-}
 
 const ELEMENT_NAMES: Record<string, string> = {
   fire: '🔥 Огонь',
@@ -73,6 +71,11 @@ const RARITY_COLORS: Record<string, string> = {
   legendary: 'text-amber-400',
 };
 
+// Функция для получения количества боевых слотов
+function getCombatSlotsCountLocal(level: number): number {
+  return 3 + Math.max(0, level - 1);
+}
+
 export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) {
   const character = useGameCharacter();
   const techniques = useGameTechniques();
@@ -81,17 +84,27 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
   const [selectedTechnique, setSelectedTechnique] = useState<CharacterTechnique | null>(null);
   const [isUsing, setIsUsing] = useState(false);
   const [result, setResult] = useState<{ success: boolean; message: string } | null>(null);
-  const [activeTab, setActiveTab] = useState<string>('techniques');
+  const [activeCategory, setActiveCategory] = useState<string>('cultivation');
 
-  // Группировка техник по типу
-  const techniquesByType = useMemo(() => {
-    const groups: Record<string, CharacterTechnique[]> = {};
+  // Разделение техник по категориям
+  const techniquesByCategory = useMemo(() => {
+    const cultivation: CharacterTechnique[] = [];
+    const formations: CharacterTechnique[] = [];
+    const combat: CharacterTechnique[] = [];
+    
     for (const t of techniques) {
       const type = t.technique.type;
-      if (!groups[type]) groups[type] = [];
-      groups[type].push(t);
+      if (type === 'cultivation') {
+        cultivation.push(t);
+      } else if (type === 'formation') {
+        formations.push(t);
+      } else {
+        // combat, support, movement, sensory, healing - всё это "бой" для слотов
+        combat.push(t);
+      }
     }
-    return groups;
+    
+    return { cultivation, formations, combat };
   }, [techniques]);
 
   // Количество боевых слотов
@@ -169,10 +182,20 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
     }
   }, [character, loadState]);
 
-  // Проверка возможности использования
+  // Проверка возможности использования (только формации!)
   const canUse = useMemo(() => {
     if (!character || !selectedTechnique) return { canUse: false, reason: '' };
-    return canUseTechnique(selectedTechnique.technique as any, character as any);
+    
+    // Формации можно использовать из меню
+    if (selectedTechnique.technique.type === 'formation') {
+      return canUseTechnique(selectedTechnique.technique as any, character as any);
+    }
+    
+    // Остальные техники - только через слоты
+    return { 
+      canUse: false, 
+      reason: 'Эта техника используется через слоты быстрого доступа' 
+    };
   }, [character, selectedTechnique]);
 
   // Эффективность техники
@@ -181,7 +204,7 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
     return calculateTechniqueEffectiveness(selectedTechnique.technique as any, character as any);
   }, [character, selectedTechnique]);
 
-  // Использование техники
+  // Использование техники (только формации!)
   const handleUseTechnique = useCallback(async () => {
     if (!character || !selectedTechnique || !canUse.canUse) return;
 
@@ -219,12 +242,140 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
     if (!open) {
       setSelectedTechnique(null);
       setResult(null);
-      setActiveTab('techniques');
+      setActiveCategory('cultivation');
     }
     onOpenChange(open);
   }, [onOpenChange]);
 
   if (!character) return null;
+
+  // Рендер списка техник для категории
+  const renderTechniqueList = (techList: CharacterTechnique[]) => (
+    <ScrollArea className="h-[280px]">
+      {techList.length === 0 ? (
+        <div className="text-center text-slate-500 py-8">
+          Нет изученных техник этой категории
+        </div>
+      ) : (
+        <div className="space-y-1">
+          {techList.map((t) => (
+            <Button
+              key={t.id}
+              variant="ghost"
+              className={`w-full justify-start text-left h-auto py-2 px-3 ${
+                selectedTechnique?.id === t.id
+                  ? 'bg-slate-700'
+                  : 'hover:bg-slate-700/50'
+              }`}
+              onClick={() => {
+                setSelectedTechnique(t);
+                setResult(null);
+              }}
+            >
+              <div className="w-full">
+                <div className="flex items-center gap-2">
+                  <div className="text-sm text-white truncate">{t.technique.name}</div>
+                  {t.quickSlot !== null && (
+                    <Badge variant="outline" className="text-xs border-green-500 text-green-400">
+                      {t.quickSlot === 0 ? '🧘' : `${t.quickSlot}`}
+                    </Badge>
+                  )}
+                </div>
+                <div className="text-xs text-slate-500">
+                  Ур. {t.technique.level} • Мастерство: {t.mastery}%
+                </div>
+              </div>
+            </Button>
+          ))}
+        </div>
+      )}
+    </ScrollArea>
+  );
+
+  // Рендер слотов для категории
+  const renderSlots = (category: 'cultivation' | 'combat') => {
+    if (category === 'cultivation') {
+      return (
+        <div className="bg-slate-700/30 rounded-lg p-3 border border-slate-600/50">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-sm font-medium text-purple-400">🧘 Слот культивации</h4>
+            {cultivationSlotTechnique && (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => handleClearSlot('cultivation')}
+                className="text-red-400 hover:text-red-300 hover:bg-red-900/20 h-6 px-2"
+              >
+                ✕ Очистить
+              </Button>
+            )}
+          </div>
+          {cultivationSlotTechnique ? (
+            <div className="flex items-center gap-3 bg-slate-700/50 rounded-lg p-2">
+              <div className="flex-1">
+                <div className="text-white text-sm font-medium">{cultivationSlotTechnique.technique.name}</div>
+                <div className="text-xs text-slate-400">
+                  +{cultivationSlotTechnique.technique.effects?.qiRegenPercent || 0}% Ци • Мастерство: {cultivationSlotTechnique.mastery}%
+                </div>
+              </div>
+              <Badge variant="outline" className="border-purple-500 text-purple-400">
+                Активна
+              </Badge>
+            </div>
+          ) : (
+            <div className="text-xs text-slate-500 text-center py-3 border border-dashed border-slate-600 rounded-lg">
+              Слот пуст. Выберите технику культивации и нажмите "Назначить"
+            </div>
+          )}
+          <p className="text-xs text-slate-500 mt-2">
+            Техника в слоте применяется автоматически при медитации.
+          </p>
+        </div>
+      );
+    }
+    
+    // Боевые слоты
+    return (
+      <div className="bg-slate-700/30 rounded-lg p-3 border border-slate-600/50">
+        <div className="flex items-center justify-between mb-2">
+          <h4 className="text-sm font-medium text-red-400">⚔️ Боевые слоты ({combatSlotsCount})</h4>
+          <span className="text-xs text-slate-500">Уровень {character.cultivationLevel}</span>
+        </div>
+        <div className="grid grid-cols-4 gap-2">
+          {combatSlotTechniques.map((tech, index) => (
+            <div
+              key={index}
+              className={`relative rounded-lg p-2 border text-center ${
+                tech
+                  ? 'bg-slate-700/50 border-green-500/50'
+                  : 'bg-slate-800/50 border-slate-600/50'
+              }`}
+            >
+              <div className="text-xs text-slate-500 mb-1">{index + 1}</div>
+              {tech ? (
+                <>
+                  <div className="text-xs text-white truncate">{tech.technique.name}</div>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => handleClearSlot('combat', index)}
+                    className="absolute top-0 right-0 h-4 w-4 p-0 text-red-400 hover:text-red-300"
+                  >
+                    ✕
+                  </Button>
+                </>
+              ) : (
+                <div className="text-xs text-slate-500">Пуст</div>
+              )}
+            </div>
+          ))}
+        </div>
+        <p className="text-xs text-slate-500 mt-2">
+          Боевые техники активируются клавишами 1-{combatSlotsCount} в игре.
+        </p>
+      </div>
+    );
+  };
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
@@ -241,311 +392,255 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
             <p className="text-sm mt-2">Техники можно получить через обучение, свитки или прозрение.</p>
           </div>
         ) : (
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-slate-700">
-              <TabsTrigger value="techniques">📚 Техники</TabsTrigger>
-              <TabsTrigger value="slots">🎯 Слоты</TabsTrigger>
+          <Tabs value={activeCategory} onValueChange={setActiveCategory} className="w-full">
+            <TabsList className="grid w-full grid-cols-3 bg-slate-700">
+              <TabsTrigger value="cultivation" className="data-[state=active]:bg-purple-600">
+                🌀 Культивация ({techniquesByCategory.cultivation.length})
+              </TabsTrigger>
+              <TabsTrigger value="formations" className="data-[state=active]:bg-amber-600">
+                ⭕ Формации ({techniquesByCategory.formations.length})
+              </TabsTrigger>
+              <TabsTrigger value="combat" className="data-[state=active]:bg-red-600">
+                ⚔️ Бой ({techniquesByCategory.combat.length})
+              </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="techniques" className="mt-4">
-              <div className="grid grid-cols-3 gap-4 min-h-[400px]">
-                {/* Список техник */}
-                <div className="col-span-1 border-r border-slate-700 pr-4">
-                  <ScrollArea className="h-[350px]">
-                    {Object.entries(techniquesByType).map(([type, techs]) => (
-                      <div key={type} className="mb-4">
-                        <div className="text-xs text-slate-500 mb-2">{TYPE_NAMES[type] || type}</div>
-                        <div className="space-y-1">
-                          {techs.map((t) => (
-                            <Button
-                              key={t.id}
-                              variant="ghost"
-                              className={`w-full justify-start text-left h-auto py-2 px-3 ${
-                                selectedTechnique?.id === t.id
-                                  ? 'bg-slate-700'
-                                  : 'hover:bg-slate-700/50'
-                              }`}
-                              onClick={() => {
-                                setSelectedTechnique(t);
-                                setResult(null);
-                              }}
-                            >
-                              <div className="w-full">
-                                <div className="flex items-center gap-2">
-                                  <div className="text-sm text-white truncate">{t.technique.name}</div>
-                                  {t.quickSlot !== null && (
-                                    <Badge variant="outline" className="text-xs border-green-500 text-green-400">
-                                      {t.quickSlot === 0 ? '🧘' : `${t.quickSlot}`}
-                                    </Badge>
-                                  )}
-                                </div>
-                                <div className="text-xs text-slate-500">
-                                  Ур. {t.technique.level} • Мастерство: {t.mastery}%
-                                </div>
-                              </div>
-                            </Button>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </ScrollArea>
+            {/* Категория: Культивация */}
+            <TabsContent value="cultivation" className="mt-4 space-y-4">
+              {/* Слот культивации */}
+              {renderSlots('cultivation')}
+              
+              {/* Список техник культивации */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="border border-slate-700 rounded-lg p-3">
+                  <h4 className="text-sm font-medium text-slate-400 mb-2">Доступные техники</h4>
+                  {renderTechniqueList(techniquesByCategory.cultivation)}
                 </div>
-
-                {/* Детали техники */}
-                <div className="col-span-2">
-              {selectedTechnique ? (
-                <div className="space-y-4">
-                  {/* Заголовок */}
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-lg font-bold text-white">
-                        {selectedTechnique.technique.name}
-                      </h3>
-                      <div className="flex gap-2 mt-1">
-                        <Badge variant="outline" className={TYPE_COLORS[selectedTechnique.technique.type] || ''}>
-                          {TYPE_NAMES[selectedTechnique.technique.type] || selectedTechnique.technique.type}
-                        </Badge>
-                        <Badge variant="outline" className="text-slate-400">
-                          {ELEMENT_NAMES[selectedTechnique.technique.element] || selectedTechnique.technique.element}
+                
+                {/* Детали выбранной техники */}
+                <div className="border border-slate-700 rounded-lg p-3">
+                  {selectedTechnique && selectedTechnique.technique.type === 'cultivation' ? (
+                    <div className="space-y-3">
+                      <div>
+                        <h3 className="text-lg font-bold text-white">{selectedTechnique.technique.name}</h3>
+                        <Badge variant="outline" className={TYPE_COLORS.cultivation}>
+                          🌀 Культивация
                         </Badge>
                       </div>
-                    </div>
-                    <Badge className={RARITY_COLORS[selectedTechnique.technique.rarity] || 'text-slate-400'}>
-                      {selectedTechnique.technique.rarity}
-                    </Badge>
-                  </div>
-
-                  {/* Описание */}
-                  <p className="text-sm text-slate-400">
-                    {selectedTechnique.technique.description}
-                  </p>
-
-                  {/* Параметры */}
-                  <div className="bg-slate-700/50 rounded-lg p-3 space-y-2">
-                    <div className="grid grid-cols-2 gap-2 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-slate-400">Уровень:</span>
-                        <span className="text-white">{selectedTechnique.technique.level}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-400">Мин. культ.:</span>
-                        <span className="text-white">{selectedTechnique.technique.minCultivationLevel}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-400">Затраты Ци:</span>
-                        <span className="text-cyan-400">{selectedTechnique.technique.qiCost}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-slate-400">Эффективность:</span>
-                        <span className="text-green-400">{Math.round(effectiveness * 100)}%</span>
-                      </div>
-                    </div>
-
-                    {/* Эффекты */}
-                    {selectedTechnique.technique.effects && (
-                      <div className="pt-2 border-t border-slate-600/50">
-                        <div className="text-xs text-slate-500 mb-1">Эффекты:</div>
-                        <div className="flex flex-wrap gap-2">
-                          {selectedTechnique.technique.effects.damage && (
-                            <Badge variant="destructive">⚔️ Урон: {selectedTechnique.technique.effects.damage}</Badge>
-                          )}
-                          {selectedTechnique.technique.effects.healing && (
-                            <Badge className="bg-green-600">💚 Лечение: {selectedTechnique.technique.effects.healing}</Badge>
-                          )}
-                          {selectedTechnique.technique.effects.qiRegen && (
-                            <Badge className="bg-cyan-600">💫 Ци: +{selectedTechnique.technique.effects.qiRegen}</Badge>
-                          )}
-                          {selectedTechnique.technique.effects.duration && (
-                            <Badge variant="outline">⏱️ {selectedTechnique.technique.effects.duration} мин</Badge>
-                          )}
+                      
+                      <p className="text-sm text-slate-400">{selectedTechnique.technique.description}</p>
+                      
+                      {/* Эффекты культивации */}
+                      <div className="bg-slate-700/50 rounded-lg p-3 space-y-2">
+                        {selectedTechnique.technique.effects?.qiRegenPercent && (
+                          <div className="flex justify-between text-sm">
+                            <span className="text-slate-400">Бонус поглощения Ци:</span>
+                            <span className="text-cyan-400">+{selectedTechnique.technique.effects.qiRegenPercent}%</span>
+                          </div>
+                        )}
+                        {selectedTechnique.technique.effects?.unnoticeability && (
+                          <div className="flex justify-between text-sm">
+                            <span className="text-slate-400">Незаметность:</span>
+                            <span className="text-purple-400">+{selectedTechnique.technique.effects.unnoticeability}%</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-400">Мастерство:</span>
+                          <span className="text-amber-400">{selectedTechnique.mastery}%</span>
                         </div>
                       </div>
-                    )}
-                  </div>
-
-                  {/* Мастерство */}
-                  <div className="bg-slate-700/30 rounded-lg p-3">
-                    <div className="flex justify-between text-sm mb-1">
-                      <span className="text-slate-400">Мастерство</span>
-                      <span className="text-amber-400">{selectedTechnique.mastery}%</span>
+                      
+                      {/* Кнопка назначения */}
+                      <Button
+                        onClick={() => handleAssignSlot('cultivation')}
+                        disabled={cultivationSlotTechnique?.id === selectedTechnique.id}
+                        className="w-full bg-purple-600 hover:bg-purple-700"
+                      >
+                        {cultivationSlotTechnique?.id === selectedTechnique.id 
+                          ? '✓ Уже в слоте' 
+                          : '🧘 Назначить в слот культивации'}
+                      </Button>
                     </div>
-                    <Progress value={selectedTechnique.mastery} className="h-2" />
-                    <p className="text-xs text-slate-500 mt-1">
-                      Выше мастерство = больше эффективность
-                    </p>
-                  </div>
-
-                  {/* Результат использования */}
-                  {result && (
-                    <div className={`rounded-lg p-3 ${result.success ? 'bg-green-900/30 border border-green-600/50' : 'bg-red-900/30 border border-red-600/50'}`}>
-                      <p className={`text-sm ${result.success ? 'text-green-300' : 'text-red-300'}`}>
-                        {result.message}
-                      </p>
+                  ) : (
+                    <div className="h-full flex items-center justify-center text-slate-500">
+                      Выберите технику культивации
                     </div>
                   )}
-
-                  {/* Предупреждение */}
-                  {!canUse.canUse && (
-                    <div className="bg-amber-900/30 border border-amber-600/50 rounded-lg p-3">
-                      <p className="text-sm text-amber-300">⚠️ {canUse.reason}</p>
-                    </div>
-                  )}
-
-                  {/* Кнопки управления слотами */}
-                  <div className="bg-slate-700/30 rounded-lg p-3 border border-slate-600/50">
-                    <div className="text-sm text-slate-400 mb-2">🎯 Назначить в слот:</div>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedTechnique.technique.type === 'cultivation' && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleAssignSlot('cultivation')}
-                          className="border-purple-500 text-purple-400 hover:bg-purple-900/30"
-                        >
-                          🧘 Слот культивации
-                        </Button>
-                      )}
-                      {(selectedTechnique.technique.type === 'combat' || selectedTechnique.technique.type === 'movement') && (
-                        combatSlotTechniques.map((_, index) => (
-                          <Button
-                            key={index}
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleAssignSlot('combat', index)}
-                            className="border-red-500 text-red-400 hover:bg-red-900/30"
-                          >
-                            ⚔️ Слот {index + 1}
-                          </Button>
-                        ))
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="h-full flex items-center justify-center text-slate-500">
-                  Выберите технику для просмотра
-                </div>
-              )}
                 </div>
               </div>
             </TabsContent>
 
-            {/* Вкладка управления слотами */}
-            <TabsContent value="slots" className="mt-4">
-              <div className="space-y-6">
-                {/* Слот культивации */}
-                <div className="bg-slate-700/30 rounded-lg p-4 border border-slate-600/50">
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="text-sm font-medium text-purple-400">🧘 Слот культивации</h4>
-                    {cultivationSlotTechnique && (
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleClearSlot('cultivation')}
-                        className="text-red-400 hover:text-red-300 hover:bg-red-900/20"
-                      >
-                        ✕ Очистить
-                      </Button>
-                    )}
-                  </div>
-                  {cultivationSlotTechnique ? (
-                    <div className="flex items-center gap-3 bg-slate-700/50 rounded-lg p-3">
-                      <div className="flex-1">
-                        <div className="text-white font-medium">{cultivationSlotTechnique.technique.name}</div>
-                        <div className="text-xs text-slate-400">
-                          Мастерство: {cultivationSlotTechnique.mastery}%
+            {/* Категория: Формации */}
+            <TabsContent value="formations" className="mt-4 space-y-4">
+              <div className="bg-amber-900/20 border border-amber-600/30 rounded-lg p-3 text-sm">
+                <span className="text-amber-400">💡 Формации можно использовать напрямую для усиления медитации.</span>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div className="border border-slate-700 rounded-lg p-3">
+                  <h4 className="text-sm font-medium text-slate-400 mb-2">Изученные формации</h4>
+                  {renderTechniqueList(techniquesByCategory.formations)}
+                </div>
+                
+                {/* Детали выбранной формации */}
+                <div className="border border-slate-700 rounded-lg p-3">
+                  {selectedTechnique && selectedTechnique.technique.type === 'formation' ? (
+                    <div className="space-y-3">
+                      <div>
+                        <h3 className="text-lg font-bold text-white">{selectedTechnique.technique.name}</h3>
+                        <Badge variant="outline" className={TYPE_COLORS.formation}>
+                          ⭕ Формация
+                        </Badge>
+                      </div>
+                      
+                      <p className="text-sm text-slate-400">{selectedTechnique.technique.description}</p>
+                      
+                      {/* Параметры формации */}
+                      <div className="bg-slate-700/50 rounded-lg p-3 space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-400">Затраты Ци:</span>
+                          <span className="text-cyan-400">{selectedTechnique.technique.qiCost}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-400">Длительность:</span>
+                          <span className="text-white">8 часов</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-400">Снижение прерываний:</span>
+                          <span className="text-green-400">-30%</span>
                         </div>
                       </div>
-                      <Badge variant="outline" className="border-purple-500 text-purple-400">
-                        Активна
-                      </Badge>
+                      
+                      {/* Кнопка использования */}
+                      <Button
+                        onClick={handleUseTechnique}
+                        disabled={!canUse.canUse || isUsing}
+                        className="w-full bg-amber-600 hover:bg-amber-700"
+                      >
+                        {isUsing ? '⏳ Создание...' : `⭕ Создать формацию (${selectedTechnique.technique.qiCost} Ци)`}
+                      </Button>
+                      
+                      {!canUse.canUse && (
+                        <p className="text-xs text-amber-400 text-center">{canUse.reason}</p>
+                      )}
                     </div>
                   ) : (
-                    <div className="text-sm text-slate-500 text-center py-4">
-                      Слот пуст. Выберите технику культивации и нажмите "Слот культивации"
+                    <div className="h-full flex items-center justify-center text-slate-500">
+                      Выберите формацию
                     </div>
                   )}
-                  <p className="text-xs text-slate-500 mt-2">
-                    Техника в слоте культивации применяется автоматически при медитации.
-                  </p>
                 </div>
+              </div>
+            </TabsContent>
 
-                {/* Боевые слоты */}
-                <div className="bg-slate-700/30 rounded-lg p-4 border border-slate-600/50">
-                  <div className="flex items-center justify-between mb-3">
-                    <h4 className="text-sm font-medium text-red-400">⚔️ Боевые слоты ({combatSlotsCount})</h4>
-                    <span className="text-xs text-slate-500">Уровень {character.cultivationLevel}</span>
-                  </div>
-                  <div className="grid grid-cols-4 gap-2">
-                    {combatSlotTechniques.map((tech, index) => (
-                      <div
-                        key={index}
-                        className={`relative rounded-lg p-3 border ${
-                          tech
-                            ? 'bg-slate-700/50 border-green-500/50'
-                            : 'bg-slate-800/50 border-slate-600/50'
-                        }`}
-                      >
-                        <div className="text-xs text-slate-500 mb-1">Слот {index + 1}</div>
-                        {tech ? (
-                          <>
-                            <div className="text-sm text-white truncate">{tech.technique.name}</div>
-                            <div className="text-xs text-slate-400">Ур. {tech.technique.level}</div>
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => handleClearSlot('combat', index)}
-                              className="absolute top-1 right-1 h-5 w-5 p-0 text-red-400 hover:text-red-300"
-                            >
-                              ✕
-                            </Button>
-                          </>
-                        ) : (
-                          <div className="text-xs text-slate-500">Пуст</div>
-                        )}
+            {/* Категория: Бой */}
+            <TabsContent value="combat" className="mt-4 space-y-4">
+              {/* Боевые слоты */}
+              {renderSlots('combat')}
+              
+              {/* Список боевых техник */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="border border-slate-700 rounded-lg p-3">
+                  <h4 className="text-sm font-medium text-slate-400 mb-2">Боевые техники</h4>
+                  {renderTechniqueList(techniquesByCategory.combat)}
+                </div>
+                
+                {/* Детали выбранной техники */}
+                <div className="border border-slate-700 rounded-lg p-3">
+                  {selectedTechnique && ['combat', 'support', 'movement', 'sensory', 'healing'].includes(selectedTechnique.technique.type) ? (
+                    <div className="space-y-3">
+                      <div>
+                        <h3 className="text-lg font-bold text-white">{selectedTechnique.technique.name}</h3>
+                        <div className="flex gap-2 mt-1">
+                          <Badge variant="outline" className={TYPE_COLORS[selectedTechnique.technique.type] || ''}>
+                            {TYPE_NAMES[selectedTechnique.technique.type] || selectedTechnique.technique.type}
+                          </Badge>
+                          <Badge variant="outline" className="text-slate-400">
+                            {ELEMENT_NAMES[selectedTechnique.technique.element] || selectedTechnique.technique.element}
+                          </Badge>
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                  <p className="text-xs text-slate-500 mt-2">
-                    Боевые техники активируются клавишами 1-{combatSlotsCount} в игре.
-                  </p>
+                      
+                      <p className="text-sm text-slate-400">{selectedTechnique.technique.description}</p>
+                      
+                      {/* Параметры */}
+                      <div className="bg-slate-700/50 rounded-lg p-3 space-y-2">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-400">Уровень:</span>
+                          <span className="text-white">{selectedTechnique.technique.level}</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-400">Затраты Ци:</span>
+                          <span className="text-cyan-400">{selectedTechnique.technique.qiCost}</span>
+                        </div>
+                        {selectedTechnique.technique.effects?.damage && (
+                          <div className="flex justify-between text-sm">
+                            <span className="text-slate-400">Урон:</span>
+                            <span className="text-red-400">{selectedTechnique.technique.effects.damage}</span>
+                          </div>
+                        )}
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-400">Эффективность:</span>
+                          <span className="text-green-400">{Math.round(effectiveness * 100)}%</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-slate-400">Мастерство:</span>
+                          <span className="text-amber-400">{selectedTechnique.mastery}%</span>
+                        </div>
+                      </div>
+                      
+                      {/* Информация о слотах */}
+                      <div className="bg-red-900/20 border border-red-600/30 rounded-lg p-3 text-sm text-slate-300">
+                        <span className="text-red-400">⚔️ Боевые техники используются через слоты быстрого доступа.</span>
+                        <p className="mt-1 text-xs">Назначьте технику в свободный слот выше.</p>
+                      </div>
+                      
+                      {/* Кнопки назначения в слоты */}
+                      <div className="space-y-2">
+                        <p className="text-xs text-slate-400">Назначить в слот:</p>
+                        <div className="flex flex-wrap gap-2">
+                          {combatSlotTechniques.map((_, index) => (
+                            <Button
+                              key={index}
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleAssignSlot('combat', index)}
+                              className="border-red-500 text-red-400 hover:bg-red-900/30"
+                            >
+                              Слот {index + 1}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="h-full flex items-center justify-center text-slate-500">
+                      Выберите боевую технику
+                    </div>
+                  )}
                 </div>
-
-                {/* Результат операции */}
-                {result && (
-                  <div className={`rounded-lg p-3 ${result.success ? 'bg-green-900/30 border border-green-600/50' : 'bg-red-900/30 border border-red-600/50'}`}>
-                    <p className={`text-sm ${result.success ? 'text-green-300' : 'text-red-300'}`}>
-                      {result.message}
-                    </p>
-                  </div>
-                )}
               </div>
             </TabsContent>
           </Tabs>
         )}
 
+        {/* Результат операции */}
+        {result && (
+          <div className={`rounded-lg p-3 ${result.success ? 'bg-green-900/30 border border-green-600/50' : 'bg-red-900/30 border border-red-600/50'}`}>
+            <p className={`text-sm ${result.success ? 'text-green-300' : 'text-red-300'}`}>
+              {result.message}
+            </p>
+          </div>
+        )}
+
         <DialogFooter>
-          {activeTab === 'techniques' && selectedTechnique && !result && (
-            <Button
-              onClick={handleUseTechnique}
-              disabled={!canUse.canUse || isUsing}
-              className="bg-amber-600 hover:bg-amber-700"
-            >
-              {isUsing ? (
-                <span className="flex items-center gap-2">
-                  <span className="animate-spin">⏳</span>
-                  Используем...
-                </span>
-              ) : (
-                `⚡ Использовать (${selectedTechnique.technique.qiCost} Ци)`
-              )}
-            </Button>
-          )}
-          {result && (
-            <Button onClick={() => { setResult(null); }} className="bg-amber-600 hover:bg-amber-700">
-              OK
-            </Button>
-          )}
+          <Button
+            onClick={() => handleClose(false)}
+            variant="outline"
+            className="border-slate-600 text-slate-300"
+          >
+            Закрыть
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

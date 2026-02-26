@@ -113,7 +113,19 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
   const [duration, setDuration] = useState(TIME_CONSTANTS.MIN_MEDITATION_TICKS);
   const [inputValue, setInputValue] = useState(String(TIME_CONSTANTS.MIN_MEDITATION_TICKS));
   const [isActing, setIsActing] = useState(false);
-  const [result, setResult] = useState<{ message: string } | null>(null);
+  const [result, setResult] = useState<{ 
+    message: string; 
+    interrupted?: boolean;
+    interruptionEvent?: {
+      id: string;
+      type: string;
+      subType: string;
+      dangerLevel: number;
+      description: string;
+      canIgnore: boolean;
+      canHide: boolean;
+    };
+  } | null>(null);
 
   // Сброс при открытии
   useEffect(() => {
@@ -300,7 +312,18 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
       const data = await response.json();
 
       if (data.success) {
-        setResult({ message: data.message });
+        // Проверяем прерывание медитации
+        if (data.interrupted && data.result?.interruption) {
+          const int = data.result.interruption;
+          const event = int.event;
+          setResult({ 
+            message: data.message,
+            interrupted: true,
+            interruptionEvent: event,
+          });
+        } else {
+          setResult({ message: data.message });
+        }
         await loadState();
       } else {
         setResult({ message: data.error || 'Ошибка' });
@@ -406,8 +429,40 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
 
           {/* Результат */}
           {result && (
-            <div className="bg-slate-700/70 rounded-lg p-3 border border-slate-600">
+            <div className={`rounded-lg p-3 border ${
+              result.interrupted 
+                ? 'bg-red-900/30 border-red-600/50' 
+                : 'bg-slate-700/70 border-slate-600'
+            }`}>
               <pre className="text-sm text-slate-200 whitespace-pre-wrap">{result.message}</pre>
+              
+              {/* Детали прерывания */}
+              {result.interrupted && result.interruptionEvent && (
+                <div className="mt-3 pt-3 border-t border-red-600/50">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Badge className="bg-red-600 text-white">
+                      ⚠️ Опасность: {result.interruptionEvent.dangerLevel}/10
+                    </Badge>
+                    <Badge variant="outline" className="border-red-400 text-red-300">
+                      {result.interruptionEvent.type === 'creature' ? '🐺 Существо' :
+                       result.interruptionEvent.type === 'person' ? '👤 Человек' :
+                       result.interruptionEvent.type === 'phenomenon' ? '🌟 Явление' :
+                       result.interruptionEvent.type === 'spirit' ? '👻 Дух' : '✨ Редкое'}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-slate-300 mb-2">
+                    {result.interruptionEvent.description}
+                  </p>
+                  <div className="flex gap-2 text-xs text-slate-400">
+                    {result.interruptionEvent.canIgnore && (
+                      <span className="text-green-400">✓ Можно игнорировать</span>
+                    )}
+                    {result.interruptionEvent.canHide && (
+                      <span className="text-amber-400">👁 Можно скрыться</span>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -549,6 +604,12 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
                       +{meditationFatigue.mentalGain.toFixed(1)}% (концентрация)
                     </span>
                   </div>
+                  {/* Предупреждение о прерывании для медитаций >= 60 минут */}
+                  {duration >= 60 && (
+                    <div className="text-xs text-red-400 flex items-center gap-1 pt-1 border-t border-slate-600/50">
+                      ⚠️ Возможны прерывания ({Math.floor(duration / 60)} проверок)
+                    </div>
+                  )}
                 </>
               )}
 

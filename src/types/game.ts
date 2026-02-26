@@ -246,11 +246,66 @@ export interface InventoryItem {
 
 // ==================== ТЕХНИКИ ====================
 
+/**
+ * Флаги использования техник
+ */
+export type TechniqueUsageFlag = 
+  | 'cultivation'  // Техника культивации - используется через слот при медитации
+  | 'formation'    // Формация - можно использовать из меню
+  | 'combat'       // Боевая техника - используется через слоты быстрого доступа
+  | 'support'      // Поддержка - боевая слот
+  | 'movement'     // Перемещение - боевой слот
+  | 'sensory'      // Восприятие - боевой слот
+  | 'healing';     // Исцеление - боевой слот
+
+/**
+ * Категория техники для UI
+ */
+export type TechniqueUICategory = 'cultivation' | 'formations' | 'combat';
+
+/**
+ * Определяет категорию UI для типа техники
+ */
+export function getTechniqueUICategory(type: string): TechniqueUICategory {
+  if (type === 'cultivation') return 'cultivation';
+  if (type === 'formation') return 'formations';
+  return 'combat'; // combat, support, movement, sensory, healing
+}
+
+/**
+ * Проверяет, можно ли использовать технику из меню
+ * (только формации можно использовать напрямую)
+ */
+export function canUseTechniqueFromMenu(type: string): boolean {
+  return type === 'formation';
+}
+
+/**
+ * Проверяет, можно ли назначить технику в слот
+ */
+export function canAssignTechniqueToSlot(type: string): boolean {
+  return type === 'cultivation' || 
+         type === 'combat' || 
+         type === 'support' || 
+         type === 'movement' || 
+         type === 'sensory' || 
+         type === 'healing';
+}
+
+/**
+ * Возвращает тип слота для техники
+ */
+export function getTechniqueSlotType(type: string): 'cultivation' | 'combat' | null {
+  if (type === 'cultivation') return 'cultivation';
+  if (['combat', 'support', 'movement', 'sensory', 'healing'].includes(type)) return 'combat';
+  return null;
+}
+
 export interface Technique {
   id: string;
   name: string;
   description: string;
-  type: "combat" | "cultivation" | "support" | "movement" | "sensory" | "healing";
+  type: "combat" | "cultivation" | "support" | "movement" | "sensory" | "healing" | "formation";
   element: "fire" | "water" | "earth" | "air" | "lightning" | "void" | "neutral";
   rarity: "common" | "uncommon" | "rare" | "legendary";
   level: number;
@@ -269,6 +324,8 @@ export interface Technique {
     duration?: number;
     distance?: number;
     statModifiers?: Record<string, number>;
+    // Для боевых техник
+    isContact?: boolean;      // Контактная техника (требует близкого расстояния)
   };
 }
 
