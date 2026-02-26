@@ -328,14 +328,18 @@ export function performConductivityMeditation(
 /**
  * Попытка прорыва
  * Вычисляет результат и возвращает данные для обновления
+ * 
+ * При прорыве:
+ * - Проводимость умножается на conductivityMultiplier нового уровня
  */
 export function attemptBreakthrough(
   character: Character
-): BreakthroughResult & { newCoreCapacity: number } {
+): BreakthroughResult & { newCoreCapacity: number; newConductivity: number } {
   return calculateBreakthroughResult(
     character.cultivationLevel,
     character.cultivationSubLevel,
     character.coreCapacity,
-    character.accumulatedQi
+    character.accumulatedQi,
+    character.conductivity
   );
 }

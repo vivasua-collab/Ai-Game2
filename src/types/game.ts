@@ -197,6 +197,7 @@ export interface BreakthroughResult {
   newLevel: number;
   newSubLevel: number;
   newCoreCapacity: number;
+  newConductivity?: number;  // Новая проводимость после прорыва
   qiConsumed: number;
   fatigueGained: { physical: number; mental: number };
   message: string;

@@ -558,12 +558,17 @@ export async function POST(request: NextRequest) {
       let masteryGain = 0;
       if (cultivationTechnique) {
         masteryGain = Math.round((actualDurationMinutes / 30) * 10) / 10;
-        const newMastery = Math.min(100, (cultivationTechnique.mastery || 0) + masteryGain);
+        const currentMastery = cultivationTechnique.mastery || 0;
+        const newMastery = Math.min(100, currentMastery + masteryGain);
+        
+        console.log(`[Meditation] Updating mastery: ${currentMastery}% -> ${newMastery}% (+${masteryGain}%) for technique ${cultivationTechnique.techniqueId}`);
         
         await db.characterTechnique.update({
           where: { id: cultivationTechnique.id },
           data: { mastery: newMastery },
         });
+      } else {
+        console.log(`[Meditation] No cultivation technique assigned to slot 0. Mastery not updated.`);
       }
       
       // Generate message

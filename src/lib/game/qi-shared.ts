@@ -146,13 +146,17 @@ export function getCultivationLevelName(level: number): string {
 /**
  * Расчёт результата попытки прорыва
  * ВНИМАНИЕ: Эта функция только ВЫЧИСЛЯЕТ результат, НЕ изменяет состояние!
+ * 
+ * При прорыве:
+ * - Проводимость умножается на conductivityMultiplier нового уровня
  */
 export function calculateBreakthroughResult(
   cultivationLevel: number,
   cultivationSubLevel: number,
   coreCapacity: number,
-  accumulatedQi: number
-): BreakthroughResult {
+  accumulatedQi: number,
+  currentConductivity: number = 0
+): BreakthroughResult & { newCoreCapacity: number; newConductivity: number } {
   const requirements = calculateBreakthroughRequirements(
     cultivationLevel,
     cultivationSubLevel,
@@ -166,6 +170,7 @@ export function calculateBreakthroughResult(
       newLevel: cultivationLevel,
       newSubLevel: cultivationSubLevel,
       newCoreCapacity: coreCapacity,
+      newConductivity: currentConductivity,
       qiConsumed: 0,
       fatigueGained: { physical: 5, mental: 20 },
       message: `Недостаточно накопленной Ци. Нужно: ${requirements.requiredFills} заполнений (${requirements.requiredQi} Ци), накоплено: ${requirements.currentFills} (${requirements.currentAccumulated} Ци). Осталось: ${requirements.fillsNeeded} заполнений.`,
@@ -199,16 +204,31 @@ export function calculateBreakthroughResult(
       : BREAKTHROUGH_CONSTANTS.FATIGUE.MENTAL_MINOR,
   };
   
+  // === ПРОВОДИМОСТЬ ===
+  // При прорыве проводимость умножается на множитель нового уровня
+  const newConductivityMultiplier = QI_CONSTANTS.CONDUCTIVITY_MULTIPLIERS[newLevel] || 1.0;
+  const oldConductivityMultiplier = QI_CONSTANTS.CONDUCTIVITY_MULTIPLIERS[cultivationLevel] || 1.0;
+  
+  // Новая проводимость = текущая * (новый множитель / старый множитель)
+  const newConductivity = currentConductivity * (newConductivityMultiplier / oldConductivityMultiplier);
+  
   const levelName = getCultivationLevelName(newLevel);
-  const message = isMajorBreakthrough
+  let message = isMajorBreakthrough
     ? `🌟 Большой прорыв! Уровень ${newLevel} (${levelName})!`
     : `⬆️ Продвижение до ${newLevel}.${newSubLevel}`;
+  
+  // Добавляем информацию о проводимости если она изменилась
+  if (newConductivity !== currentConductivity) {
+    const changePercent = ((newConductivity - currentConductivity) / currentConductivity * 100).toFixed(0);
+    message += `\n⚡ Проводимость: ${currentConductivity.toFixed(2)} → ${newConductivity.toFixed(2)} (${changePercent > 0 ? '+' : ''}${changePercent}%)`;
+  }
   
   return {
     success: true,
     newLevel,
     newSubLevel,
     newCoreCapacity,
+    newConductivity,
     qiConsumed,
     fatigueGained,
     message,

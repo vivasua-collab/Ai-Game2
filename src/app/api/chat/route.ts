@@ -327,6 +327,7 @@ export async function POST(request: NextRequest) {
             cultivationLevel: result.newLevel,
             cultivationSubLevel: result.newSubLevel,
             coreCapacity: result.newCoreCapacity,
+            conductivity: result.newConductivity, // Обновляем проводимость
             accumulatedQi: Math.max(0, session.character.accumulatedQi - result.qiConsumed),
             fatigue: Math.min(100, Math.max(0, session.character.fatigue + result.fatigueGained.physical)),
             mentalFatigue: Math.min(100, Math.max(0, (session.character.mentalFatigue || 0) + result.fatigueGained.mental)),
@@ -347,11 +348,12 @@ export async function POST(request: NextRequest) {
         
         // Формируем сообщение о прорыве с информацией о понимании Ци
         let breakthroughMessage = result.success 
-          ? `${result.message}\n\n💎 Ёмкость ядра: ${result.newCoreCapacity}\n⚡ Накопленная Ци: ${updatedCharacter?.accumulatedQi || 0}`
+          ? `${result.message}\n\n💎 Ёмкость ядра: ${result.newCoreCapacity}`
           : `❌ ${result.message}`;
         
         if (result.success && updatedCharacter) {
           const qiProgress = Math.round((updatedCharacter.qiUnderstanding / updatedCharacter.qiUnderstandingCap) * 100);
+          breakthroughMessage += `\n⚡ Накопленная Ци: ${updatedCharacter.accumulatedQi}`;
           breakthroughMessage += `\n\n🧠 Понимание Ци: ${updatedCharacter.qiUnderstanding}/${updatedCharacter.qiUnderstandingCap} (${qiProgress}%)`;
           
           if (result.newLevel >= 5) {
