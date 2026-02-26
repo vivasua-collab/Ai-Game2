@@ -14,13 +14,17 @@ import type { Technique, TechniqueType, TechniqueElement, TechniqueRarity } from
 import { validateNewTechnique, generateTechniqueId } from '@/lib/game/techniques';
 import { getLLMManager } from '@/lib/llm';
 import { buildTechniqueGenerationPrompt } from '@/prompts';
-import { logInfo, logError } from '@/lib/logger';
+import { logInfo, logError, logWarn } from '@/lib/logger';
 import {
   addQiUnderstanding,
   calculateQiUnderstandingGain,
   type CharacterForInsight,
   type InsightResult,
 } from '@/lib/game/qi-insight';
+import {
+  ALL_TECHNIQUE_PRESETS,
+  type TechniquePreset,
+} from '@/data/presets/technique-presets';
 
 // Типы
 export type TriggerType = 'breakthrough' | 'insight' | 'scroll' | 'npc';
@@ -64,7 +68,7 @@ const TECHNIQUE_TYPES: TechniqueType[] = ['combat', 'support', 'movement', 'sens
 const ELEMENTS: TechniqueElement[] = ['fire', 'water', 'earth', 'air', 'lightning', 'void', 'neutral'];
 
 /**
- * Генерация пула техник через LLM
+ * Генерация пула техник через LLM с fallback на пресеты
  */
 export async function generateTechniquePool(options: {
   characterId: string;
@@ -96,28 +100,49 @@ export async function generateTechniquePool(options: {
     // Определяем редкости для этого уровня
     const rarities = RARITY_BY_LEVEL[targetLevel] || RARITY_BY_LEVEL[1];
 
-    // Формируем промпт для генерации
-    const prompt = buildTechniqueGenerationPrompt({
-      type: preferredType || 'combat',
-      element: preferredElement || 'neutral',
-      level: targetLevel,
-      rarity: rarities[Math.floor(Math.random() * rarities.length)],
-      count,
-      characterContext: {
-        cultivationLevel: character.cultivationLevel,
-        intelligence: character.intelligence,
-        conductivity: character.conductivity,
-        strength: character.strength,
-        agility: character.agility,
-      },
-    });
+    // === ПОПЫТКА ГЕНЕРАЦИИ ЧЕРЕЗ LLM ===
+    let techniques: Technique[] = [];
+    let usedLLM = false;
 
-    // Генерируем через LLM
-    const llm = getLLMManager();
-    const response = await llm.generate(prompt, []);
+    try {
+      // Формируем промпт для генерации
+      const prompt = buildTechniqueGenerationPrompt({
+        type: preferredType || 'combat',
+        element: preferredElement || 'neutral',
+        level: targetLevel,
+        rarity: rarities[Math.floor(Math.random() * rarities.length)],
+        count,
+        characterContext: {
+          cultivationLevel: character.cultivationLevel,
+          intelligence: character.intelligence,
+          conductivity: character.conductivity,
+          strength: character.strength,
+          agility: character.agility,
+        },
+      });
 
-    // Парсим результат
-    const techniques = parseLLMResponse(response.content);
+      // Генерируем через LLM
+      const llm = getLLMManager();
+      const response = await llm.generate(prompt, []);
+
+      // Парсим результат
+      techniques = parseLLMResponse(response.content);
+      
+      if (techniques.length > 0) {
+        usedLLM = true;
+        await logInfo('TECHNIQUE_POOL', `LLM generated ${techniques.length} techniques`);
+      }
+    } catch (llmError) {
+      await logWarn('TECHNIQUE_POOL', 'LLM generation failed, using fallback presets', {
+        error: llmError instanceof Error ? llmError.message : String(llmError)
+      });
+    }
+
+    // === FALLBACK: ИСПОЛЬЗУЕМ ПРЕСЕТЫ ===
+    if (techniques.length === 0) {
+      techniques = generateFallbackTechniques(targetLevel, count, preferredType, preferredElement);
+      await logInfo('TECHNIQUE_POOL', `Using ${techniques.length} fallback techniques from presets`);
+    }
 
     if (techniques.length === 0) {
       return { success: false, error: 'Не удалось сгенерировать техники' };
@@ -145,7 +170,7 @@ export async function generateTechniquePool(options: {
       },
     });
 
-    await logInfo('TECHNIQUE_POOL', `Generated pool ${pool.id} with ${validatedTechniques.length} techniques for character ${characterId}`);
+    await logInfo('TECHNIQUE_POOL', `Generated pool ${pool.id} with ${validatedTechniques.length} techniques for character ${characterId} (${usedLLM ? 'LLM' : 'fallback'})`);
 
     return {
       success: true,
@@ -159,6 +184,92 @@ export async function generateTechniquePool(options: {
       error: error instanceof Error ? error.message : 'Ошибка генерации',
     };
   }
+}
+
+/**
+ * Генерация fallback техник из пресетов
+ */
+function generateFallbackTechniques(
+  targetLevel: number,
+  count: number,
+  preferredType?: TechniqueType,
+  preferredElement?: TechniqueElement
+): Technique[] {
+  // Фильтруем пресеты по уровню
+  const availablePresets = ALL_TECHNIQUE_PRESETS.filter(preset => {
+    // Проверяем требования уровня культивации
+    const reqLevel = preset.requirements?.cultivationLevel || 1;
+    if (reqLevel > targetLevel + 1) return false; // Не более чем на 1 уровень выше
+    if (preset.level > targetLevel + 2) return false; // Техника не слишком высокого уровня
+    return true;
+  });
+
+  if (availablePresets.length === 0) {
+    // Если ничего не подошло - берём базовые техники
+    const basicPresets = ALL_TECHNIQUE_PRESETS.filter(p => p.category === 'basic');
+    return selectAndConvertPresets(basicPresets, count, preferredType, preferredElement);
+  }
+
+  return selectAndConvertPresets(availablePresets, count, preferredType, preferredElement);
+}
+
+/**
+ * Выбрать и конвертировать пресеты в техники
+ */
+function selectAndConvertPresets(
+  presets: TechniquePreset[],
+  count: number,
+  preferredType?: TechniqueType,
+  preferredElement?: TechniqueElement
+): Technique[] {
+  // Сортируем по предпочтениям
+  const sorted = [...presets].sort((a, b) => {
+    let scoreA = 0;
+    let scoreB = 0;
+    
+    // Предпочтительный тип
+    if (preferredType && a.techniqueType === preferredType) scoreA += 2;
+    if (preferredType && b.techniqueType === preferredType) scoreB += 2;
+    
+    // Предпочтительный элемент
+    if (preferredElement && a.element === preferredElement) scoreA += 1;
+    if (preferredElement && b.element === preferredElement) scoreB += 1;
+    
+    return scoreB - scoreA;
+  });
+
+  // Берём случайные из топ-кандидатов
+  const topCandidates = sorted.slice(0, Math.min(sorted.length, count * 2));
+  const shuffled = topCandidates.sort(() => Math.random() - 0.5);
+  const selected = shuffled.slice(0, count);
+
+  // Конвертируем пресеты в техники
+  return selected.map(preset => presetToTechnique(preset));
+}
+
+/**
+ * Конвертировать пресет в технику
+ */
+function presetToTechnique(preset: TechniquePreset): Technique {
+  return {
+    id: preset.id,
+    name: preset.name,
+    description: preset.description,
+    type: preset.techniqueType,
+    element: preset.element,
+    rarity: preset.rarity,
+    level: preset.level,
+    minCultivationLevel: preset.minCultivationLevel || preset.requirements?.cultivationLevel || 1,
+    qiCost: preset.qiCost,
+    fatigueCost: preset.fatigueCost,
+    statRequirements: preset.statRequirements,
+    statScaling: preset.scaling,
+    effects: preset.effects || {},
+    masteryProgress: 0,
+    masteryBonus: preset.masteryBonus,
+    source: 'preset',
+    createdAt: new Date(),
+  };
 }
 
 /**

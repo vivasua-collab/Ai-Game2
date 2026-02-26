@@ -41,10 +41,14 @@ export type FormationType =
  * Эффекты формации
  */
 export interface FormationEffects {
-  interruptionReduction: number; // Снижение шанса прерывания (% за уровень качества)
+  unnoticeability: number;       // Незаметность (% за уровень качества) - снижает шанс прерывания
   qiBonus?: number;              // Бонус к поглощению Ци (% за уровень)
+  qiDensityBonus?: number;       // Повышение плотности Ци в области (+ед. за уровень)
+  fatigueRecoveryBonus?: number; // Ускорение восстановления усталости (% за уровень)
   spiritRepel?: number;          // Отпугивание духов (% за уровень)
-  fatigueReduction?: number;     // Снижение усталости (% за уровень)
+  
+  // Legacy field (deprecated, use unnoticeability)
+  interruptionReduction?: number;
 }
 
 /**
@@ -88,8 +92,8 @@ export const BASIC_FORMATIONS: FormationPreset[] = [
     duration: 8,
     qualityLevels: 5,
     formationEffects: {
-      interruptionReduction: 30, // -30% за уровень качества
-      spiritRepel: 10,           // +10% за уровень
+      unnoticeability: 30,    // +30% незаметности за уровень качества
+      spiritRepel: 10,        // +10% отпугивания за уровень
     },
     requirements: {
       cultivationLevel: 1,
@@ -112,8 +116,9 @@ export const BASIC_FORMATIONS: FormationPreset[] = [
     duration: 6,
     qualityLevels: 5,
     formationEffects: {
-      interruptionReduction: 15,
-      qiBonus: 20, // +20% к поглощению за уровень
+      unnoticeability: 15,    // +15% незаметности за уровень
+      qiBonus: 20,           // +20% к поглощению за уровень
+      qiDensityBonus: 2,     // +2 плотности Ци за уровень
     },
     requirements: {
       cultivationLevel: 2,
@@ -146,7 +151,7 @@ export const ADVANCED_FORMATIONS: FormationPreset[] = [
     duration: 12,
     qualityLevels: 3,
     formationEffects: {
-      interruptionReduction: 40,
+      unnoticeability: 40,
       spiritRepel: 50,
     },
     requirements: {
@@ -175,9 +180,10 @@ export const ADVANCED_FORMATIONS: FormationPreset[] = [
     duration: 24,
     qualityLevels: 4,
     formationEffects: {
-      interruptionReduction: 20,
+      unnoticeability: 20,
       qiBonus: 35,
-      fatigueReduction: 10,
+      qiDensityBonus: 5,         // +5 плотности Ци за уровень
+      fatigueRecoveryBonus: 15,   // +15% восстановления усталости за уровень
     },
     requirements: {
       cultivationLevel: 5,
@@ -205,9 +211,10 @@ export const ADVANCED_FORMATIONS: FormationPreset[] = [
     duration: 10,
     qualityLevels: 4,
     formationEffects: {
-      interruptionReduction: 35,
+      unnoticeability: 35,
       qiBonus: 25,
-      fatigueReduction: 15,
+      qiDensityBonus: 3,
+      fatigueRecoveryBonus: 20,
     },
     requirements: {
       cultivationLevel: 4,
@@ -242,9 +249,10 @@ export const MASTER_FORMATIONS: FormationPreset[] = [
     duration: 24,
     qualityLevels: 3,
     formationEffects: {
-      interruptionReduction: 60,
+      unnoticeability: 60,
       qiBonus: 30,
-      fatigueReduction: 25,
+      qiDensityBonus: 8,
+      fatigueRecoveryBonus: 30,
     },
     requirements: {
       cultivationLevel: 6,
@@ -271,9 +279,10 @@ export const MASTER_FORMATIONS: FormationPreset[] = [
     duration: 48,
     qualityLevels: 2,
     formationEffects: {
-      interruptionReduction: 90,
+      unnoticeability: 90,
       qiBonus: 50,
-      fatigueReduction: 40,
+      qiDensityBonus: 10,
+      fatigueRecoveryBonus: 50,
     },
     requirements: {
       cultivationLevel: 8,
@@ -300,9 +309,10 @@ export const MASTER_FORMATIONS: FormationPreset[] = [
     duration: 0, // Постоянная
     qualityLevels: 3,
     formationEffects: {
-      interruptionReduction: 70,
+      unnoticeability: 70,
       qiBonus: 40,
-      fatigueReduction: 30,
+      qiDensityBonus: 15,
+      fatigueRecoveryBonus: 40,
     },
     requirements: {
       cultivationLevel: 7,
@@ -378,18 +388,26 @@ export function getFormationEffects(formationId: string, quality: number): Forma
   const formation = getFormationPresetById(formationId);
   if (!formation || quality < 1 || quality > formation.qualityLevels) return null;
   
+  const effects = formation.formationEffects;
+  
+  // Support both new (unnoticeability) and legacy (interruptionReduction) field names
+  const unnoticeability = effects.unnoticeability ?? effects.interruptionReduction ?? 0;
+  
   const result: FormationEffects = {
-    interruptionReduction: formation.formationEffects.interruptionReduction * quality,
+    unnoticeability: unnoticeability * quality,
   };
   
-  if (formation.formationEffects.qiBonus) {
-    result.qiBonus = formation.formationEffects.qiBonus * quality;
+  if (effects.qiBonus) {
+    result.qiBonus = effects.qiBonus * quality;
   }
-  if (formation.formationEffects.spiritRepel) {
-    result.spiritRepel = formation.formationEffects.spiritRepel * quality;
+  if (effects.qiDensityBonus) {
+    result.qiDensityBonus = effects.qiDensityBonus * quality;
   }
-  if (formation.formationEffects.fatigueReduction) {
-    result.fatigueReduction = formation.formationEffects.fatigueReduction * quality;
+  if (effects.fatigueRecoveryBonus) {
+    result.fatigueRecoveryBonus = effects.fatigueRecoveryBonus * quality;
+  }
+  if (effects.spiritRepel) {
+    result.spiritRepel = effects.spiritRepel * quality;
   }
   
   return result;
@@ -407,5 +425,6 @@ export function calculateFormationInterruptionModifier(
   const effects = getFormationEffects(formationId, quality);
   if (!effects) return 1.0;
   
-  return 1 - (effects.interruptionReduction / 100);
+  // unnoticeability reduces interruption chance
+  return 1 - (effects.unnoticeability / 100);
 }

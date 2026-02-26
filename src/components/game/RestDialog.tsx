@@ -5,6 +5,8 @@
  * - 🧘 Медитация: накопление Ци + ментальная усталость (макс 8 часов)
  * - 🌿 Отдых: медленное восстановление усталости (макс 8 часов)
  * - 😴 Сон: быстрое восстановление усталости (макс 8 часов, полное восстановление)
+ * 
+ * Техника культивации назначается через меню Техники → вкладка Культивация.
  */
 
 'use client';
@@ -24,7 +26,6 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useGameCharacter, useGameLocation, useGameTime, useGameActions, useGameTechniques } from '@/stores/game.store';
 import {
   calculateQiRates,
@@ -33,7 +34,6 @@ import {
   calculateMeditationFatigue,
   canMeditate,
   getCoreFillPercent,
-  getConductivityMultiplier,
 } from '@/lib/game/qi-shared';
 import {
   FATIGUE_CONSTANTS,
@@ -114,7 +114,6 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
   const [duration, setDuration] = useState(TIME_CONSTANTS.MIN_MEDITATION_TICKS);
   const [inputValue, setInputValue] = useState(String(TIME_CONSTANTS.MIN_MEDITATION_TICKS));
   const [isActing, setIsActing] = useState(false);
-  const [selectedTechniqueId, setSelectedTechniqueId] = useState<string>('auto'); // 'auto' = из слота, или ID техники
   const [result, setResult] = useState<{ 
     message: string; 
     interrupted?: boolean;
@@ -129,13 +128,8 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
     };
   } | null>(null);
 
-  // Получаем техники культивации
+  // Получаем технику из слота культивации для отображения
   const techniques = useGameTechniques();
-  const cultivationTechniques = useMemo(() => {
-    return techniques.filter(t => t.technique.type === 'cultivation');
-  }, [techniques]);
-
-  // Техника в слоте культивации
   const slottedCultivationTechnique = useMemo(() => {
     return techniques.find(t => t.quickSlot === 0 && t.technique.type === 'cultivation');
   }, [techniques]);
@@ -147,7 +141,6 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
       setDuration(TIME_CONSTANTS.MIN_MEDITATION_TICKS);
       setInputValue(String(TIME_CONSTANTS.MIN_MEDITATION_TICKS));
       setResult(null);
-      setSelectedTechniqueId('auto');
     }
   }, [open]);
 
@@ -175,10 +168,9 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
     }
   }, [config]);
 
-  // Обработка слайдера - от 0 до maxDuration, но минимальное значение = minDuration
+  // Обработка слайдера
   const handleSliderChange = useCallback((values: number[]) => {
     const rawValue = values[0];
-    // Если значение меньше минимума, устанавливаем минимум
     const newDuration = rawValue < config.minDuration 
       ? config.minDuration 
       : roundMeditationTime(rawValue);
@@ -248,7 +240,6 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
     const wt = toWorldTime(worldTime);
     if (!wt) return null;
 
-    // Прямой расчёт времени после действия
     let newMinute = wt.minute + duration;
     let newHour = wt.hour;
     let newDay = wt.day;
@@ -292,7 +283,6 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
   const handleAction = useCallback(async () => {
     if (!character || isActing) return;
 
-    // Проверки
     if (activityType === 'meditation' && !canMeditateNow) {
       setResult({ message: '⚡ Ядро заполнено! Потратьте Ци чтобы продолжить накопление.' });
       return;
@@ -315,12 +305,8 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
 
       if (activityType !== 'meditation') {
         body.restType = activityType;
-      } else {
-        // Для медитации передаём выбранную технику
-        if (selectedTechniqueId !== 'auto') {
-          body.techniqueId = selectedTechniqueId;
-        }
       }
+      // Техника культивации берётся автоматически из слота (quickSlot === 0)
 
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -331,7 +317,6 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
       const data = await response.json();
 
       if (data.success) {
-        // Проверяем прерывание медитации
         if (data.interrupted && data.result?.interruption) {
           const int = data.result.interruption;
           const event = int.event;
@@ -369,7 +354,6 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
     ? canMeditateNow
     : !isFullyRested;
 
-  // Текущее время для отображения
   const currentWorldTime = toWorldTime(worldTime);
 
   return (
@@ -422,6 +406,14 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
                     <span className="text-cyan-400">{character.conductivity.toFixed(2)}</span>
                   </div>
                 </div>
+                
+                {/* Активная техника */}
+                {slottedCultivationTechnique && (
+                  <div className="flex justify-between text-xs mt-2 text-purple-400">
+                    <span>🧘 Техника: {slottedCultivationTechnique.technique.name}</span>
+                    <span>+{slottedCultivationTechnique.technique.effects?.qiRegenPercent || 0}% Ци</span>
+                  </div>
+                )}
                 
                 {qiRates && (
                   <div className="flex justify-between text-xs text-slate-500 mt-1">
@@ -514,47 +506,33 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
                   Накопление Ци через концентрацию. Утомляет разум, тело отдыхает.
                 </div>
                 
-                {/* Выбор техники медитации */}
-                {cultivationTechniques.length > 0 && (
-                  <div className="space-y-2">
-                    <Label className="text-slate-300">🌀 Техника медитации:</Label>
-                    <Select value={selectedTechniqueId} onValueChange={setSelectedTechniqueId}>
-                      <SelectTrigger className="bg-slate-700 border-slate-600">
-                        <SelectValue placeholder="Выберите технику" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-slate-700">
-                        <SelectItem value="auto">
-                          <div className="flex items-center gap-2">
-                            <span>🧘 Авто</span>
-                            <span className="text-slate-400 text-xs">
-                              {slottedCultivationTechnique 
-                                ? `(${slottedCultivationTechnique.technique.name})` 
-                                : '(без техники)'}
-                            </span>
-                          </div>
-                        </SelectItem>
-                        {cultivationTechniques.map((t) => (
-                          <SelectItem key={t.id} value={t.techniqueId}>
-                            <div className="flex items-center gap-2">
-                              <span>{t.technique.name}</span>
-                              {t.quickSlot === 0 && (
-                                <Badge variant="outline" className="text-xs border-purple-500 text-purple-400">
-                                  в слоте
-                                </Badge>
-                              )}
-                              <span className="text-cyan-400 text-xs">
-                                +{t.technique.effects?.qiRegenPercent || 0}%
-                              </span>
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <p className="text-xs text-slate-500">
-                      Техника увеличивает поглощение Ци и снижает шанс прерывания.
-                    </p>
-                  </div>
-                )}
+                {/* Информация об активной технике */}
+                <div className="bg-purple-900/20 border border-purple-600/30 rounded-lg p-3">
+                  {slottedCultivationTechnique ? (
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-purple-400">🧘 Активная техника:</span>
+                        <span className="text-white">{slottedCultivationTechnique.technique.name}</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-slate-400">Бонус поглощения:</span>
+                        <span className="text-cyan-400">+{slottedCultivationTechnique.technique.effects?.qiRegenPercent || 0}%</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-slate-400">Незаметность:</span>
+                        <span className="text-green-400">+{slottedCultivationTechnique.technique.effects?.unnoticeability || 0}%</span>
+                      </div>
+                      <div className="flex justify-between text-xs">
+                        <span className="text-slate-400">Мастерство:</span>
+                        <span className="text-amber-400">{slottedCultivationTechnique.mastery}%</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-sm text-slate-400">
+                      🧘 Нет активной техники. Назначьте технику через меню Техники → Культивация.
+                    </div>
+                  )}
+                </div>
               </TabsContent>
 
               <TabsContent value="light" className="space-y-3 mt-3">
@@ -665,7 +643,6 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
                       +{meditationFatigue.mentalGain.toFixed(1)}% (концентрация)
                     </span>
                   </div>
-                  {/* Предупреждение о прерывании для медитаций >= 60 минут */}
                   {duration >= 60 && (
                     <div className="text-xs text-red-400 flex items-center gap-1 pt-1 border-t border-slate-600/50">
                       ⚠️ Возможны прерывания ({Math.floor(duration / 60)} проверок)

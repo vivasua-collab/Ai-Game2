@@ -207,8 +207,13 @@ export async function POST(request: NextRequest) {
       );
       
       // Apply unnoticeability bonus from cultivation technique
-      if (interruptionResult && unnoticeabilityBonus > 0) {
+      // Positive value = less noticeable, Negative value = more noticeable
+      if (interruptionResult && unnoticeabilityBonus !== 0) {
+        // unnoticeabilityBonus > 0 = снижает шанс прерывания
+        // unnoticeabilityBonus < 0 = повышает шанс прерывания
         interruptionResult.finalChance *= (1 - unnoticeabilityBonus / 100);
+        // Clamp to 0-100%
+        interruptionResult.finalChance = Math.max(0, Math.min(100, interruptionResult.finalChance));
       }
       
       if (interruptionResult.interrupted && interruptionResult.event) {
@@ -321,6 +326,24 @@ export async function POST(request: NextRequest) {
       },
     });
     
+    // === INCREASE TECHNIQUE MASTERY ===
+    let masteryGain = 0;
+    if (cultivationTechnique) {
+      // Mastery gain: 0.1% per 30 minutes of meditation
+      // More gain for longer meditations
+      masteryGain = Math.round((actualDurationMinutes / 30) * 10) / 10; // 0.1 per 30 min
+      
+      // Cap mastery at 100%
+      const newMastery = Math.min(100, (cultivationTechnique.mastery || 0) + masteryGain);
+      
+      await db.characterTechnique.update({
+        where: { id: cultivationTechnique.id },
+        data: { mastery: newMastery },
+      });
+      
+      console.log(`[Meditation] Technique mastery: ${cultivationTechnique.mastery}% -> ${newMastery}% (+${masteryGain}%)`);
+    }
+    
     // Generate meditation message
     const qiPercent = getCoreFillPercent(updatedCharacter.currentQi, updatedCharacter.coreCapacity);
     let message = `🧘 Медитация завершена!\n\n`;
@@ -332,13 +355,22 @@ export async function POST(request: NextRequest) {
     }
     
     // Show technique bonuses if used
-    if (techniqueData && (qiAbsorptionBonus > 0 || unnoticeabilityBonus > 0)) {
+    if (techniqueData) {
       message += `\n\n📜 Техника: ${techniqueData.name}`;
-      if (qiAbsorptionBonus > 0) {
+      if (qiAbsorptionBonus !== 0) {
         message += `\n   ├─ Бонус поглощения: +${Math.round(qiAbsorptionBonus)}%`;
       }
-      if (unnoticeabilityBonus > 0) {
-        message += `\n   └─ Незаметность: +${Math.round(unnoticeabilityBonus)}%`;
+      if (unnoticeabilityBonus !== 0) {
+        // Positive = less noticeable (good), Negative = more noticeable (bad)
+        if (unnoticeabilityBonus > 0) {
+          message += `\n   ├─ Незаметность: +${Math.round(unnoticeabilityBonus)}%`;
+        } else {
+          message += `\n   ├─ Заметность: +${Math.round(Math.abs(unnoticeabilityBonus))}%`;
+        }
+      }
+      if (cultivationTechnique && masteryGain > 0) {
+        const newMastery = Math.min(100, (cultivationTechnique.mastery || 0) + masteryGain);
+        message += `\n   └─ Мастерство: ${cultivationTechnique.mastery || 0}% → ${newMastery}% (+${masteryGain}%)`;
       }
     }
     

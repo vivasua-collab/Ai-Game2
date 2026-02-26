@@ -129,13 +129,44 @@ export const BASIC_TECHNIQUES: TechniquePreset[] = [
       conductivity: 0.1,
     },
     effects: { 
-      qiRegen: 5,          // Legacy: фиксированное значение (интерпретируется как % для техник культивации)
-      qiRegenPercent: 5,   // +5% к поглощению Ци из среды
-      unnoticeability: 3   // 3% снижение шанса прерывания
+      qiRegen: 5,
+      qiRegenPercent: 5,
+      unnoticeability: 3
     },
     masteryBonus: 0.5,
     sources: ["preset", "sect"],
     icon: "🧘",
+  },
+  {
+    id: "greedy_absorption",
+    name: "Жадное поглощение",
+    nameEn: "Greedy Absorption",
+    description: "Агрессивная техника накопления Ци. Даёт значительный бонус к поглощению, но делает практика более заметным для существ из-за активного забора энергии.",
+    category: "basic",
+    rarity: "common",
+    techniqueType: "cultivation",
+    element: "neutral",
+    level: 1,
+    minLevel: 1,
+    maxLevel: 9,
+    canEvolve: true,
+    requirements: {
+      cultivationLevel: 1,
+    },
+    qiCost: 0,
+    fatigueCost: { physical: 0.08, mental: 0.15 },
+    scaling: {
+      intelligence: 0.03,
+      conductivity: 0.15,
+    },
+    effects: { 
+      qiRegen: 10,
+      qiRegenPercent: 10,
+      unnoticeability: -5  // Отрицательное значение = повышает заметность
+    },
+    masteryBonus: 0.6,
+    sources: ["preset", "sect"],
+    icon: "🌀",
   },
   {
     id: "reinforced_strike",
