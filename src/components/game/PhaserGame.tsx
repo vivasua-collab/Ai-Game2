@@ -35,15 +35,23 @@ const MIN_TILES_FOR_SYNC = 1;
 // Combat slots configuration
 const COMBAT_SLOT_KEYS = ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'ZERO', 'MINUS', 'EQUALS'];
 
-// Target positions (6 training dummies)
-const TARGET_POSITIONS = [
-  { x: 400, y: 300 },
-  { x: 600, y: 300 },
-  { x: 800, y: 300 },
-  { x: 400, y: 600 },
-  { x: 600, y: 600 },
-  { x: 800, y: 600 },
+// Target positions (6 training dummies) - in pixels from world center
+// World center is at WORLD_WIDTH/2, WORLD_HEIGHT/2
+// Positions are set relative to center for metric system compatibility
+const TARGET_POSITIONS_METERS = [
+  { x: -15, y: -10 },  // 15m left, 10m up from center
+  { x: -8, y: -10 },
+  { x: 0, y: -10 },
+  { x: -15, y: 5 },    // 15m left, 5m down from center
+  { x: -8, y: 5 },
+  { x: 0, y: 5 },
 ];
+
+// Convert meter positions to pixel positions
+const TARGET_POSITIONS = TARGET_POSITIONS_METERS.map(pos => ({
+  x: WORLD_WIDTH / 2 + pos.x * METERS_TO_PIXELS,
+  y: WORLD_HEIGHT / 2 + pos.y * METERS_TO_PIXELS,
+}));
 
 // Damage number colors
 const DAMAGE_COLORS: Record<string, string> = {
@@ -765,7 +773,8 @@ const GameSceneConfig = {
     uiContainer.add(coords);
     scene.data.set('coordsText', coords);
 
-    // World time display (top-left)
+    // === LEFT PANEL: Time + HP + Qi ===
+    // World time display
     const worldTimeText = scene.add.text(10, 60, '', {
       fontSize: '14px',
       color: '#fbbf24',
@@ -775,49 +784,65 @@ const GameSceneConfig = {
     uiContainer.add(worldTimeText);
     scene.data.set('worldTimeText', worldTimeText);
 
-    // === HP BAR (under time) ===
-    const hpBarContainer = scene.add.container(10, 85);
-    hpBarContainer.setScrollFactor(0);
-    uiContainer.add(hpBarContainer);
-
+    // HP BAR
     const hpBarBg = scene.add.graphics();
     hpBarBg.fillStyle(0x000000, 0.7);
-    hpBarBg.fillRect(0, 0, 120, 16);
-    hpBarContainer.add(hpBarBg);
+    hpBarBg.fillRect(0, 0, 140, 20);
+    hpBarBg.setPosition(10, 85);
+    uiContainer.add(hpBarBg);
 
     const hpBarFill = scene.add.graphics();
-    hpBarContainer.add(hpBarFill);
+    hpBarFill.setPosition(10, 85);
+    uiContainer.add(hpBarFill);
     scene.data.set('hpBarFill', hpBarFill);
 
-    const hpLabel = scene.add.text(5, 2, '❤️ HP: 100%', {
-      fontSize: '11px',
+    const hpLabel = scene.add.text(15, 88, '❤️ HP: 100%', {
+      fontSize: '12px',
       color: '#ffffff',
       fontFamily: 'Arial',
     });
-    hpBarContainer.add(hpLabel);
+    uiContainer.add(hpLabel);
     scene.data.set('hpLabel', hpLabel);
 
-    // === QI BAR (under HP) ===
-    const qiBarContainer = scene.add.container(10, 105);
-    qiBarContainer.setScrollFactor(0);
-    uiContainer.add(qiBarContainer);
-
+    // QI BAR
     const qiBarBg = scene.add.graphics();
     qiBarBg.fillStyle(0x000000, 0.7);
-    qiBarBg.fillRect(0, 0, 120, 16);
-    qiBarContainer.add(qiBarBg);
+    qiBarBg.fillRect(0, 0, 140, 20);
+    qiBarBg.setPosition(10, 110);
+    uiContainer.add(qiBarBg);
 
     const qiBarFill = scene.add.graphics();
-    qiBarContainer.add(qiBarFill);
+    qiBarFill.setPosition(10, 110);
+    uiContainer.add(qiBarFill);
     scene.data.set('qiBarFill', qiBarFill);
 
-    const qiLabel = scene.add.text(5, 2, '✨ Ци: 100/100', {
-      fontSize: '11px',
+    const qiLabel = scene.add.text(15, 113, '✨ Ци: 100/100', {
+      fontSize: '12px',
       color: '#ffffff',
       fontFamily: 'Arial',
     });
-    qiBarContainer.add(qiLabel);
+    uiContainer.add(qiLabel);
     scene.data.set('qiLabel', qiLabel);
+
+    // === DISTANCE DISPLAY (below Qi) ===
+    const distanceText = scene.add.text(10, 138, '📏 До цели: -- м', {
+      fontSize: '12px',
+      color: '#4ade80',
+      backgroundColor: '#000000aa',
+      padding: { x: 8, y: 4 },
+    });
+    uiContainer.add(distanceText);
+    scene.data.set('distanceText', distanceText);
+
+    // ATTACK RANGE indicator
+    const rangeText = scene.add.text(10, 160, '⚔️ Дальность: 5.0 м', {
+      fontSize: '11px',
+      color: '#9ca3af',
+      backgroundColor: '#000000aa',
+      padding: { x: 8, y: 4 },
+    });
+    uiContainer.add(rangeText);
+    scene.data.set('rangeText', rangeText);
 
     // Function to update HP/Qi bars
     const updateStatusBars = () => {
@@ -831,14 +856,14 @@ const GameSceneConfig = {
       
       if (hpBar) {
         hpBar.clear();
-        const hpWidth = 118 * (hpPercent / 100);
+        const hpWidth = 138 * (hpPercent / 100);
         let hpColor = 0x22c55e; // Green
         if (hpPercent < 25) hpColor = 0xef4444; // Red
         else if (hpPercent < 50) hpColor = 0xf97316; // Orange
         else if (hpPercent < 75) hpColor = 0xeab308; // Yellow
         
         hpBar.fillStyle(hpColor);
-        hpBar.fillRect(1, 1, hpWidth, 14);
+        hpBar.fillRect(1, 1, hpWidth, 18);
       }
       if (hpLabelText) {
         hpLabelText.setText(`❤️ HP: ${hpPercent}%`);
@@ -853,9 +878,9 @@ const GameSceneConfig = {
       
       if (qiBar) {
         qiBar.clear();
-        const qiWidth = 118 * (qiPercent / 100);
+        const qiWidth = 138 * (qiPercent / 100);
         qiBar.fillStyle(0x4ade80); // Green for Qi
-        qiBar.fillRect(1, 1, qiWidth, 14);
+        qiBar.fillRect(1, 1, qiWidth, 18);
       }
       if (qiLabelText) {
         qiLabelText.setText(`✨ Ци: ${Math.round(currentQi)}/${maxQi}`);
@@ -1066,6 +1091,17 @@ const GameSceneConfig = {
       title.setPosition(width / 2, 15);
       coords.setPosition(width / 2, 35);
 
+      // Left panel elements are fixed at x:10, only update on resize
+      worldTimeText.setPosition(10, 60);
+      hpBarBg.setPosition(10, 85);
+      hpBarFill.setPosition(10, 85);
+      hpLabel.setPosition(15, 88);
+      qiBarBg.setPosition(10, 110);
+      qiBarFill.setPosition(10, 110);
+      qiLabel.setPosition(15, 113);
+      distanceText.setPosition(10, 138);
+      rangeText.setPosition(10, 160);
+
       const chatX = chatWidth / 2 + 10;
       const chatY = height - chatHeight / 2 - 10;
       chatBg.setPosition(chatX, chatY);
@@ -1075,7 +1111,7 @@ const GameSceneConfig = {
       chatInputDisplay.setPosition(chatX - chatWidth / 2 + 10, chatY + chatHeight / 2 - 22);
 
       const minimapX = width - minimapSize / 2 - 10;
-      const minimapY = 120 + minimapSize / 2;
+      const minimapY = 180 + minimapSize / 2;
       minimapBg.setPosition(minimapX, minimapY);
       minimapPlayer.setPosition(minimapX, minimapY);
       scene.data.set('minimapX', minimapX);
@@ -1274,6 +1310,7 @@ const GameSceneConfig = {
     const cursors = scene.data.get('cursors') as Phaser.Types.Input.Keyboard.CursorKeys;
     const wasd = scene.data.get('wasd') as Record<string, Phaser.Input.Keyboard.Key>;
     const coordsText = scene.data.get('coordsText') as Phaser.GameObjects.Text;
+    const distanceTextEl = scene.data.get('distanceText') as Phaser.GameObjects.Text;
     const minimapPlayer = scene.data.get('minimapPlayer') as Phaser.GameObjects.Arc;
     const minimapX = scene.data.get('minimapX') as number;
     const minimapY = scene.data.get('minimapY') as number;
@@ -1310,9 +1347,52 @@ const GameSceneConfig = {
     // Update player label position
     playerLabel.setPosition(player.x, player.y + 40);
 
-    // Update coordinates display with rotation
+    // === METRIC COORDINATES ===
+    // Convert pixel position to meters (center of world = 0,0)
+    const playerXMeters = (player.x - WORLD_WIDTH / 2) / METERS_TO_PIXELS;
+    const playerYMeters = (player.y - WORLD_HEIGHT / 2) / METERS_TO_PIXELS;
     const rotText = `🎯: ${Math.round(((globalPlayerRotation % 360) + 360) % 360)}°`;
-    coordsText.setText(`X: ${Math.round(player.x)}  Y: ${Math.round(player.y)}  ${rotText}`);
+    coordsText.setText(`X: ${playerXMeters.toFixed(1)}м  Y: ${playerYMeters.toFixed(1)}м  ${rotText}`);
+
+    // === DISTANCE TO NEAREST TARGET (in meters) ===
+    let nearestDistance = Infinity;
+    let nearestInFront: number | null = null;
+    
+    for (const target of globalTargets) {
+      const dx = target.x - player.x;
+      const dy = target.y - player.y;
+      const distPixels = Math.sqrt(dx * dx + dy * dy);
+      const distMeters = distPixels / METERS_TO_PIXELS;
+      
+      if (distMeters < nearestDistance) {
+        nearestDistance = distMeters;
+        
+        // Check if target is in front of player (within 90 degree cone)
+        const angleToTarget = Math.atan2(dy, dx) * 180 / Math.PI;
+        const playerAngleDeg = ((globalPlayerRotation % 360) + 360) % 360;
+        let angleDiff = Math.abs(angleToTarget - playerAngleDeg);
+        if (angleDiff > 180) angleDiff = 360 - angleDiff;
+        
+        if (angleDiff <= 45) {
+          nearestInFront = distMeters;
+        }
+      }
+    }
+
+    // Update distance display
+    if (distanceTextEl) {
+      if (nearestInFront !== null) {
+        const inRange = nearestInFront <= 5; // 5m attack range
+        distanceTextEl.setText(`📏 До цели: ${nearestInFront.toFixed(1)} м ${inRange ? '✓' : '⚠️'}`);
+        distanceTextEl.setColor(inRange ? '#4ade80' : '#fbbf24');
+      } else if (nearestDistance < Infinity) {
+        distanceTextEl.setText(`📏 Ближайшая: ${nearestDistance.toFixed(1)} м`);
+        distanceTextEl.setColor('#9ca3af');
+      } else {
+        distanceTextEl.setText('📏 Целей нет');
+        distanceTextEl.setColor('#9ca3af');
+      }
+    }
 
     // Update minimap
     const mapRatio = minimapSize / WORLD_WIDTH;
