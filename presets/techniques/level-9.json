@@ -1,0 +1,2065 @@
+{
+  "version": "1.0",
+  "level": 9,
+  "count": 39,
+  "techniques": [
+    {
+      "id": "TC_000263",
+      "name": "Ладонь горный",
+      "nameEn": "Ладонь Горный",
+      "type": "combat",
+      "subtype": "ranged_beam",
+      "element": "earth",
+      "level": 9,
+      "baseDamage": 337,
+      "baseQiCost": 418,
+      "baseRange": 96.6,
+      "baseDuration": 2.8,
+      "damageFalloff": {
+        "fullDamage": 48,
+        "halfDamage": 72,
+        "max": 96.6
+      },
+      "statRequirements": {
+        "intelligence": 29,
+        "agility": 13
+      },
+      "description": "Ладонь горный — лучевая техника элемента earth уровня 9. Редкость: uncommon. Урон: 337. Дальность: 96.6м. Затухание: полный урон до 48м, 50% до 72м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 36.6,
+          "shieldDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {
+          "damageMultiplier": 1.07
+        }
+      },
+      "computed": {
+        "finalDamage": 360,
+        "finalQiCost": 418,
+        "finalRange": 96,
+        "finalDuration": 2,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 36.6
+          }
+        ]
+      },
+      "meta": {
+        "seed": 864632305,
+        "template": "combat_ranged_beam_earth",
+        "generatedAt": "2026-02-27T19:04:09.555Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000264",
+      "name": "Вихревой Кулак",
+      "nameEn": "Вихревой Кулак",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "air",
+      "level": 9,
+      "baseDamage": 279,
+      "baseQiCost": 360,
+      "baseRange": 1.7,
+      "baseDuration": 15,
+      "minCultivationLevel": 8,
+      "weaponType": "staff",
+      "isRangedQi": false,
+      "statRequirements": {
+        "agility": 22,
+        "strength": 18
+      },
+      "description": "Вихревой Кулак — техника владения staff элемента air уровня 9. Редкость: common. Урон: 279. Дальность: 1.7м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 279,
+        "finalQiCost": 360,
+        "finalRange": 1,
+        "finalDuration": 15,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 864632304,
+        "template": "combat_melee_weapon_staff_air",
+        "generatedAt": "2026-02-27T19:04:09.556Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000265",
+      "name": "Ладонь статический",
+      "nameEn": "Ладонь Статический",
+      "type": "combat",
+      "subtype": "ranged_beam",
+      "element": "lightning",
+      "level": 9,
+      "baseDamage": 394,
+      "baseQiCost": 456,
+      "baseRange": 96.6,
+      "baseDuration": 2.8,
+      "damageFalloff": {
+        "fullDamage": 48,
+        "halfDamage": 72,
+        "max": 96.6
+      },
+      "statRequirements": {
+        "intelligence": 29,
+        "agility": 13
+      },
+      "description": "Ладонь статический — лучевая техника элемента lightning уровня 9. Редкость: uncommon. Урон: 394. Дальность: 96.6м. Затухание: полный урон до 48м, 50% до 72м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 85.1,
+          "shieldDuration": 3
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 394,
+        "finalQiCost": 456,
+        "finalRange": 96,
+        "finalDuration": 2,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 85.1
+          }
+        ]
+      },
+      "meta": {
+        "seed": 864632303,
+        "template": "combat_ranged_beam_lightning",
+        "generatedAt": "2026-02-27T19:04:09.556Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000266",
+      "name": "Эфирный Укол",
+      "nameEn": "Эфирный Укол",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "void",
+      "level": 9,
+      "baseDamage": 444,
+      "baseQiCost": 600,
+      "baseRange": 0.5,
+      "baseDuration": 15,
+      "minCultivationLevel": 8,
+      "statRequirements": {
+        "strength": 27,
+        "agility": 13
+      },
+      "description": "Эфирный Укол — техника удара телом элемента void уровня 9. Редкость: common. Урон: 444. Дальность: 0.5м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 444,
+        "finalQiCost": 600,
+        "finalRange": 0,
+        "finalDuration": 15,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 864632302,
+        "template": "combat_melee_strike_void",
+        "generatedAt": "2026-02-27T19:04:09.556Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000267",
+      "name": "Истинный Ладонь",
+      "nameEn": "Истинный Ладонь",
+      "type": "combat",
+      "subtype": "ranged_beam",
+      "element": "neutral",
+      "level": 9,
+      "baseDamage": 212,
+      "baseQiCost": 380,
+      "baseRange": 96.6,
+      "baseDuration": 2.8,
+      "damageFalloff": {
+        "fullDamage": 48,
+        "halfDamage": 72,
+        "max": 96.6
+      },
+      "statRequirements": {
+        "intelligence": 29,
+        "agility": 13
+      },
+      "description": "Истинный Ладонь — лучевая техника уровня 9. Редкость: uncommon. Урон: 212. Дальность: 96.6м. Затухание: полный урон до 48м, 50% до 72м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 26.2,
+          "buffStat": "strength",
+          "buffDuration": 7
+        },
+        "penalties": {},
+        "bonuses": {
+          "damageMultiplier": 1.19
+        }
+      },
+      "computed": {
+        "finalDamage": 252,
+        "finalQiCost": 380,
+        "finalRange": 96,
+        "finalDuration": 2,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 26.2
+          }
+        ]
+      },
+      "meta": {
+        "seed": 864632301,
+        "template": "combat_ranged_beam_neutral",
+        "generatedAt": "2026-02-27T19:04:09.556Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000268",
+      "name": "Толчок пожирающий",
+      "nameEn": "Толчок Пожирающий",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "fire",
+      "level": 9,
+      "baseDamage": 432,
+      "baseQiCost": 400,
+      "baseRange": 0.5,
+      "baseDuration": 15,
+      "minCultivationLevel": 8,
+      "statRequirements": {
+        "strength": 27,
+        "agility": 13
+      },
+      "description": "Толчок пожирающий — техника удара телом элемента fire уровня 9. Редкость: common. Урон: 432. Дальность: 0.5м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 432,
+        "finalQiCost": 400,
+        "finalRange": 0,
+        "finalDuration": 15,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 864632300,
+        "template": "combat_melee_strike_fire",
+        "generatedAt": "2026-02-27T19:04:09.556Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000269",
+      "name": "Струящийся Волна",
+      "nameEn": "Струящийся Волна",
+      "type": "combat",
+      "subtype": "ranged_beam",
+      "element": "water",
+      "level": 9,
+      "baseDamage": 281,
+      "baseQiCost": 380,
+      "baseRange": 96.6,
+      "baseDuration": 2.8,
+      "damageFalloff": {
+        "fullDamage": 48,
+        "halfDamage": 72,
+        "max": 96.6
+      },
+      "statRequirements": {
+        "intelligence": 29,
+        "agility": 13
+      },
+      "description": "Струящийся Волна — лучевая техника элемента water уровня 9. Редкость: uncommon. Урон: 281. Дальность: 96.6м. Затухание: полный урон до 48м, 50% до 72м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "burning": true
+        },
+        "effectValues": {
+          "burningDamage": 4.5,
+          "burningDuration": 1
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 281,
+        "finalQiCost": 380,
+        "finalRange": 96,
+        "finalDuration": 2,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 4.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 864632299,
+        "template": "combat_ranged_beam_water",
+        "generatedAt": "2026-02-27T19:04:09.556Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000270",
+      "name": "Каменный Толчок",
+      "nameEn": "Каменный Толчок",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "earth",
+      "level": 9,
+      "baseDamage": 252,
+      "baseQiCost": 440,
+      "baseRange": 0.52,
+      "baseDuration": 15,
+      "minCultivationLevel": 8,
+      "weaponType": "fist",
+      "isRangedQi": false,
+      "statRequirements": {
+        "agility": 22,
+        "strength": 18
+      },
+      "description": "Каменный Толчок — техника владения fist элемента earth уровня 9. Редкость: common. Урон: 252. Дальность: 0.5м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "damageMultiplier": 1.19
+        }
+      },
+      "computed": {
+        "finalDamage": 299,
+        "finalQiCost": 440,
+        "finalRange": 0,
+        "finalDuration": 15,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 864632277,
+        "template": "combat_melee_weapon_fist_earth",
+        "generatedAt": "2026-02-27T19:04:09.556Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000271",
+      "name": "Взрыв стремительный",
+      "nameEn": "Взрыв Стремительный",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "air",
+      "level": 9,
+      "baseDamage": 196,
+      "baseQiCost": 324,
+      "baseRange": 72.8,
+      "baseDuration": 0,
+      "damageFalloff": {
+        "fullDamage": 36,
+        "halfDamage": 55,
+        "max": 72.8
+      },
+      "statRequirements": {
+        "intelligence": 31,
+        "agility": 13
+      },
+      "description": "Взрыв стремительный — площадная техника элемента air уровня 9. Редкость: rare. Урон: 196. Дальность: 72.8м. Радиус: 7.5м. Затухание: полный урон до 36м, 50% до 55м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "stun": true,
+          "knockback": true,
+          "aoe": true
+        },
+        "effectValues": {
+          "stunDuration": 1.2,
+          "knockbackDistance": 2.3,
+          "aoeRadius": 7.5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 156,
+        "finalQiCost": 324,
+        "finalRange": 72,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "stun",
+            "value": 1.2
+          },
+          {
+            "type": "knockback",
+            "value": 2.3
+          },
+          {
+            "type": "aoe",
+            "value": 7.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 864632276,
+        "template": "combat_ranged_aoe_air",
+        "generatedAt": "2026-02-27T19:04:09.556Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000272",
+      "name": "Громовой Взрыв",
+      "nameEn": "Громовой Взрыв",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "lightning",
+      "level": 9,
+      "baseDamage": 448,
+      "baseQiCost": 480,
+      "baseRange": 2.8,
+      "baseDuration": 15,
+      "minCultivationLevel": 8,
+      "weaponType": "halberd",
+      "isRangedQi": false,
+      "statRequirements": {
+        "agility": 22,
+        "strength": 18
+      },
+      "description": "Громовой Взрыв — техника владения halberd элемента lightning уровня 9. Редкость: common. Урон: 448. Дальность: 2.8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "damageMultiplier": 1.23
+        }
+      },
+      "computed": {
+        "finalDamage": 551,
+        "finalQiCost": 480,
+        "finalRange": 2,
+        "finalDuration": 15,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 864632275,
+        "template": "combat_melee_weapon_halberd_lightning",
+        "generatedAt": "2026-02-27T19:04:09.556Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000273",
+      "name": "Пустотный Клинок",
+      "nameEn": "Пустотный Клинок",
+      "type": "combat",
+      "subtype": "ranged_beam",
+      "element": "void",
+      "level": 9,
+      "baseDamage": 422,
+      "baseQiCost": 570,
+      "baseRange": 96.6,
+      "baseDuration": 2.8,
+      "damageFalloff": {
+        "fullDamage": 48,
+        "halfDamage": 72,
+        "max": 96.6
+      },
+      "statRequirements": {
+        "intelligence": 29,
+        "agility": 13
+      },
+      "description": "Пустотный Клинок — лучевая техника элемента void уровня 9. Редкость: uncommon. Урон: 422. Дальность: 96.6м. Затухание: полный урон до 48м, 50% до 72м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 13.1,
+          "poisonDuration": 4
+        },
+        "penalties": {},
+        "bonuses": {
+          "damageMultiplier": 1.13
+        }
+      },
+      "computed": {
+        "finalDamage": 476,
+        "finalQiCost": 570,
+        "finalRange": 96,
+        "finalDuration": 2,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 13.1
+          }
+        ]
+      },
+      "meta": {
+        "seed": 864632274,
+        "template": "combat_ranged_beam_void",
+        "generatedAt": "2026-02-27T19:04:09.556Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000274",
+      "name": "Волна чистый",
+      "nameEn": "Волна Чистый",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "neutral",
+      "level": 9,
+      "baseDamage": 200,
+      "baseQiCost": 400,
+      "baseRange": 0.42,
+      "baseDuration": 15,
+      "minCultivationLevel": 8,
+      "weaponType": "dagger",
+      "isRangedQi": false,
+      "statRequirements": {
+        "agility": 22,
+        "strength": 18
+      },
+      "description": "Волна чистый — техника владения dagger уровня 9. Редкость: common. Урон: 200. Дальность: 0.4м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "burning": true
+        },
+        "effectValues": {
+          "burningDamage": 9.2,
+          "burningDuration": 2
+        },
+        "penalties": {},
+        "bonuses": {
+          "damageMultiplier": 1.17
+        }
+      },
+      "computed": {
+        "finalDamage": 234,
+        "finalQiCost": 400,
+        "finalRange": 0,
+        "finalDuration": 15,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 9.2
+          }
+        ]
+      },
+      "meta": {
+        "seed": 864632273,
+        "template": "combat_melee_weapon_dagger_neutral",
+        "generatedAt": "2026-02-27T19:04:09.556Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000275",
+      "name": "Огненный Взрыв",
+      "nameEn": "Огненный Взрыв",
+      "type": "combat",
+      "subtype": "ranged_beam",
+      "element": "fire",
+      "level": 9,
+      "baseDamage": 218,
+      "baseQiCost": 380,
+      "baseRange": 96.6,
+      "baseDuration": 2.8,
+      "damageFalloff": {
+        "fullDamage": 48,
+        "halfDamage": 72,
+        "max": 96.6
+      },
+      "statRequirements": {
+        "intelligence": 29,
+        "agility": 13
+      },
+      "description": "Огненный Взрыв — лучевая техника элемента fire уровня 9. Редкость: uncommon. Урон: 218. Дальность: 96.6м. Затухание: полный урон до 48м, 50% до 72м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "debuff": true,
+          "shield": true
+        },
+        "effectValues": {
+          "debuffAmount": 24,
+          "debuffStat": "agility",
+          "debuffDuration": 2,
+          "shieldHP": 86.5,
+          "shieldDuration": 6
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.28
+        },
+        "bonuses": {
+          "damageMultiplier": 1.15
+        }
+      },
+      "computed": {
+        "finalDamage": 250,
+        "finalQiCost": 486,
+        "finalRange": 96,
+        "finalDuration": 2,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 24
+          },
+          {
+            "type": "shield",
+            "value": 86.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 864632272,
+        "template": "combat_ranged_beam_fire",
+        "generatedAt": "2026-02-27T19:04:09.556Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000276",
+      "name": "Струящийся Толчок",
+      "nameEn": "Струящийся Толчок",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "water",
+      "level": 9,
+      "baseDamage": 222,
+      "baseQiCost": 400,
+      "baseRange": 0.39,
+      "baseDuration": 15,
+      "minCultivationLevel": 8,
+      "weaponType": "claw",
+      "isRangedQi": false,
+      "statRequirements": {
+        "agility": 22,
+        "strength": 18
+      },
+      "description": "Струящийся Толчок — техника владения claw элемента water уровня 9. Редкость: common. Урон: 222. Дальность: 0.4м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "damageMultiplier": 1.21
+        }
+      },
+      "computed": {
+        "finalDamage": 268,
+        "finalQiCost": 400,
+        "finalRange": 0,
+        "finalDuration": 15,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 864632271,
+        "template": "combat_melee_weapon_claw_water",
+        "generatedAt": "2026-02-27T19:04:09.556Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000277",
+      "name": "Взрыв тяжёлый",
+      "nameEn": "Взрыв Тяжёлый",
+      "type": "combat",
+      "subtype": "ranged_beam",
+      "element": "earth",
+      "level": 9,
+      "baseDamage": 324,
+      "baseQiCost": 418,
+      "baseRange": 96.6,
+      "baseDuration": 2.8,
+      "damageFalloff": {
+        "fullDamage": 48,
+        "halfDamage": 72,
+        "max": 96.6
+      },
+      "statRequirements": {
+        "intelligence": 29,
+        "agility": 13
+      },
+      "description": "Взрыв тяжёлый — лучевая техника элемента earth уровня 9. Редкость: uncommon. Урон: 324. Дальность: 96.6м. Затухание: полный урон до 48м, 50% до 72м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "buff": true,
+          "slow": true
+        },
+        "effectValues": {
+          "buffAmount": 7,
+          "buffStat": "intelligence",
+          "buffDuration": 4,
+          "slowPercent": 38.2,
+          "slowDuration": 3
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.27
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 324,
+        "finalQiCost": 530,
+        "finalRange": 96,
+        "finalDuration": 2,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 7
+          },
+          {
+            "type": "slow",
+            "value": 38.2
+          }
+        ]
+      },
+      "meta": {
+        "seed": 864632270,
+        "template": "combat_ranged_beam_earth",
+        "generatedAt": "2026-02-27T19:04:09.556Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000278",
+      "name": "Удар невидимый",
+      "nameEn": "Удар Невидимый",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "air",
+      "level": 9,
+      "baseDamage": 325,
+      "baseQiCost": 360,
+      "baseRange": 0.83,
+      "baseDuration": 15,
+      "minCultivationLevel": 8,
+      "weaponType": "fan",
+      "isRangedQi": false,
+      "statRequirements": {
+        "agility": 22,
+        "strength": 18
+      },
+      "description": "Удар невидимый — техника владения fan элемента air уровня 9. Редкость: common. Урон: 325. Дальность: 0.8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 79,
+          "shieldDuration": 3
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 325,
+        "finalQiCost": 360,
+        "finalRange": 0,
+        "finalDuration": 15,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 79
+          }
+        ]
+      },
+      "meta": {
+        "seed": 864632269,
+        "template": "combat_melee_weapon_fan_air",
+        "generatedAt": "2026-02-27T19:04:09.556Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000279",
+      "name": "Ослепляющий Взрыв",
+      "nameEn": "Ослепляющий Взрыв",
+      "type": "combat",
+      "subtype": "ranged_beam",
+      "element": "lightning",
+      "level": 9,
+      "baseDamage": 380,
+      "baseQiCost": 456,
+      "baseRange": 96.6,
+      "baseDuration": 2.8,
+      "damageFalloff": {
+        "fullDamage": 48,
+        "halfDamage": 72,
+        "max": 96.6
+      },
+      "statRequirements": {
+        "intelligence": 29,
+        "agility": 13
+      },
+      "description": "Ослепляющий Взрыв — лучевая техника элемента lightning уровня 9. Редкость: uncommon. Урон: 380. Дальность: 96.6м. Затухание: полный урон до 48м, 50% до 72м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "pierce": true,
+          "buff": true
+        },
+        "effectValues": {
+          "piercePercent": 17.5,
+          "buffAmount": 21.9,
+          "buffStat": "agility",
+          "buffDuration": 7
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.25
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 380,
+        "finalQiCost": 570,
+        "finalRange": 96,
+        "finalDuration": 2,
+        "activeEffects": [
+          {
+            "type": "pierce",
+            "value": 17.5
+          },
+          {
+            "type": "buff",
+            "value": 21.9
+          }
+        ]
+      },
+      "meta": {
+        "seed": 864632268,
+        "template": "combat_ranged_beam_lightning",
+        "generatedAt": "2026-02-27T19:04:09.556Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000280",
+      "name": "Эфирный Ладонь",
+      "nameEn": "Эфирный Ладонь",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "void",
+      "level": 9,
+      "baseDamage": 303,
+      "baseQiCost": 600,
+      "baseRange": 0.31,
+      "baseDuration": 15,
+      "minCultivationLevel": 8,
+      "weaponType": "claw",
+      "isRangedQi": false,
+      "statRequirements": {
+        "agility": 22,
+        "strength": 18
+      },
+      "description": "Эфирный Ладонь — техника владения claw элемента void уровня 9. Редкость: common. Урон: 303. Дальность: 0.3м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 303,
+        "finalQiCost": 600,
+        "finalRange": 0,
+        "finalDuration": 15,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 864632246,
+        "template": "combat_melee_weapon_claw_void",
+        "generatedAt": "2026-02-27T19:04:09.556Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000281",
+      "name": "Истинный Взрыв",
+      "nameEn": "Истинный Взрыв",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "neutral",
+      "level": 9,
+      "baseDamage": 266,
+      "baseQiCost": 360,
+      "baseRange": 72.8,
+      "baseDuration": 0,
+      "damageFalloff": {
+        "fullDamage": 36,
+        "halfDamage": 55,
+        "max": 72.8
+      },
+      "statRequirements": {
+        "intelligence": 31,
+        "agility": 13
+      },
+      "description": "Истинный Взрыв — площадная техника уровня 9. Редкость: rare. Урон: 266. Дальность: 72.8м. Радиус: 7.5м. Затухание: полный урон до 36м, 50% до 55м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "aoe": true
+        },
+        "effectValues": {
+          "aoeRadius": 7.5
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.2
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 212,
+        "finalQiCost": 432,
+        "finalRange": 72,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "aoe",
+            "value": 7.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 864632245,
+        "template": "combat_ranged_aoe_neutral",
+        "generatedAt": "2026-02-27T19:04:09.557Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000282",
+      "name": "Кулак огненный",
+      "nameEn": "Кулак Огненный",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "fire",
+      "level": 9,
+      "baseDamage": 386,
+      "baseQiCost": 400,
+      "baseRange": 2.4,
+      "baseDuration": 15,
+      "minCultivationLevel": 8,
+      "weaponType": "spear",
+      "isRangedQi": false,
+      "statRequirements": {
+        "agility": 22,
+        "strength": 18
+      },
+      "description": "Кулак огненный — техника владения spear элемента fire уровня 9. Редкость: common. Урон: 386. Дальность: 2.4м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 386,
+        "finalQiCost": 400,
+        "finalRange": 2,
+        "finalDuration": 15,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 864632244,
+        "template": "combat_melee_weapon_spear_fire",
+        "generatedAt": "2026-02-27T19:04:09.557Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000283",
+      "name": "Морской Толчок",
+      "nameEn": "Морской Толчок",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "water",
+      "level": 9,
+      "baseDamage": 338,
+      "baseQiCost": 360,
+      "baseRange": 72.8,
+      "baseDuration": 0,
+      "damageFalloff": {
+        "fullDamage": 36,
+        "halfDamage": 55,
+        "max": 72.8
+      },
+      "statRequirements": {
+        "intelligence": 31,
+        "agility": 13
+      },
+      "description": "Морской Толчок — площадная техника элемента water уровня 9. Редкость: rare. Урон: 338. Дальность: 72.8м. Радиус: 7.5м. Затухание: полный урон до 36м, 50% до 55м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "burning": true,
+          "buff": true,
+          "aoe": true
+        },
+        "effectValues": {
+          "burningDamage": 12.6,
+          "burningDuration": 1,
+          "buffAmount": 24.3,
+          "buffStat": "intelligence",
+          "buffDuration": 7,
+          "aoeRadius": 7.5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 270,
+        "finalQiCost": 360,
+        "finalRange": 72,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 12.6
+          },
+          {
+            "type": "buff",
+            "value": 24.3
+          },
+          {
+            "type": "aoe",
+            "value": 7.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 864632243,
+        "template": "combat_ranged_aoe_water",
+        "generatedAt": "2026-02-27T19:04:09.557Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000284",
+      "name": "Укол горный",
+      "nameEn": "Укол Горный",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "earth",
+      "level": 9,
+      "baseDamage": 364,
+      "baseQiCost": 440,
+      "baseRange": 0.93,
+      "baseDuration": 15,
+      "minCultivationLevel": 8,
+      "weaponType": "axe",
+      "isRangedQi": false,
+      "statRequirements": {
+        "agility": 22,
+        "strength": 18
+      },
+      "description": "Укол горный — техника владения axe элемента earth уровня 9. Редкость: common. Урон: 364. Дальность: 0.9м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 364,
+        "finalQiCost": 440,
+        "finalRange": 0,
+        "finalDuration": 15,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 864632242,
+        "template": "combat_melee_weapon_axe_earth",
+        "generatedAt": "2026-02-27T19:04:09.557Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000285",
+      "name": "Укол вихревой",
+      "nameEn": "Укол Вихревой",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "air",
+      "level": 9,
+      "baseDamage": 186,
+      "baseQiCost": 324,
+      "baseRange": 72.8,
+      "baseDuration": 0,
+      "damageFalloff": {
+        "fullDamage": 36,
+        "halfDamage": 55,
+        "max": 72.8
+      },
+      "statRequirements": {
+        "intelligence": 31,
+        "agility": 13
+      },
+      "description": "Укол вихревой — площадная техника элемента air уровня 9. Редкость: rare. Урон: 186. Дальность: 72.8м. Радиус: 7.5м. Затухание: полный урон до 36м, 50% до 55м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "pierce": true,
+          "slow": true,
+          "aoe": true
+        },
+        "effectValues": {
+          "piercePercent": 12.5,
+          "slowPercent": 39.7,
+          "slowDuration": 2,
+          "aoeRadius": 7.5
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.11
+        },
+        "bonuses": {
+          "damageMultiplier": 1.14
+        }
+      },
+      "computed": {
+        "finalDamage": 169,
+        "finalQiCost": 359,
+        "finalRange": 72,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "pierce",
+            "value": 12.5
+          },
+          {
+            "type": "slow",
+            "value": 39.7
+          },
+          {
+            "type": "aoe",
+            "value": 7.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 864632241,
+        "template": "combat_ranged_aoe_air",
+        "generatedAt": "2026-02-27T19:04:09.557Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000286",
+      "name": "Искрящийся Толчок",
+      "nameEn": "Искрящийся Толчок",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "lightning",
+      "level": 9,
+      "baseDamage": 409,
+      "baseQiCost": 480,
+      "baseRange": 0.97,
+      "baseDuration": 15,
+      "minCultivationLevel": 8,
+      "weaponType": "blade",
+      "isRangedQi": false,
+      "statRequirements": {
+        "agility": 22,
+        "strength": 18
+      },
+      "description": "Искрящийся Толчок — техника владения blade элемента lightning уровня 9. Редкость: common. Урон: 409. Дальность: 1.0м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "damageMultiplier": 1.07
+        }
+      },
+      "computed": {
+        "finalDamage": 437,
+        "finalQiCost": 480,
+        "finalRange": 0,
+        "finalDuration": 15,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 864632240,
+        "template": "combat_melee_weapon_blade_lightning",
+        "generatedAt": "2026-02-27T19:04:09.557Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000287",
+      "name": "Толчок бесплотный",
+      "nameEn": "Толчок Бесплотный",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "void",
+      "level": 9,
+      "baseDamage": 417,
+      "baseQiCost": 540,
+      "baseRange": 72.8,
+      "baseDuration": 0,
+      "damageFalloff": {
+        "fullDamage": 36,
+        "halfDamage": 55,
+        "max": 72.8
+      },
+      "statRequirements": {
+        "intelligence": 31,
+        "agility": 13
+      },
+      "description": "Толчок бесплотный — площадная техника элемента void уровня 9. Редкость: rare. Урон: 417. Дальность: 72.8м. Радиус: 7.5м. Затухание: полный урон до 36м, 50% до 55м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "poison": true,
+          "stun": true,
+          "aoe": true
+        },
+        "effectValues": {
+          "poisonDamage": 7.5,
+          "poisonDuration": 2,
+          "stunDuration": 1.4,
+          "aoeRadius": 7.5
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.15
+        },
+        "bonuses": {
+          "damageMultiplier": 1.24
+        }
+      },
+      "computed": {
+        "finalDamage": 413,
+        "finalQiCost": 621,
+        "finalRange": 72,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 7.5
+          },
+          {
+            "type": "stun",
+            "value": 1.4
+          },
+          {
+            "type": "aoe",
+            "value": 7.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 864632239,
+        "template": "combat_ranged_aoe_void",
+        "generatedAt": "2026-02-27T19:04:09.557Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000288",
+      "name": "Сфокусированный Волна",
+      "nameEn": "Сфокусированный Волна",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "neutral",
+      "level": 9,
+      "baseDamage": 318,
+      "baseQiCost": 400,
+      "baseRange": 1.82,
+      "baseDuration": 15,
+      "minCultivationLevel": 8,
+      "weaponType": "staff",
+      "isRangedQi": false,
+      "statRequirements": {
+        "agility": 22,
+        "strength": 18
+      },
+      "description": "Сфокусированный Волна — техника владения staff уровня 9. Редкость: common. Урон: 318. Дальность: 1.8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 318,
+        "finalQiCost": 400,
+        "finalRange": 1,
+        "finalDuration": 15,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 864632238,
+        "template": "combat_melee_weapon_staff_neutral",
+        "generatedAt": "2026-02-27T19:04:09.557Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000289",
+      "name": "Раскалённый Толчок",
+      "nameEn": "Раскалённый Толчок",
+      "type": "combat",
+      "subtype": "ranged_beam",
+      "element": "fire",
+      "level": 9,
+      "baseDamage": 391,
+      "baseQiCost": 380,
+      "baseRange": 96.6,
+      "baseDuration": 2.8,
+      "damageFalloff": {
+        "fullDamage": 48,
+        "halfDamage": 72,
+        "max": 96.6
+      },
+      "statRequirements": {
+        "intelligence": 29,
+        "agility": 13
+      },
+      "description": "Раскалённый Толчок — лучевая техника элемента fire уровня 9. Редкость: uncommon. Урон: 391. Дальность: 96.6м. Затухание: полный урон до 48м, 50% до 72м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "freezing": true
+        },
+        "effectValues": {
+          "freezingDuration": 1.4
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 391,
+        "finalQiCost": 380,
+        "finalRange": 96,
+        "finalDuration": 2,
+        "activeEffects": [
+          {
+            "type": "freezing",
+            "value": 1.4
+          }
+        ]
+      },
+      "meta": {
+        "seed": 864632237,
+        "template": "combat_ranged_beam_fire",
+        "generatedAt": "2026-02-27T19:04:09.557Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000290",
+      "name": "Холодный Клинок",
+      "nameEn": "Холодный Клинок",
+      "type": "combat",
+      "subtype": "ranged_projectile",
+      "element": "water",
+      "level": 9,
+      "baseDamage": 297,
+      "baseQiCost": 400,
+      "baseRange": 70,
+      "baseDuration": 0,
+      "damageFalloff": {
+        "fullDamage": 35,
+        "halfDamage": 53,
+        "max": 70
+      },
+      "statRequirements": {
+        "intelligence": 27,
+        "agility": 13
+      },
+      "description": "Холодный Клинок — снарядная техника элемента water уровня 9. Редкость: common. Урон: 297. Дальность: 70м. Затухание: полный урон до 35м, 50% до 53м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "damageMultiplier": 1.18
+        }
+      },
+      "computed": {
+        "finalDamage": 350,
+        "finalQiCost": 400,
+        "finalRange": 70,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 864632215,
+        "template": "combat_ranged_projectile_water",
+        "generatedAt": "2026-02-27T19:04:09.557Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000291",
+      "name": "Каменный Взрыв",
+      "nameEn": "Каменный Взрыв",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "earth",
+      "level": 9,
+      "baseDamage": 445,
+      "baseQiCost": 374,
+      "baseRange": 81.2,
+      "baseDuration": 0,
+      "damageFalloff": {
+        "fullDamage": 41,
+        "halfDamage": 61,
+        "max": 81.2
+      },
+      "statRequirements": {
+        "intelligence": 33,
+        "agility": 13
+      },
+      "description": "Каменный Взрыв — площадная техника элемента earth уровня 9. Редкость: legendary. Урон: 445. Дальность: 81.2м. Радиус: 8.0м. Затухание: полный урон до 41м, 50% до 61м.",
+      "rarity": "legendary",
+      "modifiers": {
+        "effects": {
+          "poison": true,
+          "debuff": true,
+          "shield": true,
+          "aoe": true
+        },
+        "effectValues": {
+          "poisonDamage": 4.5,
+          "poisonDuration": 3,
+          "debuffAmount": 20,
+          "debuffStat": "agility",
+          "debuffDuration": 4,
+          "shieldHP": 72.2,
+          "shieldDuration": 6,
+          "aoeRadius": 8
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 356,
+        "finalQiCost": 374,
+        "finalRange": 81,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 4.5
+          },
+          {
+            "type": "debuff",
+            "value": 20
+          },
+          {
+            "type": "shield",
+            "value": 72.2
+          },
+          {
+            "type": "aoe",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 864632214,
+        "template": "combat_ranged_aoe_earth",
+        "generatedAt": "2026-02-27T19:04:09.557Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000292",
+      "name": "Стремительный Волна",
+      "nameEn": "Стремительный Волна",
+      "type": "combat",
+      "subtype": "ranged_projectile",
+      "element": "air",
+      "level": 9,
+      "baseDamage": 190,
+      "baseQiCost": 360,
+      "baseRange": 70,
+      "baseDuration": 0,
+      "damageFalloff": {
+        "fullDamage": 35,
+        "halfDamage": 53,
+        "max": 70
+      },
+      "statRequirements": {
+        "intelligence": 27,
+        "agility": 13
+      },
+      "description": "Стремительный Волна — снарядная техника элемента air уровня 9. Редкость: common. Урон: 190. Дальность: 70м. Затухание: полный урон до 35м, 50% до 53м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "damageMultiplier": 1.17
+        }
+      },
+      "computed": {
+        "finalDamage": 222,
+        "finalQiCost": 360,
+        "finalRange": 70,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 864632213,
+        "template": "combat_ranged_projectile_air",
+        "generatedAt": "2026-02-27T19:04:09.557Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000293",
+      "name": "Ладонь статический",
+      "nameEn": "Ладонь Статический",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "lightning",
+      "level": 9,
+      "baseDamage": 454,
+      "baseQiCost": 432,
+      "baseRange": 72.8,
+      "baseDuration": 0,
+      "damageFalloff": {
+        "fullDamage": 36,
+        "halfDamage": 55,
+        "max": 72.8
+      },
+      "statRequirements": {
+        "intelligence": 31,
+        "agility": 13
+      },
+      "description": "Ладонь статический — площадная техника элемента lightning уровня 9. Редкость: rare. Урон: 454. Дальность: 72.8м. Радиус: 7.5м. Затухание: полный урон до 36м, 50% до 55м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "shield": true,
+          "poison": true,
+          "stun": true,
+          "aoe": true
+        },
+        "effectValues": {
+          "shieldHP": 31.1,
+          "shieldDuration": 4,
+          "poisonDamage": 9.7,
+          "poisonDuration": 3,
+          "stunDuration": 1,
+          "aoeRadius": 7.5
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.17
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 363,
+        "finalQiCost": 505,
+        "finalRange": 72,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 31.1
+          },
+          {
+            "type": "poison",
+            "value": 9.7
+          },
+          {
+            "type": "stun",
+            "value": 1
+          },
+          {
+            "type": "aoe",
+            "value": 7.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 864632212,
+        "template": "combat_ranged_aoe_lightning",
+        "generatedAt": "2026-02-27T19:04:09.557Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000294",
+      "name": "Кулак пустотный",
+      "nameEn": "Кулак Пустотный",
+      "type": "combat",
+      "subtype": "ranged_projectile",
+      "element": "void",
+      "level": 9,
+      "baseDamage": 415,
+      "baseQiCost": 600,
+      "baseRange": 70,
+      "baseDuration": 0,
+      "damageFalloff": {
+        "fullDamage": 35,
+        "halfDamage": 53,
+        "max": 70
+      },
+      "statRequirements": {
+        "intelligence": 27,
+        "agility": 13
+      },
+      "description": "Кулак пустотный — снарядная техника элемента void уровня 9. Редкость: common. Урон: 415. Дальность: 70м. Затухание: полный урон до 35м, 50% до 53м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "damageMultiplier": 1.1
+        }
+      },
+      "computed": {
+        "finalDamage": 456,
+        "finalQiCost": 600,
+        "finalRange": 70,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 864632211,
+        "template": "combat_ranged_projectile_void",
+        "generatedAt": "2026-02-27T19:04:09.557Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000295",
+      "name": "Клинок сфокусированный",
+      "nameEn": "Клинок Сфокусированный",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "neutral",
+      "level": 9,
+      "baseDamage": 255,
+      "baseQiCost": 360,
+      "baseRange": 72.8,
+      "baseDuration": 0,
+      "damageFalloff": {
+        "fullDamage": 36,
+        "halfDamage": 55,
+        "max": 72.8
+      },
+      "statRequirements": {
+        "intelligence": 31,
+        "agility": 13
+      },
+      "description": "Клинок сфокусированный — площадная техника уровня 9. Редкость: rare. Урон: 255. Дальность: 72.8м. Радиус: 7.5м. Затухание: полный урон до 36м, 50% до 55м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "buff": true,
+          "knockback": true,
+          "aoe": true
+        },
+        "effectValues": {
+          "buffAmount": 18.8,
+          "buffStat": "intelligence",
+          "buffDuration": 6,
+          "knockbackDistance": 3.1,
+          "aoeRadius": 7.5
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.2
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 204,
+        "finalQiCost": 432,
+        "finalRange": 72,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 18.8
+          },
+          {
+            "type": "knockback",
+            "value": 3.1
+          },
+          {
+            "type": "aoe",
+            "value": 7.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 864632210,
+        "template": "combat_ranged_aoe_neutral",
+        "generatedAt": "2026-02-27T19:04:09.557Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000296",
+      "name": "Пылающий Ладонь",
+      "nameEn": "Пылающий Ладонь",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "fire",
+      "level": 9,
+      "baseDamage": 351,
+      "baseQiCost": 400,
+      "baseRange": 2.33,
+      "baseDuration": 15,
+      "minCultivationLevel": 8,
+      "weaponType": "spear",
+      "isRangedQi": false,
+      "statRequirements": {
+        "agility": 22,
+        "strength": 18
+      },
+      "description": "Пылающий Ладонь — техника владения spear элемента fire уровня 9. Редкость: common. Урон: 351. Дальность: 2.3м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 351,
+        "finalQiCost": 400,
+        "finalRange": 2,
+        "finalDuration": 15,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 864632209,
+        "template": "combat_melee_weapon_spear_fire",
+        "generatedAt": "2026-02-27T19:04:09.557Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000297",
+      "name": "Ладонь струящийся",
+      "nameEn": "Ладонь Струящийся",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "water",
+      "level": 9,
+      "baseDamage": 289,
+      "baseQiCost": 360,
+      "baseRange": 72.8,
+      "baseDuration": 0,
+      "damageFalloff": {
+        "fullDamage": 36,
+        "halfDamage": 55,
+        "max": 72.8
+      },
+      "statRequirements": {
+        "intelligence": 31,
+        "agility": 13
+      },
+      "description": "Ладонь струящийся — площадная техника элемента water уровня 9. Редкость: rare. Урон: 289. Дальность: 72.8м. Радиус: 7.5м. Затухание: полный урон до 36м, 50% до 55м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "buff": true,
+          "freezing": true,
+          "aoe": true
+        },
+        "effectValues": {
+          "buffAmount": 27.4,
+          "buffStat": "agility",
+          "buffDuration": 3,
+          "freezingDuration": 0.7,
+          "aoeRadius": 7.5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 231,
+        "finalQiCost": 360,
+        "finalRange": 72,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 27.4
+          },
+          {
+            "type": "freezing",
+            "value": 0.7
+          },
+          {
+            "type": "aoe",
+            "value": 7.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 864632208,
+        "template": "combat_ranged_aoe_water",
+        "generatedAt": "2026-02-27T19:04:09.557Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000298",
+      "name": "Толчок титанический",
+      "nameEn": "Толчок Титанический",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "earth",
+      "level": 9,
+      "baseDamage": 327,
+      "baseQiCost": 440,
+      "baseRange": 0.35,
+      "baseDuration": 15,
+      "minCultivationLevel": 8,
+      "weaponType": "dagger",
+      "isRangedQi": false,
+      "statRequirements": {
+        "agility": 22,
+        "strength": 18
+      },
+      "description": "Толчок титанический — техника владения dagger элемента earth уровня 9. Редкость: common. Урон: 327. Дальность: 0.3м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "aoe": true
+        },
+        "effectValues": {
+          "aoeRadius": 8.8
+        },
+        "penalties": {},
+        "bonuses": {
+          "damageMultiplier": 1.21
+        }
+      },
+      "computed": {
+        "finalDamage": 316,
+        "finalQiCost": 440,
+        "finalRange": 0,
+        "finalDuration": 15,
+        "activeEffects": [
+          {
+            "type": "aoe",
+            "value": 8.8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 864632207,
+        "template": "combat_melee_weapon_dagger_earth",
+        "generatedAt": "2026-02-27T19:04:09.557Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000299",
+      "name": "Штормовой Волна",
+      "nameEn": "Штормовой Волна",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "air",
+      "level": 9,
+      "baseDamage": 175,
+      "baseQiCost": 324,
+      "baseRange": 72.8,
+      "baseDuration": 0,
+      "damageFalloff": {
+        "fullDamage": 36,
+        "halfDamage": 55,
+        "max": 72.8
+      },
+      "statRequirements": {
+        "intelligence": 31,
+        "agility": 13
+      },
+      "description": "Штормовой Волна — площадная техника элемента air уровня 9. Редкость: rare. Урон: 175. Дальность: 72.8м. Радиус: 7.5м. Затухание: полный урон до 36м, 50% до 55м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "aoe": true,
+          "shield": true,
+          "slow": true
+        },
+        "effectValues": {
+          "aoeRadius": 7.5,
+          "shieldHP": 83.7,
+          "shieldDuration": 3,
+          "slowPercent": 33.6,
+          "slowDuration": 2
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.23
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 140,
+        "finalQiCost": 398,
+        "finalRange": 72,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "aoe",
+            "value": 7.5
+          },
+          {
+            "type": "shield",
+            "value": 83.7
+          },
+          {
+            "type": "slow",
+            "value": 33.6
+          }
+        ]
+      },
+      "meta": {
+        "seed": 864632206,
+        "template": "combat_ranged_aoe_air",
+        "generatedAt": "2026-02-27T19:04:09.557Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000300",
+      "name": "Статический Укол",
+      "nameEn": "Статический Укол",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "lightning",
+      "level": 9,
+      "baseDamage": 363,
+      "baseQiCost": 480,
+      "baseRange": 0.5,
+      "baseDuration": 15,
+      "minCultivationLevel": 8,
+      "statRequirements": {
+        "strength": 27,
+        "agility": 13
+      },
+      "description": "Статический Укол — техника удара телом элемента lightning уровня 9. Редкость: common. Урон: 363. Дальность: 0.5м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "damageMultiplier": 1.17
+        }
+      },
+      "computed": {
+        "finalDamage": 424,
+        "finalQiCost": 480,
+        "finalRange": 0,
+        "finalDuration": 15,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 864631533,
+        "template": "combat_melee_strike_lightning",
+        "generatedAt": "2026-02-27T19:04:09.557Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "TC_000301",
+      "name": "Укол пустотный",
+      "nameEn": "Укол Пустотный",
+      "type": "combat",
+      "subtype": "ranged_projectile",
+      "element": "void",
+      "level": 9,
+      "baseDamage": 278,
+      "baseQiCost": 600,
+      "baseRange": 70,
+      "baseDuration": 0,
+      "damageFalloff": {
+        "fullDamage": 35,
+        "halfDamage": 53,
+        "max": 70
+      },
+      "statRequirements": {
+        "intelligence": 27,
+        "agility": 13
+      },
+      "description": "Укол пустотный — снарядная техника элемента void уровня 9. Редкость: common. Урон: 278. Дальность: 70м. Затухание: полный урон до 35м, 50% до 53м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 278,
+        "finalQiCost": 600,
+        "finalRange": 70,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 864631532,
+        "template": "combat_ranged_projectile_void",
+        "generatedAt": "2026-02-27T19:04:09.557Z",
+        "generatorVersion": "3.0.0"
+      }
+    }
+  ]
+}

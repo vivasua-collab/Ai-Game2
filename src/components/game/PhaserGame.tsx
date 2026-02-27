@@ -1374,7 +1374,8 @@ const GameSceneConfig = {
     // === COMBAT SLOTS (bottom-center) ===
     const slotSize = 40;
     const slotSpacing = 5;
-    const totalSlots = 6;
+    // Количество слотов зависит от уровня культивации (3 + level - 1)
+    // Уровень 1 = 3 слота, уровень 9 = 11 слотов
 
     const combatSlotsContainer = scene.add.container(0, 0);
     uiContainer.add(combatSlotsContainer);
@@ -1388,6 +1389,7 @@ const GameSceneConfig = {
       const { width, height } = getScreenSize();
       const level = globalCharacter?.cultivationLevel || 1;
       const availableSlots = getCombatSlotsCount(level);
+      const totalSlots = Math.max(availableSlots, 6); // Минимум 6 для UI, но показываем доступные
 
       const equippedBySlot: Map<number, CharacterTechnique> = new Map();
       for (const t of globalTechniques) {
@@ -1396,10 +1398,10 @@ const GameSceneConfig = {
         }
       }
 
-      const slotsY = height - 35;
-      const startX = width / 2 - (totalSlots * (slotSize + slotSpacing)) / 2;
+      const slotsY = height - 50; // Подняли выше, чтобы было место для прогресс бара
+      const startX = width / 2 - (availableSlots * (slotSize + slotSpacing)) / 2;
 
-      for (let i = 0; i < totalSlots; i++) {
+      for (let i = 0; i < availableSlots; i++) {
         const x = startX + i * (slotSize + slotSpacing);
         const isAvailable = i < availableSlots;
         const equipped = equippedBySlot.get(i + 1);
@@ -1423,39 +1425,38 @@ const GameSceneConfig = {
         combatSlotsContainer.add(slotBg);
         slotBackgrounds.push(slotBg);
         
-        // === CHARGING PROGRESS BAR (side bar on left) ===
+        // === CHARGING PROGRESS BAR (внутри слота, сверху вниз) ===
         if (isCharging) {
-          const barWidth = 4;
-          const barHeight = slotSize - 4;
-          const barX = x - slotSize / 2 + barWidth / 2 + 2;
-          const barY = slotsY;
+          const barWidth = slotSize - 8;
+          const barHeight = 4;
+          const barX = x;
+          const barY = slotsY + slotSize / 2 - 4; // Внизу слота
           
           // Background of progress bar
           const progressBg = scene.add.rectangle(barX, barY, barWidth, barHeight, 0x000000, 0.7);
           combatSlotsContainer.add(progressBg);
           
-          // Progress fill (fills from bottom to top)
+          // Progress fill (fills from left to right)
           const progressFill = scene.add.rectangle(
-            barX, 
-            barY + barHeight / 2 - (barHeight * chargeProgress) / 2, 
-            barWidth, 
-            barHeight * chargeProgress, 
+            barX - barWidth / 2 + (barWidth * chargeProgress) / 2, 
+            barY, 
+            barWidth * chargeProgress, 
+            barHeight, 
             chargeProgress >= 1 ? 0x4ade80 : 0xfbbf24, 
             1
           );
-          progressFill.setOrigin(0.5, 1);
           combatSlotsContainer.add(progressFill);
           
-          // Percentage text below slot
-          const progressText = scene.add.text(x, slotsY + slotSize / 2 + 8, 
+          // Percentage text inside slot (top)
+          const progressText = scene.add.text(x, slotsY - slotSize / 2 + 6, 
             `${Math.round(chargeProgress * 100)}%`, {
-            fontSize: '9px',
+            fontSize: '8px',
             color: chargeProgress >= 1 ? '#4ade80' : '#fbbf24',
           }).setOrigin(0.5);
           combatSlotsContainer.add(progressText);
         }
 
-        const keyLabel = scene.add.text(x, slotsY - slotSize / 2 - 8, slotKey, {
+        const keyLabel = scene.add.text(x, slotsY - slotSize / 2 - 10, slotKey, {
           fontSize: '10px',
           color: isAvailable ? '#9ca3af' : '#475569',
         }).setOrigin(0.5);
@@ -1571,7 +1572,7 @@ const GameSceneConfig = {
 
     // === INSTRUCTIONS ===
     const instructions = scene.add.text(0, 0,
-      'WASD • Мышь для прицеливания • 1-6 для атак', {
+      'WASD • Мышь для прицеливания • 1-9,0,- для атак', {
       fontSize: '12px',
       color: '#9ca3af',
     }).setOrigin(0.5);
@@ -1686,8 +1687,9 @@ const GameSceneConfig = {
       chatInputDisplay.setText(currentText + '|');
     });
 
-    // Combat slot keys - use direct key names
-    const numberKeys = ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'];
+    // Combat slot keys - support up to 11 slots (level 9)
+    const numberKeys = ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'ZERO', 'MINUS'];
+    // 1-9 = slots 1-9, 0 = slot 10, - = slot 11
     
     numberKeys.forEach((keyName, index) => {
       scene.input.keyboard?.on(`keydown-${keyName}`, () => {
