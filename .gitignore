@@ -66,3 +66,6 @@ upload/
 
 # Session context
 .session-context
+
+# Git connection file (contains sensitive token)
+.git-connect

@@ -110,6 +110,17 @@ export interface GenerationOptions {
   mode: 'replace' | 'append';
   idPrefix?: string;
   startCounter?: number;
+  // Новые параметры
+  rarity?: Rarity;  // Фиксированная редкость
+  damageVariance?: { min: number; max: number };  // Разброс урона
+  paramBounds?: {
+    damageMin?: number;
+    damageMax?: number;
+    qiCostMin?: number;
+    qiCostMax?: number;
+    rangeMin?: number;
+    rangeMax?: number;
+  };
 }
 
 /**
@@ -240,6 +251,26 @@ export interface ActiveEffect {
 }
 
 // ==================== КОНСТАНТЫ ====================
+
+// Модификаторы редкости
+const RARITY_MULTIPLIERS: Record<Rarity, {
+  damageMult: number;
+  qiCostMult: number;
+  effectChanceMult: number;
+  maxEffects: number;
+  weight: number; // Вес для случайного выбора
+}> = {
+  common:     { damageMult: 0.8,  qiCostMult: 1.0,  effectChanceMult: 0.5,  maxEffects: 1, weight: 50 },
+  uncommon:   { damageMult: 1.0,  qiCostMult: 0.95, effectChanceMult: 0.8,  maxEffects: 2, weight: 30 },
+  rare:       { damageMult: 1.25, qiCostMult: 0.9,  effectChanceMult: 1.2,  maxEffects: 3, weight: 15 },
+  legendary:  { damageMult: 1.6,  qiCostMult: 0.85, effectChanceMult: 1.5,  maxEffects: 4, weight: 5 },
+};
+
+// Разброс базового урона (в процентах от базового)
+const DAMAGE_VARIANCE = {
+  min: 0.7,   // -30% от базового
+  max: 1.3,   // +30% от базового
+};
 
 const BASE_VALUES_BY_LEVEL: Record<number, {
   damage: number;
@@ -403,7 +434,7 @@ function generateName(type: TechniqueType, element: Element, level: number, rng:
 
 // ==================== ГЕНЕРАЦИЯ МОДИФИКАТОРОВ ====================
 
-function generateModifiers(base: BaseTechnique, rng: () => number): TechniqueModifiers {
+function generateModifiers(base: BaseTechnique, rng: () => number, rarity?: Rarity): TechniqueModifiers {
   const modifiers: TechniqueModifiers = {
     effects: {},
     effectValues: {},
@@ -411,7 +442,18 @@ function generateModifiers(base: BaseTechnique, rng: () => number): TechniqueMod
     bonuses: {},
   };
   
-  const numModifiers = 1 + Math.floor(rng() * Math.min(3, base.level));
+  // Количество эффектов зависит от редкости
+  // common: 0-1, uncommon: 1-2, rare: 2-3, legendary: 3-4
+  const rarityMinEffects: Record<Rarity, number> = {
+    common: 0,
+    uncommon: 1,
+    rare: 2,
+    legendary: 3,
+  };
+  
+  const maxEffects = rarity ? RARITY_MULTIPLIERS[rarity].maxEffects : 1;
+  const minEffects = rarity ? rarityMinEffects[rarity] : 1;
+  const numModifiers = minEffects + Math.floor(rng() * Math.min(maxEffects - minEffects + 1, base.level));
   const availableRules = MODIFIER_RULES.filter(rule => 
     base.level >= rule.minLevel && base.level <= rule.maxLevel
   );
@@ -514,38 +556,96 @@ function computeFinalValues(base: BaseTechnique, modifiers: TechniqueModifiers):
 
 // ==================== ГЕНЕРАЦИЯ ПО ТИПАМ ====================
 
+interface TechniqueGenParams {
+  rarity?: Rarity;
+  damageVariance?: { min: number; max: number };
+  paramBounds?: GenerationOptions['paramBounds'];
+}
+
+function selectRarity(rng: () => number, forcedRarity?: Rarity): Rarity {
+  if (forcedRarity) return forcedRarity;
+  
+  const roll = rng() * 100;
+  let cumulative = 0;
+  
+  for (const [rarity, data] of Object.entries(RARITY_MULTIPLIERS)) {
+    cumulative += data.weight;
+    if (roll < cumulative) {
+      return rarity as Rarity;
+    }
+  }
+  return 'common';
+}
+
+function applyDamageVariance(baseDamage: number, rng: () => number, variance?: { min: number; max: number }): number {
+  const v = variance || DAMAGE_VARIANCE;
+  const multiplier = v.min + rng() * (v.max - v.min);
+  return Math.floor(baseDamage * multiplier);
+}
+
 function generateCombatTechnique(
   id: string,
   element: Element,
   level: number,
-  seed: number
+  seed: number,
+  params?: TechniqueGenParams
 ): GeneratedTechnique {
   const rng = seededRandom(seed);
   const baseValues = BASE_VALUES_BY_LEVEL[level] || BASE_VALUES_BY_LEVEL[1];
   const elementMult = ELEMENT_MULTIPLIERS[element];
   
+  // Выбор редкости
+  const rarity = selectRarity(rng, params?.rarity);
+  const rarityMult = RARITY_MULTIPLIERS[rarity];
+  
   const subtypes: CombatSubtype[] = ['melee_strike', 'melee_weapon', 'ranged_projectile', 'ranged_beam', 'ranged_aoe'];
   const subtype = subtypes[Math.floor(rng() * subtypes.length)];
   
+  // Базовый урон с разбросом и модификатором редкости
+  let baseDamage = applyDamageVariance(
+    baseValues.damage * elementMult.damage,
+    rng,
+    params?.damageVariance
+  );
+  baseDamage = Math.floor(baseDamage * rarityMult.damageMult);
+  
+  // Применение границ параметров
+  if (params?.paramBounds) {
+    const bounds = params.paramBounds;
+    if (bounds.damageMin !== undefined) baseDamage = Math.max(baseDamage, bounds.damageMin);
+    if (bounds.damageMax !== undefined) baseDamage = Math.min(baseDamage, bounds.damageMax);
+  }
+  
+  let baseQiCost = Math.floor(baseValues.qiCost * elementMult.qiCost * rarityMult.qiCostMult);
+  let baseRange = baseValues.range;
+  
+  if (params?.paramBounds) {
+    const bounds = params.paramBounds;
+    if (bounds.qiCostMin !== undefined) baseQiCost = Math.max(baseQiCost, bounds.qiCostMin);
+    if (bounds.qiCostMax !== undefined) baseQiCost = Math.min(baseQiCost, bounds.qiCostMax);
+    if (bounds.rangeMin !== undefined) baseRange = Math.max(baseRange, bounds.rangeMin);
+    if (bounds.rangeMax !== undefined) baseRange = Math.min(baseRange, bounds.rangeMax);
+  }
+  
   const base: BaseTechnique = {
     id, name: '', nameEn: '', type: 'combat', subtype, element, level,
-    baseDamage: Math.floor(baseValues.damage * elementMult.damage),
-    baseQiCost: Math.floor(baseValues.qiCost * elementMult.qiCost),
-    baseRange: baseValues.range,
+    baseDamage,
+    baseQiCost,
+    baseRange,
     baseDuration: baseValues.duration,
     minCultivationLevel: Math.max(1, level - 1),
   };
   
-  const modifiers = generateModifiers(base, rng);
+  const modifiers = generateModifiers(base, rng, rarity);
   const computed = computeFinalValues(base, modifiers);
   const { name, nameEn } = generateName('combat', element, level, rng);
   
-  const description = `${name} — атакующая техника ${element === 'neutral' ? '' : `элемента ${element} `}уровня ${level}.`;
-  const rarity: Rarity = level <= 2 ? 'common' : level <= 4 ? 'uncommon' : level <= 6 ? 'rare' : 'legendary';
+  const description = `${name} — атакующая техника ${element === 'neutral' ? '' : `элемента ${element} `}уровня ${level}. ` +
+    `Редкость: ${rarity}. Базовый урон: ${baseDamage}.`;
   
   return {
     ...base, name, nameEn, description, rarity, modifiers, computed,
-    meta: { seed, template: `combat_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '2.0.0' },
+    meta: { seed, template: `combat_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '2.1.0' },
   };
 }
 
@@ -553,21 +653,26 @@ function generateDefenseTechnique(
   id: string,
   element: Element,
   level: number,
-  seed: number
+  seed: number,
+  params?: TechniqueGenParams
 ): GeneratedTechnique {
   const rng = seededRandom(seed);
   const defenseValues = DEFENSE_VALUES_BY_LEVEL[level] || DEFENSE_VALUES_BY_LEVEL[1];
   const elementMult = ELEMENT_MULTIPLIERS[element];
   
+  const rarity = selectRarity(rng, params?.rarity);
+  const rarityMult = RARITY_MULTIPLIERS[rarity];
+  
   const subtypes: DefenseSubtype[] = ['shield', 'barrier', 'block', 'dodge', 'absorb', 'reflect'];
   const subtype = subtypes[Math.floor(rng() * subtypes.length)];
   
-  // Защитные техники наносят 0 урона
+  const shieldHP = Math.floor(defenseValues.shieldHP * rarityMult.damageMult);
+  
   const base: BaseTechnique = {
     id, name: '', nameEn: '', type: 'defense', subtype, element, level,
-    baseDamage: 0,  // Защитные техники не наносят урон
-    baseQiCost: Math.floor(defenseValues.qiCost * elementMult.qiCost),
-    baseRange: 0,  // Локальные защиты
+    baseDamage: 0,
+    baseQiCost: Math.floor(defenseValues.qiCost * elementMult.qiCost * rarityMult.qiCostMult),
+    baseRange: 0,
     baseDuration: defenseValues.duration,
     minCultivationLevel: Math.max(1, level - 1),
   };
@@ -575,7 +680,7 @@ function generateDefenseTechnique(
   const modifiers: TechniqueModifiers = {
     effects: { shield: true },
     effectValues: { 
-      shieldHP: defenseValues.shieldHP,
+      shieldHP,
       shieldDuration: defenseValues.duration,
     },
     penalties: {},
@@ -586,12 +691,11 @@ function generateDefenseTechnique(
   const { name, nameEn } = generateName('defense', element, level, rng);
   
   const description = `${name} — защитная техника ${element === 'neutral' ? '' : `элемента ${element} `}уровня ${level}. ` +
-    `Создаёт щит мощностью ${defenseValues.shieldHP} HP на ${Math.floor(defenseValues.duration / 60)} минут.`;
-  const rarity: Rarity = level <= 2 ? 'common' : level <= 4 ? 'uncommon' : level <= 6 ? 'rare' : 'legendary';
+    `Редкость: ${rarity}. Щит: ${shieldHP} HP на ${Math.floor(defenseValues.duration / 60)} мин.`;
   
   return {
     ...base, name, nameEn, description, rarity, modifiers, computed,
-    meta: { seed, template: `defense_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '2.0.0' },
+    meta: { seed, template: `defense_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '2.1.0' },
   };
 }
 
@@ -599,34 +703,37 @@ function generateSupportTechnique(
   id: string,
   element: Element,
   level: number,
-  seed: number
+  seed: number,
+  params?: TechniqueGenParams
 ): GeneratedTechnique {
   const rng = seededRandom(seed);
   const baseValues = BASE_VALUES_BY_LEVEL[level] || BASE_VALUES_BY_LEVEL[1];
   
+  const rarity = selectRarity(rng, params?.rarity);
+  const rarityMult = RARITY_MULTIPLIERS[rarity];
+  
   const base: BaseTechnique = {
     id, name: '', nameEn: '', type: 'support', element, level,
     baseDamage: 0,
-    baseQiCost: Math.floor(baseValues.qiCost * 0.8),
+    baseQiCost: Math.floor(baseValues.qiCost * 0.8 * rarityMult.qiCostMult),
     baseRange: 10,
     baseDuration: baseValues.duration * 2,
     minCultivationLevel: Math.max(1, level - 1),
   };
   
-  const modifiers = generateModifiers(base, rng);
+  const modifiers = generateModifiers(base, rng, rarity);
   modifiers.effects.buff = true;
-  modifiers.effectValues.buffAmount = 5 + level * 5;
+  modifiers.effectValues.buffAmount = Math.floor((5 + level * 5) * rarityMult.damageMult);
   modifiers.effectValues.buffDuration = 3 + level * 2;
   
   const computed = computeFinalValues(base, modifiers);
   const { name, nameEn } = generateName('support', element, level, rng);
   
-  const description = `${name} — техника поддержки уровня ${level}.`;
-  const rarity: Rarity = level <= 2 ? 'common' : level <= 4 ? 'uncommon' : level <= 6 ? 'rare' : 'legendary';
+  const description = `${name} — техника поддержки уровня ${level}. Редкость: ${rarity}.`;
   
   return {
     ...base, name, nameEn, description, rarity, modifiers, computed,
-    meta: { seed, template: `support_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '2.0.0' },
+    meta: { seed, template: `support_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '2.1.0' },
   };
 }
 
@@ -634,21 +741,25 @@ function generateHealingTechnique(
   id: string,
   element: Element,
   level: number,
-  seed: number
+  seed: number,
+  params?: TechniqueGenParams
 ): GeneratedTechnique {
   const rng = seededRandom(seed);
   const baseValues = BASE_VALUES_BY_LEVEL[level] || BASE_VALUES_BY_LEVEL[1];
   
+  const rarity = selectRarity(rng, params?.rarity);
+  const rarityMult = RARITY_MULTIPLIERS[rarity];
+  
   const base: BaseTechnique = {
     id, name: '', nameEn: '', type: 'healing', element, level,
     baseDamage: 0,
-    baseQiCost: Math.floor(baseValues.qiCost * 1.2),
+    baseQiCost: Math.floor(baseValues.qiCost * 1.2 * rarityMult.qiCostMult),
     baseRange: 5,
     baseDuration: baseValues.duration,
     minCultivationLevel: Math.max(1, level - 1),
   };
   
-  const healAmount = 10 + level * 15;
+  const healAmount = Math.floor((10 + level * 15) * rarityMult.damageMult);
   const modifiers: TechniqueModifiers = {
     effects: { heal: true },
     effectValues: { healAmount },
@@ -659,12 +770,11 @@ function generateHealingTechnique(
   const computed = computeFinalValues(base, modifiers);
   const { name, nameEn } = generateName('healing', element, level, rng);
   
-  const description = `${name} — техника исцеления уровня ${level}. Восстанавливает ${healAmount} HP.`;
-  const rarity: Rarity = level <= 2 ? 'common' : level <= 4 ? 'uncommon' : level <= 6 ? 'rare' : 'legendary';
+  const description = `${name} — техника исцеления уровня ${level}. Редкость: ${rarity}. Восстанавливает ${healAmount} HP.`;
   
   return {
     ...base, name, nameEn, description, rarity, modifiers, computed,
-    meta: { seed, template: `healing_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '2.0.0' },
+    meta: { seed, template: `healing_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '2.1.0' },
   };
 }
 
@@ -672,30 +782,33 @@ function generateMovementTechnique(
   id: string,
   element: Element,
   level: number,
-  seed: number
+  seed: number,
+  params?: TechniqueGenParams
 ): GeneratedTechnique {
   const rng = seededRandom(seed);
   const baseValues = BASE_VALUES_BY_LEVEL[level] || BASE_VALUES_BY_LEVEL[1];
   
+  const rarity = selectRarity(rng, params?.rarity);
+  const rarityMult = RARITY_MULTIPLIERS[rarity];
+  
   const base: BaseTechnique = {
     id, name: '', nameEn: '', type: 'movement', element, level,
     baseDamage: 0,
-    baseQiCost: Math.floor(baseValues.qiCost * 0.6),
-    baseRange: 5 + level * 5,
+    baseQiCost: Math.floor(baseValues.qiCost * 0.6 * rarityMult.qiCostMult),
+    baseRange: Math.floor((5 + level * 5) * rarityMult.damageMult),
     baseDuration: 0,
     minCultivationLevel: Math.max(1, level - 1),
   };
   
-  const modifiers = generateModifiers(base, rng);
+  const modifiers = generateModifiers(base, rng, rarity);
   const computed = computeFinalValues(base, modifiers);
   const { name, nameEn } = generateName('movement', element, level, rng);
   
-  const description = `${name} — техника перемещения уровня ${level}.`;
-  const rarity: Rarity = level <= 2 ? 'common' : level <= 4 ? 'uncommon' : level <= 6 ? 'rare' : 'legendary';
+  const description = `${name} — техника перемещения уровня ${level}. Редкость: ${rarity}. Дальность: ${base.baseRange}м.`;
   
   return {
     ...base, name, nameEn, description, rarity, modifiers, computed,
-    meta: { seed, template: `movement_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '2.0.0' },
+    meta: { seed, template: `movement_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '2.1.0' },
   };
 }
 
@@ -703,30 +816,33 @@ function generateSensoryTechnique(
   id: string,
   element: Element,
   level: number,
-  seed: number
+  seed: number,
+  params?: TechniqueGenParams
 ): GeneratedTechnique {
   const rng = seededRandom(seed);
   const baseValues = BASE_VALUES_BY_LEVEL[level] || BASE_VALUES_BY_LEVEL[1];
   
+  const rarity = selectRarity(rng, params?.rarity);
+  const rarityMult = RARITY_MULTIPLIERS[rarity];
+  
   const base: BaseTechnique = {
     id, name: '', nameEn: '', type: 'sensory', element, level,
     baseDamage: 0,
-    baseQiCost: Math.floor(baseValues.qiCost * 0.5),
-    baseRange: 20 + level * 10,
+    baseQiCost: Math.floor(baseValues.qiCost * 0.5 * rarityMult.qiCostMult),
+    baseRange: Math.floor((20 + level * 10) * rarityMult.damageMult),
     baseDuration: baseValues.duration * 3,
     minCultivationLevel: Math.max(1, level - 1),
   };
   
-  const modifiers = generateModifiers(base, rng);
+  const modifiers = generateModifiers(base, rng, rarity);
   const computed = computeFinalValues(base, modifiers);
   const { name, nameEn } = generateName('sensory', element, level, rng);
   
-  const description = `${name} — техника восприятия уровня ${level}.`;
-  const rarity: Rarity = level <= 2 ? 'common' : level <= 4 ? 'uncommon' : level <= 6 ? 'rare' : 'legendary';
+  const description = `${name} — техника восприятия уровня ${level}. Редкость: ${rarity}. Радиус: ${base.baseRange}м.`;
   
   return {
     ...base, name, nameEn, description, rarity, modifiers, computed,
-    meta: { seed, template: `sensory_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '2.0.0' },
+    meta: { seed, template: `sensory_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '2.1.0' },
   };
 }
 
@@ -734,17 +850,20 @@ function generateCultivationTechnique(
   id: string,
   element: Element,
   level: number,
-  seed: number
+  seed: number,
+  params?: TechniqueGenParams
 ): GeneratedTechnique {
   const rng = seededRandom(seed);
-  const baseValues = BASE_VALUES_BY_LEVEL[level] || BASE_VALUES_BY_LEVEL[1];
   
-  const qiRegenPercent = 3 + level * 2;
+  const rarity = selectRarity(rng, params?.rarity);
+  const rarityMult = RARITY_MULTIPLIERS[rarity];
+  
+  const qiRegenPercent = Math.floor((3 + level * 2) * rarityMult.damageMult);
   
   const base: BaseTechnique = {
     id, name: '', nameEn: '', type: 'cultivation', element, level,
     baseDamage: 0,
-    baseQiCost: 0,  // Не тратит Ци
+    baseQiCost: 0,
     baseRange: 0,
     baseDuration: 0,
     minCultivationLevel: level,
@@ -760,12 +879,11 @@ function generateCultivationTechnique(
   const computed = computeFinalValues(base, modifiers);
   const { name, nameEn } = generateName('cultivation', element, level, rng);
   
-  const description = `${name} — техника культивации уровня ${level}. Увеличивает поглощение Ци на ${qiRegenPercent}%.`;
-  const rarity: Rarity = level <= 2 ? 'common' : level <= 4 ? 'uncommon' : level <= 6 ? 'rare' : 'legendary';
+  const description = `${name} — техника культивации уровня ${level}. Редкость: ${rarity}. Увеличивает поглощение Ци на ${qiRegenPercent}%.`;
   
   return {
     ...base, name, nameEn, description, rarity, modifiers, computed,
-    meta: { seed, template: `cultivation_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '2.0.0' },
+    meta: { seed, template: `cultivation_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '2.1.0' },
   };
 }
 
@@ -920,31 +1038,32 @@ export function generateTechnique(
   type: TechniqueType,
   element: Element,
   level: number,
-  seed?: number
+  seed?: number,
+  params?: TechniqueGenParams
 ): GeneratedTechnique {
   const actualSeed = seed ?? hashString(id);
   
   switch (type) {
     case 'combat':
-      return generateCombatTechnique(id, element, level, actualSeed);
+      return generateCombatTechnique(id, element, level, actualSeed, params);
     case 'defense':
-      return generateDefenseTechnique(id, element, level, actualSeed);
+      return generateDefenseTechnique(id, element, level, actualSeed, params);
     case 'support':
-      return generateSupportTechnique(id, element, level, actualSeed);
+      return generateSupportTechnique(id, element, level, actualSeed, params);
     case 'healing':
-      return generateHealingTechnique(id, element, level, actualSeed);
+      return generateHealingTechnique(id, element, level, actualSeed, params);
     case 'movement':
-      return generateMovementTechnique(id, element, level, actualSeed);
+      return generateMovementTechnique(id, element, level, actualSeed, params);
     case 'sensory':
-      return generateSensoryTechnique(id, element, level, actualSeed);
+      return generateSensoryTechnique(id, element, level, actualSeed, params);
     case 'cultivation':
-      return generateCultivationTechnique(id, element, level, actualSeed);
+      return generateCultivationTechnique(id, element, level, actualSeed, params);
     case 'curse':
-      return generateCurseTechnique(id, element, level, actualSeed);
+      return generateCurseTechnique(id, element, level, actualSeed, params);
     case 'poison':
-      return generatePoisonTechnique(id, element, level, actualSeed);
+      return generatePoisonTechnique(id, element, level, actualSeed, params);
     default:
-      return generateCombatTechnique(id, element, level, actualSeed);
+      return generateCombatTechnique(id, element, level, actualSeed, params);
   }
 }
 
@@ -1049,8 +1168,16 @@ export function generateTechniquesWithOptions(options: GenerationOptions, idGene
           ? idGenerator(prefix)
           : `${prefix}_${(generated + 1).toString().padStart(6, '0')}`;
         
-        const technique = generateTechnique(id, type, element, level);
+        // Передаём параметры редкости и границ
+        const params: TechniqueGenParams = {
+          rarity: options.rarity,
+          damageVariance: options.damageVariance,
+          paramBounds: options.paramBounds,
+        };
         
+        const technique = generateTechnique(id, type, element, level, undefined, params);
+        
+        // Фильтрация по редкости (если не задана фиксированная)
         if (options.rarities?.length && !options.rarities.includes(technique.rarity)) {
           continue;
         }
@@ -1111,4 +1238,229 @@ export function getGenerationStats() {
     elements: ['fire', 'water', 'earth', 'air', 'lightning', 'void', 'neutral'] as Element[],
     rarities: ['common', 'uncommon', 'rare', 'legendary'] as Rarity[],
   };
+}
+
+// ==================== УБОРЩИК ДУБЛИКАТОВ ====================
+
+/**
+ * Создаёт ключ уникальности для техники на основе её параметров
+ */
+function createTechniqueSignature(technique: GeneratedTechnique): string {
+  const parts: string[] = [
+    technique.type,
+    technique.subtype || 'none',
+    technique.element,
+    technique.rarity,
+    String(technique.level),
+    String(technique.baseDamage),
+    String(technique.baseQiCost),
+    String(technique.baseRange),
+    String(technique.baseDuration),
+  ];
+  
+  // Добавляем эффекты
+  const effects = Object.entries(technique.modifiers.effects)
+    .filter(([_, active]) => active)
+    .map(([name]) => name)
+    .sort()
+    .join(',');
+  parts.push(effects);
+  
+  // Добавляем значения эффектов
+  const effectValues = Object.entries(technique.modifiers.effectValues)
+    .filter(([_, value]) => value !== undefined)
+    .map(([key, value]) => `${key}:${Math.floor(Number(value) * 10) / 10}`)
+    .sort()
+    .join('|');
+  parts.push(effectValues);
+  
+  return parts.join('|');
+}
+
+/**
+ * Результат уборки дубликатов
+ */
+export interface GarbageCollectionResult {
+  original: number;
+  unique: number;
+  duplicates: number;
+  removedIds: string[];
+  duplicateGroups: Array<{
+    signature: string;
+    count: number;
+    keptId: string;
+    removedIds: string[];
+  }>;
+}
+
+/**
+ * Убирает дубликаты техник (техники с одинаковыми параметрами)
+ * Оставляет первую технику из группы дубликатов
+ */
+export function removeDuplicateTechniques(
+  techniques: GeneratedTechnique[]
+): GarbageCollectionResult {
+  const signatureMap = new Map<string, GeneratedTechnique[]>();
+  
+  // Группируем по сигнатуре
+  for (const technique of techniques) {
+    const signature = createTechniqueSignature(technique);
+    if (!signatureMap.has(signature)) {
+      signatureMap.set(signature, []);
+    }
+    signatureMap.get(signature)!.push(technique);
+  }
+  
+  const uniqueTechniques: GeneratedTechnique[] = [];
+  const removedIds: string[] = [];
+  const duplicateGroups: GarbageCollectionResult['duplicateGroups'] = [];
+  
+  for (const [signature, group] of signatureMap) {
+    // Сортируем по ID для детерминированности
+    group.sort((a, b) => a.id.localeCompare(b.id));
+    
+    // Оставляем первую технику
+    const [kept, ...duplicates] = group;
+    uniqueTechniques.push(kept);
+    
+    if (duplicates.length > 0) {
+      const removedGroupIds = duplicates.map(t => t.id);
+      removedIds.push(...removedGroupIds);
+      
+      duplicateGroups.push({
+        signature: signature.substring(0, 100) + '...', // Сокращаем для читаемости
+        count: group.length,
+        keptId: kept.id,
+        removedIds: removedGroupIds,
+      });
+    }
+  }
+  
+  return {
+    original: techniques.length,
+    unique: uniqueTechniques.length,
+    duplicates: techniques.length - uniqueTechniques.length,
+    removedIds,
+    duplicateGroups,
+  };
+}
+
+/**
+ * Сравнивает две техники на идентичность параметров
+ */
+export function areTechniquesIdentical(
+  a: GeneratedTechnique,
+  b: GeneratedTechnique
+): boolean {
+  return createTechniqueSignature(a) === createTechniqueSignature(b);
+}
+
+/**
+ * Находит похожие техники (с похожими, но не идентичными параметрами)
+ */
+export function findSimilarTechniques(
+  techniques: GeneratedTechnique[],
+  threshold: number = 0.9
+): Array<{ technique: GeneratedTechnique; similar: GeneratedTechnique[]; similarity: number }> {
+  const results: Array<{ technique: GeneratedTechnique; similar: GeneratedTechnique[]; similarity: number }> = [];
+  
+  for (let i = 0; i < techniques.length; i++) {
+    const similar: GeneratedTechnique[] = [];
+    let maxSimilarity = 0;
+    
+    for (let j = 0; j < techniques.length; j++) {
+      if (i === j) continue;
+      
+      const similarity = calculateTechniqueSimilarity(techniques[i], techniques[j]);
+      if (similarity >= threshold) {
+        similar.push(techniques[j]);
+        maxSimilarity = Math.max(maxSimilarity, similarity);
+      }
+    }
+    
+    if (similar.length > 0) {
+      results.push({
+        technique: techniques[i],
+        similar,
+        similarity: maxSimilarity,
+      });
+    }
+  }
+  
+  return results;
+}
+
+/**
+ * Вычисляет степень похожести двух техник (0-1)
+ */
+function calculateTechniqueSimilarity(a: GeneratedTechnique, b: GeneratedTechnique): number {
+  let score = 0;
+  let total = 0;
+  
+  // Тип (вес 2)
+  if (a.type === b.type) score += 2;
+  total += 2;
+  
+  // Подтип (вес 1)
+  if (a.subtype === b.subtype) score += 1;
+  total += 1;
+  
+  // Элемент (вес 1)
+  if (a.element === b.element) score += 1;
+  total += 1;
+  
+  // Редкость (вес 1)
+  if (a.rarity === b.rarity) score += 1;
+  total += 1;
+  
+  // Уровень (вес 1)
+  if (a.level === b.level) score += 1;
+  total += 1;
+  
+  // Числовые параметры (вес 2)
+  const numericSimilarity = calculateNumericSimilarity(
+    [a.baseDamage, a.baseQiCost, a.baseRange, a.baseDuration],
+    [b.baseDamage, b.baseQiCost, b.baseRange, b.baseDuration]
+  );
+  score += numericSimilarity * 2;
+  total += 2;
+  
+  // Эффекты (вес 2)
+  const effectsA = Object.keys(a.modifiers.effects).filter(k => a.modifiers.effects[k as keyof typeof a.modifiers.effects]);
+  const effectsB = Object.keys(b.modifiers.effects).filter(k => b.modifiers.effects[k as keyof typeof b.modifiers.effects]);
+  const effectSimilarity = calculateSetSimilarity(new Set(effectsA), new Set(effectsB));
+  score += effectSimilarity * 2;
+  total += 2;
+  
+  return score / total;
+}
+
+/**
+ * Вычисляет сходство числовых массивов
+ */
+function calculateNumericSimilarity(a: number[], b: number[]): number {
+  if (a.length !== b.length) return 0;
+  if (a.length === 0) return 1;
+  
+  let totalDiff = 0;
+  for (let i = 0; i < a.length; i++) {
+    const maxVal = Math.max(Math.abs(a[i]), Math.abs(b[i]), 1);
+    const diff = Math.abs(a[i] - b[i]) / maxVal;
+    totalDiff += diff;
+  }
+  
+  return Math.max(0, 1 - totalDiff / a.length);
+}
+
+/**
+ * Вычисляет сходство множеств (коэффициент Жаккара)
+ */
+function calculateSetSimilarity(a: Set<string>, b: Set<string>): number {
+  if (a.size === 0 && b.size === 0) return 1;
+  if (a.size === 0 || b.size === 0) return 0;
+  
+  const intersection = new Set([...a].filter(x => b.has(x)));
+  const union = new Set([...a, ...b]);
+  
+  return intersection.size / union.size;
 }

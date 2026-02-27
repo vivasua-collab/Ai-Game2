@@ -308,9 +308,9 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
           <TabsContent value="techniques" className="mt-0">
             <div className="flex gap-4 h-[60vh]">
               {/* Список */}
-              <div className="w-1/2 flex flex-col">
+              <div className="w-1/2 flex flex-col min-h-0">
                 {/* Фильтры */}
-                <div className="mb-3 space-y-2">
+                <div className="mb-3 space-y-2 flex-shrink-0">
                   <div className="flex gap-2">
                     <div className="relative flex-1">
                       <Search className="absolute left-2 top-2 w-4 h-4 text-slate-400" />
@@ -377,11 +377,11 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
                 {/* Результаты */}
                 {techniques.length > 0 ? (
                   <>
-                    <div className="text-xs text-slate-400 mb-2">
+                    <div className="text-xs text-slate-400 mb-2 flex-shrink-0">
                       Найдено: {filteredTechniques.length} из {techniques.length}
                     </div>
 
-                    <ScrollArea className="flex-1 border border-slate-700 rounded-lg">
+                    <ScrollArea className="flex-1 min-h-0 border border-slate-700 rounded-lg">
                       {loading ? (
                         <div className="p-4 text-center text-slate-400">
                           <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
@@ -439,9 +439,10 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
               </div>
 
               {/* Детали техники */}
-              <div className="w-1/2 bg-slate-800/30 rounded-lg p-4">
+              <div className="w-1/2 bg-slate-800/30 rounded-lg p-4 min-h-0 overflow-hidden flex flex-col">
                 {selectedTechnique ? (
-                  <div className="space-y-4">
+                  <ScrollArea className="flex-1">
+                    <div className="space-y-4 pr-4">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
                         {ELEMENT_ICONS[selectedTechnique.element]}
@@ -507,7 +508,8 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
                         </div>
                       </div>
                     )}
-                  </div>
+                    </div>
+                  </ScrollArea>
                 ) : (
                   <div className="h-full flex items-center justify-center text-slate-400">
                     <div className="text-center">
@@ -524,9 +526,9 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
           <TabsContent value="formations" className="mt-0">
             <div className="flex gap-4 h-[60vh]">
               {/* Список */}
-              <div className="w-1/2 flex flex-col">
+              <div className="w-1/2 flex flex-col min-h-0">
                 {/* Фильтры */}
-                <div className="mb-3 space-y-2">
+                <div className="mb-3 space-y-2 flex-shrink-0">
                   <div className="flex gap-2">
                     <div className="relative flex-1">
                       <Search className="absolute left-2 top-2 w-4 h-4 text-slate-400" />
@@ -572,11 +574,11 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
                 {/* Результаты */}
                 {formations.length > 0 ? (
                   <>
-                    <div className="text-xs text-slate-400 mb-2">
+                    <div className="text-xs text-slate-400 mb-2 flex-shrink-0">
                       Найдено: {filteredFormations.length} из {formations.length}
                     </div>
 
-                    <ScrollArea className="flex-1 border border-slate-700 rounded-lg">
+                    <ScrollArea className="flex-1 min-h-0 border border-slate-700 rounded-lg">
                       {loading ? (
                         <div className="p-4 text-center text-slate-400">
                           <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
@@ -633,9 +635,10 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
               </div>
 
               {/* Детали формации */}
-              <div className="w-1/2 bg-slate-800/30 rounded-lg p-4">
+              <div className="w-1/2 bg-slate-800/30 rounded-lg p-4 min-h-0 overflow-hidden flex flex-col">
                 {selectedFormation ? (
-                  <div className="space-y-4">
+                  <ScrollArea className="flex-1">
+                    <div className="space-y-4 pr-4">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
                         <Shield className="w-5 h-5 text-amber-400" />
@@ -761,7 +764,8 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
                         ))}
                       </div>
                     </div>
-                  </div>
+                    </div>
+                  </ScrollArea>
                 ) : (
                   <div className="h-full flex items-center justify-center text-slate-400">
                     <div className="text-center">
