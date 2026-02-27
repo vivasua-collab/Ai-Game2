@@ -312,10 +312,43 @@ export function calculatePassiveQiGain(
 
 /**
  * Проверка возможности медитации
+ * 
+ * @param currentQi - Текущее Ци в ядре
+ * @param coreCapacity - Ёмкость ядра
+ * @param type - Тип медитации (по умолчанию accumulation)
+ * @returns Можно ли начать медитацию
+ * 
+ * Правила:
+ * - accumulation: блокируется только при 100% заполнении
+ * - breakthrough: доступен только при 90%+ заполнении (когда заканчивается естественное восстановление)
+ * - conductivity: доступен только при 90%+ заполнении
  */
-export function canMeditate(currentQi: number, coreCapacity: number): boolean {
-  // Нельзя медитировать если ядро полное
-  return currentQi < coreCapacity;
+export function canMeditate(
+  currentQi: number, 
+  coreCapacity: number,
+  type: 'accumulation' | 'breakthrough' | 'conductivity' = 'accumulation'
+): { canMeditate: boolean; reason?: string } {
+  const isFull = currentQi >= coreCapacity;
+  const fillPercent = getCoreFillPercent(currentQi, coreCapacity);
+  const isAbovePassiveCap = fillPercent >= (QI_CONSTANTS.PASSIVE_QI_CAP * 100); // 90%
+  
+  // Накопительная медитация блокируется при полном ядре
+  if (type === 'accumulation' && isFull) {
+    return {
+      canMeditate: false,
+      reason: '⚡ Ядро заполнено! Потратьте Ци (техники, бой) или используйте медитацию на прорыв/проводимость.'
+    };
+  }
+  
+  // Прорыв и проводимость доступны только при 90%+ заполнении
+  if ((type === 'breakthrough' || type === 'conductivity') && !isAbovePassiveCap) {
+    return {
+      canMeditate: false,
+      reason: `⚡ Медитация на ${type === 'breakthrough' ? 'прорыв' : 'проводимость'} доступна при заполнении ядра на 90%+. Текущее: ${fillPercent}%.`
+    };
+  }
+  
+  return { canMeditate: true };
 }
 
 /**

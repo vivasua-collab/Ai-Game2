@@ -27,13 +27,10 @@ import {
 } from '@/lib/game/qi-shared';
 import { 
   getConductivityMeditationProgress,
-  getBaseConductivity,
-  getBaseConductivityForLevel,
   calculateTotalConductivity,
 } from '@/lib/game/conductivity-system';
 import { 
   FATIGUE_CONSTANTS,
-  QI_CONSTANTS,
 } from '@/lib/game/constants';
 import { formatTime, formatDate, getTimeOfDayName, getSeasonName } from '@/lib/game/time-system';
 import type { WorldTime } from '@/lib/game/time-system';
@@ -81,12 +78,6 @@ export function StatusDialog({ open, onOpenChange }: StatusDialogProps) {
     character.conductivityMeditations || 0
   );
 
-  // Базовая проводимость (без множителя уровня)
-  const baseConductivity = getBaseConductivity(character.coreCapacity);
-  
-  // Базовая проводимость с множителем уровня
-  const baseConductivityAtLevel = getBaseConductivityForLevel(character.coreCapacity, character.cultivationLevel);
-  
   // Итоговая проводимость (вычисленная по формуле)
   const totalConductivity = calculateTotalConductivity(
     character.coreCapacity,
@@ -233,52 +224,13 @@ export function StatusDialog({ open, onOpenChange }: StatusDialogProps) {
               <div className="bg-cyan-900/20 border border-cyan-600/30 rounded-lg p-3">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-cyan-400 font-medium">⚡ Проводимость меридиан</span>
-                  <span className="text-cyan-300 font-bold text-xl">{totalConductivity.toFixed(3)}</span>
+                  <span className="text-cyan-300 font-bold text-xl">{totalConductivity.toFixed(2)}</span>
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Базовая (ядра/360):</span>
-                    <span className="text-slate-400">{baseConductivity.toFixed(3)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">С множителем ур.:</span>
-                    <span className="text-cyan-400">{baseConductivityAtLevel.toFixed(3)}</span>
-                  </div>
+                <div className="flex justify-between text-xs text-slate-500">
+                  <span>МедП: {conductivityProgress.current}/{conductivityProgress.max}</span>
+                  <span>Бонус: +{conductivityProgress.currentBonus.toFixed(2)}</span>
                 </div>
-                <div className="grid grid-cols-2 gap-2 text-xs mt-1">
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">Бонус от МедП:</span>
-                    <span className="text-cyan-400">+{conductivityProgress.currentBonus.toFixed(3)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-slate-500">МедП:</span>
-                    <span className="text-cyan-400">{conductivityProgress.current}/{conductivityProgress.max}</span>
-                  </div>
-                </div>
-                <div className="mt-2 pt-2 border-t border-cyan-600/30">
-                  <Progress value={conductivityProgress.percent} className="h-1.5" />
-                </div>
-                
-                {/* Таблица коэффициентов проводимости */}
-                <div className="mt-3 pt-2 border-t border-cyan-600/30">
-                  <div className="text-xs text-slate-500 mb-2">📊 Коэффициенты проводимости по уровням:</div>
-                  <div className="grid grid-cols-5 gap-1 text-xs">
-                    {[1,2,3,4,5].map(lvl => (
-                      <div key={lvl} className={`text-center p-1 rounded ${character.cultivationLevel === lvl ? 'bg-cyan-600/30' : ''}`}>
-                        <div className="text-slate-400">{lvl}</div>
-                        <div className="text-cyan-400">×{QI_CONSTANTS.CONDUCTIVITY_MULTIPLIERS[lvl]}</div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="grid grid-cols-5 gap-1 text-xs mt-1">
-                    {[6,7,8,9,10].map(lvl => (
-                      <div key={lvl} className={`text-center p-1 rounded ${character.cultivationLevel === lvl ? 'bg-cyan-600/30' : ''}`}>
-                        <div className="text-slate-400">{lvl}</div>
-                        <div className="text-cyan-400">×{QI_CONSTANTS.CONDUCTIVITY_MULTIPLIERS[lvl] || '—'}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <Progress value={conductivityProgress.percent} className="h-1.5 mt-2" />
               </div>
 
               {/* Ци */}

@@ -20,10 +20,11 @@ import { db } from '@/lib/db';
 import { 
   performMeditation, 
   performBreakthroughMeditation, 
-  performConductivityMeditation 
+  performConductivityMeditation,
+  attemptBreakthrough,
 } from '@/lib/game/qi-system';
-import { getCoreFillPercent, calculateQiRates } from '@/lib/game/qi-shared';
-import { QI_CONSTANTS, TIME_CONSTANTS, MEDITATION_TYPE_CONSTANTS } from '@/lib/game/constants';
+import { getCoreFillPercent, calculateQiRates, calculateBreakthroughRequirements, getCultivationLevelName } from '@/lib/game/qi-shared';
+import { QI_CONSTANTS, TIME_CONSTANTS, MEDITATION_TYPE_CONSTANTS, BREAKTHROUGH_CONSTANTS } from '@/lib/game/constants';
 import { advanceWorldTime, formatWorldTimeForResponse } from '@/lib/game/time-db';
 import { 
   checkMeditationInterruption
@@ -39,7 +40,7 @@ import type { Character, WorldTime } from '@/types/game';
 
 interface MeditationRequest {
   characterId: string;
-  durationMinutes: number;  // In ticks (1 tick = 1 minute)
+  durationMinutes?: number;  // Only for accumulation type. Ignored for breakthrough/conductivity
   meditationType?: 'accumulation' | 'breakthrough' | 'conductivity'; // Type of meditation
   formationId?: string;     // Optional: active formation
   formationQuality?: number; // Optional: formation quality (1-5)
@@ -58,34 +59,51 @@ export async function POST(request: NextRequest) {
       techniqueId 
     } = body;
     
-    // Validate duration using time constants
-    if (!characterId || !durationMinutes) {
+    // Validate characterId
+    if (!characterId) {
       return NextResponse.json(
-        { success: false, error: 'Missing characterId or durationMinutes' },
+        { success: false, error: 'Missing characterId' },
         { status: 400 }
       );
     }
     
-    if (durationMinutes < TIME_CONSTANTS.MIN_MEDITATION_TICKS) {
-      return NextResponse.json(
-        { success: false, error: `Minimum duration: ${TIME_CONSTANTS.MIN_MEDITATION_TICKS} minutes` },
-        { status: 400 }
-      );
-    }
+    // === DURATION VALIDATION ===
+    // Breakthrough/conductivity have FIXED durations - ignore user input
+    let actualDurationMinutes = durationMinutes || 0;
     
-    if (durationMinutes > TIME_CONSTANTS.MAX_MEDITATION_TICKS) {
-      return NextResponse.json(
-        { success: false, error: `Maximum duration: ${TIME_CONSTANTS.MAX_MEDITATION_TICKS / 60} hours` },
-        { status: 400 }
-      );
+    if (meditationType === 'accumulation') {
+      // Accumulation requires user-specified duration
+      if (!durationMinutes) {
+        return NextResponse.json(
+          { success: false, error: 'Missing durationMinutes for accumulation meditation' },
+          { status: 400 }
+        );
+      }
+      
+      if (durationMinutes < TIME_CONSTANTS.MIN_MEDITATION_TICKS) {
+        return NextResponse.json(
+          { success: false, error: `Minimum duration: ${TIME_CONSTANTS.MIN_MEDITATION_TICKS} minutes` },
+          { status: 400 }
+        );
+      }
+      
+      if (durationMinutes > TIME_CONSTANTS.MAX_MEDITATION_TICKS) {
+        return NextResponse.json(
+          { success: false, error: `Maximum duration: ${TIME_CONSTANTS.MAX_MEDITATION_TICKS / 60} hours` },
+          { status: 400 }
+        );
+      }
+      
+      if (durationMinutes % TIME_CONSTANTS.MEDITATION_TICK_STEP !== 0) {
+        return NextResponse.json(
+          { success: false, error: `Duration must be multiple of ${TIME_CONSTANTS.MEDITATION_TICK_STEP} minutes` },
+          { status: 400 }
+        );
+      }
+      
+      actualDurationMinutes = durationMinutes;
     }
-    
-    if (durationMinutes % TIME_CONSTANTS.MEDITATION_TICK_STEP !== 0) {
-      return NextResponse.json(
-        { success: false, error: `Duration must be multiple of ${TIME_CONSTANTS.MEDITATION_TICK_STEP} minutes` },
-        { status: 400 }
-      );
-    }
+    // Note: breakthrough/conductivity duration will be calculated after loading character
     
     // Validate meditation type
     if (!['accumulation', 'breakthrough', 'conductivity'].includes(meditationType)) {
@@ -203,11 +221,15 @@ export async function POST(request: NextRequest) {
       }
     }
     
-    // === CHECK FOR INTERRUPTIONS (only for meditations >= 60 minutes) ===
-    let interruptionResult = null;
-    let actualDurationMinutes = durationMinutes;
+    // === DURATION FOR BREAKTHROUGH/CONDUCTIVITY IS AUTO-CALCULATED ===
+    // These meditation types have AUTOMATIC duration - calculated in the function
+    // Just pass 0 as placeholder, the actual duration comes from the result
     
-    if (durationMinutes >= 60) {
+    // === CHECK FOR INTERRUPTIONS (ONLY FOR ACCUMULATION TYPE) ===
+    let interruptionResult = null;
+    
+    // Breakthrough and conductivity are NOT subject to interruptions
+    if (meditationType === 'accumulation' && actualDurationMinutes >= 60) {
       const charForCheck: Character = {
         id: character.id,
         name: character.name,
@@ -260,50 +282,31 @@ export async function POST(request: NextRequest) {
     
     if (meditationType === 'breakthrough') {
       // === BREAKTHROUGH MEDITATION ===
-      result = performBreakthroughMeditation(character, location, actualDurationMinutes);
+      // Длительность автоматическая: 1 минута если ядро полное, иначе время накопления + 1 минута
+      result = performBreakthroughMeditation(character, location, 0);
       
-      if (!result.success) {
-        return NextResponse.json({
-          success: false,
-          error: 'Ядро уже заполнено! Сначала используйте Ци или выберите другой тип медитации.',
-        });
-      }
+      // Use actual duration from result
+      actualDurationMinutes = result.duration;
       
       // Apply qi absorption bonus
       if (qiAbsorptionBonus > 0) {
         result.qiGained = Math.floor(result.qiGained * (1 + qiAbsorptionBonus / 100));
       }
       
-      // Handle interruption
-      if (interruptionResult?.interrupted && interruptionResult.event) {
-        const event = interruptionResult.event;
-        await db.character.update({
-          where: { id: characterId },
-          data: {
-            currentQi: result.coreWasEmptied ? 0 : character.currentQi,
-            accumulatedQi: character.accumulatedQi + result.qiGained,
-            mentalFatigue: Math.min(100, character.mentalFatigue + result.fatigueGained.mental),
-          },
-        });
-        await advanceWorldTime(session.id, actualDurationMinutes);
-        
-        return NextResponse.json({
-          success: true,
-          interrupted: true,
-          message: `⚠️ Медитация на прорыв прервана!\n\n📜 ${event.description}`,
-          result: {
-            qiGained: result.qiGained,
-            duration: actualDurationMinutes,
-            coreWasEmptied: result.coreWasEmptied,
-          },
-        });
-      }
+      // NO INTERRUPTION for breakthrough meditation
       
       // Normal completion
       const timeResult = await advanceWorldTime(session.id, actualDurationMinutes);
       
+      // При прорыве с полным ядром - currentQi не меняется (остаётся max)
+      // При прорыве с неполным ядром - currentQi устанавливается в результат
+      const wasCoreFullAtStart = character.currentQi >= character.coreCapacity;
+      const newCurrentQi = wasCoreFullAtStart 
+        ? character.coreCapacity  // Ядро остаётся полным
+        : (result.coreWasEmptied ? 0 : character.currentQi);
+      
       updateData = {
-        currentQi: result.coreWasEmptied ? 0 : character.currentQi,
+        currentQi: newCurrentQi,
         accumulatedQi: character.accumulatedQi + result.qiGained,
         mentalFatigue: Math.min(100, character.mentalFatigue + result.fatigueGained.mental),
       };
@@ -313,18 +316,106 @@ export async function POST(request: NextRequest) {
         data: updateData,
       });
       
+      // === AUTO-BREAKTHROUGH CHECK ===
+      // Проверяем, достигнут ли прорыв
+      const newAccumulatedQi = updatedCharacter.accumulatedQi;
+      const breakthroughReq = calculateBreakthroughRequirements(
+        updatedCharacter.cultivationLevel,
+        updatedCharacter.cultivationSubLevel,
+        newAccumulatedQi,
+        updatedCharacter.coreCapacity
+      );
+      
+      let autoBreakthrough = null;
+      if (breakthroughReq.canAttempt) {
+        // Автоматический прорыв!
+        const breakthroughResult = attemptBreakthrough(updatedCharacter);
+        
+        if (breakthroughResult.success) {
+          // Применяем прорыв
+          const postBreakthroughData = {
+            cultivationLevel: breakthroughResult.newLevel,
+            cultivationSubLevel: breakthroughResult.newSubLevel,
+            coreCapacity: breakthroughResult.newCoreCapacity,
+            conductivity: breakthroughResult.newConductivity,
+            accumulatedQi: newAccumulatedQi - breakthroughResult.qiConsumed,
+            mentalFatigue: Math.min(100, updatedCharacter.mentalFatigue + breakthroughResult.fatigueGained.mental),
+            physicalFatigue: Math.min(100, (updatedCharacter.physicalFatigue || 0) + breakthroughResult.fatigueGained.physical),
+          };
+          
+          const postBreakthroughChar = await db.character.update({
+            where: { id: characterId },
+            data: postBreakthroughData,
+          });
+          
+          const newLevelName = getCultivationLevelName(breakthroughResult.newLevel);
+          const isMajor = updatedCharacter.cultivationSubLevel >= 9;
+          
+          autoBreakthrough = {
+            success: true,
+            oldLevel: updatedCharacter.cultivationLevel,
+            oldSubLevel: updatedCharacter.cultivationSubLevel,
+            newLevel: breakthroughResult.newLevel,
+            newSubLevel: breakthroughResult.newSubLevel,
+            levelName: newLevelName,
+            isMajorBreakthrough: isMajor,
+            qiConsumed: breakthroughResult.qiConsumed,
+            message: breakthroughResult.message,
+            character: {
+              cultivationLevel: postBreakthroughChar.cultivationLevel,
+              cultivationSubLevel: postBreakthroughChar.cultivationSubLevel,
+              coreCapacity: postBreakthroughChar.coreCapacity,
+              conductivity: postBreakthroughChar.conductivity,
+              accumulatedQi: postBreakthroughChar.accumulatedQi,
+              mentalFatigue: postBreakthroughChar.mentalFatigue,
+            },
+          };
+          
+          // Обновляем updatedCharacter для последующего использования
+          Object.assign(updatedCharacter, postBreakthroughChar);
+        }
+      }
+      
       message = `🔥 Медитация на прорыв завершена!\n\n`;
       message += `⏱️ Время: ${result.duration} минут\n`;
-      message += `💫 Ци в accumulatedQi: +${result.qiGained}\n`;
-      if (result.breakdown) {
-        message += `   ├─ Ядро: +${result.breakdown.coreGeneration}\n`;
-        message += `   └─ Среда: +${result.breakdown.environmentalAbsorption}\n`;
+      
+      if (wasCoreFullAtStart) {
+        // Медитация начиналась с полным ядром - только перенос
+        message += `💫 Ци перенесено в накопленную: +${result.qiGained}\n`;
+        message += `⚡ Перенос: ${character.coreCapacity} Ци за 1 минуту\n`;
+      } else {
+        message += `💫 Ци накоплено и перенесено: +${result.qiGained}\n`;
+        if (result.breakdown && (result.breakdown.coreGeneration > 0 || result.breakdown.environmentalAbsorption > 0)) {
+          message += `   ├─ Ядро: +${result.breakdown.coreGeneration}\n`;
+          message += `   └─ Среда: +${result.breakdown.environmentalAbsorption}\n`;
+        }
       }
+      
       message += `\n📊 Накопленная Ци: ${updatedCharacter.accumulatedQi}`;
       message += `\n💜 Мент. усталость: ${updatedCharacter.mentalFatigue.toFixed(0)}% (+${result.fatigueGained.mental.toFixed(1)}%)`;
       
       if (result.coreWasEmptied) {
-        message += `\n\n⚡ Ядро опустошено! Вся Ци перенесена в накопленную.`;
+        message += `\n\n⚡ Ядро опустошено! Один перенос завершён.`;
+      }
+      
+      // Add auto-breakthrough message if occurred
+      if (autoBreakthrough) {
+        message += `\n\n${'═'.repeat(30)}`;
+        message += `\n🌟 АВТОМАТИЧЕСКИЙ ПРОРЫВ!`;
+        message += `\n${'═'.repeat(30)}\n\n`;
+        
+        if (autoBreakthrough.isMajorBreakthrough) {
+          message += `🌟 БОЛЬШОЙ ПРОРЫВ!\n`;
+          message += `Уровень ${autoBreakthrough.oldLevel}.${autoBreakthrough.oldSubLevel} → ${autoBreakthrough.newLevel}.${autoBreakthrough.newSubLevel}\n`;
+        } else {
+          message += `⬆️ Продвижение!\n`;
+          message += `${autoBreakthrough.oldLevel}.${autoBreakthrough.oldSubLevel} → ${autoBreakthrough.newLevel}.${autoBreakthrough.newSubLevel}\n`;
+        }
+        
+        message += `📛 Новая ступень: ${autoBreakthrough.levelName}\n`;
+        message += `💫 Ци израсходовано: ${autoBreakthrough.qiConsumed}\n`;
+        message += `🔷 Новая ёмкость ядра: ${autoBreakthrough.character.coreCapacity}\n`;
+        message += `⚡ Проводимость: ${autoBreakthrough.character.conductivity.toFixed(2)}`;
       }
       
       return NextResponse.json({
@@ -337,10 +428,15 @@ export async function POST(request: NextRequest) {
           coreWasEmptied: result.coreWasEmptied,
           breakdown: result.breakdown,
         },
+        autoBreakthrough,
         character: {
           id: updatedCharacter.id,
           currentQi: updatedCharacter.currentQi,
           accumulatedQi: updatedCharacter.accumulatedQi,
+          cultivationLevel: updatedCharacter.cultivationLevel,
+          cultivationSubLevel: updatedCharacter.cultivationSubLevel,
+          coreCapacity: updatedCharacter.coreCapacity,
+          conductivity: updatedCharacter.conductivity,
           mentalFatigue: updatedCharacter.mentalFatigue,
         },
         worldTime: formatWorldTimeForResponse(timeResult.newTime),
@@ -348,49 +444,23 @@ export async function POST(request: NextRequest) {
       
     } else if (meditationType === 'conductivity') {
       // === CONDUCTIVITY MEDITATION ===
+      // Длительность автоматическая: coreCapacity/conductivity секунд если ядро полное
       result = performConductivityMeditation(
         character, 
         location, 
-        actualDurationMinutes, 
+        0, // Игнорируется - длительность автоматическая
         character.conductivityMeditations
       );
       
-      if (!result.success) {
-        return NextResponse.json({
-          success: false,
-          error: 'Ядро уже заполнено! Сначала используйте Ци.',
-        });
-      }
+      // Use actual duration from result
+      actualDurationMinutes = result.duration;
       
       // Apply qi absorption bonus
       if (qiAbsorptionBonus > 0 && result.qiGained > 0) {
         result.qiGained = Math.floor(result.qiGained * (1 + qiAbsorptionBonus / 100));
       }
       
-      // Handle interruption
-      if (interruptionResult?.interrupted && interruptionResult.event) {
-        const event = interruptionResult.event;
-        await db.character.update({
-          where: { id: characterId },
-          data: {
-            currentQi: character.currentQi + result.qiGained,
-            mentalFatigue: Math.min(100, character.mentalFatigue + result.fatigueGained.mental),
-          },
-        });
-        await advanceWorldTime(session.id, actualDurationMinutes);
-        
-        return NextResponse.json({
-          success: true,
-          interrupted: true,
-          message: `⚠️ Медитация на проводимость прервана!\n\n📜 ${event.description}`,
-          result: {
-            qiGained: result.qiGained,
-            duration: actualDurationMinutes,
-            coreWasFilled: false,
-            conductivityGained: false,
-          },
-        });
-      }
+      // NO INTERRUPTION for conductivity meditation
       
       // Normal completion
       const timeResult = await advanceWorldTime(session.id, result.duration);
@@ -399,8 +469,14 @@ export async function POST(request: NextRequest) {
       const newConductivityMeditations = character.conductivityMeditations + result.conductivityMeditationsGained;
       const newConductivity = calculateTotalConductivity(character.coreCapacity, character.cultivationLevel, newConductivityMeditations);
       
+      // При проводимости с полным ядром - currentQi не меняется (остаётся max)
+      const wasCoreFullAtStart = character.currentQi >= character.coreCapacity;
+      const newCurrentQi = wasCoreFullAtStart 
+        ? character.coreCapacity  // Ядро остаётся полным
+        : (result.coreWasFilled ? character.coreCapacity : character.currentQi + result.qiGained);
+      
       updateData = {
-        currentQi: result.coreWasFilled ? 0 : character.currentQi + result.qiGained,
+        currentQi: newCurrentQi,
         mentalFatigue: Math.min(100, character.mentalFatigue + result.fatigueGained.mental),
         conductivityMeditations: newConductivityMeditations,
         conductivity: newConductivity,
@@ -412,6 +488,7 @@ export async function POST(request: NextRequest) {
       });
       
       const progress = getConductivityMeditationProgress(
+        character.coreCapacity, 
         character.cultivationLevel, 
         newConductivityMeditations
       );
@@ -419,15 +496,13 @@ export async function POST(request: NextRequest) {
       message = `⚡ Медитация на проводимость завершена!\n\n`;
       message += `⏱️ Время: ${result.duration} минут\n`;
       
-      if (result.coreWasFilled) {
-        message += `✨ Ядро заполнено и опустошено!\n`;
-        message += `📈 Медитации на проводимость: ${character.conductivityMeditations} → ${newConductivityMeditations}\n`;
-        message += `⚡ Проводимость: ${character.conductivity.toFixed(3)} → ${newConductivity.toFixed(3)}\n`;
-        message += `📊 Прогресс: ${progress.current}/${progress.max} (${progress.percent}%)`;
-      } else {
-        message += `💫 Прирост Ци: +${result.qiGained}\n`;
-        message += `⚠️ Ядро не было заполнено. Нужно больше времени для увеличения проводимости.`;
-      }
+      // Теперь всегда один перенос за медитацию
+      const secondsPerTransfer = Math.ceil(character.coreCapacity / character.conductivity);
+      message += `✨ Каналы меридиан расширены!\n`;
+      message += `📈 Медитации на проводимость: ${character.conductivityMeditations} → ${newConductivityMeditations} (+${result.conductivityMeditationsGained})\n`;
+      message += `⚡ Проводимость: ${character.conductivity.toFixed(3)} → ${newConductivity.toFixed(3)}\n`;
+      message += `⏳ Время переноса: ${secondsPerTransfer} сек\n`;
+      message += `📊 Прогресс: ${progress.current}/${progress.max} (${progress.percent}%)`;
       
       message += `\n\n💜 Мент. усталость: ${updatedCharacter.mentalFatigue.toFixed(0)}% (+${result.fatigueGained.mental.toFixed(1)}%)`;
       

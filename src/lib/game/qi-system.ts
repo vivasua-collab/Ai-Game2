@@ -152,76 +152,71 @@ export function performMeditation(
 /**
  * Выполнение медитации на прорыв (тип 1)
  * 
- * Суть: заполняем ядро → при заполнении опустошаем в шкалу прорыва
+ * Суть: ОДИН перенос Ци из ядра в accumulatedQi
  * 
  * Особенности:
- * - Ядро должно быть НЕ полное для начала
- * - При заполнении ядра - Ци переносится в accumulatedQi
- * - Можно заполнить несколько раз за одну медитацию
+ * - Длительность ФИКСИРОВАНА: 60 секунд (1 минута)
+ * - Если ядро НЕ полное: сначала накопление до 100%, затем перенос
+ * - Если ядро ПОЛНОЕ: немедленный перенос всего содержимого
+ * - ОДИН перенос за медитацию (не множественный)
  * - x2 ментальная усталость
+ * - НЕ прерывается внешними факторами
+ * 
+ * Скорость переноса: coreCapacity за 60 секунд
+ * (быстрый процесс, всё происходит внутри ядра)
  */
 export function performBreakthroughMeditation(
   character: Character,
   location: LocationData | null,
-  intendedDurationMinutes: number
+  _intendedDurationMinutes: number // Игнорируется - длительность фиксирована
 ): BreakthroughMeditationResult {
   const maxQi = character.coreCapacity;
-  let currentQi = character.currentQi;
-  const currentAccumulated = character.accumulatedQi;
+  const currentQi = character.currentQi;
   
-  // Проверка: ядро должно быть не полное
+  // Расчёт скоростей накопления
+  const rates = calculateQiRates(character, location);
+  
+  // === ФИКСИРОВАННАЯ ДЛИТЕЛЬНОСТЬ: 60 секунд для одного переноса ===
+  const fixedDurationSeconds = 60;
+  
+  // === СЛУЧАЙ 1: Ядро уже полное ===
   if (currentQi >= maxQi) {
+    // Полный перенос за 60 секунд
+    const fatigueResult = calculateMeditationFatigue(fixedDurationSeconds / 60, 'breakthrough');
+    
     return {
-      success: false,
-      qiGained: 0,
-      coreWasEmptied: false,
-      duration: 0,
-      fatigueGained: { physical: 0, mental: 0 },
+      success: true,
+      qiGained: maxQi, // Переносим ВСЮ Ци из ядра
+      coreWasEmptied: true,
+      duration: 1, // 1 минута
+      fatigueGained: {
+        physical: fatigueResult.physicalGain,
+        mental: fatigueResult.mentalGain,
+      },
+      breakdown: {
+        coreGeneration: 0, // При переносе нет выработки
+        environmentalAbsorption: 0, // При переносе нет поглощения
+      },
     };
   }
   
-  // Расчёт скоростей
-  const rates = calculateQiRates(character, location);
-  let remainingSeconds = intendedDurationMinutes * 60;
-  let totalAccumulatedGained = 0;
-  let fillsCount = 0;
+  // === СЛУЧАЙ 2: Ядро не полное ===
+  // Сначала накапливаем до полного, затем переносим
+  const qiToFull = maxQi - currentQi;
+  const secondsToFull = Math.ceil(qiToFull / rates.total);
+  const totalDurationSeconds = secondsToFull + fixedDurationSeconds;
   
-  // Симулируем медитацию с учётом заполнений
-  while (remainingSeconds > 0 && currentQi < maxQi) {
-    const qiToFull = maxQi - currentQi;
-    const secondsToFull = Math.ceil(qiToFull / rates.total);
-    
-    if (secondsToFull <= remainingSeconds) {
-      // Ядро будет заполнено за это время
-      remainingSeconds -= secondsToFull;
-      currentQi = maxQi;
-      
-      // Переносим в accumulated
-      totalAccumulatedGained += maxQi;
-      fillsCount++;
-      
-      // Опустошаем ядро для продолжения
-      currentQi = 0;
-    } else {
-      // Время закончилось, ядро не заполнено
-      const qiGained = rates.total * remainingSeconds;
-      currentQi = Math.min(maxQi, currentQi + qiGained);
-      remainingSeconds = 0;
-    }
-  }
+  // Расчёт breakdown (только для накопления)
+  const coreGain = rates.coreGeneration * secondsToFull;
+  const envGain = rates.environmentalAbsorption * secondsToFull;
   
-  const actualDuration = intendedDurationMinutes * 60 - remainingSeconds;
-  const fatigueResult = calculateMeditationFatigue(actualDuration / 60, 'breakthrough');
-  
-  // Расчёт breakdown
-  const coreGain = rates.coreGeneration * actualDuration;
-  const envGain = rates.environmentalAbsorption * actualDuration;
+  const fatigueResult = calculateMeditationFatigue(totalDurationSeconds / 60, 'breakthrough');
   
   return {
     success: true,
-    qiGained: totalAccumulatedGained,
-    coreWasEmptied: fillsCount > 0,
-    duration: Math.ceil(actualDuration / 60),
+    qiGained: maxQi, // Переносим ВСЮ Ци (ядро было заполнено и опустошено)
+    coreWasEmptied: true,
+    duration: Math.ceil(totalDurationSeconds / 60),
     fatigueGained: {
       physical: fatigueResult.physicalGain,
       mental: fatigueResult.mentalGain,
@@ -236,81 +231,92 @@ export function performBreakthroughMeditation(
 /**
  * Выполнение медитации на проводимость (тип 2)
  * 
- * Суть: как накопительная, но при заполнении ядра:
- * - Ядро опустошается
- * - +1 к счётчику медитаций на проводимость
- * - Проводимость пересчитывается
+ * Суть: ОДИН перенос Ци из ядра в расширение каналов меридиан
  * 
  * Особенности:
+ * - Длительность АВТОМАТИЧЕСКАЯ: coreCapacity / проводимость секунд
+ * - Если ядро НЕ полное: сначала накопление до 100%, затем перенос
+ * - Если ядро ПОЛНОЕ: немедленный перенос
+ * - ОДИН перенос за медитацию (не множественный)
  * - x1.5 ментальная усталость
- * - Требует заполнения ядра для успеха
- * - Ограничено максимальным количеством на уровень
+ * - +1 к счётчику медитаций на проводимость при успехе
+ * - НЕ прерывается внешними факторами
+ * 
+ * Скорость переноса: coreCapacity / текущая_проводимость секунд
+ * (медленный процесс, расширяем каналы)
+ * 
+ * Пример: 1000 capacity / 3.0 conductivity = 333 секунды (~5.5 минут) на один перенос
  */
 export function performConductivityMeditation(
   character: Character,
   location: LocationData | null,
-  intendedDurationMinutes: number,
+  _intendedDurationMinutes: number, // Игнорируется - длительность автоматическая
   currentConductivityMeditations: number
 ): ConductivityMeditationResult {
   const maxQi = character.coreCapacity;
   const currentQi = character.currentQi;
+  const currentConductivity = character.conductivity;
   
-  // Проверка: ядро должно быть не полное
-  if (currentQi >= maxQi) {
-    return {
-      success: false,
-      qiGained: 0,
-      coreWasFilled: false,
-      duration: 0,
-      fatigueGained: { physical: 0, mental: 0 },
-      conductivityMeditationsGained: 0,
-      newConductivityMeditations: currentConductivityMeditations,
-      newTotalConductivity: calculateTotalConductivity(character.coreCapacity, character.cultivationLevel, currentConductivityMeditations),
-    };
-  }
-  
-  // Расчёт скоростей
+  // Расчёт скоростей накопления
   const rates = calculateQiRates(character, location);
-  const qiToFull = maxQi - currentQi;
-  const secondsToFull = Math.ceil(qiToFull / rates.total);
-  const minutesToFull = Math.ceil(secondsToFull / 60);
   
-  // Проверяем, хватит ли времени
-  if (minutesToFull > intendedDurationMinutes) {
-    // Не хватило времени - просто накопили Ци, но не заполнили
-    const actualSeconds = intendedDurationMinutes * 60;
-    const qiGained = rates.total * actualSeconds;
-    const fatigueResult = calculateMeditationFatigue(intendedDurationMinutes, 'conductivity');
+  // === ФИКСИРОВАННАЯ ДЛИТЕЛЬНОСТЬ ПЕРЕНОСА ===
+  // Время переноса = coreCapacity / проводимость секунд
+  const secondsPerTransfer = Math.ceil(maxQi / currentConductivity);
+  
+  // === СЛУЧАЙ 1: Ядро уже полное ===
+  if (currentQi >= maxQi) {
+    // Полный перенос за secondsPerTransfer секунд
+    const newConductivityMeditations = currentConductivityMeditations + 1;
+    const newTotalConductivity = calculateTotalConductivity(
+      character.coreCapacity, 
+      character.cultivationLevel, 
+      newConductivityMeditations
+    );
+    const fatigueResult = calculateMeditationFatigue(secondsPerTransfer / 60, 'conductivity');
     
     return {
       success: true,
-      qiGained: Math.floor(qiGained),
-      coreWasFilled: false,
-      duration: intendedDurationMinutes,
+      qiGained: maxQi, // Переносим ВСЮ Ци
+      coreWasFilled: true,
+      duration: Math.ceil(secondsPerTransfer / 60),
       fatigueGained: {
         physical: fatigueResult.physicalGain,
         mental: fatigueResult.mentalGain,
       },
-      conductivityMeditationsGained: 0,
-      newConductivityMeditations: currentConductivityMeditations,
-      newTotalConductivity: calculateTotalConductivity(character.coreCapacity, character.cultivationLevel, currentConductivityMeditations),
+      conductivityMeditationsGained: 1,
+      newConductivityMeditations,
+      newTotalConductivity,
       breakdown: {
-        coreGeneration: Math.floor(rates.coreGeneration * actualSeconds),
-        environmentalAbsorption: Math.floor(rates.environmentalAbsorption * actualSeconds),
+        coreGeneration: 0, // При переносе нет выработки
+        environmentalAbsorption: 0, // При переносе нет поглощения
       },
     };
   }
   
-  // Ядро было заполнено!
+  // === СЛУЧАЙ 2: Ядро не полное ===
+  // Сначала накапливаем до полного, затем переносим
+  const qiToFull = maxQi - currentQi;
+  const secondsToFull = Math.ceil(qiToFull / rates.total);
+  const totalDurationSeconds = secondsToFull + secondsPerTransfer;
+  
+  // Расчёт breakdown (только для накопления)
+  const coreGain = rates.coreGeneration * secondsToFull;
+  const envGain = rates.environmentalAbsorption * secondsToFull;
+  
   const newConductivityMeditations = currentConductivityMeditations + 1;
-  const newTotalConductivity = calculateTotalConductivity(character.coreCapacity, character.cultivationLevel, newConductivityMeditations);
-  const fatigueResult = calculateMeditationFatigue(minutesToFull, 'conductivity');
+  const newTotalConductivity = calculateTotalConductivity(
+    character.coreCapacity, 
+    character.cultivationLevel, 
+    newConductivityMeditations
+  );
+  const fatigueResult = calculateMeditationFatigue(totalDurationSeconds / 60, 'conductivity');
   
   return {
     success: true,
-    qiGained: qiToFull,
+    qiGained: maxQi, // Переносим ВСЮ Ци (ядро было заполнено)
     coreWasFilled: true,
-    duration: minutesToFull,
+    duration: Math.ceil(totalDurationSeconds / 60),
     fatigueGained: {
       physical: fatigueResult.physicalGain,
       mental: fatigueResult.mentalGain,
@@ -319,8 +325,8 @@ export function performConductivityMeditation(
     newConductivityMeditations,
     newTotalConductivity,
     breakdown: {
-      coreGeneration: Math.floor(rates.coreGeneration * secondsToFull),
-      environmentalAbsorption: Math.floor(rates.environmentalAbsorption * secondsToFull),
+      coreGeneration: Math.floor(coreGain),
+      environmentalAbsorption: Math.floor(envGain),
     },
   };
 }

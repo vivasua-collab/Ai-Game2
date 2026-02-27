@@ -56,9 +56,7 @@ const MessageBubble = memo(function MessageBubble({ message }: { message: Messag
           </div>
         )}
         <div className="text-slate-200 whitespace-pre-wrap break-words">
-          {message.content.length > 500 
-            ? message.content.slice(0, 500) + "..." 
-            : message.content}
+          {message.content}
         </div>
       </div>
     </div>

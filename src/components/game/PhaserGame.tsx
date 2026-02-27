@@ -791,7 +791,7 @@ async function executeChargedTechnique(
   }
   
   // Execute technique visuals
-  await useTechniqueInDirection(
+  await executeTechniqueInDirection(
     scene,
     charging.techniqueId,
     {
@@ -891,7 +891,7 @@ function getElementColor(element: string): number {
 /**
  * Use technique in direction - with Qi cost check
  */
-async function useTechniqueInDirection(
+async function executeTechniqueInDirection(
   scene: Phaser.Scene,
   techniqueId: string,
   techniqueData: { damage: number; range: number; type: string; element: string; qiCost?: number },
@@ -1338,8 +1338,8 @@ const GameSceneConfig = {
     scene.data.set('targetsInfo', targetsInfo);
 
     // === CHAT PANEL (bottom-left) ===
-    const chatWidth = 280;
-    const chatHeight = 120;
+    const chatWidth = 350;
+    const chatHeight = 360; // Increased 3x from 120
     
     const chatBg = scene.add.rectangle(0, 0, chatWidth, chatHeight, 0x000000, 0.8);
     chatBg.setStrokeStyle(1, 0x4ade80, 0.5);
@@ -1406,13 +1406,54 @@ const GameSceneConfig = {
         const isSlot1 = i === 0;
         const hasContent = equipped || (isSlot1 && isAvailable); // Slot 1 always has basic attack
         const slotKey = String(i + 1);
+        
+        // Check if this slot is charging
+        const chargingSlot = globalChargingTechniques.find(ct => ct.slotIndex === i + 1);
+        const isCharging = !!chargingSlot;
+        const chargeProgress = chargingSlot?.progress || 0;
 
+        // Darken background when charging
         const slotBg = scene.add.rectangle(x, slotsY, slotSize, slotSize,
-          isAvailable ? (hasContent ? 0x22c55e : 0x1e293b) : 0x0f172a, 1
+          isAvailable 
+            ? (isCharging ? 0x1a3a1a : (hasContent ? 0x22c55e : 0x1e293b)) 
+            : 0x0f172a, 
+          1
         );
         slotBg.setStrokeStyle(2, isAvailable ? (hasContent ? 0x22c55e : 0x4ade80) : 0x334155);
         combatSlotsContainer.add(slotBg);
         slotBackgrounds.push(slotBg);
+        
+        // === CHARGING PROGRESS BAR (side bar on left) ===
+        if (isCharging) {
+          const barWidth = 4;
+          const barHeight = slotSize - 4;
+          const barX = x - slotSize / 2 + barWidth / 2 + 2;
+          const barY = slotsY;
+          
+          // Background of progress bar
+          const progressBg = scene.add.rectangle(barX, barY, barWidth, barHeight, 0x000000, 0.7);
+          combatSlotsContainer.add(progressBg);
+          
+          // Progress fill (fills from bottom to top)
+          const progressFill = scene.add.rectangle(
+            barX, 
+            barY + barHeight / 2 - (barHeight * chargeProgress) / 2, 
+            barWidth, 
+            barHeight * chargeProgress, 
+            chargeProgress >= 1 ? 0x4ade80 : 0xfbbf24, 
+            1
+          );
+          progressFill.setOrigin(0.5, 1);
+          combatSlotsContainer.add(progressFill);
+          
+          // Percentage text below slot
+          const progressText = scene.add.text(x, slotsY + slotSize / 2 + 8, 
+            `${Math.round(chargeProgress * 100)}%`, {
+            fontSize: '9px',
+            color: chargeProgress >= 1 ? '#4ade80' : '#fbbf24',
+          }).setOrigin(0.5);
+          combatSlotsContainer.add(progressText);
+        }
 
         const keyLabel = scene.add.text(x, slotsY - slotSize / 2 - 8, slotKey, {
           fontSize: '10px',
@@ -1445,7 +1486,7 @@ const GameSceneConfig = {
               
               // Techniques with 0 Qi cost execute instantly
               if (qiCost === 0) {
-                useTechniqueInDirection(
+                executeTechniqueInDirection(
                   scene,
                   equipped.techniqueId,
                   {
@@ -1479,7 +1520,7 @@ const GameSceneConfig = {
               }
             } else if (isSlot1) {
               // Basic attack - NO Qi cost (physical attack, not a technique)
-              useTechniqueInDirection(
+              executeTechniqueInDirection(
                 scene,
                 'basic_training_strike',
                 {
@@ -1668,7 +1709,7 @@ const GameSceneConfig = {
             
             // Techniques with 0 Qi cost (like basic attacks) execute instantly
             if (qiCost === 0) {
-              useTechniqueInDirection(
+              executeTechniqueInDirection(
                 scene,
                 equipped.techniqueId,
                 {
@@ -1702,7 +1743,7 @@ const GameSceneConfig = {
             }
           } else if (slotIndex === 1) {
             // Slot 1: Default basic attack - NO Qi cost (physical attack, not a technique)
-            useTechniqueInDirection(
+            executeTechniqueInDirection(
               scene,
               'basic_training_strike',
               {
@@ -1751,11 +1792,11 @@ const GameSceneConfig = {
         // Chat
         if (chatMessagesText) {
           if (globalMessages.length > 0) {
-            const recentMessages = globalMessages.slice(-4);
+            const recentMessages = globalMessages.slice(-25); // More messages for larger chat (3x)
             const text = recentMessages.map(m => {
               const prefix = m.sender === 'player' ? '👤' : '📖';
-              const content = m.content.length > 40 ? m.content.slice(0, 40) + '...' : m.content;
-              return `${prefix} ${content}`;
+              // Show full text, no truncation
+              return `${prefix} ${m.content}`;
             }).join('\n');
             chatMessagesText.setText(text);
           } else {

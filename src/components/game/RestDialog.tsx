@@ -226,17 +226,94 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
     return { qiGained, willFillCore, timeToFull };
   }, [character, qiRates, duration, activityType]);
 
+  const canMeditateNowResult = useMemo(() => {
+    if (!character || activityType !== 'meditation') return { canMeditate: true };
+    return canMeditate(character.currentQi, character.coreCapacity, meditationType);
+  }, [character, activityType, meditationType]);
+  
+  // For backwards compatibility with boolean checks
+  const canMeditateNow = canMeditateNowResult.canMeditate;
+  
+  // Проверка доступности для каждого типа медитации
+  const meditationTypeAvailability = useMemo(() => {
+    if (!character) return { accumulation: true, breakthrough: false, conductivity: false };
+    return {
+      accumulation: canMeditate(character.currentQi, character.coreCapacity, 'accumulation').canMeditate,
+      breakthrough: canMeditate(character.currentQi, character.coreCapacity, 'breakthrough').canMeditate,
+      conductivity: canMeditate(character.currentQi, character.coreCapacity, 'conductivity').canMeditate,
+    };
+  }, [character]);
+  
+  // Calculate fixed duration for breakthrough/conductivity
+  const fixedDurationInfo = useMemo(() => {
+    if (activityType !== 'meditation' || meditationType === 'accumulation' || !character || !qiRates) return null;
+    
+    const currentQi = character.currentQi;
+    const maxQi = character.coreCapacity;
+    const isFull = currentQi >= maxQi;
+    
+    if (meditationType === 'breakthrough') {
+      const transferSeconds = 60; // 1 минута на перенос
+      
+      if (isFull) {
+        return {
+          duration: 1,
+          description: 'Перенос всей Ци из ядра в накопленную (60 сек)'
+        };
+      }
+      
+      // При 90-100%: время накопления + перенос
+      const qiToFull = maxQi - currentQi;
+      const secondsToFull = Math.ceil(qiToFull / qiRates.total);
+      const totalMinutes = Math.ceil((secondsToFull + transferSeconds) / 60);
+      
+      return {
+        duration: totalMinutes,
+        description: `Накопление до 100% (${secondsToFull} сек) + перенос (60 сек)`
+      };
+    }
+    
+    if (meditationType === 'conductivity') {
+      const secondsPerTransfer = Math.ceil(maxQi / character.conductivity);
+      
+      if (isFull) {
+        return {
+          duration: Math.ceil(secondsPerTransfer / 60),
+          description: `Перенос Ци в расширение каналов (~${secondsPerTransfer} сек)`
+        };
+      }
+      
+      // При 90-100%: время накопления + перенос
+      const qiToFull = maxQi - currentQi;
+      const secondsToFull = Math.ceil(qiToFull / qiRates.total);
+      const totalSeconds = secondsToFull + secondsPerTransfer;
+      const totalMinutes = Math.ceil(totalSeconds / 60);
+      
+      return {
+        duration: totalMinutes,
+        description: `Накопление до 100% (${secondsToFull} сек) + перенос (${secondsPerTransfer} сек)`
+      };
+    }
+    
+    return null;
+  }, [activityType, meditationType, character, qiRates]);
+
+  // === РЕАЛЬНАЯ ДЛИТЕЛЬНОСТЬ ДЛЯ ОТОБРАЖЕНИЯ ===
+  // Для прорыва/проводимости используем расчётную длительность
+  const effectiveDuration = useMemo(() => {
+    if (activityType === 'meditation' && meditationType !== 'accumulation' && fixedDurationInfo) {
+      return fixedDurationInfo.duration;
+    }
+    return duration;
+  }, [activityType, meditationType, fixedDurationInfo, duration]);
+
   const meditationFatigue = useMemo(() => {
     if (activityType !== 'meditation') {
       return { physicalGain: 0, mentalGain: 0 };
     }
-    return calculateMeditationFatigue(duration, meditationType);
-  }, [duration, activityType, meditationType]);
-
-  const canMeditateNow = useMemo(() => {
-    if (!character || activityType !== 'meditation') return true;
-    return canMeditate(character.currentQi, character.coreCapacity);
-  }, [character, activityType]);
+    // Для прорыва/проводимости используем effectiveDuration
+    return calculateMeditationFatigue(effectiveDuration, meditationType);
+  }, [effectiveDuration, activityType, meditationType]);
 
   // === ПРОГРЕСС МЕДИТАЦИЙ НА ПРОВОДИМОСТЬ ===
   const conductivityProgress = useMemo(() => {
@@ -275,7 +352,9 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
     const wt = toWorldTime(worldTime);
     if (!wt) return null;
 
-    let newMinute = wt.minute + duration;
+    // Используем effectiveDuration для прорыва/проводимости
+    const actualDuration = effectiveDuration;
+    let newMinute = wt.minute + actualDuration;
     let newHour = wt.hour;
     let newDay = wt.day;
     let newMonth = wt.month;
@@ -312,7 +391,7 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
       },
       dayChanged: newDay !== wt.day,
     };
-  }, [worldTime, duration]);
+  }, [worldTime, effectiveDuration]);
 
   // === ВЫПОЛНЕНИЕ ДЕЙСТВИЯ ===
   const handleAction = useCallback(async () => {
@@ -569,44 +648,68 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
                 <div className="space-y-2">
                   <Label className="text-slate-300 text-xs">Тип медитации:</Label>
                   <div className="grid grid-cols-3 gap-2">
-                    {(Object.keys(MEDITATION_TYPES) as MeditationSubType[]).map((type) => (
-                      <Button
-                        key={type}
-                        variant={meditationType === type ? 'default' : 'outline'}
-                        size="sm"
-                        className={`h-auto py-2 flex-col ${
-                          meditationType === type 
-                            ? type === 'accumulation' ? 'bg-purple-600 hover:bg-purple-700' :
-                              type === 'breakthrough' ? 'bg-orange-600 hover:bg-orange-700' :
-                              'bg-cyan-600 hover:bg-cyan-700'
-                            : 'border-slate-600'
-                        }`}
-                        onClick={() => setMeditationType(type)}
-                        disabled={isActing}
-                      >
-                        <span className="text-lg">{MEDITATION_TYPES[type].icon}</span>
-                        <span className="text-xs mt-0.5">{MEDITATION_TYPES[type].name}</span>
-                      </Button>
-                    ))}
+                    {(Object.keys(MEDITATION_TYPES) as MeditationSubType[]).map((type) => {
+                      const isAvailable = meditationTypeAvailability[type];
+                      const isActive = meditationType === type;
+                      return (
+                        <Button
+                          key={type}
+                          variant={isActive ? 'default' : 'outline'}
+                          size="sm"
+                          className={`h-auto py-2 flex-col ${
+                            isActive 
+                              ? type === 'accumulation' ? 'bg-purple-600 hover:bg-purple-700' :
+                                type === 'breakthrough' ? 'bg-orange-600 hover:bg-orange-700' :
+                                'bg-cyan-600 hover:bg-cyan-700'
+                              : 'border-slate-600'
+                          } ${!isAvailable ? 'opacity-50 cursor-not-allowed' : ''}`}
+                          onClick={() => setMeditationType(type)}
+                          disabled={isActing || !isAvailable}
+                        >
+                          <span className="text-lg">{MEDITATION_TYPES[type].icon}</span>
+                          <span className="text-xs mt-0.5">{MEDITATION_TYPES[type].name}</span>
+                          {!isAvailable && type !== 'accumulation' && (
+                            <span className="text-[10px] text-amber-400">90%+</span>
+                          )}
+                        </Button>
+                      );
+                    })}
                   </div>
                   <div className="text-xs text-slate-500">
                     {meditationConfig.description}
+                    {!meditationTypeAvailability[meditationType] && canMeditateNowResult.reason && (
+                      <span className="block text-amber-400 mt-1">{canMeditateNowResult.reason}</span>
+                    )}
                   </div>
                 </div>
 
-                {/* Активная техника */}
-                <div className="bg-purple-900/20 border border-purple-600/30 rounded-lg p-2">
-                  {slottedCultivationTechnique ? (
-                    <div className="flex justify-between text-xs">
-                      <span className="text-purple-400">🧘 Активная техника:</span>
-                      <span className="text-white">{slottedCultivationTechnique.technique.name}</span>
-                    </div>
-                  ) : (
-                    <div className="text-xs text-slate-400">
-                      🧘 Нет активной техники. Назначьте через меню Техники.
-                    </div>
-                  )}
-                </div>
+                {/* Активная техника - только для накопления */}
+                {meditationType === 'accumulation' && (
+                  <div className="bg-purple-900/20 border border-purple-600/30 rounded-lg p-2">
+                    {slottedCultivationTechnique ? (
+                      <div className="flex justify-between text-xs">
+                        <span className="text-purple-400">🧘 Активная техника:</span>
+                        <span className="text-white">{slottedCultivationTechnique.technique.name}</span>
+                      </div>
+                    ) : (
+                      <div className="text-xs text-slate-400">
+                        🧘 Нет активной техники. Назначьте через меню Техники.
+                      </div>
+                    )}
+                  </div>
+                )}
+                
+                {/* Индикатор для прорыва/проводимости */}
+                {meditationType === 'breakthrough' && (
+                  <div className="text-xs text-orange-400 flex items-center gap-1">
+                    🛡️ Автоматическая длительность • Не прерывается
+                  </div>
+                )}
+                {meditationType === 'conductivity' && (
+                  <div className="text-xs text-cyan-400 flex items-center gap-1">
+                    🛡️ Автоматическая длительность • Не прерывается
+                  </div>
+                )}
               </TabsContent>
 
               {/* Отдых */}
@@ -628,75 +731,104 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
           {/* Выбор времени */}
           {!result && (
             <div className="space-y-3">
-              <Label className="text-slate-300">
-                Время {activityType === 'meditation' ? 'медитации' : activityType === 'sleep' ? 'сна' : 'отдыха'}:
-              </Label>
+              {/* Только для накопления показываем выбор времени */}
+              {activityType === 'meditation' && meditationType !== 'accumulation' ? (
+                // Для прорыва/проводимости - только прогноз, без выбора времени
+                <div className="bg-slate-700/30 rounded-lg p-3 space-y-2 border border-slate-600/50">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-slate-400">💜 Мент. усталость:</span>
+                    <span className="text-amber-400">
+                      +{meditationFatigue.mentalGain.toFixed(1)}%
+                      {meditationConfig.fatigueMultiplier > 1 && (
+                        <span className="text-slate-500 ml-1">(x{meditationConfig.fatigueMultiplier})</span>
+                      )}
+                    </span>
+                  </div>
+                  {timeAfterActivity && (
+                    <div className="flex justify-between text-sm pt-2 border-t border-slate-600/50">
+                      <span className="text-slate-400">Время после:</span>
+                      <span className="text-purple-400">
+                        {formatTime(timeAfterActivity.time)}
+                        {timeAfterActivity.dayChanged && (
+                          <span className="ml-2 text-amber-400">🌅 Новый день!</span>
+                        )}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <>
+                  <Label className="text-slate-300">
+                    Время {activityType === 'meditation' ? 'медитации' : activityType === 'sleep' ? 'сна' : 'отдыха'}:
+                  </Label>
 
-              <div className="flex items-center gap-2">
-                <Input
-                  type="number"
-                  min={config.minDuration}
-                  max={config.maxDuration}
-                  step={config.step}
-                  value={inputValue}
-                  onChange={(e) => handleInputChange(e.target.value)}
-                  onBlur={() => setInputValue(String(duration))}
-                  className="bg-slate-700 border-slate-600 w-24"
-                  disabled={isActing}
-                />
-                <span className="text-slate-400 text-sm">минут</span>
-                <Badge variant="outline" className="border-amber-600/50 text-amber-400 ml-auto">
-                  {formatDuration(duration)}
-                </Badge>
-              </div>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      type="number"
+                      min={config.minDuration}
+                      max={config.maxDuration}
+                      step={config.step}
+                      value={inputValue}
+                      onChange={(e) => handleInputChange(e.target.value)}
+                      onBlur={() => setInputValue(String(duration))}
+                      className="bg-slate-700 border-slate-600 w-24"
+                      disabled={isActing}
+                    />
+                    <span className="text-slate-400 text-sm">минут</span>
+                    <Badge variant="outline" className="border-amber-600/50 text-amber-400 ml-auto">
+                      {formatDuration(duration)}
+                    </Badge>
+                  </div>
 
-              <Slider
-                value={[duration]}
-                onValueChange={handleSliderChange}
-                min={0}
-                max={config.maxDuration}
-                step={config.step}
-                className="w-full [&_[data-slot=slider-track]]:bg-slate-700 [&_[data-slot=slider-range]]:bg-white"
-                disabled={isActing}
-              />
-              <div className="flex justify-between text-xs text-slate-500">
-                <span>0</span>
-                <span className="text-amber-400">мин. {formatDuration(config.minDuration)}</span>
-                <span>{formatDuration(config.maxDuration)}</span>
-              </div>
-
-              {/* Быстрый выбор */}
-              <div className="flex flex-wrap gap-2">
-                {(QUICK_DURATIONS[activityType] || []).map((mins) => (
-                  <Button
-                    key={mins}
-                    variant={duration === mins ? 'default' : 'outline'}
-                    size="sm"
-                    className={`h-7 text-xs ${
-                      duration === mins
-                        ? 'bg-amber-600 hover:bg-amber-700'
-                        : 'border-slate-600 text-slate-300 hover:bg-slate-700'
-                    }`}
-                    onClick={() => {
-                      setDuration(mins);
-                      setInputValue(String(mins));
-                    }}
+                  <Slider
+                    value={[duration]}
+                    onValueChange={handleSliderChange}
+                    min={0}
+                    max={config.maxDuration}
+                    step={config.step}
+                    className="w-full [&_[data-slot=slider-track]]:bg-slate-700 [&_[data-slot=slider-range]]:bg-white"
                     disabled={isActing}
-                  >
-                    {formatDuration(mins)}
-                  </Button>
-                ))}
-              </div>
+                  />
+                  <div className="flex justify-between text-xs text-slate-500">
+                    <span>0</span>
+                    <span className="text-amber-400">мин. {formatDuration(config.minDuration)}</span>
+                    <span>{formatDuration(config.maxDuration)}</span>
+                  </div>
+
+                  {/* Быстрый выбор */}
+                  <div className="flex flex-wrap gap-2">
+                    {(QUICK_DURATIONS[activityType] || []).map((mins) => (
+                      <Button
+                        key={mins}
+                        variant={duration === mins ? 'default' : 'outline'}
+                        size="sm"
+                        className={`h-7 text-xs ${
+                          duration === mins
+                            ? 'bg-amber-600 hover:bg-amber-700'
+                            : 'border-slate-600 text-slate-300 hover:bg-slate-700'
+                        }`}
+                        onClick={() => {
+                          setDuration(mins);
+                          setInputValue(String(mins));
+                        }}
+                        disabled={isActing}
+                      >
+                        {formatDuration(mins)}
+                      </Button>
+                    ))}
+                  </div>
+                </>
+              )}
             </div>
           )}
 
-          {/* Прогноз результата */}
-          {!result && (
+          {/* Прогноз результата - только для накопления и отдыха/сна */}
+          {!result && !(activityType === 'meditation' && meditationType !== 'accumulation') && (
             <div className="bg-slate-700/30 rounded-lg p-3 space-y-2 border border-slate-600/50">
               <div className="text-sm font-medium text-slate-300">📊 Прогноз:</div>
 
-              {/* Для медитации */}
-              {activityType === 'meditation' && (
+              {/* Для медитации накопления */}
+              {activityType === 'meditation' && meditationType === 'accumulation' && (
                 <>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-400">Прирост Ци:</span>
@@ -705,33 +837,16 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
                     </span>
                   </div>
                   
-                  {meditationType === 'accumulation' && meditationEstimate.willFillCore && (
+                  {meditationEstimate.willFillCore && (
                     <div className="text-xs text-amber-400">
                       ⚡ Ядро будет заполнено!
                     </div>
                   )}
-                  {meditationType === 'breakthrough' && (
-                    <div className="text-xs text-orange-400">
-                      🔥 При заполнении → Ци в accumulatedQi
-                    </div>
-                  )}
-                  {meditationType === 'conductivity' && (
-                    <div className="text-xs text-cyan-400">
-                      ⚡ При заполнении → +1 МедП, проводимость растёт
-                    </div>
-                  )}
                   
-                  <div className="flex justify-between text-sm">
-                    <span className="text-slate-400">Физ. усталость:</span>
-                    <span className="text-slate-500">без изменений</span>
-                  </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-slate-400">Мент. усталость:</span>
                     <span className="text-amber-400">
                       +{meditationFatigue.mentalGain.toFixed(1)}%
-                      {meditationConfig.fatigueMultiplier > 1 && (
-                        <span className="text-slate-500 ml-1">(x{meditationConfig.fatigueMultiplier})</span>
-                      )}
                     </span>
                   </div>
                   {duration >= 60 && (
