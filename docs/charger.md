@@ -250,7 +250,6 @@ interface ChargerConductivity {
     material: number;           // Множитель от материала
     quality: number;            // Множитель от качества
     enhancement: number;        // Множитель от улучшений
-    attunement: number;         // Множитель от настройки
   };
   
   // === ИТОГОВАЯ ===
@@ -835,7 +834,7 @@ const CHARGER_MATERIALS: Record<ChargerMaterial, ChargerMaterialData> = {
     },
     compatibility: {
       minStoneQuality: 'rough',
-      stoneTypes: ['calm', 'elemental'],
+      stoneTypes: ['calm'],
     },
     baseCost: 200,
   },
@@ -850,7 +849,7 @@ const CHARGER_MATERIALS: Record<ChargerMaterial, ChargerMaterialData> = {
     },
     compatibility: {
       minStoneQuality: 'rough',
-      stoneTypes: ['calm', 'elemental'],
+      stoneTypes: ['calm'],
     },
     baseCost: 150,
   },
@@ -865,7 +864,7 @@ const CHARGER_MATERIALS: Record<ChargerMaterial, ChargerMaterialData> = {
     },
     compatibility: {
       minStoneQuality: 'refined',
-      stoneTypes: ['calm', 'elemental', 'attuned'],
+      stoneTypes: ['calm', 'chaotic'],
     },
     baseCost: 500,
   },
@@ -880,7 +879,7 @@ const CHARGER_MATERIALS: Record<ChargerMaterial, ChargerMaterialData> = {
     },
     compatibility: {
       minStoneQuality: 'pure',
-      stoneTypes: ['calm', 'elemental', 'attuned', 'chaotic'],
+      stoneTypes: ['calm', 'chaotic'],
     },
     baseCost: 5000,
   },
@@ -1079,7 +1078,7 @@ slots:
     compatibility:
       minQuality: refined
       maxSize: small
-      types: [calm, elemental]
+      types: [calm]
     currentStone: null
     modifiers:
       absorptionBonus: 10
@@ -1089,7 +1088,7 @@ slots:
     compatibility:
       minQuality: refined
       maxSize: small
-      types: [calm, elemental]
+      types: [calm]
     currentStone: null
     modifiers:
       absorptionBonus: 10

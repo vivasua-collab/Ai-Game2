@@ -10,6 +10,26 @@
 
 Камни Ци (Духовные Камни) — твёрдая форма Ци, естественным образом кристаллизующаяся при высокой концентрации Ци в замкнутых пространствах.
 
+### Физика агрегатных состояний Ци
+
+Ци — магическая субстанция с особыми свойствами фазовых переходов:
+
+1. **Газообразное состояние** — Ци в окружающей среде
+   - Максимальная плотность: **10 000 ед/м³**
+   - При превышении → резкий переход в сверхкритическое состояние
+   - Аналог "насыщенного пара"
+
+2. **Твёрдое состояние** — кристаллы Ци (камни духа)
+   - Плотность: **1 024 ед/см³** = **1 024 000 000 ед/м³**
+   - В 102 400 раз плотнее газа
+   - Удерживается "давлением паров" — внутренней силой кристалла
+
+3. **Сверхкритическое состояние** — плазма при использовании техник
+   - Промежуточная фаза между газом и жидкостью
+   - Плотность как у жидкой Ци практика
+
+**Ключевой принцип:** Даже при огромной плотности твёрдой Ци, внутреннее давление паров (ρ_равн = 1 024 000 ед/м³) сдерживает её от быстрого испарения. Камни Ци условно стабильны.
+
 ### В мире
 
 ```
@@ -179,44 +199,42 @@ interface QiStoneQualityData {
   name: string;
   purity: [number, number];      // % чистоты
   absorptionEfficiency: number;  // % поглощаемой Ци
-  contaminationRisk: number;     // Риск загрязнения Ци
   marketMultiplier: number;      // Множитель цены
 }
+
+// ПРИМЕЧАНИЕ: Сырые камни с низким качеством содержат примеси,
+// которые снижают эффективность поглощения, но не вызывают "загрязнения Ци".
+// Практик просто получает меньше Ци из камня низкого качества.
 
 const QI_STONE_QUALITIES: Record<QiStoneQuality, QiStoneQualityData> = {
   raw: {
     name: 'Сырой',
     purity: [0, 60],
     absorptionEfficiency: 50,     // Половина Ци теряется
-    contaminationRisk: 15,        // 15% риск загрязнения
     marketMultiplier: 0.5,
   },
   rough: {
     name: 'Грубый',
     purity: [60, 70],
     absorptionEfficiency: 65,
-    contaminationRisk: 8,
     marketMultiplier: 0.8,
   },
   refined: {
     name: 'Очищенный',
     purity: [70, 85],
     absorptionEfficiency: 80,
-    contaminationRisk: 3,
     marketMultiplier: 1.0,
   },
   pure: {
     name: 'Чистый',
     purity: [85, 95],
     absorptionEfficiency: 92,
-    contaminationRisk: 1,
     marketMultiplier: 2.0,
   },
   flawless: {
     name: 'Безупречный',
     purity: [95, 100],
     absorptionEfficiency: 100,    // Вся Ци поглощается
-    contaminationRisk: 0,
     marketMultiplier: 5.0,
   },
 };
@@ -227,15 +245,16 @@ const QI_STONE_QUALITIES: Record<QiStoneQuality, QiStoneQualityData> = {
 ```typescript
 type QiStoneType = 
   | 'calm'       // Спокойная Ци (стандарт)
-  | 'chaotic'    // Хаотичная Ци (опасна, высокая энергия)
-  | 'elemental'  // Элементальная (содержит стихию)
-  | 'attuned';   // Настроенная (под конкретного практика)
+  | 'chaotic';   // Хаотичная Ци (опасна, высокая энергия)
+
+// ПРИМЕЧАНИЕ: При конденсации Ци теряет все свойства и становится нейтральной.
+// Камни Ци всегда содержат только спокойную или хаотичную Ци.
+// Стихийные камни и настройка на практика — не реализованы в данной системе.
 
 interface QiStoneTypeData {
   name: string;
   description: string;
   qiType: 'calm' | 'chaotic';
-  elementalAffinity?: PresetElement;
   specialProperties: string[];
   danger: number;               // Уровень опасности (0-10)
 }
@@ -254,21 +273,6 @@ const QI_STONE_TYPES: Record<QiStoneType, QiStoneTypeData> = {
     qiType: 'chaotic',
     specialProperties: ['unstable', 'high_energy', 'dangerous'],
     danger: 7,
-  },
-  elemental: {
-    name: 'Элементальный камень',
-    description: 'Кристаллизовался в месте с преобладанием одной стихии.',
-    qiType: 'calm',
-    elementalAffinity: 'neutral', // Может быть fire, water, etc.
-    specialProperties: ['elemental_resonance', 'technique_bonus'],
-    danger: 2,
-  },
-  attuned: {
-    name: 'Настроенный камень',
-    description: 'Обработан для резонанса с конкретным практиком.',
-    qiType: 'calm',
-    specialProperties: ['owner_bond', 'efficiency_bonus', 'theft_protection'],
-    danger: 0,
   },
 };
 ```
@@ -403,30 +407,72 @@ function calculateAbsorptionRate(
 ### 3.3 Формула испарения
 
 ```typescript
-// Из start_lore.md:
-// Q_испар = α * S_крист * (ρ_равн - ρ_окр)
+// === ФИЗИКА ЦИ: АГРЕГАТНЫЕ СОСТОЯНИЯ ===
+//
+// Ци — магическая субстанция с особыми свойствами:
+//
+// 1. ГАЗООБРАЗНОЕ СОСТОЯНИЕ (в окружающей среде):
+//    - Максимальная плотность: 10 000 ед/м³
+//    - При превышении → резкий переход в сверхкритическое состояние
+//    - Это "насыщенный пар" Ци
+//
+// 2. ТВЁРДОЕ СОСТОЯНИЕ (кристаллы Ци):
+//    - Плотность: 1 024 ед/см³ = 1 024 000 000 ед/м³
+//    - В 102 400 раз плотнее газа
+//    - Удерживается "давлением паров" — внутренней силой кристалла
+//
+// 3. ПЕРЕХОДЫ:
+//    - Газ → Кристалл: при превышении 10 000 ед/м³ в замкнутом объёме
+//    - Кристалл → Газ: испарение при низкой плотности окружения
+//
+// === ФОРМУЛА ИСПАРЕНИЯ ===
+//
+// Из start_lore.md (контейнер 4):
+// ρ_крист = 1.024×10⁹ ед/м³ (1024 ед/см³)
+// k = 0.001
+// ρ_равн = k × ρ_крист = 1 024 000 ед/м³ — "давление паров" кристалла
+// α = G / ρ_равн
+// Q_испар = α × S_крист × (ρ_равн - ρ_окр)
+//
+// ВАЖНО: ρ_равн ≠ максимальной плотности газа!
+// ρ_равн — это параметр кристалла, его "удерживающая сила".
+// Даже при огромной плотности твёрдой Ци, внутреннее давление паров
+// сдерживает её от испарения.
+//
+// Камень стабилен когда ρ_окр → ρ_равн (в специальных условиях).
+// В обычной среде (ρ_окр ≤ 10 000 ед/м³) камень очень медленно испаряется.
 
 function calculateEvaporationRate(
   stone: QiStone,
-  environmentQiDensity: number // ед/м³
+  environmentQiDensity: number, // ед/м³ (0 ≤ ρ_окр ≤ 10 000)
+  flowRate: number              // G — скорость истечения Ци местности (ед/ч·м²)
 ): number {
-  const rho_crystal = 1024e6; // 1 024 000 000 ед/м³
-  const k = 0.001;
-  const rho_equilibrium = k * rho_crystal; // 1 024 000 ед/м³
+  const rho_crystal = 1024e6;    // 1 024 000 000 ед/м³ — плотность кристалла
+  const k = 0.001;               // Коэффициент
+  const rho_vaporPressure = k * rho_crystal; // 1 024 000 ед/м³ — "давление паров"
   
   const surfaceArea = stone.size.surface / 10000; // см² → м²
-  const G = environmentQiDensity > 0 ? 10 : 1; // Скорость притока Ци
   
-  const alpha = G / rho_equilibrium;
+  // Коэффициент испарения
+  const alpha = flowRate / rho_vaporPressure;
   
   // Скорость испарения (ед/час)
-  const evaporationRate = alpha * surfaceArea * (rho_equilibrium - environmentQiDensity);
+  // Чем выше плотность окружения, тем медленнее испарение
+  const evaporationRate = alpha * surfaceArea * (rho_vaporPressure - environmentQiDensity);
   
   return Math.max(0, evaporationRate);
 }
 
-// Камень теряет Ци при низкой плотности окружения
-// В помещении с нормальным фоном (5000 ед/м³) камень стабилен
+// Примеры:
+// Камень 8 см³, поверхность 24 см² = 0.0024 м²
+// G = 10 ед/ч·м² (типичная местность)
+// α = 10 / 1 024 000 ≈ 0.00000977
+// При ρ_окр = 5 000 ед/м³:
+// Q_испар = 0.00000977 × 0.0024 × (1 024 000 - 5 000) ≈ 0.024 ед/час
+//
+// Это очень медленное испарение — камень на 8192 ед Ци "продержится"
+// около 8192 / 0.024 ≈ 341 333 часов ≈ 39 лет
+// (в реальности испарение ещё медленнее из-за изоляции при хранении)
 ```
 
 ---
@@ -495,14 +541,6 @@ interface QiStoneCrafting {
     process: 'Разделение на части';
     conservation: '95-99% Ци сохраняется';
     useCase: 'Создание камней нужного размера';
-  };
-  
-  // === НАСТРОЙКА ===
-  attunement: {
-    process: 'Привязка к практике';
-    cost: 'Часть Ци камня';
-    benefit: '+20% эффективность для владельца';
-    limitation: 'Только владелец может использовать';
   };
   
   // === СИНТЕЗ ===
@@ -594,15 +632,6 @@ interface QiStoneAsCurrency {
 
 ```typescript
 interface QiStoneDangers {
-  // === ЗАГРЯЗНЕНИЕ ЦИ ===
-  contamination: {
-    cause: 'Примеси в сыром камне';
-    effect: 'Хаотичная Ци в ядре';
-    symptoms: ['Снижение контроля', 'Случайные выбросы', 'Затруднённый прорыв'];
-    treatment: 'Очистка ядра у мастера';
-    prevention: 'Использовать очищенные камни';
-  };
-  
   // === ПЕРЕНАСЫЩЕНИЕ ===
   oversaturation: {
     cause: 'Слишком быстрое поглощение';
@@ -610,14 +639,6 @@ interface QiStoneDangers {
     symptoms: ['Боль', 'Снижение проводимости', 'Возможный разрыв каналов'];
     prevention: 'Не превышать пропускную способность меридиан';
     formula: 'effectiveRate ≤ conductivity';
-  };
-  
-  // === НЕСОВМЕСТИМОСТЬ УРОВНЕЙ ===
-  levelMismatch: {
-    cause: 'Поглощение Ци высокой плотности низкоуровневым практиком';
-    effect: 'Неэффективное уплотнение или повреждение';
-    rule: 'Плотность поглощаемой Ци ≤ Qi(level) × 2';
-    example: 'Практик уровня 3 (Qi=4) не должен поглощать камень плотнее Qi(5)=16 напрямую';
   };
   
   // === ХАОТИЧНАЯ ЦИ ===
@@ -681,7 +702,7 @@ interface QiStone {
   };
   
   // === ТИП И КАЧЕСТВО ===
-  type: QiStoneType;
+  type: QiStoneType;      // 'calm' | 'chaotic'
   quality: QiStoneQuality;
   
   // === СОДЕРЖАНИЕ ЦИ ===
@@ -695,14 +716,10 @@ interface QiStone {
   properties: {
     releaseRate: number;      // ед/сек (зависит от поверхности)
     efficiency: number;       // % поглощения
-    contaminationRisk: number;// %
-    elementalAffinity?: PresetElement;
   };
   
   // === СОСТОЯНИЕ ===
   state: {
-    isAttuned: boolean;
-    attunedTo?: string;       // ID практика
     isSealed: boolean;
     sealStrength?: number;
   };
@@ -732,7 +749,7 @@ model QiStone {
   sizeClass   String   // dust, fragment, small, medium, large, huge, boulder
   
   // === ТИП И КАЧЕСТВО ===
-  stoneType   String   // calm, chaotic, elemental, attuned
+  stoneType   String   // calm, chaotic
   quality     String   // raw, rough, refined, pure, flawless
   
   // === СОДЕРЖАНИЕ ЦИ ===
@@ -742,12 +759,8 @@ model QiStone {
   // === СВОЙСТВА ===
   releaseRate     Float    // Скорость высвобождения (ед/сек)
   efficiency      Float    // Эффективность поглощения (%)
-  contaminationRisk Float  // Риск загрязнения (%)
-  elementalAffinity String?
   
   // === СОСТОЯНИЕ ===
-  isAttuned   Boolean  @default(false)
-  attunedTo   String?  // ID персонажа
   isSealed    Boolean  @default(false)
   sealStrength Int?
   
@@ -793,61 +806,52 @@ qiContent:
 properties:
   releaseRate: 12.0             # 24 см² × 0.5 ед/(см²·сек)
   efficiency: 80                # %
-  contaminationRisk: 3          # %
 
 state:
-  isAttuned: false
   isSealed: false
 
 baseValue: 80                   # духовных камней
 ```
 
-### 8.2 Элементальный камень огня
+### 8.2 Камень хаотичной Ци
 
 ```yaml
 qi_stone:
-  id: "qi_stone_fire_medium"
-  name: "Огненный кристалл Ци"
-  description: "Кристаллизовался в жерле вулкана. Содержит энергию огненной стихии."
+  id: "qi_stone_chaotic_medium"
+  name: "Нестабильный кристалл"
+  description: "Кристалл с высоким содержанием хаотичной Ци. Опасен для неопытных практиков."
   
 size:
-  side: 2.7                     # ~2.7 см
-  volume: 20.0                   # 20 см³
-  surface: 43.5                  # см²
+  side: 2.5                     # ~2.5 см
+  volume: 15.625                 # ~15.6 см³
+  surface: 37.5                  # см²
   sizeClass: medium
 
-type: elemental
-quality: pure
+type: chaotic
+quality: rough
 
 qiContent:
-  total: 20480                   # 1024 × 20
-  current: 20480
+  total: 16000                   # 1024 × 15.625
+  current: 16000
 
 properties:
-  releaseRate: 43.5              # ед/сек
-  efficiency: 92                 # %
-  contaminationRisk: 1           # %
-  elementalAffinity: fire
+  releaseRate: 18.75             # ед/сек
+  efficiency: 65                 # % (грубое качество)
 
-special:
-  techniqueBonus:
-    element: fire
-    damageMultiplier: 1.15       # +15% урона огненным техникам
-  
 state:
-  isAttuned: false
-  isSealed: false
+  isSealed: true
+  sealStrength: 3                # Запечатан для безопасности
 
-baseValue: 600                   # духовных камней
+baseValue: 200                   # духовных камней (учитывая опасность)
 ```
 
-### 8.3 Настроенный безупречный камень
+### 8.3 Безупречный большой камень
 
 ```yaml
 qi_stone:
-  id: "qi_stone_attuned_large"
-  name: "Камень сердца мастера"
-  description: "Безупречный кристалл, настроенный на резонанс с конкретным практиком."
+  id: "qi_stone_flawless_large"
+  name: "Сокровище древнего мастера"
+  description: "Безупречный кристалл, обработанный мастерами древности."
   
 size:
   side: 3.5
@@ -855,7 +859,7 @@ size:
   surface: 73.5
   sizeClass: large
 
-type: attuned
+type: calm
 quality: flawless
 
 qiContent:
@@ -865,21 +869,12 @@ qiContent:
 properties:
   releaseRate: 73.5              # ед/сек
   efficiency: 100                # %
-  contaminationRisk: 0           # %
-
-special:
-  attunement:
-    owner: "char_001"
-    efficiencyBonus: 20          # +20% для владельца
-    theftProtection: true        # Другие не могут использовать
 
 state:
-  isAttuned: true
-  attunedTo: "char_001"
   isSealed: true
-  sealStrength: 5                # Уровень 5 защиты
+  sealStrength: 7                # Мощная защита
 
-baseValue: 5000                  # духовных камней
+baseValue: 5375                  # 500 × 2.5 × 5.0 × 0.86 (скидка за размер)
 ```
 
 ---
