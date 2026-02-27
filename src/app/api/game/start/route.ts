@@ -16,6 +16,11 @@ import {
 import { BASIC_TECHNIQUES } from "@/data/presets/technique-presets";
 import { BASIC_FORMATIONS } from "@/data/presets/formation-presets";
 import { generatePositionAtDistance, generatePositionInRange } from "@/lib/game/world-coordinates";
+import { 
+  validateRequestSize, 
+  payloadTooLargeResponse, 
+  REQUEST_SIZE_LIMITS 
+} from "@/lib/request-size-validator";
 
 // Инициализируем LLM
 let llmInitialized = false;
@@ -50,6 +55,16 @@ function generateNPCName(): string {
 
 export async function POST(request: NextRequest) {
   const timer = new LogTimer("API", "Start game request");
+  
+  // === REQUEST SIZE VALIDATION ===
+  const sizeValidation = validateRequestSize(request, REQUEST_SIZE_LIMITS.GAME_START);
+  if (!sizeValidation.valid) {
+    await logWarn("API", "Request too large", { 
+      contentLength: sizeValidation.contentLength,
+      maxSize: sizeValidation.maxSize 
+    });
+    return payloadTooLargeResponse(sizeValidation.contentLength, sizeValidation.maxSize);
+  }
   
   try {
     // Инициализируем LLM

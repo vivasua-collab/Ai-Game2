@@ -12,8 +12,8 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { useGameSessionId, useGameActions, useGameCharacter, useGameTechniques, useGameMessages, useGameLoading, useGameTime } from '@/stores/game.store';
-import type { Message, CharacterTechnique } from '@/types/game';
+import { useGameSessionId, useGameActions, useGameCharacter, useGameTechniques, useGameMessages, useGameTime } from '@/stores/game.store';
+import type { Message, CharacterTechnique, Character } from '@/types/game';
 import { getCombatSlotsCount } from '@/types/game';
 
 // Game dimensions
@@ -35,9 +35,6 @@ const TARGET_HITBOX_RADIUS = 22; // Target hitbox radius in pixels (approx half 
 const TILE_SIZE = 64;
 const TIME_SYNC_INTERVAL = 3000;
 const MIN_TILES_FOR_SYNC = 1;
-
-// Combat slots configuration
-const COMBAT_SLOT_KEYS = ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE', 'ZERO', 'MINUS', 'EQUALS'];
 
 // Target positions (6 training dummies) - in pixels from world center
 // World center is at WORLD_WIDTH/2, WORLD_HEIGHT/2
@@ -102,17 +99,17 @@ interface DamageNumber {
 let globalSessionId: string | null = null;
 let globalOnMovement: ((tiles: number) => void) | null = null;
 let globalOnSendMessage: ((message: string) => void) | null = null;
-let globalCharacter: any = null;
+let globalCharacter: Character | null = null;
 let globalTechniques: CharacterTechnique[] = [];
 let globalMessages: Message[] = [];
-let globalIsLoading: boolean = false;
+// globalIsLoading removed - unused
 let globalWorldTime: { year: number; month: number; day: number; hour: number; minute: number } | null = null;
 
 // Scene globals
 let globalTargets: TrainingTarget[] = [];
 let globalDamageNumbers: DamageNumber[] = [];
 let globalPlayerRotation: number = 0;
-let globalOnUseTechnique: ((techniqueId: string, rotation: number, playerX: number, playerY: number) => void) | null = null;
+// globalOnUseTechnique removed - unused
 
 // ============================================
 // HELPER FUNCTIONS
@@ -574,7 +571,7 @@ async function useTechniqueInDirection(
   // === DEDUCT QI VIA API ===
   if (qiCost > 0 && globalSessionId) {
     try {
-      const response = await fetch('/api/technique/use', {
+      await fetch('/api/technique/use', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -718,7 +715,7 @@ const GameSceneConfig = {
   create(this: Phaser.Scene) {
     const scene = this as Phaser.Scene;
     let isChatFocused = false;
-    let chatInputText = '';
+    const chatInputText = '';
     globalPlayerRotation = 0;
 
     // Create world bounds
@@ -921,7 +918,6 @@ const GameSceneConfig = {
     // ATTACK RANGE indicator (shows effective range with hitbox consideration)
     const basicRangeMeters = 1.0;
     const targetHitboxMeters = TARGET_HITBOX_RADIUS / METERS_TO_PIXELS;
-    const effectiveRange = basicRangeMeters + targetHitboxMeters;
     const rangeText = scene.add.text(10, 160, `⚔️ Дальность: ${basicRangeMeters.toFixed(1)}м (+${targetHitboxMeters.toFixed(1)}м тело)`, {
       fontSize: '11px',
       color: '#9ca3af',
@@ -1085,14 +1081,6 @@ const GameSceneConfig = {
           fontSize: '18px',
         }).setOrigin(0.5);
         combatSlotsContainer.add(slotContent);
-
-        // Slot tooltip
-        let tooltip = '';
-        if (equipped) {
-          tooltip = equipped.technique.name;
-        } else if (isSlot1 && isAvailable) {
-          tooltip = 'Базовый удар';
-        }
 
         if (isAvailable && hasContent) {
           slotBg.setInteractive();
@@ -1560,7 +1548,6 @@ export function PhaserGame() {
   const character = useGameCharacter();
   const techniques = useGameTechniques();
   const messages = useGameMessages();
-  const isLoading = useGameLoading();
   const worldTime = useGameTime();
   const { loadState, sendMessage } = useGameActions();
 
@@ -1568,7 +1555,6 @@ export function PhaserGame() {
   useEffect(() => { globalCharacter = character; }, [character]);
   useEffect(() => { globalTechniques = techniques; }, [techniques]);
   useEffect(() => { globalMessages = messages; }, [messages]);
-  useEffect(() => { globalIsLoading = isLoading; }, [isLoading]);
   useEffect(() => { globalWorldTime = worldTime; }, [worldTime]);
 
   const handleMovement = useCallback(async (tilesMoved: number) => {

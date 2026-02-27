@@ -35,6 +35,12 @@ import {
   validationErrorResponse,
 } from "@/lib/validations/game";
 import { executeCheat, isCheatsEnabled, type CheatCommand } from "@/services/cheats.service";
+import { rateLimiters } from "@/lib/rate-limit";
+import { 
+  validateRequestSize, 
+  payloadTooLargeResponse, 
+  REQUEST_SIZE_LIMITS 
+} from "@/lib/request-size-validator";
 
 // ==================== HELPER FUNCTIONS ====================
 
@@ -90,6 +96,44 @@ let llmInitialized = false;
 
 export async function POST(request: NextRequest) {
   const timer = new LogTimer("API", "Chat request");
+  
+  // === RATE LIMITING ===
+  // Get client IP or session ID for rate limiting
+  const clientIp = request.headers.get('x-forwarded-for') || 
+                   request.headers.get('x-real-ip') || 
+                   'unknown';
+  const rateLimitResult = rateLimiters.chat(clientIp);
+  
+  if (!rateLimitResult.success) {
+    await logWarn("API", "Rate limit exceeded", { 
+      clientIp, 
+      resetIn: rateLimitResult.resetIn 
+    });
+    return NextResponse.json(
+      { 
+        error: "Too many requests", 
+        message: `Превышен лимит запросов. Попробуйте через ${Math.ceil(rateLimitResult.resetIn / 1000)} секунд.`,
+        retryAfter: rateLimitResult.resetIn,
+      },
+      { 
+        status: 429,
+        headers: {
+          'Retry-After': String(Math.ceil(rateLimitResult.resetIn / 1000)),
+          'X-RateLimit-Remaining': '0',
+        }
+      }
+    );
+  }
+  
+  // === REQUEST SIZE VALIDATION ===
+  const sizeValidation = validateRequestSize(request, REQUEST_SIZE_LIMITS.CHAT);
+  if (!sizeValidation.valid) {
+    await logWarn("API", "Request too large", { 
+      contentLength: sizeValidation.contentLength,
+      maxSize: sizeValidation.maxSize 
+    });
+    return payloadTooLargeResponse(sizeValidation.contentLength, sizeValidation.maxSize);
+  }
   
   // Инициализируем переменные для механик
   let mechanicsUpdate: Record<string, unknown> = {};

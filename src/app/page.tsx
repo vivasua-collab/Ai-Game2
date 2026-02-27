@@ -5,6 +5,7 @@ import { PhaserGame } from "@/components/game/PhaserGame";
 import { ActionButtons } from "@/components/game/ActionButtons";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { ErrorBoundary } from "@/components/game/ErrorBoundary";
 import {
   useGameSessionId,
   useGameLoading,
@@ -191,7 +192,9 @@ export default function Home() {
 
       {/* Main content: FULLSCREEN Phaser Game Canvas with integrated chat */}
       <div className="flex-1 overflow-hidden">
-        <PhaserGame />
+        <ErrorBoundary onReset={handleNewGame}>
+          <PhaserGame />
+        </ErrorBoundary>
       </div>
 
       {/* Footer */}
