@@ -1075,7 +1075,7 @@ const GameSceneConfig = {
                 globalPlayerRotation
               );
             } else if (isSlot1) {
-              // Basic attack - costs 3 Qi
+              // Basic attack - NO Qi cost (physical attack, not a technique)
               useTechniqueInDirection(
                 scene,
                 'basic_training_strike',
@@ -1084,7 +1084,7 @@ const GameSceneConfig = {
                   range: 1, // 1 meter - hand reach
                   type: 'melee_strike',
                   element: 'neutral',
-                  qiCost: 3,
+                  qiCost: 0, // Physical attack - no Qi needed
                 },
                 player.x,
                 player.y,
@@ -1276,7 +1276,7 @@ const GameSceneConfig = {
               globalPlayerRotation
             );
           } else if (slotIndex === 1) {
-            // Slot 1: Default basic attack for training ground - costs 3 Qi
+            // Slot 1: Default basic attack - NO Qi cost (physical attack, not a technique)
             useTechniqueInDirection(
               scene,
               'basic_training_strike',
@@ -1285,7 +1285,7 @@ const GameSceneConfig = {
                 range: 1, // 1 meter - hand reach
                 type: 'melee_strike',
                 element: 'neutral',
-                qiCost: 3,
+                qiCost: 0, // Physical attack - no Qi needed
               },
               player.x,
               player.y,
