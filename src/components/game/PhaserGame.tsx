@@ -509,16 +509,63 @@ function getElementColor(element: string): number {
 }
 
 /**
- * Use technique in direction
+ * Use technique in direction - with Qi cost check
  */
-function useTechniqueInDirection(
+async function useTechniqueInDirection(
   scene: Phaser.Scene,
   techniqueId: string,
-  techniqueData: { damage: number; range: number; type: string; element: string },
+  techniqueData: { damage: number; range: number; type: string; element: string; qiCost?: number },
   playerX: number,
   playerY: number,
   playerRotation: number
-): void {
+): Promise<boolean> {
+  // === QI COST CHECK ===
+  const qiCost = techniqueData.qiCost || 0;
+  const currentQi = globalCharacter?.currentQi || 0;
+  
+  if (qiCost > 0 && currentQi < qiCost) {
+    // Show "Not enough Qi" message
+    const noQiText = scene.add.text(playerX, playerY - 40, `Недостаточно Ци! Нужно: ${qiCost}`, {
+      fontSize: '14px',
+      fontFamily: 'Arial',
+      color: '#ff4444',
+      stroke: '#000000',
+      strokeThickness: 2,
+    }).setOrigin(0.5).setDepth(200);
+    
+    scene.tweens.add({
+      targets: noQiText,
+      y: playerY - 70,
+      alpha: 0,
+      duration: 1500,
+      onComplete: () => noQiText.destroy(),
+    });
+    return false;
+  }
+
+  // === DEDUCT QI VIA API ===
+  if (qiCost > 0 && globalSessionId) {
+    try {
+      const response = await fetch('/api/technique/use', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          characterId: globalCharacter?.id,
+          techniqueId: techniqueId,
+          trainingMode: true, // Don't actually use technique, just deduct Qi
+          qiCostOverride: qiCost,
+        }),
+      });
+      
+      // Update local character Qi
+      if (globalCharacter) {
+        globalCharacter.currentQi = Math.max(0, currentQi - qiCost);
+      }
+    } catch (error) {
+      console.error('Failed to deduct Qi:', error);
+    }
+  }
+
   const range = (techniqueData.range || 2) * METERS_TO_PIXELS;
   const damage = techniqueData.damage || 10;
   const element = techniqueData.element || 'neutral';
@@ -614,6 +661,8 @@ function useTechniqueInDirection(
       damageTarget(scene, target, finalDamage, isCrit ? 'critical' : element);
     }
   }
+  
+  return true;
 }
 
 // ============================================
@@ -1019,13 +1068,14 @@ const GameSceneConfig = {
                   range: equipped.technique.effects?.distance || (equipped.technique.effects?.range?.max || 10),
                   type: equipped.technique.effects?.combatType || equipped.technique.type,
                   element: equipped.technique.element,
+                  qiCost: equipped.technique.qiCost || 0,
                 },
                 player.x,
                 player.y,
                 globalPlayerRotation
               );
             } else if (isSlot1) {
-              // Basic attack
+              // Basic attack - costs 3 Qi
               useTechniqueInDirection(
                 scene,
                 'basic_training_strike',
@@ -1034,6 +1084,7 @@ const GameSceneConfig = {
                   range: 1, // 1 meter - hand reach
                   type: 'melee_strike',
                   element: 'neutral',
+                  qiCost: 3,
                 },
                 player.x,
                 player.y,
@@ -1218,13 +1269,14 @@ const GameSceneConfig = {
                 range: equipped.technique.effects?.distance || (equipped.technique.effects?.range?.max || 10),
                 type: equipped.technique.effects?.combatType || equipped.technique.type,
                 element: equipped.technique.element,
+                qiCost: equipped.technique.qiCost || 0,
               },
               player.x,
               player.y,
               globalPlayerRotation
             );
           } else if (slotIndex === 1) {
-            // Slot 1: Default basic attack for training ground
+            // Slot 1: Default basic attack for training ground - costs 3 Qi
             useTechniqueInDirection(
               scene,
               'basic_training_strike',
@@ -1233,6 +1285,7 @@ const GameSceneConfig = {
                 range: 1, // 1 meter - hand reach
                 type: 'melee_strike',
                 element: 'neutral',
+                qiCost: 3,
               },
               player.x,
               player.y,
