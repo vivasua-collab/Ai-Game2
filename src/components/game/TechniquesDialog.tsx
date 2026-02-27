@@ -684,18 +684,42 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
                       <div className="space-y-2">
                         <p className="text-xs text-slate-400">Назначить в слот:</p>
                         <div className="flex flex-wrap gap-2">
-                          {combatSlotTechniques.map((_, index) => (
-                            <Button
-                              key={index}
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleAssignSlot('combat', index)}
-                              className="border-red-500 text-red-400 hover:bg-red-900/30"
-                            >
-                              Слот {index + 1}
-                            </Button>
-                          ))}
+                          {combatSlotTechniques.map((_, index) => {
+                            // Слот 1 - только для ближнего боя
+                            const isSlot1 = index === 0;
+                            const techniqueEffects = selectedTechnique.technique.effects || {};
+                            const combatType = techniqueEffects.combatType;
+                            const isMelee = combatType === 'melee_strike' || combatType === 'melee_weapon';
+                            const canAssignToSlot = !isSlot1 || isMelee;
+                            
+                            return (
+                              <Button
+                                key={index}
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleAssignSlot('combat', index)}
+                                disabled={!canAssignToSlot}
+                                className={`${canAssignToSlot 
+                                  ? 'border-red-500 text-red-400 hover:bg-red-900/30' 
+                                  : 'border-slate-600 text-slate-500 cursor-not-allowed'}`}
+                                title={isSlot1 && !canAssignToSlot 
+                                  ? 'Слот 1 только для техник ближнего боя (удар рукой/оружием)' 
+                                  : undefined}
+                              >
+                                {isSlot1 ? '👊 ' : ''}Слот {index + 1}
+                              </Button>
+                            );
+                          })}
                         </div>
+                        {selectedTechnique && (() => {
+                          const combatType = selectedTechnique.technique.effects?.combatType;
+                          const isMelee = combatType === 'melee_strike' || combatType === 'melee_weapon';
+                          return !isMelee && (
+                            <p className="text-xs text-amber-400 mt-1">
+                              ⚠️ Эта техника не может быть в слоте 1 (только ближний бой)
+                            </p>
+                          );
+                        })()}
                       </div>
                     </div>
                   ) : (

@@ -110,6 +110,34 @@ export async function PUT(request: NextRequest) {
           );
         }
 
+        // === ПРОВЕРКА ДЛЯ СЛОТА 1 (только ближний бой) ===
+        if (slotIndex === 0) {
+          // Слот 1 - только для техник ближнего боя (melee_strike, melee_weapon)
+          const technique = charTech.technique;
+          let effects: any = {};
+          
+          try {
+            if (technique.effects) {
+              effects = JSON.parse(technique.effects);
+            }
+          } catch {
+            effects = {};
+          }
+
+          const combatType = effects.combatType;
+          const allowedTypes = ['melee_strike', 'melee_weapon'];
+          
+          if (!combatType || !allowedTypes.includes(combatType)) {
+            return NextResponse.json(
+              { 
+                success: false, 
+                error: 'Слот 1 предназначен только для техник ближнего боя (удар рукой или оружие)' 
+              },
+              { status: 400 }
+            );
+          }
+        }
+
         // Устанавливаем quickSlot
         await db.characterTechnique.update({
           where: { id: charTech.id },

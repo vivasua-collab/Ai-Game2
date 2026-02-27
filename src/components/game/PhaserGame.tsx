@@ -835,7 +835,7 @@ const GameSceneConfig = {
     scene.data.set('distanceText', distanceText);
 
     // ATTACK RANGE indicator
-    const rangeText = scene.add.text(10, 160, '⚔️ Дальность: 5.0 м', {
+    const rangeText = scene.add.text(10, 160, '⚔️ Дальность: 1.0 м', {
       fontSize: '11px',
       color: '#9ca3af',
       backgroundColor: '#000000aa',
@@ -1031,7 +1031,7 @@ const GameSceneConfig = {
                 'basic_training_strike',
                 {
                   damage: 25,
-                  range: 5,
+                  range: 1, // 1 meter - hand reach
                   type: 'melee_strike',
                   element: 'neutral',
                 },
@@ -1230,7 +1230,7 @@ const GameSceneConfig = {
               'basic_training_strike',
               {
                 damage: 25,
-                range: 5, // 5 meters
+                range: 1, // 1 meter - hand reach
                 type: 'melee_strike',
                 element: 'neutral',
               },
@@ -1382,7 +1382,7 @@ const GameSceneConfig = {
     // Update distance display
     if (distanceTextEl) {
       if (nearestInFront !== null) {
-        const inRange = nearestInFront <= 5; // 5m attack range
+        const inRange = nearestInFront <= 1; // 1m hand reach
         distanceTextEl.setText(`📏 До цели: ${nearestInFront.toFixed(1)} м ${inRange ? '✓' : '⚠️'}`);
         distanceTextEl.setColor(inRange ? '#4ade80' : '#fbbf24');
       } else if (nearestDistance < Infinity) {
