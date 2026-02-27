@@ -111,11 +111,12 @@ interface TechniqueCharging {
   progress: number;              // Прогресс 0-1
   techniqueData: {
     damage: number;
-    range: number;
+    range: number | RangeData;   // Поддержка зон урона
     type: string;
     element: string;
     qiCost: number;
     mastery?: number;
+    coneAngle?: number;          // Угол конуса атаки
   };
   chargeBar?: Phaser.GameObjects.Graphics;  // Визуальный индикатор
   chargeText?: Phaser.GameObjects.Text;     // Текст времени
@@ -516,29 +517,43 @@ function damageTarget(
 // ============================================
 
 /**
+ * Множители проводимости по уровням культивации
+ */
+const CONDUCTIVITY_MULTIPLIERS: Record<number, number> = {
+  1: 1, 2: 1.2, 3: 1.5, 4: 2, 5: 3, 6: 5, 7: 8, 8: 15, 9: 50, 10: 100
+};
+
+/**
  * Calculate technique charge time based on Qi cost and conductivity
  * 
  * Formula: chargeTime = qiCost / effectiveSpeed
- * effectiveSpeed = conductivity × (1 + cultivationLevelBonus) × (1 + masteryBonus)
+ * effectiveSpeed = conductivity × levelMultiplier × (1 + masteryBonus)
+ * 
+ * ВАЖНО: Проводимость должна рассчитываться как (coreCapacity / 360) * levelMultiplier
  * 
  * @param qiCost Qi cost of the technique
- * @param conductivity Character's meridian conductivity (Qi/second base)
+ * @param coreCapacity Character's core capacity (for conductivity calculation)
  * @param cultivationLevel Character's cultivation level
  * @param mastery Technique mastery (0-100%)
  * @returns Charge time in milliseconds
  */
 function calculateChargeTime(
   qiCost: number,
-  conductivity: number,
+  coreCapacity: number,
   cultivationLevel: number = 1,
   mastery: number = 0
 ): number {
-  // Base speed = conductivity Qi/second
-  let effectiveSpeed = Math.max(0.1, conductivity);
+  // Базовая проводимость = coreCapacity / 360 (Ци/сек)
+  const baseConductivity = coreCapacity / 360;
   
-  // Cultivation bonus: +5% speed per level above 1
-  const cultivationBonus = 1 + (cultivationLevel - 1) * 0.05;
-  effectiveSpeed *= cultivationBonus;
+  // Множитель проводимости от уровня культивации
+  const levelMultiplier = CONDUCTIVITY_MULTIPLIERS[cultivationLevel] || 1;
+  
+  // Итоговая проводимость с учётом уровня
+  const totalConductivity = baseConductivity * levelMultiplier;
+  
+  // Base speed = conductivity Qi/second
+  let effectiveSpeed = Math.max(0.1, totalConductivity);
   
   // Mastery bonus: +1% speed per 1% mastery
   const masteryBonus = 1 + mastery * 0.01;
@@ -547,15 +562,32 @@ function calculateChargeTime(
   // Charge time in milliseconds
   const chargeTimeMs = (qiCost / effectiveSpeed) * 1000;
   
-  // Minimum 100ms
+  // Minimum 100ms (для баланса - минимум 0.1 секунды)
   return Math.max(100, chargeTimeMs);
 }
 
 /**
  * Get effective conductivity from character
+ * Рассчитывает проводимость на основе coreCapacity и уровня культивации
  */
 function getEffectiveConductivity(): number {
-  return globalCharacter?.conductivity || 1.0; // Default 1.0 Qi/sec
+  const char = globalCharacter;
+  if (!char) return 1.0;
+  
+  // Базовая проводимость = coreCapacity / 360
+  const baseConductivity = (char.coreCapacity || 360) / 360;
+  
+  // Множитель от уровня культивации
+  const levelMultiplier = CONDUCTIVITY_MULTIPLIERS[char.cultivationLevel] || 1;
+  
+  return baseConductivity * levelMultiplier;
+}
+
+/**
+ * Get core capacity from character (for charge time calculation)
+ */
+function getCoreCapacity(): number {
+  return globalCharacter?.coreCapacity || 360;
 }
 
 /**
@@ -635,11 +667,11 @@ function startTechniqueCharging(
     return false;
   }
   
-  // Calculate charge time
-  const conductivity = getEffectiveConductivity();
+  // Calculate charge time using coreCapacity (не conductivity из БД - он не обновляется!)
+  const coreCapacity = getCoreCapacity();
   const cultivationLevel = getCultivationLevel();
   const mastery = techniqueData.mastery || 0;
-  const chargeTime = calculateChargeTime(techniqueData.qiCost, conductivity, cultivationLevel, mastery);
+  const chargeTime = calculateChargeTime(techniqueData.qiCost, coreCapacity, cultivationLevel, mastery);
   
   // Create charge bar for this slot (will be updated in update loop)
   const chargeBar = scene.add.graphics();
@@ -836,27 +868,140 @@ function getChargingProgress(slotIndex: number): number {
 }
 
 /**
- * Check if target is in attack cone with hitbox consideration
- * The attack reaches the target if: distance <= range + targetHitboxRadius
- * This means the attack touches or penetrates the target's hitbox
+ * Извлечь данные о дальности из effects техники или damageFalloff
+ * Автоматически рассчитывает зоны урона если они не указаны явно
  */
-function isInAttackCone(
+function extractRangeData(
+  effects: Record<string, unknown> | undefined,
+  fallbackRange: number = 10,
+  techniqueType?: string,
+  damageFalloff?: { fullDamage?: number; halfDamage?: number; max?: number }
+): RangeData {
+  // ПРИОРИТЕТ 1: Проверяем damageFalloff (основное поле для боевых техник)
+  if (damageFalloff && typeof damageFalloff === 'object' && (damageFalloff.fullDamage || damageFalloff.halfDamage || damageFalloff.max)) {
+    const maxRange = damageFalloff.max ?? fallbackRange;
+    return {
+      fullDamage: damageFalloff.fullDamage ?? maxRange * 0.5,
+      halfDamage: damageFalloff.halfDamage ?? maxRange * 0.75,
+      max: maxRange,
+    };
+  }
+
+  if (!effects) {
+    return { fullDamage: fallbackRange, halfDamage: fallbackRange, max: fallbackRange };
+  }
+
+  // ПРИОРИТЕТ 2: Если range это объект с зонами урона
+  const range = effects.range as { fullDamage?: number; halfDamage?: number; max?: number } | undefined;
+
+  if (range && typeof range === 'object' && (range.fullDamage || range.halfDamage || range.max)) {
+    const maxRange = range.max ?? fallbackRange;
+    return {
+      fullDamage: range.fullDamage ?? maxRange * 0.5,
+      halfDamage: range.halfDamage ?? maxRange * 0.75,
+      max: maxRange,
+    };
+  }
+
+  // ПРИОРИТЕТ 3: Если range это просто число - рассчитываем зоны автоматически
+  const rangeValue = typeof effects.range === 'number' ? effects.range :
+                     typeof effects.distance === 'number' ? effects.distance :
+                     fallbackRange;
+
+  // Для AOE техник - зоны урона шире (50% и 75% от максимальной дальности)
+  if (techniqueType === 'ranged_aoe' || effects.combatType === 'ranged_aoe') {
+    return {
+      fullDamage: rangeValue * 0.5,   // 50% дальности = полный урон
+      halfDamage: rangeValue * 0.75,  // 75% дальности = 50% урона
+      max: rangeValue,
+    };
+  }
+
+  // Для обычных ranged техник
+  if (techniqueType?.startsWith('ranged_') || String(effects.combatType).startsWith('ranged_')) {
+    return {
+      fullDamage: rangeValue * 0.5,   // 50% дальности = полный урон
+      halfDamage: rangeValue * 0.75,  // 75% дальности = 50% урона
+      max: rangeValue,
+    };
+  }
+
+  // Для melee техник - весь урон на всей дистанции
+  return { fullDamage: rangeValue, halfDamage: rangeValue, max: rangeValue };
+}
+
+/**
+ * Рассчитать множитель урона на основе расстояния (линейное затухание)
+ * Для AOE техник с линейным затуханием урона
+ * 
+ * @param distance Дистанция до цели (в пикселях)
+ * @param fullDamageRange Дистанция полного урона (в пикселях)
+ * @param maxRange Максимальная дистанция (в пикселях)
+ * @returns Множитель урона от 0.0 до 1.0
+ */
+function calculateLinearDamageFalloff(
+  distance: number,
+  fullDamageRange: number,
+  maxRange: number
+): number {
+  // В зоне полного урона
+  if (distance <= fullDamageRange) {
+    return 1.0;
+  }
+  
+  // За пределами максимальной дальности
+  if (distance >= maxRange) {
+    return 0.0;
+  }
+  
+  // Линейное затухание от fullDamageRange до maxRange
+  const falloffRange = maxRange - fullDamageRange;
+  const distanceInFalloff = distance - fullDamageRange;
+  
+  // Урон падает от 100% до 0% линейно
+  return 1.0 - (distanceInFalloff / falloffRange);
+}
+
+/**
+ * Результат проверки попадания
+ */
+interface HitResult {
+  hit: boolean;
+  damageZone: 'full' | 'half' | 'falloff' | 'none';
+  damageMultiplier: number;  // Точный множитель урона (0.0 - 1.0)
+  distance: number;
+}
+
+/**
+ * Check if target is in attack cone with hitbox consideration
+ * Returns hit result with damage zone info and exact multiplier
+ * 
+ * Damage zones:
+ * - full: distance <= fullDamageRange (100% damage)
+ * - half: distance <= halfDamageRange (50% damage)  
+ * - falloff: linear falloff from fullDamageRange to maxRange
+ * - none: distance > maxRange
+ */
+function checkAttackHit(
   playerX: number,
   playerY: number,
   playerRotation: number,
   targetX: number,
   targetY: number,
-  coneAngle: number = 60,
-  range: number = 64,
+  coneAngle: number,
+  fullDamageRange: number,
+  halfDamageRange: number,
+  maxRange: number,
   targetHitboxRadius: number = 0
-): boolean {
+): HitResult {
   const dx = targetX - playerX;
   const dy = targetY - playerY;
   const distance = Math.sqrt(dx * dx + dy * dy);
 
-  // Attack reaches the target if distance to center <= range + hitboxRadius
-  // This allows hitting the edge of the hitbox, not just the center
-  if (distance > range + targetHitboxRadius) return false;
+  // Проверка максимальной дальности (с учётом хитбокса)
+  if (distance > maxRange + targetHitboxRadius) {
+    return { hit: false, damageZone: 'none', damageMultiplier: 0, distance };
+  }
 
   // Angle to target
   const angleToTarget = Math.atan2(dy, dx) * 180 / Math.PI;
@@ -869,7 +1014,33 @@ function isInAttackCone(
   let angleDiff = Math.abs(normalizedTarget - normalizedRotation);
   if (angleDiff > 180) angleDiff = 360 - angleDiff;
 
-  return angleDiff <= coneAngle / 2;
+  // Не в конусе
+  if (angleDiff > coneAngle / 2) {
+    return { hit: false, damageZone: 'none', damageMultiplier: 0, distance };
+  }
+
+  // Определяем зону урона и множитель
+  let damageZone: 'full' | 'half' | 'falloff' | 'none' = 'none';
+  let damageMultiplier = 0;
+  
+  if (distance <= fullDamageRange + targetHitboxRadius) {
+    // Зона полного урона (100%)
+    damageZone = 'full';
+    damageMultiplier = 1.0;
+  } else if (distance <= halfDamageRange + targetHitboxRadius) {
+    // Зона половинного урона (50%)
+    damageZone = 'half';
+    damageMultiplier = 0.5;
+  } else if (distance <= maxRange + targetHitboxRadius) {
+    // Зона линейного затухания (от 50% до 0%)
+    damageZone = 'falloff';
+    // Линейное затухание от halfDamageRange до maxRange
+    const falloffDistance = distance - halfDamageRange;
+    const totalFalloffRange = maxRange - halfDamageRange;
+    damageMultiplier = Math.max(0, 0.5 * (1 - falloffDistance / totalFalloffRange));
+  }
+
+  return { hit: damageMultiplier > 0, damageZone, damageMultiplier, distance };
 }
 
 /**
@@ -889,12 +1060,28 @@ function getElementColor(element: string): number {
 }
 
 /**
+ * Данные о дальности техники
+ */
+interface RangeData {
+  fullDamage: number;  // Дальность полного урона (в метрах)
+  halfDamage: number;  // Дальность половинного урона (в метрах)
+  max: number;         // Максимальная дальность (в метрах)
+}
+
+/**
  * Use technique in direction - with Qi cost check
  */
 async function executeTechniqueInDirection(
   scene: Phaser.Scene,
   techniqueId: string,
-  techniqueData: { damage: number; range: number; type: string; element: string; qiCost?: number },
+  techniqueData: { 
+    damage: number; 
+    range: number | RangeData; 
+    type: string; 
+    element: string; 
+    qiCost?: number;
+    coneAngle?: number;  // Угол конуса атаки (по умолчанию 60)
+  },
   playerX: number,
   playerY: number,
   playerRotation: number
@@ -946,27 +1133,38 @@ async function executeTechniqueInDirection(
     }
   }
 
-  const range = (techniqueData.range || 2) * METERS_TO_PIXELS;
+  // === PARSE RANGE DATA ===
+  const rangeData: RangeData = typeof techniqueData.range === 'number' 
+    ? { fullDamage: techniqueData.range, halfDamage: techniqueData.range, max: techniqueData.range }
+    : techniqueData.range;
+  
+  const fullDamageRange = rangeData.fullDamage * METERS_TO_PIXELS;
+  const halfDamageRange = rangeData.halfDamage * METERS_TO_PIXELS;
+  const maxRange = rangeData.max * METERS_TO_PIXELS;
+  
   const damage = techniqueData.damage || 10;
   const element = techniqueData.element || 'neutral';
   const techniqueType = techniqueData.type || 'combat';
+  const coneAngle = techniqueData.coneAngle || 60; // По умолчанию 60 градусов
 
   const rad = playerRotation * Math.PI / 180;
-  const endX = playerX + Math.cos(rad) * range;
-  const endY = playerY + Math.sin(rad) * range;
+  const endX = playerX + Math.cos(rad) * maxRange;
+  const endY = playerY + Math.sin(rad) * maxRange;
   const elementColor = getElementColor(element);
 
   // === VISUAL EFFECTS BASED ON TECHNIQUE TYPE ===
   
   if (techniqueType === 'ranged_beam' || techniqueType === 'ranged_projectile') {
-    // Beam effect
+    // Beam effect - показываем линии зон урона
     const beam = scene.add.graphics();
+    beam.setDepth(15);
+    
+    // Линия до конца максимальной дальности
     beam.lineStyle(4, elementColor, 0.9);
     beam.beginPath();
     beam.moveTo(playerX, playerY);
     beam.lineTo(endX, endY);
     beam.strokePath();
-    beam.setDepth(15);
 
     // Glow effect
     beam.lineStyle(8, elementColor, 0.3);
@@ -974,6 +1172,19 @@ async function executeTechniqueInDirection(
     beam.moveTo(playerX, playerY);
     beam.lineTo(endX, endY);
     beam.strokePath();
+    
+    // Показываем зону половинного урона (более тусклая)
+    if (halfDamageRange > fullDamageRange) {
+      const halfX = playerX + Math.cos(rad) * halfDamageRange;
+      const halfY = playerY + Math.sin(rad) * halfDamageRange;
+      
+      // Затухание от половинной до максимальной
+      beam.lineStyle(3, elementColor, 0.4);
+      beam.beginPath();
+      beam.moveTo(playerX + Math.cos(rad) * fullDamageRange, playerY + Math.sin(rad) * fullDamageRange);
+      beam.lineTo(halfX, halfY);
+      beam.strokePath();
+    }
 
     // Impact point
     const impact = scene.add.circle(endX, endY, 10, elementColor, 0.7);
@@ -989,28 +1200,81 @@ async function executeTechniqueInDirection(
         impact.destroy();
       },
     });
+  } else if (techniqueType === 'ranged_aoe') {
+    // AOE - круговая область с зонами урона
+    const aoe = scene.add.graphics();
+    aoe.setDepth(15);
+    
+    // Зона половинного урона (внешняя)
+    if (halfDamageRange > fullDamageRange) {
+      aoe.fillStyle(elementColor, 0.15);
+      aoe.beginPath();
+      aoe.arc(playerX, playerY, halfDamageRange, rad - Math.PI / 6, rad + Math.PI / 6, false);
+      aoe.lineTo(playerX, playerY);
+      aoe.closePath();
+      aoe.fillPath();
+    }
+    
+    // Зона полного урона (внутренняя)
+    aoe.fillStyle(elementColor, 0.35);
+    aoe.beginPath();
+    aoe.arc(playerX, playerY, fullDamageRange, rad - Math.PI / 6, rad + Math.PI / 6, false);
+    aoe.lineTo(playerX, playerY);
+    aoe.closePath();
+    aoe.fillPath();
+    
+    // Радиус максимальной дальности (граница)
+    aoe.lineStyle(1, elementColor, 0.5);
+    aoe.beginPath();
+    aoe.arc(playerX, playerY, maxRange, rad - Math.PI / 6, rad + Math.PI / 6, false);
+    aoe.strokePath();
+    
+    scene.tweens.add({
+      targets: aoe,
+      alpha: 0,
+      duration: 400,
+      onComplete: () => aoe.destroy(),
+    });
   } else {
-    // Melee/Combat - cone effect
+    // Melee/Combat - cone effect с зонами урона
     const cone = scene.add.graphics();
-    const coneAngle = 60 * Math.PI / 180; // 60 degree cone
-    const coneRadius = range;
-
-    cone.fillStyle(elementColor, 0.3);
+    const coneAngleRad = coneAngle * Math.PI / 180;
+    
+    // Зона половинного урона (внешняя часть конуса)
+    if (halfDamageRange > fullDamageRange) {
+      cone.fillStyle(elementColor, 0.15);
+      cone.beginPath();
+      cone.moveTo(playerX, playerY);
+      cone.arc(playerX, playerY, halfDamageRange, rad - coneAngleRad / 2, rad + coneAngleRad / 2, false);
+      cone.closePath();
+      cone.fillPath();
+    }
+    
+    // Зона полного урона (внутренняя часть конуса)
+    cone.fillStyle(elementColor, 0.35);
     cone.beginPath();
     cone.moveTo(playerX, playerY);
-    cone.arc(playerX, playerY, coneRadius, rad - coneAngle / 2, rad + coneAngle / 2, false);
+    cone.arc(playerX, playerY, fullDamageRange, rad - coneAngleRad / 2, rad + coneAngleRad / 2, false);
     cone.closePath();
     cone.fillPath();
     cone.setDepth(15);
 
-    // Edge line
+    // Edge lines
     cone.lineStyle(2, elementColor, 0.8);
     cone.beginPath();
     cone.moveTo(playerX, playerY);
-    cone.lineTo(playerX + Math.cos(rad - coneAngle / 2) * coneRadius, playerY + Math.sin(rad - coneAngle / 2) * coneRadius);
+    cone.lineTo(playerX + Math.cos(rad - coneAngleRad / 2) * maxRange, playerY + Math.sin(rad - coneAngleRad / 2) * maxRange);
     cone.moveTo(playerX, playerY);
-    cone.lineTo(playerX + Math.cos(rad + coneAngle / 2) * coneRadius, playerY + Math.sin(rad + coneAngle / 2) * coneRadius);
+    cone.lineTo(playerX + Math.cos(rad + coneAngleRad / 2) * maxRange, playerY + Math.sin(rad + coneAngleRad / 2) * maxRange);
     cone.strokePath();
+    
+    // Граница зоны половинного урона
+    if (halfDamageRange > fullDamageRange) {
+      cone.lineStyle(1, elementColor, 0.5);
+      cone.beginPath();
+      cone.arc(playerX, playerY, halfDamageRange, rad - coneAngleRad / 2, rad + coneAngleRad / 2, false);
+      cone.strokePath();
+    }
 
     scene.tweens.add({
       targets: cone,
@@ -1022,13 +1286,36 @@ async function executeTechniqueInDirection(
 
   // Check each target - use target's center (centerY) and hitbox for collision
   for (const target of globalTargets) {
-    if (isInAttackCone(playerX, playerY, playerRotation, target.x, target.centerY, 60, range, target.hitboxRadius)) {
-      // Hit!
-      const isCrit = Math.random() < 0.15; // 15% crit chance
-      const finalDamage = isCrit ? Math.floor(damage * 1.5) : damage;
+    const hitResult = checkAttackHit(
+      playerX, playerY, playerRotation,
+      target.x, target.centerY,
+      coneAngle,
+      fullDamageRange, halfDamageRange, maxRange,
+      target.hitboxRadius
+    );
+    
+    if (hitResult.hit) {
+      // Calculate damage based on exact multiplier (linear falloff)
+      let finalDamage = Math.floor(damage * hitResult.damageMultiplier);
+      let damageType = element;
+      
+      // Показываем разный цвет для разных зон
+      if (hitResult.damageZone === 'half' || hitResult.damageZone === 'falloff') {
+        damageType = 'normal'; // Урон в зонах затухания показываем белым
+      }
+      
+      // Crit check (только для полного урона)
+      const isCrit = hitResult.damageZone === 'full' && Math.random() < 0.15;
+      if (isCrit) {
+        finalDamage = Math.floor(finalDamage * 1.5);
+        damageType = 'critical';
+      }
       
       // Hit effect on target's center (torso area)
-      const hitEffect = scene.add.circle(target.x, target.centerY, 15, elementColor, 0.8);
+      const hitColor = hitResult.damageZone === 'full' ? elementColor : 0xffffff;
+      const hitEffect = scene.add.circle(target.x, target.centerY, 
+        hitResult.damageZone === 'full' ? 15 : 10, 
+        hitColor, 0.8);
       hitEffect.setDepth(200);
       scene.tweens.add({
         targets: hitEffect,
@@ -1038,7 +1325,25 @@ async function executeTechniqueInDirection(
         onComplete: () => hitEffect.destroy(),
       });
       
-      damageTarget(scene, target, finalDamage, isCrit ? 'critical' : element);
+      // Показываем расстояние для отладки
+      const distText = scene.add.text(target.x, target.centerY + 30, 
+        `${(hitResult.distance / METERS_TO_PIXELS).toFixed(1)}м (${hitResult.damageZone})`, {
+        fontSize: '10px',
+        fontFamily: 'Arial',
+        color: hitResult.damageZone === 'full' ? '#4ade80' : '#fbbf24',
+        stroke: '#000000',
+        strokeThickness: 2,
+      }).setOrigin(0.5).setDepth(200);
+      
+      scene.tweens.add({
+        targets: distText,
+        y: distText.y - 20,
+        alpha: 0,
+        duration: 800,
+        onComplete: () => distText.destroy(),
+      });
+      
+      damageTarget(scene, target, finalDamage, isCrit ? 'critical' : damageType);
     }
   }
   
@@ -1372,8 +1677,9 @@ const GameSceneConfig = {
     scene.data.set('chatInputDisplay', chatInputDisplay);
 
     // === COMBAT SLOTS (bottom-center) ===
-    const slotSize = 40;
-    const slotSpacing = 5;
+    // Адаптивный размер слотов в зависимости от количества
+    const baseSlotSize = 40;
+    const baseSlotSpacing = 5;
     // Количество слотов зависит от уровня культивации (3 + level - 1)
     // Уровень 1 = 3 слота, уровень 9 = 11 слотов
 
@@ -1389,17 +1695,31 @@ const GameSceneConfig = {
       const { width, height } = getScreenSize();
       const level = globalCharacter?.cultivationLevel || 1;
       const availableSlots = getCombatSlotsCount(level);
-      const totalSlots = Math.max(availableSlots, 6); // Минимум 6 для UI, но показываем доступные
+      
+      // Адаптивный размер слотов - уменьшаем если много слотов
+      let slotSize = baseSlotSize;
+      let slotSpacing = baseSlotSpacing;
+      const totalWidth = availableSlots * (slotSize + slotSpacing) - slotSpacing;
+      const maxAllowedWidth = width - 40; // 20px отступ с каждой стороны
+      
+      if (totalWidth > maxAllowedWidth) {
+        const scale = maxAllowedWidth / totalWidth;
+        slotSize = Math.floor(baseSlotSize * scale);
+        slotSpacing = Math.max(2, Math.floor(baseSlotSpacing * scale));
+      }
 
       const equippedBySlot: Map<number, CharacterTechnique> = new Map();
       for (const t of globalTechniques) {
-        if ((t.technique.type === 'combat' || t.technique.type === 'movement') && t.quickSlot !== null && t.quickSlot > 0) {
+        if ((t.technique.type === 'combat' || t.technique.type === 'movement' || 
+             t.technique.type === 'support' || t.technique.type === 'sensory') && 
+            t.quickSlot !== null && t.quickSlot > 0) {
           equippedBySlot.set(t.quickSlot, t);
         }
       }
 
-      const slotsY = height - 50; // Подняли выше, чтобы было место для прогресс бара
-      const startX = width / 2 - (availableSlots * (slotSize + slotSpacing)) / 2;
+      // Позиция слотов - учитываем место для номера слота сверху (+15px)
+      const slotsY = height - 50 - 15; 
+      const startX = width / 2 - (availableSlots * (slotSize + slotSpacing) - slotSpacing) / 2;
 
       for (let i = 0; i < availableSlots; i++) {
         const x = startX + i * (slotSize + slotSpacing);
@@ -1425,40 +1745,46 @@ const GameSceneConfig = {
         combatSlotsContainer.add(slotBg);
         slotBackgrounds.push(slotBg);
         
-        // === CHARGING PROGRESS BAR (внутри слота, сверху вниз) ===
+        // === CHARGING PROGRESS BAR (внутри слота, снизу) ===
         if (isCharging) {
-          const barWidth = slotSize - 8;
-          const barHeight = 4;
+          const barWidth = slotSize - 6;
+          const barHeight = 3;
           const barX = x;
-          const barY = slotsY + slotSize / 2 - 4; // Внизу слота
+          const barY = slotsY + slotSize / 2 - barHeight - 2; // Внизу слота, внутри границ
           
           // Background of progress bar
-          const progressBg = scene.add.rectangle(barX, barY, barWidth, barHeight, 0x000000, 0.7);
+          const progressBg = scene.add.rectangle(barX, barY, barWidth, barHeight, 0x000000, 0.8);
           combatSlotsContainer.add(progressBg);
           
           // Progress fill (fills from left to right)
           const progressFill = scene.add.rectangle(
             barX - barWidth / 2 + (barWidth * chargeProgress) / 2, 
             barY, 
-            barWidth * chargeProgress, 
+            Math.max(1, barWidth * chargeProgress), 
             barHeight, 
             chargeProgress >= 1 ? 0x4ade80 : 0xfbbf24, 
             1
           );
           combatSlotsContainer.add(progressFill);
           
-          // Percentage text inside slot (top)
-          const progressText = scene.add.text(x, slotsY - slotSize / 2 + 6, 
+          // Percentage text inside slot (центр слота)
+          const progressText = scene.add.text(x, slotsY, 
             `${Math.round(chargeProgress * 100)}%`, {
-            fontSize: '8px',
+            fontSize: '9px',
+            fontFamily: 'Arial',
             color: chargeProgress >= 1 ? '#4ade80' : '#fbbf24',
+            stroke: '#000000',
+            strokeThickness: 2,
           }).setOrigin(0.5);
           combatSlotsContainer.add(progressText);
         }
 
-        const keyLabel = scene.add.text(x, slotsY - slotSize / 2 - 10, slotKey, {
-          fontSize: '10px',
-          color: isAvailable ? '#9ca3af' : '#475569',
+        const keyLabel = scene.add.text(x, slotsY - slotSize / 2 - 12, slotKey, {
+          fontSize: '11px',
+          fontFamily: 'Arial',
+          color: isAvailable ? '#fbbf24' : '#475569',
+          stroke: '#000000',
+          strokeThickness: 2,
         }).setOrigin(0.5);
         combatSlotsContainer.add(keyLabel);
 
@@ -1484,6 +1810,13 @@ const GameSceneConfig = {
           slotBg.on('pointerdown', () => {
             if (equipped) {
               const qiCost = equipped.technique.qiCost || 0;
+              const techniqueType = equipped.technique.effects?.combatType || equipped.technique.type;
+              const rangeData = extractRangeData(
+                equipped.technique.effects as Record<string, unknown> | undefined,
+                10,
+                techniqueType,
+                equipped.technique.damageFalloff as { fullDamage?: number; halfDamage?: number; max?: number } | undefined
+              );
               
               // Techniques with 0 Qi cost execute instantly
               if (qiCost === 0) {
@@ -1492,7 +1825,7 @@ const GameSceneConfig = {
                   equipped.techniqueId,
                   {
                     damage: equipped.technique.effects?.damage || 15,
-                    range: equipped.technique.effects?.distance || (equipped.technique.effects?.range?.max || 10),
+                    range: rangeData,
                     type: equipped.technique.effects?.combatType || equipped.technique.type,
                     element: equipped.technique.element,
                     qiCost: 0,
@@ -1509,7 +1842,7 @@ const GameSceneConfig = {
                   equipped.techniqueId,
                   {
                     damage: equipped.technique.effects?.damage || 15,
-                    range: equipped.technique.effects?.distance || (equipped.technique.effects?.range?.max || 10),
+                    range: rangeData,
                     type: equipped.technique.effects?.combatType || equipped.technique.type,
                     element: equipped.technique.element,
                     qiCost: qiCost,
@@ -1708,6 +2041,13 @@ const GameSceneConfig = {
           if (equipped) {
             // Start charging the technique instead of instant use
             const qiCost = equipped.technique.qiCost || 0;
+            const techniqueType = equipped.technique.effects?.combatType || equipped.technique.type;
+            const rangeData = extractRangeData(
+              equipped.technique.effects as Record<string, unknown> | undefined,
+              10,
+              techniqueType,
+              equipped.technique.damageFalloff as { fullDamage?: number; halfDamage?: number; max?: number } | undefined
+            );
             
             // Techniques with 0 Qi cost (like basic attacks) execute instantly
             if (qiCost === 0) {
@@ -1716,7 +2056,7 @@ const GameSceneConfig = {
                 equipped.techniqueId,
                 {
                   damage: equipped.technique.effects?.damage || 15,
-                  range: equipped.technique.effects?.distance || (equipped.technique.effects?.range?.max || 10),
+                  range: rangeData,
                   type: equipped.technique.effects?.combatType || equipped.technique.type,
                   element: equipped.technique.element,
                   qiCost: 0,
@@ -1733,7 +2073,7 @@ const GameSceneConfig = {
                 equipped.techniqueId,
                 {
                   damage: equipped.technique.effects?.damage || 15,
-                  range: equipped.technique.effects?.distance || (equipped.technique.effects?.range?.max || 10),
+                  range: rangeData,
                   type: equipped.technique.effects?.combatType || equipped.technique.type,
                   element: equipped.technique.element,
                   qiCost: qiCost,

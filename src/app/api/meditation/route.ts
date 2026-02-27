@@ -669,8 +669,9 @@ export async function POST(request: NextRequest) {
           }
         }
         if (cultivationTechnique && masteryGain > 0) {
-          const newMastery = Math.min(100, (cultivationTechnique.mastery || 0) + masteryGain);
-          message += `\n   └─ Мастерство: ${cultivationTechnique.mastery || 0}% → ${newMastery}% (+${masteryGain}%)`;
+          const currentMastery = cultivationTechnique.mastery || 0;
+          const newMastery = Math.min(100, currentMastery + masteryGain);
+          message += `\n   └─ Мастерство: ${currentMastery.toFixed(2)}% → ${newMastery.toFixed(2)}% (+${masteryGain.toFixed(2)}%)`;
         }
       }
       

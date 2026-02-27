@@ -293,6 +293,7 @@ function mapTechniqueFromDb(t: {
   modifiers?: string | null;
   weaponType?: string | null;
   isRangedQi?: boolean;
+  damageFalloff?: string | null;
 }): Technique {
   return {
     id: t.id,
@@ -317,6 +318,7 @@ function mapTechniqueFromDb(t: {
     modifiers: t.modifiers ? JSON.parse(t.modifiers) : undefined,
     weaponType: t.weaponType ?? undefined,
     isRangedQi: t.isRangedQi ?? undefined,
+    damageFalloff: t.damageFalloff ? JSON.parse(t.damageFalloff) : undefined,
     effects: t.effects ? JSON.parse(t.effects) : undefined,
   };
 }

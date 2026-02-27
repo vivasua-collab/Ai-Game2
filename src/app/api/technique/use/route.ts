@@ -73,12 +73,12 @@ export async function POST(request: NextRequest) {
       minCultivationLevel: tech.minCultivationLevel,
       qiCost: tech.qiCost,
       fatigueCost: { 
-        physical: tech.physicalFatigueCost, 
-        mental: tech.mentalFatigueCost 
+        physical: tech.physicalFatigueCost ?? 0, 
+        mental: tech.mentalFatigueCost ?? 0 
       },
       statRequirements: tech.statRequirements ? JSON.parse(tech.statRequirements) : undefined,
       statScaling: tech.statScaling ? JSON.parse(tech.statScaling) : undefined,
-      effects: tech.effects ? JSON.parse(tech.effects) : undefined,
+      effects: tech.effects ? JSON.parse(tech.effects) : {},
       masteryProgress: characterTechnique.mastery,
       masteryBonus: 0.5,
       source: 'preset' as const,
@@ -105,10 +105,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Рассчитываем новые значения
+    const fatigueGained = result.fatigueGained || { physical: 0, mental: 0 };
     const newQi = Math.max(0, character.currentQi - result.qiSpent);
-    const newFatigue = Math.min(100, character.fatigue + result.fatigueGained.physical);
-    const newMentalFatigue = Math.min(100, character.mentalFatigue + result.fatigueGained.mental);
-    const newMastery = Math.min(100, characterTechnique.mastery + result.masteryGained);
+    const newFatigue = Math.min(100, character.fatigue + fatigueGained.physical);
+    const newMentalFatigue = Math.min(100, character.mentalFatigue + fatigueGained.mental);
+    const newMastery = Math.min(100, characterTechnique.mastery + (result.masteryGained || 0));
 
     // Обновляем персонажа в БД
     await db.character.update({

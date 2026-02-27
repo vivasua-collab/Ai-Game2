@@ -381,7 +381,8 @@ model Technique {
   // === Дополнительные поля для combat техник ===
   weaponType   String?  // Тип оружия (для melee_weapon)
   isRangedQi   Boolean  @default(false)  // Дальний удар Ци (для легендарных weapon)
-  
+  damageFalloff String? // Затухание урона (JSON): { fullDamage, halfDamage, max }
+
   // === Источник ===
   source String @default("created") // preset, npc, scroll, insight, created, generated
   

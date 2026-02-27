@@ -5,14 +5,14 @@
  * - 3 категории: Культивация, Формации, Бой
  * - Культивация: 1 слот, используется автоматически при медитации
  * - Формации: можно использовать из меню
- * - Бой: 3+ слота (зависит от уровня), быстрый вызов
+ * - Бой: 3+ слотов (зависит от уровня), быстрый вызов
  * 
- * Слоты интегрированы в каждую категорию (отдельная вкладка убрана)
+ * Поддержка Drag & Drop для назначения техник в слоты
  */
 
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -70,6 +70,11 @@ const RARITY_COLORS: Record<string, string> = {
   rare: 'text-blue-400',
   legendary: 'text-amber-400',
 };
+
+// Форматирование мастерства - 2 знака после запятой
+function formatMastery(mastery: number): string {
+  return mastery.toFixed(2);
+}
 
 // Функция для получения количества боевых слотов
 function getCombatSlotsCountLocal(level: number): number {
@@ -174,6 +179,117 @@ function FormationEffectsDisplay({ technique }: { technique: Technique }) {
   );
 }
 
+/**
+ * Компонент техники в списке с поддержкой drag
+ */
+interface DraggableTechniqueItemProps {
+  technique: CharacterTechnique;
+  isSelected: boolean;
+  onSelect: () => void;
+  onDragStart: (e: React.DragEvent, technique: CharacterTechnique) => void;
+  onDragEnd: (e: React.DragEvent) => void;
+}
+
+function DraggableTechniqueItem({ 
+  technique, 
+  isSelected, 
+  onSelect,
+  onDragStart,
+  onDragEnd
+}: DraggableTechniqueItemProps) {
+  return (
+    <div
+      draggable
+      onDragStart={(e) => onDragStart(e, technique)}
+      onDragEnd={onDragEnd}
+      onClick={onSelect}
+      className={`w-full justify-start text-left h-auto py-2 px-3 cursor-grab active:cursor-grabbing rounded-lg transition-all ${
+        isSelected
+          ? 'bg-slate-700 ring-2 ring-amber-500/50'
+          : 'hover:bg-slate-700/50'
+      }`}
+    >
+      <div className="w-full">
+        <div className="flex items-center gap-2">
+          <div className="text-sm text-white truncate">{technique.technique.name}</div>
+          {technique.quickSlot !== null && (
+            <Badge variant="outline" className="text-xs border-green-500 text-green-400">
+              {technique.quickSlot === 0 ? '🧘' : `${technique.quickSlot}`}
+            </Badge>
+          )}
+        </div>
+        <div className="flex items-center gap-2 text-xs text-slate-500">
+          <span>Ур. {technique.technique.level}</span>
+          <span>•</span>
+          <span>Мастерство: {formatMastery(technique.mastery)}%</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Компонент слота с поддержкой drop
+ */
+interface DroppableSlotProps {
+  slotIndex: number;
+  technique: CharacterTechnique | null;
+  isSlot1: boolean;
+  canAssignToSlot: boolean;
+  isDragOver: boolean;
+  onClear: () => void;
+  onDragOver: (e: React.DragEvent) => void;
+  onDragLeave: (e: React.DragEvent) => void;
+  onDrop: (e: React.DragEvent, slotIndex: number) => void;
+}
+
+function DroppableSlot({
+  slotIndex,
+  technique,
+  isSlot1,
+  canAssignToSlot,
+  isDragOver,
+  onClear,
+  onDragOver,
+  onDragLeave,
+  onDrop
+}: DroppableSlotProps) {
+  return (
+    <div
+      onDragOver={onDragOver}
+      onDragLeave={onDragLeave}
+      onDrop={(e) => onDrop(e, slotIndex)}
+      className={`relative rounded-lg p-2 border text-center transition-all min-h-[60px] flex flex-col justify-center ${
+        isDragOver 
+          ? 'bg-amber-900/30 border-amber-500 ring-2 ring-amber-500/50' 
+          : technique
+            ? 'bg-slate-700/50 border-green-500/50'
+            : 'bg-slate-800/50 border-slate-600/50 hover:border-slate-500'
+      }`}
+    >
+      <div className="text-xs text-slate-500 mb-1 font-medium">
+        {isSlot1 ? '👊' : ''} {slotIndex + 1}
+      </div>
+      {technique ? (
+        <>
+          <div className="text-xs text-white truncate font-medium">{technique.technique.name}</div>
+          <div className="text-[10px] text-slate-400 truncate">
+            Ур.{technique.technique.level} • {formatMastery(technique.mastery)}%
+          </div>
+          <button
+            onClick={(e) => { e.stopPropagation(); onClear(); }}
+            className="absolute -top-1 -right-1 h-4 w-4 p-0 text-red-400 hover:text-red-300 bg-slate-800 rounded-full flex items-center justify-center text-xs"
+          >
+            ✕
+          </button>
+        </>
+      ) : (
+        <div className="text-xs text-slate-500">Пуст</div>
+      )}
+    </div>
+  );
+}
+
 export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) {
   const character = useGameCharacter();
   const techniques = useGameTechniques();
@@ -183,6 +299,9 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
   const [isUsing, setIsUsing] = useState(false);
   const [result, setResult] = useState<{ success: boolean; message: string } | null>(null);
   const [activeCategory, setActiveCategory] = useState<string>('cultivation');
+  const [draggedTechnique, setDraggedTechnique] = useState<CharacterTechnique | null>(null);
+  const [dragOverSlot, setDragOverSlot] = useState<number | null>(null);
+  const dragImageRef = useRef<HTMLDivElement | null>(null);
 
   // Разделение техник по категориям
   const techniquesByCategory = useMemo(() => {
@@ -252,6 +371,34 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
     }
   }, [character, selectedTechnique, loadTechniques]);
 
+  // Назначить технику в слот по ID (для drag & drop)
+  const handleAssignTechniqueToSlot = useCallback(async (techniqueId: string, slotIndex: number) => {
+    if (!character) return;
+
+    try {
+      const response = await fetch('/api/technique/slot', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          characterId: character.id,
+          slotType: 'combat',
+          slotIndex,
+          techniqueId,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        await loadTechniques();
+        setResult({ success: true, message: data.message });
+      } else {
+        setResult({ success: false, message: data.error });
+      }
+    } catch (error) {
+      setResult({ success: false, message: 'Ошибка соединения' });
+    }
+  }, [character, loadTechniques]);
+
   // Очистить слот
   const handleClearSlot = useCallback(async (slotType: 'cultivation' | 'combat', slotIndex?: number) => {
     if (!character) return;
@@ -279,6 +426,62 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
       setResult({ success: false, message: 'Ошибка соединения' });
     }
   }, [character, loadTechniques]);
+
+  // Drag & Drop handlers
+  const handleDragStart = useCallback((e: React.DragEvent, technique: CharacterTechnique) => {
+    setDraggedTechnique(technique);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', technique.techniqueId);
+    
+    // Создаем кастомный drag image
+    const dragImage = document.createElement('div');
+    dragImage.className = 'bg-slate-800 border border-amber-500 rounded-lg px-3 py-2 text-white text-sm shadow-lg';
+    dragImage.textContent = technique.technique.name;
+    document.body.appendChild(dragImage);
+    e.dataTransfer.setDragImage(dragImage, 0, 0);
+    setTimeout(() => document.body.removeChild(dragImage), 0);
+  }, []);
+
+  const handleDragEnd = useCallback((e: React.DragEvent) => {
+    setDraggedTechnique(null);
+    setDragOverSlot(null);
+  }, []);
+
+  const handleSlotDragOver = useCallback((e: React.DragEvent, slotIndex: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverSlot(slotIndex);
+  }, []);
+
+  const handleSlotDragLeave = useCallback((e: React.DragEvent) => {
+    setDragOverSlot(null);
+  }, []);
+
+  const handleSlotDrop = useCallback(async (e: React.DragEvent, slotIndex: number) => {
+    e.preventDefault();
+    setDragOverSlot(null);
+    
+    const techniqueId = e.dataTransfer.getData('text/plain');
+    if (!techniqueId || !character) return;
+    
+    // Проверяем, можно ли назначить в этот слот
+    const isSlot1 = slotIndex === 0;
+    const technique = techniques.find(t => t.techniqueId === techniqueId);
+    
+    if (technique) {
+      const techniqueEffects = technique.technique.effects || {};
+      const combatType = techniqueEffects.combatType;
+      const isMelee = combatType === 'melee_strike' || combatType === 'melee_weapon';
+      
+      if (isSlot1 && !isMelee) {
+        setResult({ success: false, message: 'Слот 1 только для техник ближнего боя' });
+        return;
+      }
+    }
+    
+    await handleAssignTechniqueToSlot(techniqueId, slotIndex);
+    setDraggedTechnique(null);
+  }, [character, techniques, handleAssignTechniqueToSlot]);
 
   // Проверка возможности использования (только формации!)
   const canUse = useMemo(() => {
@@ -345,6 +548,8 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
       setSelectedTechnique(null);
       setResult(null);
       setActiveCategory('cultivation');
+      setDraggedTechnique(null);
+      setDragOverSlot(null);
     }
     onOpenChange(open);
   }, [onOpenChange]);
@@ -353,7 +558,7 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
 
   // Рендер списка техник для категории
   const renderTechniqueList = (techList: CharacterTechnique[]) => (
-    <ScrollArea className="h-[280px]">
+    <ScrollArea className="h-[300px]">
       {techList.length === 0 ? (
         <div className="text-center text-slate-500 py-8">
           Нет изученных техник этой категории
@@ -361,33 +566,17 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
       ) : (
         <div className="space-y-1">
           {techList.map((t) => (
-            <Button
+            <DraggableTechniqueItem
               key={t.id}
-              variant="ghost"
-              className={`w-full justify-start text-left h-auto py-2 px-3 ${
-                selectedTechnique?.id === t.id
-                  ? 'bg-slate-700'
-                  : 'hover:bg-slate-700/50'
-              }`}
-              onClick={() => {
+              technique={t}
+              isSelected={selectedTechnique?.id === t.id}
+              onSelect={() => {
                 setSelectedTechnique(t);
                 setResult(null);
               }}
-            >
-              <div className="w-full">
-                <div className="flex items-center gap-2">
-                  <div className="text-sm text-white truncate">{t.technique.name}</div>
-                  {t.quickSlot !== null && (
-                    <Badge variant="outline" className="text-xs border-green-500 text-green-400">
-                      {t.quickSlot === 0 ? '🧘' : `${t.quickSlot}`}
-                    </Badge>
-                  )}
-                </div>
-                <div className="text-xs text-slate-500">
-                  Ур. {t.technique.level} • Мастерство: {t.mastery}%
-                </div>
-              </div>
-            </Button>
+              onDragStart={handleDragStart}
+              onDragEnd={handleDragEnd}
+            />
           ))}
         </div>
       )}
@@ -417,7 +606,7 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
               <div className="flex-1">
                 <div className="text-white text-sm font-medium">{cultivationSlotTechnique.technique.name}</div>
                 <div className="text-xs text-slate-400">
-                  +{cultivationSlotTechnique.technique.effects?.qiRegenPercent || 0}% Ци • Мастерство: {cultivationSlotTechnique.mastery}%
+                  +{cultivationSlotTechnique.technique.effects?.qiRegenPercent || 0}% Ци • Мастерство: {formatMastery(cultivationSlotTechnique.mastery)}%
                 </div>
               </div>
               <Badge variant="outline" className="border-purple-500 text-purple-400">
@@ -436,44 +625,47 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
       );
     }
     
-    // Боевые слоты
+    // Боевые слоты - адаптивная сетка
+    const gridCols = combatSlotsCount <= 6 ? 'grid-cols-6' : 
+                     combatSlotsCount <= 8 ? 'grid-cols-4 sm:grid-cols-6 lg:grid-cols-8' : 
+                     'grid-cols-4 sm:grid-cols-6 lg:grid-cols-11';
+    
     return (
       <div className="bg-slate-700/30 rounded-lg p-3 border border-slate-600/50">
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-3">
           <h4 className="text-sm font-medium text-red-400">⚔️ Боевые слоты ({combatSlotsCount})</h4>
           <span className="text-xs text-slate-500">Уровень {character.cultivationLevel}</span>
         </div>
-        <div className="grid grid-cols-4 gap-2">
-          {combatSlotTechniques.map((tech, index) => (
-            <div
-              key={index}
-              className={`relative rounded-lg p-2 border text-center ${
-                tech
-                  ? 'bg-slate-700/50 border-green-500/50'
-                  : 'bg-slate-800/50 border-slate-600/50'
-              }`}
-            >
-              <div className="text-xs text-slate-500 mb-1">{index + 1}</div>
-              {tech ? (
-                <>
-                  <div className="text-xs text-white truncate">{tech.technique.name}</div>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    onClick={() => handleClearSlot('combat', index)}
-                    className="absolute top-0 right-0 h-4 w-4 p-0 text-red-400 hover:text-red-300"
-                  >
-                    ✕
-                  </Button>
-                </>
-              ) : (
-                <div className="text-xs text-slate-500">Пуст</div>
-              )}
-            </div>
-          ))}
+        <div className={`grid ${gridCols} gap-2`}>
+          {combatSlotTechniques.map((tech, index) => {
+            const isSlot1 = index === 0;
+            // Проверяем можно ли назначить в этот слот
+            let canAssignToSlot = true;
+            if (isSlot1 && draggedTechnique) {
+              const techniqueEffects = draggedTechnique.technique.effects || {};
+              const combatType = techniqueEffects.combatType;
+              const isMelee = combatType === 'melee_strike' || combatType === 'melee_weapon';
+              canAssignToSlot = isMelee;
+            }
+            
+            return (
+              <DroppableSlot
+                key={index}
+                slotIndex={index}
+                technique={tech}
+                isSlot1={isSlot1}
+                canAssignToSlot={canAssignToSlot}
+                isDragOver={dragOverSlot === index}
+                onClear={() => handleClearSlot('combat', index)}
+                onDragOver={(e) => handleSlotDragOver(e, index)}
+                onDragLeave={handleSlotDragLeave}
+                onDrop={handleSlotDrop}
+              />
+            );
+          })}
         </div>
         <p className="text-xs text-slate-500 mt-2">
-          Боевые техники активируются клавишами 1-{combatSlotsCount} в игре.
+          ⬇️ Перетащите технику на слот или используйте кнопки ниже
         </p>
       </div>
     );
@@ -481,10 +673,15 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-2xl max-h-[85vh]">
+      <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-5xl w-[95vw] max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader>
-          <DialogTitle className="text-amber-400 flex items-center gap-2">
+          <DialogTitle className="text-amber-400 flex items-center gap-2 text-xl">
             ⚔️ Техники
+            {draggedTechnique && (
+              <Badge variant="outline" className="ml-2 border-amber-500 text-amber-400 animate-pulse">
+                Перетащите на слот: {draggedTechnique.technique.name}
+              </Badge>
+            )}
           </DialogTitle>
         </DialogHeader>
 
@@ -494,8 +691,8 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
             <p className="text-sm mt-2">Техники можно получить через обучение, свитки или прозрение.</p>
           </div>
         ) : (
-          <Tabs value={activeCategory} onValueChange={setActiveCategory} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 bg-slate-700">
+          <Tabs value={activeCategory} onValueChange={setActiveCategory} className="w-full flex-1 flex flex-col overflow-hidden">
+            <TabsList className="grid w-full grid-cols-3 bg-slate-700 shrink-0">
               <TabsTrigger value="cultivation" className="data-[state=active]:bg-purple-600">
                 🌀 Культивация ({techniquesByCategory.cultivation.length})
               </TabsTrigger>
@@ -508,12 +705,12 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
             </TabsList>
 
             {/* Категория: Культивация */}
-            <TabsContent value="cultivation" className="mt-4 space-y-4">
+            <TabsContent value="cultivation" className="mt-4 space-y-4 overflow-y-auto flex-1">
               {/* Слот культивации */}
               {renderSlots('cultivation')}
               
               {/* Список техник культивации */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div className="border border-slate-700 rounded-lg p-3">
                   <h4 className="text-sm font-medium text-slate-400 mb-2">Доступные техники</h4>
                   {renderTechniqueList(techniquesByCategory.cultivation)}
@@ -548,7 +745,7 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
                         )}
                         <div className="flex justify-between text-sm">
                           <span className="text-slate-400">Мастерство:</span>
-                          <span className="text-amber-400">{selectedTechnique.mastery}%</span>
+                          <span className="text-amber-400">{formatMastery(selectedTechnique.mastery)}%</span>
                         </div>
                       </div>
                       
@@ -564,7 +761,7 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
                       </Button>
                     </div>
                   ) : (
-                    <div className="h-full flex items-center justify-center text-slate-500">
+                    <div className="h-full min-h-[200px] flex items-center justify-center text-slate-500">
                       Выберите технику культивации
                     </div>
                   )}
@@ -573,12 +770,12 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
             </TabsContent>
 
             {/* Категория: Формации */}
-            <TabsContent value="formations" className="mt-4 space-y-4">
+            <TabsContent value="formations" className="mt-4 space-y-4 overflow-y-auto flex-1">
               <div className="bg-amber-900/20 border border-amber-600/30 rounded-lg p-3 text-sm">
                 <span className="text-amber-400">💡 Формации можно использовать напрямую для усиления медитации.</span>
               </div>
               
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div className="border border-slate-700 rounded-lg p-3">
                   <h4 className="text-sm font-medium text-slate-400 mb-2">Изученные формации</h4>
                   {renderTechniqueList(techniquesByCategory.formations)}
@@ -614,7 +811,7 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
                       )}
                     </div>
                   ) : (
-                    <div className="h-full flex items-center justify-center text-slate-500">
+                    <div className="h-full min-h-[200px] flex items-center justify-center text-slate-500">
                       Выберите формацию
                     </div>
                   )}
@@ -623,14 +820,17 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
             </TabsContent>
 
             {/* Категория: Бой */}
-            <TabsContent value="combat" className="mt-4 space-y-4">
+            <TabsContent value="combat" className="mt-4 space-y-4 overflow-y-auto flex-1">
               {/* Боевые слоты */}
               {renderSlots('combat')}
               
               {/* Список боевых техник */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div className="border border-slate-700 rounded-lg p-3">
-                  <h4 className="text-sm font-medium text-slate-400 mb-2">Боевые техники</h4>
+                  <h4 className="text-sm font-medium text-slate-400 mb-2">
+                    Боевые техники 
+                    <span className="text-xs text-slate-500 ml-2">(перетащите на слот)</span>
+                  </h4>
                   {renderTechniqueList(techniquesByCategory.combat)}
                 </div>
                 
@@ -640,13 +840,18 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
                     <div className="space-y-3">
                       <div>
                         <h3 className="text-lg font-bold text-white">{selectedTechnique.technique.name}</h3>
-                        <div className="flex gap-2 mt-1">
+                        <div className="flex flex-wrap gap-2 mt-1">
                           <Badge variant="outline" className={TYPE_COLORS[selectedTechnique.technique.type] || ''}>
                             {TYPE_NAMES[selectedTechnique.technique.type] || selectedTechnique.technique.type}
                           </Badge>
                           <Badge variant="outline" className="text-slate-400">
                             {ELEMENT_NAMES[selectedTechnique.technique.element] || selectedTechnique.technique.element}
                           </Badge>
+                          {selectedTechnique.technique.rarity && (
+                            <Badge variant="outline" className={RARITY_COLORS[selectedTechnique.technique.rarity] || ''}>
+                              {selectedTechnique.technique.rarity}
+                            </Badge>
+                          )}
                         </div>
                       </div>
                       
@@ -722,7 +927,7 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
                         
                         <div className="flex justify-between text-sm">
                           <span className="text-slate-400">Мастерство:</span>
-                          <span className="text-amber-400">{selectedTechnique.mastery}%</span>
+                          <span className="text-amber-400">{formatMastery(selectedTechnique.mastery)}%</span>
                         </div>
                         
                         {/* Требования к характеристикам */}
@@ -764,7 +969,7 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
                       {/* Информация о слотах */}
                       <div className="bg-red-900/20 border border-red-600/30 rounded-lg p-3 text-sm text-slate-300">
                         <span className="text-red-400">⚔️ Боевые техники используются через слоты быстрого доступа.</span>
-                        <p className="mt-1 text-xs">Назначьте технику в свободный слот выше.</p>
+                        <p className="mt-1 text-xs">Перетащите технику на свободный слот выше или используйте кнопки ниже.</p>
                       </div>
                       
                       {/* Кнопки назначения в слоты */}
@@ -810,7 +1015,7 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
                       </div>
                     </div>
                   ) : (
-                    <div className="h-full flex items-center justify-center text-slate-500">
+                    <div className="h-full min-h-[200px] flex items-center justify-center text-slate-500">
                       Выберите боевую технику
                     </div>
                   )}
@@ -829,7 +1034,7 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
           </div>
         )}
 
-        <DialogFooter>
+        <DialogFooter className="shrink-0">
           <Button
             onClick={() => handleClose(false)}
             variant="outline"

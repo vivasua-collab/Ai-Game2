@@ -1033,7 +1033,7 @@ ${time ? `📅 ${time.year} Э.С.М., ${time.month} месяц, ${time.day} д�
       return `📚 **Изученные техники** (${response.count || 0})
 
 ${techniques && techniques.length > 0 
-  ? techniques.map((t, i) => `${i + 1}. **${t.name}** (${t.type}, ${t.element}) - Ци: ${t.qiCost}, Мастерство: ${t.mastery}%`).join("\n")
+  ? techniques.map((t, i) => `${i + 1}. **${t.name}** (${t.type}, ${t.element}) - Ци: ${t.qiCost}, Мастерство: ${typeof t.mastery === 'number' ? t.mastery.toFixed(2) : t.mastery}%`).join("\n")
   : "Нет изученных техник"}`;
     }
     
