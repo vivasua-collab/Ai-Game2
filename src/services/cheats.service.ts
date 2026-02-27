@@ -321,7 +321,7 @@ async function cheatResetFatigue(characterId: string): Promise<CheatResult> {
 }
 
 /**
- * Дать технику по ID пресета
+ * Дать технику по ID пресета или сгенерированного объекта
  */
 async function cheatGiveTechnique(characterId: string, params: Record<string, unknown>): Promise<CheatResult> {
   const techniqueId = String(params.techniqueId);
@@ -341,37 +341,84 @@ async function cheatGiveTechnique(characterId: string, params: Record<string, un
     },
   });
 
-  // Если не нашли - создаём из пресета
+  // Если не нашли в базе - ищем в сгенерированных техниках
+  if (!technique) {
+    const { presetStorage } = await import('@/lib/generator/preset-storage');
+    await presetStorage.initialize();
+    
+    // Ищем в сгенерированных техниках по ID
+    const generatedTechnique = await presetStorage.getTechniqueById(techniqueId);
+    
+    if (generatedTechnique) {
+      // Создаём технику в БД из сгенерированного объекта
+      technique = await db.technique.create({
+        data: {
+          name: generatedTechnique.name,
+          nameId: generatedTechnique.id,
+          description: generatedTechnique.description,
+          type: generatedTechnique.type,
+          element: generatedTechnique.element,
+          rarity: generatedTechnique.rarity,
+          level: generatedTechnique.level,
+          minLevel: generatedTechnique.minCultivationLevel ?? 1,
+          maxLevel: generatedTechnique.level + 3,
+          canEvolve: true,
+          minCultivationLevel: generatedTechnique.minCultivationLevel ?? 1,
+          qiCost: generatedTechnique.computed.finalQiCost,
+          physicalFatigueCost: 1 + generatedTechnique.level * 0.5,
+          mentalFatigueCost: 1 + generatedTechnique.level * 0.3,
+          statRequirements: generatedTechnique.statRequirements ? JSON.stringify(generatedTechnique.statRequirements) : null,
+          statScaling: null,
+          effects: JSON.stringify({
+            damage: generatedTechnique.computed.finalDamage,
+            range: generatedTechnique.computed.finalRange,
+            duration: generatedTechnique.computed.finalDuration,
+            activeEffects: generatedTechnique.computed.activeEffects,
+            modifiers: generatedTechnique.modifiers,
+          }),
+          source: 'generated',
+        },
+      });
+      
+      await logInfo('CHEATS', `Created technique from generated: ${techniqueId}`);
+    }
+  }
+
+  // Если не нашли в сгенерированных - ищем в пресетах
   if (!technique) {
     const { ALL_TECHNIQUE_PRESETS } = await import('@/data/presets/technique-presets');
     const preset = ALL_TECHNIQUE_PRESETS.find(t => t.id === techniqueId || t.name === techniqueId);
 
-    if (!preset) {
-      return { success: false, message: `Техника "${techniqueId}" не найдена в пресетах` };
+    if (preset) {
+      technique = await db.technique.create({
+        data: {
+          name: preset.name,
+          nameId: preset.id,
+          description: preset.description,
+          type: preset.techniqueType,
+          element: preset.element,
+          rarity: preset.rarity,
+          level: preset.level,
+          minLevel: preset.minLevel,
+          maxLevel: preset.maxLevel,
+          canEvolve: preset.canEvolve !== false,
+          minCultivationLevel: preset.requirements?.cultivationLevel ?? 1,
+          qiCost: preset.qiCost,
+          physicalFatigueCost: preset.fatigueCost.physical,
+          mentalFatigueCost: preset.fatigueCost.mental,
+          statRequirements: preset.requirements?.stats ? JSON.stringify(preset.requirements.stats) : null,
+          statScaling: preset.scaling ? JSON.stringify(preset.scaling) : null,
+          effects: preset.effects ? JSON.stringify(preset.effects) : null,
+          source: 'preset',
+        },
+      });
+      
+      await logInfo('CHEATS', `Created technique from preset: ${techniqueId}`);
     }
+  }
 
-    technique = await db.technique.create({
-      data: {
-        name: preset.name,
-        nameId: preset.id,
-        description: preset.description,
-        type: preset.type,
-        element: preset.element,
-        rarity: preset.rarity,
-        level: preset.level,
-        minLevel: preset.minLevel,
-        maxLevel: preset.maxLevel,
-        canEvolve: preset.canEvolve !== false,
-        minCultivationLevel: preset.minCultivationLevel,
-        qiCost: preset.qiCost,
-        physicalFatigueCost: preset.fatigueCost.physical,
-        mentalFatigueCost: preset.fatigueCost.mental,
-        statRequirements: preset.statRequirements ? JSON.stringify(preset.statRequirements) : null,
-        statScaling: preset.statScaling ? JSON.stringify(preset.statScaling) : null,
-        effects: preset.effects ? JSON.stringify(preset.effects) : null,
-        source: 'preset',
-      },
-    });
+  if (!technique) {
+    return { success: false, message: `Техника "${techniqueId}" не найдена ни в пресетах, ни в сгенерированных объектах. Проверьте ID или сгенерируйте техники в Настройках → Генератор.` };
   }
 
   // Проверяем, не изучена ли уже
@@ -401,7 +448,7 @@ async function cheatGiveTechnique(characterId: string, params: Record<string, un
 
   return {
     success: true,
-    message: `✅ Изучена техника: ${technique.name}`,
+    message: `✅ Изучена техника: ${technique.name} (${techniqueId})`,
     data: { techniqueId: technique.id, techniqueName: technique.name },
   };
 }
