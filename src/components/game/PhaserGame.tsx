@@ -26,6 +26,10 @@ const WORLD_HEIGHT = 2000;
 const PLAYER_SIZE = 24;
 const PLAYER_SPEED = 200;
 const METERS_TO_PIXELS = 32; // 1 meter = 32 pixels
+const PLAYER_HITBOX_RADIUS = 24; // Player hitbox radius in pixels
+
+// Target hitbox settings
+const TARGET_HITBOX_RADIUS = 22; // Target hitbox radius in pixels (approx half of body width)
 
 // Time tracking
 const TILE_SIZE = 64;
@@ -74,10 +78,13 @@ interface TrainingTarget {
   id: string;
   x: number;
   y: number;
+  centerY: number; // Center of the figure (torso area) for hit detection
+  hitboxRadius: number; // Radius of the hitbox in pixels (body size)
   hp: number;
   maxHp: number;
   sprite: Phaser.GameObjects.Container | null;
   hpBar: Phaser.GameObjects.Graphics | null;
+  hitboxCircle: Phaser.GameObjects.Graphics | null; // Visual hitbox indicator
   lastHitTime: number;
 }
 
@@ -300,14 +307,30 @@ function createTarget(scene: Phaser.Scene, x: number, y: number, id: string): Tr
   }).setOrigin(0.5);
   container.add(label);
 
+  // Calculate the center of the figure (torso area)
+  // Sprite is at (0, -40) with origin (0.5, 1), texture is 80px tall
+  // Bottom of sprite at y - 40, top at y - 120
+  // Center of torso (straw body) is around 45% from top = y - 40 - 80*0.55 ≈ y - 84
+  // But for visual center, we use y - 60 (torso area)
+  const centerY = y - 60;
+
+  // Visual hitbox indicator (debug/tactical view)
+  const hitboxCircle = scene.add.graphics();
+  hitboxCircle.lineStyle(1, 0x00ff00, 0.4); // Green, semi-transparent
+  hitboxCircle.strokeCircle(0, -60, TARGET_HITBOX_RADIUS); // Centered at torso
+  container.add(hitboxCircle);
+
   const target: TrainingTarget = {
     id,
     x,
     y,
+    centerY,
+    hitboxRadius: TARGET_HITBOX_RADIUS,
     hp: 1000,
     maxHp: 1000,
     sprite: container,
     hpBar,
+    hitboxCircle,
     lastHitTime: 0,
   };
 
@@ -415,8 +438,8 @@ function damageTarget(
   // Update HP bar
   updateTargetHpBar(target);
 
-  // Show damage number (positioned above the target)
-  showDamageNumber(scene, target.x, target.y - 90, damage, type);
+  // Show damage number at target center (centerY = torso area)
+  showDamageNumber(scene, target.x, target.centerY, damage, type);
 
   // Flash effect
   if (target.sprite) {
@@ -441,7 +464,7 @@ function damageTarget(
     scene.time.delayedCall(500, () => {
       target.hp = target.maxHp;
       updateTargetHpBar(target);
-      showDamageNumber(scene, target.x, target.y - 90, 1000, 'healing');
+      showDamageNumber(scene, target.x, target.centerY, 1000, 'healing');
       
       // Respawn message
       if (target.sprite) {
@@ -461,7 +484,9 @@ function damageTarget(
 }
 
 /**
- * Check if target is in attack cone
+ * Check if target is in attack cone with hitbox consideration
+ * The attack reaches the target if: distance <= range + targetHitboxRadius
+ * This means the attack touches or penetrates the target's hitbox
  */
 function isInAttackCone(
   playerX: number,
@@ -470,13 +495,16 @@ function isInAttackCone(
   targetX: number,
   targetY: number,
   coneAngle: number = 60,
-  range: number = 64
+  range: number = 64,
+  targetHitboxRadius: number = 0
 ): boolean {
   const dx = targetX - playerX;
   const dy = targetY - playerY;
   const distance = Math.sqrt(dx * dx + dy * dy);
 
-  if (distance > range) return false;
+  // Attack reaches the target if distance to center <= range + hitboxRadius
+  // This allows hitting the edge of the hitbox, not just the center
+  if (distance > range + targetHitboxRadius) return false;
 
   // Angle to target
   const angleToTarget = Math.atan2(dy, dx) * 180 / Math.PI;
@@ -640,15 +668,15 @@ async function useTechniqueInDirection(
     });
   }
 
-  // Check each target
+  // Check each target - use target's center (centerY) and hitbox for collision
   for (const target of globalTargets) {
-    if (isInAttackCone(playerX, playerY, playerRotation, target.x, target.y, 60, range)) {
+    if (isInAttackCone(playerX, playerY, playerRotation, target.x, target.centerY, 60, range, target.hitboxRadius)) {
       // Hit!
       const isCrit = Math.random() < 0.15; // 15% crit chance
       const finalDamage = isCrit ? Math.floor(damage * 1.5) : damage;
       
-      // Hit effect on target position
-      const hitEffect = scene.add.circle(target.x, target.y - 40, 15, elementColor, 0.8);
+      // Hit effect on target's center (torso area)
+      const hitEffect = scene.add.circle(target.x, target.centerY, 15, elementColor, 0.8);
       hitEffect.setDepth(200);
       scene.tweens.add({
         targets: hitEffect,
@@ -712,6 +740,13 @@ const GameSceneConfig = {
     const player = scene.physics.add.sprite(WORLD_WIDTH / 2, WORLD_HEIGHT / 2 + 100, 'player');
     player.setCollideWorldBounds(true);
     player.setDepth(10);
+
+    // Player hitbox indicator (visual feedback for body size)
+    const playerHitbox = scene.add.graphics();
+    playerHitbox.lineStyle(1, 0x4ade80, 0.3); // Green, semi-transparent
+    playerHitbox.strokeCircle(0, 0, PLAYER_HITBOX_RADIUS);
+    playerHitbox.setDepth(9);
+    scene.data.set('playerHitbox', playerHitbox);
 
     // Player label
     const playerLabel = scene.add.text(WORLD_WIDTH / 2, WORLD_HEIGHT / 2 + 140, 'Игрок', {
@@ -883,8 +918,11 @@ const GameSceneConfig = {
     uiContainer.add(distanceText);
     scene.data.set('distanceText', distanceText);
 
-    // ATTACK RANGE indicator
-    const rangeText = scene.add.text(10, 160, '⚔️ Дальность: 1.0 м', {
+    // ATTACK RANGE indicator (shows effective range with hitbox consideration)
+    const basicRangeMeters = 1.0;
+    const targetHitboxMeters = TARGET_HITBOX_RADIUS / METERS_TO_PIXELS;
+    const effectiveRange = basicRangeMeters + targetHitboxMeters;
+    const rangeText = scene.add.text(10, 160, `⚔️ Дальность: ${basicRangeMeters.toFixed(1)}м (+${targetHitboxMeters.toFixed(1)}м тело)`, {
       fontSize: '11px',
       color: '#9ca3af',
       backgroundColor: '#000000aa',
@@ -1372,6 +1410,7 @@ const GameSceneConfig = {
     const accumulatedTiles = scene.data.get('accumulatedTiles') as number;
     const lastSyncTime = scene.data.get('lastSyncTime') as number;
     const isChatFocused = scene.data.get('isChatFocused') as boolean;
+    const playerHitbox = scene.data.get('playerHitbox') as Phaser.GameObjects.Graphics;
 
     if (!player || !cursors || !wasd) return;
 
@@ -1400,6 +1439,13 @@ const GameSceneConfig = {
     // Update player label position
     playerLabel.setPosition(player.x, player.y + 40);
 
+    // Update player hitbox position (follows player)
+    if (playerHitbox) {
+      playerHitbox.clear();
+      playerHitbox.lineStyle(1, 0x4ade80, 0.3);
+      playerHitbox.strokeCircle(player.x, player.y, PLAYER_HITBOX_RADIUS);
+    }
+
     // === METRIC COORDINATES ===
     // Convert pixel position to meters (center of world = 0,0)
     const playerXMeters = (player.x - WORLD_WIDTH / 2) / METERS_TO_PIXELS;
@@ -1408,17 +1454,23 @@ const GameSceneConfig = {
     coordsText.setText(`X: ${playerXMeters.toFixed(1)}м  Y: ${playerYMeters.toFixed(1)}м  ${rotText}`);
 
     // === DISTANCE TO NEAREST TARGET (in meters) ===
+    // Distance calculated from player center to target center (centerY = torso area)
+    // Effective distance = distance to center - hitbox radius (distance to edge of hitbox)
     let nearestDistance = Infinity;
     let nearestInFront: number | null = null;
+    let nearestHitboxRadius = 0;
     
     for (const target of globalTargets) {
+      // Use target's centerY (torso area) for accurate distance to center of figure
       const dx = target.x - player.x;
-      const dy = target.y - player.y;
+      const dy = target.centerY - player.y;
       const distPixels = Math.sqrt(dx * dx + dy * dy);
       const distMeters = distPixels / METERS_TO_PIXELS;
+      const hitboxMeters = target.hitboxRadius / METERS_TO_PIXELS;
       
       if (distMeters < nearestDistance) {
         nearestDistance = distMeters;
+        nearestHitboxRadius = hitboxMeters;
         
         // Check if target is in front of player (within 90 degree cone)
         const angleToTarget = Math.atan2(dy, dx) * 180 / Math.PI;
@@ -1433,13 +1485,18 @@ const GameSceneConfig = {
     }
 
     // Update distance display
+    // Effective distance = distance to center - hitbox radius (how far from edge of body)
+    // Attack reaches if: effectiveDistance <= attackRange
+    const basicAttackRange = 1.0; // 1 meter hand reach
     if (distanceTextEl) {
       if (nearestInFront !== null) {
-        const inRange = nearestInFront <= 1; // 1m hand reach
-        distanceTextEl.setText(`📏 До цели: ${nearestInFront.toFixed(1)} м ${inRange ? '✓' : '⚠️'}`);
+        const effectiveDistance = Math.max(0, nearestInFront - nearestHitboxRadius);
+        const inRange = effectiveDistance <= basicAttackRange;
+        distanceTextEl.setText(`📏 До цели: ${effectiveDistance.toFixed(1)}м (тело ${nearestHitboxRadius.toFixed(1)}м) ${inRange ? '✓' : '⚠️'}`);
         distanceTextEl.setColor(inRange ? '#4ade80' : '#fbbf24');
       } else if (nearestDistance < Infinity) {
-        distanceTextEl.setText(`📏 Ближайшая: ${nearestDistance.toFixed(1)} м`);
+        const effectiveDistance = Math.max(0, nearestDistance - nearestHitboxRadius);
+        distanceTextEl.setText(`📏 Ближайшая: ${effectiveDistance.toFixed(1)}м`);
         distanceTextEl.setColor('#9ca3af');
       } else {
         distanceTextEl.setText('📏 Целей нет');
