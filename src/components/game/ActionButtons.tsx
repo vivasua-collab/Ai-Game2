@@ -12,6 +12,9 @@ import { RestDialog } from './RestDialog';
 import { StatusDialog } from './StatusDialog';
 import { TechniquesDialog } from './TechniquesDialog';
 import { CheatMenuDialog } from './CheatMenuDialog';
+import { SettingsPanel } from '@/components/settings/SettingsPanel';
+import { GeneratedObjectsViewer } from '@/components/settings/GeneratedObjectsViewer';
+import { Settings, Package } from 'lucide-react';
 
 interface ActionButtonsProps {
   className?: string;
@@ -22,6 +25,8 @@ export function ActionButtons({ className = '' }: ActionButtonsProps) {
   const [statusOpen, setStatusOpen] = useState(false);
   const [techniquesOpen, setTechniquesOpen] = useState(false);
   const [cheatMenuOpen, setCheatMenuOpen] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [generatedObjectsOpen, setGeneratedObjectsOpen] = useState(false);
 
   return (
     <>
@@ -71,6 +76,15 @@ export function ActionButtons({ className = '' }: ActionButtonsProps) {
         <Button
           variant="outline"
           size="sm"
+          className="border-slate-600/50 text-slate-400 hover:bg-slate-900/30 h-9"
+          onClick={() => setSettingsOpen(true)}
+          title="Настройки"
+        >
+          <Settings className="w-4 h-4" />
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
           className="border-red-600/50 text-red-400 hover:bg-red-900/30 h-9"
           onClick={() => setCheatMenuOpen(true)}
           title="Чит меню (отладка)"
@@ -97,6 +111,20 @@ export function ActionButtons({ className = '' }: ActionButtonsProps) {
       <CheatMenuDialog
         open={cheatMenuOpen}
         onOpenChange={setCheatMenuOpen}
+      />
+
+      <SettingsPanel
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
+        onOpenGeneratedObjects={() => {
+          setSettingsOpen(false);
+          setGeneratedObjectsOpen(true);
+        }}
+      />
+
+      <GeneratedObjectsViewer
+        open={generatedObjectsOpen}
+        onOpenChange={setGeneratedObjectsOpen}
       />
     </>
   );
