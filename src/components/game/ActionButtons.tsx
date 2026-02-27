@@ -6,12 +6,12 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { RestDialog } from './RestDialog';
 import { StatusDialog } from './StatusDialog';
 import { TechniquesDialog } from './TechniquesDialog';
-import { CheatMenuDialog } from './CheatMenuDialog';
+import { GameMenuDialog } from './GameMenuDialog';
 import { SettingsPanel } from '@/components/settings/SettingsPanel';
 import { GeneratedObjectsViewer } from '@/components/settings/GeneratedObjectsViewer';
 import { Settings, Package } from 'lucide-react';
@@ -24,9 +24,16 @@ export function ActionButtons({ className = '' }: ActionButtonsProps) {
   const [restOpen, setRestOpen] = useState(false);
   const [statusOpen, setStatusOpen] = useState(false);
   const [techniquesOpen, setTechniquesOpen] = useState(false);
-  const [cheatMenuOpen, setCheatMenuOpen] = useState(false);
+  const [gameMenuOpen, setGameMenuOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [generatedObjectsOpen, setGeneratedObjectsOpen] = useState(false);
+
+  // Слушатель события открытия меню игры
+  useEffect(() => {
+    const handleOpenGameMenu = () => setGameMenuOpen(true);
+    window.addEventListener('openGameMenu', handleOpenGameMenu);
+    return () => window.removeEventListener('openGameMenu', handleOpenGameMenu);
+  }, []);
 
   return (
     <>
@@ -82,15 +89,6 @@ export function ActionButtons({ className = '' }: ActionButtonsProps) {
         >
           <Settings className="w-4 h-4" />
         </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          className="border-red-600/50 text-red-400 hover:bg-red-900/30 h-9"
-          onClick={() => setCheatMenuOpen(true)}
-          title="Чит меню (отладка)"
-        >
-          🛠️ Читы
-        </Button>
       </div>
 
       <RestDialog
@@ -108,9 +106,9 @@ export function ActionButtons({ className = '' }: ActionButtonsProps) {
         onOpenChange={setTechniquesOpen}
       />
 
-      <CheatMenuDialog
-        open={cheatMenuOpen}
-        onOpenChange={setCheatMenuOpen}
+      <GameMenuDialog
+        open={gameMenuOpen}
+        onOpenChange={setGameMenuOpen}
       />
 
       <SettingsPanel

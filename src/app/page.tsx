@@ -173,18 +173,13 @@ export default function Home() {
             <Button
               variant="outline"
               size="sm"
-              className="border-emerald-600 text-emerald-400 hover:bg-emerald-900/30"
-              onClick={handleSaveAndExit}
+              className="border-amber-600/50 text-amber-400 hover:bg-amber-900/30 h-9"
+              onClick={() => {
+                const event = new CustomEvent('openGameMenu');
+                window.dispatchEvent(event);
+              }}
             >
-              💾 Сохранить
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="border-amber-600 text-amber-400 hover:bg-amber-900/30"
-              onClick={handleNewGame}
-            >
-              🔄 Новая
+              🎮 Игра
             </Button>
           </div>
         </div>

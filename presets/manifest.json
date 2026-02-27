@@ -1,0 +1,40 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-02-27T14:20:33.667Z",
+  "lastModifiedAt": "2026-02-27T14:20:33.667Z",
+  "techniques": {
+    "total": 1100,
+    "byLevel": {
+      "1": 1100
+    },
+    "byType": {
+      "combat": 162,
+      "defense": 161,
+      "cultivation": 111,
+      "support": 111,
+      "movement": 111,
+      "sensory": 111,
+      "healing": 111,
+      "curse": 111,
+      "poison": 111
+    },
+    "byElement": {
+      "neutral": 1100
+    }
+  },
+  "formations": {
+    "total": 0,
+    "byLevel": {}
+  },
+  "items": {
+    "total": 0
+  },
+  "npcs": {
+    "total": 0
+  },
+  "fileSizeStats": {
+    "techniquesBytes": 1305733,
+    "largestFileBytes": 1305733,
+    "largestFileName": "/home/z/my-project/presets/techniques/level-1.json"
+  }
+}

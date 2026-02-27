@@ -9,33 +9,50 @@
  * - Base + Modifiers: базовый объект + флаги эффектов + значения
  * - Детерминированная генерация через seed
  * - Балансировка по формулам уровня
+ * - Система ID с префиксами
  * 
- * Распределение по уровням:
- * - Уровень 1: 1024 техники
- * - Уровень 2: 512 техник
- * - Уровень N: 1024 / 2^(N-1)
- * - Итого: ~2046 техник
+ * Типы техник:
+ * - combat (TC) - атакующие
+ * - defense (DF) - защитные (вынесено из combat)
+ * - curse (CR) - проклятия (новое)
+ * - poison (PN) - отравления (новое)
  */
 
 // ==================== ТИПЫ ====================
 
 export type TechniqueType = 
   | "combat" 
+  | "defense"      // НОВОЕ: вынесено из combat
   | "cultivation" 
   | "support" 
   | "movement" 
   | "sensory" 
-  | "healing";
+  | "healing"
+  | "curse"        // НОВОЕ
+  | "poison";      // НОВОЕ
 
-export type CombatTechniqueType = 
+export type CombatSubtype = 
   | "melee_strike" 
   | "melee_weapon" 
   | "ranged_projectile" 
   | "ranged_beam" 
-  | "ranged_aoe" 
-  | "defense_block" 
-  | "defense_shield" 
-  | "defense_dodge";
+  | "ranged_aoe";
+
+export type DefenseSubtype = 
+  | "shield"       // Энергетический щит
+  | "barrier"      // Стационарный барьер
+  | "block"        // Активный блок
+  | "dodge"        // Уклонение
+  | "absorb"       // Поглощение урона
+  | "reflect";     // Отражение урона
+
+export type CurseSubtype = 
+  | "combat"       // Боевое (секунды-минуты)
+  | "ritual";      // Ритуальное (часы-месяцы)
+
+export type PoisonSubtype = 
+  | "body"         // Отравление тела
+  | "qi";          // Отравление Ци
 
 export type Element = 
   | "fire" 
@@ -49,7 +66,66 @@ export type Element =
 export type Rarity = "common" | "uncommon" | "rare" | "legendary";
 
 /**
- * Модификаторы техники (флаги + значения)
+ * Эффект проклятия
+ */
+export type CurseEffectType =
+  | "weakness"       // Снижение силы
+  | "slowness"       // Замедление
+  | "blindness"      // Слепота
+  | "silence"        // Блокировка техник
+  | "confusion"      // Путаница
+  | "fear"           // Страх
+  | "exhaustion"     // Истощение
+  | "qi_drain"       // Истощение Ци
+  | "soul_burn"      // Жжение души (DoT)
+  | "cultivation_block" // Блокировка культивации
+  | "meridian_damage"   // Повреждение меридиан
+  | "core_corruption"   // Разрушение ядра
+  | "fate_binding"      // Связывание судьбы
+  | "soul_seal";        // Печать души
+
+/**
+ * Способ доставки яда
+ */
+export type PoisonDeliveryType =
+  | "ingestion"    // Употребление
+  | "contact"      // Контакт
+  | "injection"    // Инъекция
+  | "inhalation"   // Вдыхание
+  | "technique"    // Через технику
+  | "contaminated_qi"; // Заражённая Ци
+
+/**
+ * Параметры генерации
+ */
+export interface GenerationOptions {
+  level?: number;
+  minLevel?: number;
+  maxLevel?: number;
+  types?: TechniqueType[];
+  elements?: Element[];
+  rarities?: Rarity[];
+  count?: number;
+  countPerLevel?: Record<number, number>;
+  mode: 'replace' | 'append';
+  idPrefix?: string;
+  startCounter?: number;
+}
+
+/**
+ * Результат генерации
+ */
+export interface GenerationResult {
+  success: boolean;
+  generated: number;
+  total: number;
+  techniques: GeneratedTechnique[];
+  errors: string[];
+  warnings: string[];
+}
+
+/**
+ * Модификаторы техники
  */
 export interface TechniqueModifiers {
   effects: {
@@ -119,7 +195,7 @@ export interface BaseTechnique {
   name: string;
   nameEn: string;
   type: TechniqueType;
-  combatType?: CombatTechniqueType;
+  subtype?: CombatSubtype | DefenseSubtype | CurseSubtype | PoisonSubtype;
   element: Element;
   level: number;
   baseDamage: number;
@@ -182,6 +258,24 @@ const BASE_VALUES_BY_LEVEL: Record<number, {
   9: { damage: 350, qiCost: 400, range: 60, duration: 15 },
 };
 
+// Защитные техники имеют другие базовые значения
+const DEFENSE_VALUES_BY_LEVEL: Record<number, {
+  shieldHP: number;
+  damageReduction: number;
+  duration: number;
+  qiCost: number;
+}> = {
+  1: { shieldHP: 20, damageReduction: 10, duration: 60, qiCost: 15 },
+  2: { shieldHP: 40, damageReduction: 15, duration: 90, qiCost: 25 },
+  3: { shieldHP: 70, damageReduction: 20, duration: 120, qiCost: 40 },
+  4: { shieldHP: 100, damageReduction: 25, duration: 180, qiCost: 60 },
+  5: { shieldHP: 150, damageReduction: 30, duration: 240, qiCost: 90 },
+  6: { shieldHP: 220, damageReduction: 35, duration: 300, qiCost: 130 },
+  7: { shieldHP: 300, damageReduction: 40, duration: 420, qiCost: 180 },
+  8: { shieldHP: 400, damageReduction: 45, duration: 600, qiCost: 260 },
+  9: { shieldHP: 550, damageReduction: 50, duration: 900, qiCost: 400 },
+};
+
 const ELEMENT_MULTIPLIERS: Record<Element, {
   damage: number;
   qiCost: number;
@@ -208,12 +302,28 @@ const NAME_PARTS = {
   },
   nouns: {
     combat: ['Удар', 'Кулак', 'Ладонь', 'Толчок', 'Взрыв', 'Волна', 'Клинок', 'Укол'],
+    defense: ['Щит', 'Стена', 'Барьер', 'Броня', 'Купол', 'Защита', 'Печать'],
     cultivation: ['Дыхание', 'Поток', 'Накопление', 'Концентрация', 'Медитация'],
-    support: ['Барьер', 'Щит', 'Усиление', 'Защита', 'Стена'],
+    support: ['Барьер', 'Усиление', 'Защита', 'Стена'],
     movement: ['Шаг', 'Рывок', 'Смещение', 'Прыжок', 'Побег'],
     sensory: ['Взгляд', 'Чутьё', 'Восприятие', 'Обнаружение', 'Анализ'],
     healing: ['Исцеление', 'Восстановление', 'Регенерация', 'Обновление'],
+    curse: ['Проклятие', 'Скверна', 'Печать', 'Порча', 'Оковы', 'Метка'],
+    poison: ['Яд', 'Токсин', 'Отрава', 'Губитель', 'Разрушитель'],
   },
+};
+
+// Маппинг типов для ID
+const TYPE_ID_PREFIX: Record<TechniqueType, string> = {
+  combat: 'TC',
+  defense: 'DF',   // НОВОЕ
+  cultivation: 'CU',
+  support: 'SP',
+  movement: 'MV',
+  sensory: 'SN',
+  healing: 'HL',
+  curse: 'CR',     // НОВОЕ
+  poison: 'PN',    // НОВОЕ
 };
 
 interface ModifierRule {
@@ -271,7 +381,7 @@ function weightedSelect<T extends { weight: number }>(items: T[], rng: () => num
   return items[items.length - 1];
 }
 
-// ==================== ГЕНЕРАЦИЯ ====================
+// ==================== ГЕНЕРАЦИЯ НАЗВАНИЙ ====================
 
 function generateName(type: TechniqueType, element: Element, level: number, rng: () => number): { name: string; nameEn: string } {
   const elementAdjs = NAME_PARTS.elements[element] || NAME_PARTS.elements.neutral;
@@ -290,6 +400,8 @@ function generateName(type: TechniqueType, element: Element, level: number, rng:
   
   return { name, nameEn };
 }
+
+// ==================== ГЕНЕРАЦИЯ МОДИФИКАТОРОВ ====================
 
 function generateModifiers(base: BaseTechnique, rng: () => number): TechniqueModifiers {
   const modifiers: TechniqueModifiers = {
@@ -363,6 +475,8 @@ function generateModifiers(base: BaseTechnique, rng: () => number): TechniqueMod
   return modifiers;
 }
 
+// ==================== ВЫЧИСЛЕНИЕ ФИНАЛЬНЫХ ЗНАЧЕНИЙ ====================
+
 function computeFinalValues(base: BaseTechnique, modifiers: TechniqueModifiers): GeneratedTechnique['computed'] {
   let finalDamage = base.baseDamage;
   let finalQiCost = base.baseQiCost;
@@ -398,28 +512,23 @@ function computeFinalValues(base: BaseTechnique, modifiers: TechniqueModifiers):
   };
 }
 
-// ==================== ЭКСПОРТИРУЕМЫЕ ФУНКЦИИ ====================
+// ==================== ГЕНЕРАЦИЯ ПО ТИПАМ ====================
 
-export function generateTechnique(
+function generateCombatTechnique(
   id: string,
-  type: TechniqueType,
   element: Element,
   level: number,
-  seed?: number
+  seed: number
 ): GeneratedTechnique {
-  const actualSeed = seed ?? hashString(id);
-  const rng = seededRandom(actualSeed);
+  const rng = seededRandom(seed);
   const baseValues = BASE_VALUES_BY_LEVEL[level] || BASE_VALUES_BY_LEVEL[1];
   const elementMult = ELEMENT_MULTIPLIERS[element];
   
-  let combatType: CombatTechniqueType | undefined;
-  if (type === 'combat') {
-    const types: CombatTechniqueType[] = ['melee_strike', 'melee_weapon', 'ranged_projectile', 'ranged_beam', 'ranged_aoe', 'defense_block', 'defense_shield', 'defense_dodge'];
-    combatType = types[Math.floor(rng() * types.length)];
-  }
+  const subtypes: CombatSubtype[] = ['melee_strike', 'melee_weapon', 'ranged_projectile', 'ranged_beam', 'ranged_aoe'];
+  const subtype = subtypes[Math.floor(rng() * subtypes.length)];
   
   const base: BaseTechnique = {
-    id, name: '', nameEn: '', type, combatType, element, level,
+    id, name: '', nameEn: '', type: 'combat', subtype, element, level,
     baseDamage: Math.floor(baseValues.damage * elementMult.damage),
     baseQiCost: Math.floor(baseValues.qiCost * elementMult.qiCost),
     baseRange: baseValues.range,
@@ -429,49 +538,577 @@ export function generateTechnique(
   
   const modifiers = generateModifiers(base, rng);
   const computed = computeFinalValues(base, modifiers);
-  const { name, nameEn } = generateName(type, element, level, rng);
+  const { name, nameEn } = generateName('combat', element, level, rng);
   
-  const description = `${name} - техника ${type === 'combat' ? 'боевая' : type === 'cultivation' ? 'культивации' : type} уровня ${level}.`;
+  const description = `${name} — атакующая техника ${element === 'neutral' ? '' : `элемента ${element} `}уровня ${level}.`;
   const rarity: Rarity = level <= 2 ? 'common' : level <= 4 ? 'uncommon' : level <= 6 ? 'rare' : 'legendary';
   
   return {
     ...base, name, nameEn, description, rarity, modifiers, computed,
-    meta: { seed: actualSeed, template: `${type}_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '1.0.0' },
+    meta: { seed, template: `combat_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '2.0.0' },
   };
 }
 
-export function generateTechniquesForLevel(level: number): GeneratedTechnique[] {
-  const types: TechniqueType[] = ['combat', 'cultivation', 'support', 'movement', 'sensory', 'healing'];
+function generateDefenseTechnique(
+  id: string,
+  element: Element,
+  level: number,
+  seed: number
+): GeneratedTechnique {
+  const rng = seededRandom(seed);
+  const defenseValues = DEFENSE_VALUES_BY_LEVEL[level] || DEFENSE_VALUES_BY_LEVEL[1];
+  const elementMult = ELEMENT_MULTIPLIERS[element];
+  
+  const subtypes: DefenseSubtype[] = ['shield', 'barrier', 'block', 'dodge', 'absorb', 'reflect'];
+  const subtype = subtypes[Math.floor(rng() * subtypes.length)];
+  
+  // Защитные техники наносят 0 урона
+  const base: BaseTechnique = {
+    id, name: '', nameEn: '', type: 'defense', subtype, element, level,
+    baseDamage: 0,  // Защитные техники не наносят урон
+    baseQiCost: Math.floor(defenseValues.qiCost * elementMult.qiCost),
+    baseRange: 0,  // Локальные защиты
+    baseDuration: defenseValues.duration,
+    minCultivationLevel: Math.max(1, level - 1),
+  };
+  
+  const modifiers: TechniqueModifiers = {
+    effects: { shield: true },
+    effectValues: { 
+      shieldHP: defenseValues.shieldHP,
+      shieldDuration: defenseValues.duration,
+    },
+    penalties: {},
+    bonuses: {},
+  };
+  
+  const computed = computeFinalValues(base, modifiers);
+  const { name, nameEn } = generateName('defense', element, level, rng);
+  
+  const description = `${name} — защитная техника ${element === 'neutral' ? '' : `элемента ${element} `}уровня ${level}. ` +
+    `Создаёт щит мощностью ${defenseValues.shieldHP} HP на ${Math.floor(defenseValues.duration / 60)} минут.`;
+  const rarity: Rarity = level <= 2 ? 'common' : level <= 4 ? 'uncommon' : level <= 6 ? 'rare' : 'legendary';
+  
+  return {
+    ...base, name, nameEn, description, rarity, modifiers, computed,
+    meta: { seed, template: `defense_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '2.0.0' },
+  };
+}
+
+function generateSupportTechnique(
+  id: string,
+  element: Element,
+  level: number,
+  seed: number
+): GeneratedTechnique {
+  const rng = seededRandom(seed);
+  const baseValues = BASE_VALUES_BY_LEVEL[level] || BASE_VALUES_BY_LEVEL[1];
+  
+  const base: BaseTechnique = {
+    id, name: '', nameEn: '', type: 'support', element, level,
+    baseDamage: 0,
+    baseQiCost: Math.floor(baseValues.qiCost * 0.8),
+    baseRange: 10,
+    baseDuration: baseValues.duration * 2,
+    minCultivationLevel: Math.max(1, level - 1),
+  };
+  
+  const modifiers = generateModifiers(base, rng);
+  modifiers.effects.buff = true;
+  modifiers.effectValues.buffAmount = 5 + level * 5;
+  modifiers.effectValues.buffDuration = 3 + level * 2;
+  
+  const computed = computeFinalValues(base, modifiers);
+  const { name, nameEn } = generateName('support', element, level, rng);
+  
+  const description = `${name} — техника поддержки уровня ${level}.`;
+  const rarity: Rarity = level <= 2 ? 'common' : level <= 4 ? 'uncommon' : level <= 6 ? 'rare' : 'legendary';
+  
+  return {
+    ...base, name, nameEn, description, rarity, modifiers, computed,
+    meta: { seed, template: `support_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '2.0.0' },
+  };
+}
+
+function generateHealingTechnique(
+  id: string,
+  element: Element,
+  level: number,
+  seed: number
+): GeneratedTechnique {
+  const rng = seededRandom(seed);
+  const baseValues = BASE_VALUES_BY_LEVEL[level] || BASE_VALUES_BY_LEVEL[1];
+  
+  const base: BaseTechnique = {
+    id, name: '', nameEn: '', type: 'healing', element, level,
+    baseDamage: 0,
+    baseQiCost: Math.floor(baseValues.qiCost * 1.2),
+    baseRange: 5,
+    baseDuration: baseValues.duration,
+    minCultivationLevel: Math.max(1, level - 1),
+  };
+  
+  const healAmount = 10 + level * 15;
+  const modifiers: TechniqueModifiers = {
+    effects: { heal: true },
+    effectValues: { healAmount },
+    penalties: {},
+    bonuses: {},
+  };
+  
+  const computed = computeFinalValues(base, modifiers);
+  const { name, nameEn } = generateName('healing', element, level, rng);
+  
+  const description = `${name} — техника исцеления уровня ${level}. Восстанавливает ${healAmount} HP.`;
+  const rarity: Rarity = level <= 2 ? 'common' : level <= 4 ? 'uncommon' : level <= 6 ? 'rare' : 'legendary';
+  
+  return {
+    ...base, name, nameEn, description, rarity, modifiers, computed,
+    meta: { seed, template: `healing_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '2.0.0' },
+  };
+}
+
+function generateMovementTechnique(
+  id: string,
+  element: Element,
+  level: number,
+  seed: number
+): GeneratedTechnique {
+  const rng = seededRandom(seed);
+  const baseValues = BASE_VALUES_BY_LEVEL[level] || BASE_VALUES_BY_LEVEL[1];
+  
+  const base: BaseTechnique = {
+    id, name: '', nameEn: '', type: 'movement', element, level,
+    baseDamage: 0,
+    baseQiCost: Math.floor(baseValues.qiCost * 0.6),
+    baseRange: 5 + level * 5,
+    baseDuration: 0,
+    minCultivationLevel: Math.max(1, level - 1),
+  };
+  
+  const modifiers = generateModifiers(base, rng);
+  const computed = computeFinalValues(base, modifiers);
+  const { name, nameEn } = generateName('movement', element, level, rng);
+  
+  const description = `${name} — техника перемещения уровня ${level}.`;
+  const rarity: Rarity = level <= 2 ? 'common' : level <= 4 ? 'uncommon' : level <= 6 ? 'rare' : 'legendary';
+  
+  return {
+    ...base, name, nameEn, description, rarity, modifiers, computed,
+    meta: { seed, template: `movement_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '2.0.0' },
+  };
+}
+
+function generateSensoryTechnique(
+  id: string,
+  element: Element,
+  level: number,
+  seed: number
+): GeneratedTechnique {
+  const rng = seededRandom(seed);
+  const baseValues = BASE_VALUES_BY_LEVEL[level] || BASE_VALUES_BY_LEVEL[1];
+  
+  const base: BaseTechnique = {
+    id, name: '', nameEn: '', type: 'sensory', element, level,
+    baseDamage: 0,
+    baseQiCost: Math.floor(baseValues.qiCost * 0.5),
+    baseRange: 20 + level * 10,
+    baseDuration: baseValues.duration * 3,
+    minCultivationLevel: Math.max(1, level - 1),
+  };
+  
+  const modifiers = generateModifiers(base, rng);
+  const computed = computeFinalValues(base, modifiers);
+  const { name, nameEn } = generateName('sensory', element, level, rng);
+  
+  const description = `${name} — техника восприятия уровня ${level}.`;
+  const rarity: Rarity = level <= 2 ? 'common' : level <= 4 ? 'uncommon' : level <= 6 ? 'rare' : 'legendary';
+  
+  return {
+    ...base, name, nameEn, description, rarity, modifiers, computed,
+    meta: { seed, template: `sensory_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '2.0.0' },
+  };
+}
+
+function generateCultivationTechnique(
+  id: string,
+  element: Element,
+  level: number,
+  seed: number
+): GeneratedTechnique {
+  const rng = seededRandom(seed);
+  const baseValues = BASE_VALUES_BY_LEVEL[level] || BASE_VALUES_BY_LEVEL[1];
+  
+  const qiRegenPercent = 3 + level * 2;
+  
+  const base: BaseTechnique = {
+    id, name: '', nameEn: '', type: 'cultivation', element, level,
+    baseDamage: 0,
+    baseQiCost: 0,  // Не тратит Ци
+    baseRange: 0,
+    baseDuration: 0,
+    minCultivationLevel: level,
+  };
+  
+  const modifiers: TechniqueModifiers = {
+    effects: {},
+    effectValues: {},
+    penalties: {},
+    bonuses: { efficiencyBonus: qiRegenPercent },
+  };
+  
+  const computed = computeFinalValues(base, modifiers);
+  const { name, nameEn } = generateName('cultivation', element, level, rng);
+  
+  const description = `${name} — техника культивации уровня ${level}. Увеличивает поглощение Ци на ${qiRegenPercent}%.`;
+  const rarity: Rarity = level <= 2 ? 'common' : level <= 4 ? 'uncommon' : level <= 6 ? 'rare' : 'legendary';
+  
+  return {
+    ...base, name, nameEn, description, rarity, modifiers, computed,
+    meta: { seed, template: `cultivation_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '2.0.0' },
+  };
+}
+
+// ==================== ГЕНЕРАЦИЯ ПРОКЛЯТИЙ ====================
+
+const CURSE_EFFECTS_BY_LEVEL: Record<number, { effects: CurseEffectType[]; durationRange: [number, number]; qiCostRange: [number, number] }> = {
+  1: { effects: ['weakness', 'slowness'], durationRange: [10, 30], qiCostRange: [20, 35] },
+  2: { effects: ['weakness', 'slowness', 'exhaustion'], durationRange: [15, 45], qiCostRange: [30, 50] },
+  3: { effects: ['silence', 'fear', 'exhaustion'], durationRange: [20, 60], qiCostRange: [40, 65] },
+  4: { effects: ['silence', 'fear', 'qi_drain'], durationRange: [30, 90], qiCostRange: [55, 80] },
+  5: { effects: ['soul_burn', 'qi_drain', 'confusion'], durationRange: [45, 120], qiCostRange: [70, 100] },
+  6: { effects: ['soul_burn', 'meridian_damage'], durationRange: [60, 180], qiCostRange: [90, 130] },
+  7: { effects: ['cultivation_block', 'meridian_damage'], durationRange: [90, 300], qiCostRange: [120, 170] },
+  8: { effects: ['core_corruption', 'fate_binding'], durationRange: [180, 600], qiCostRange: [160, 220] },
+  9: { effects: ['soul_seal', 'core_corruption'], durationRange: [300, 3600], qiCostRange: [200, 300] },
+};
+
+function generateCurseTechnique(
+  id: string,
+  element: Element,
+  level: number,
+  seed: number
+): GeneratedTechnique {
+  const rng = seededRandom(seed);
+  const curseConfig = CURSE_EFFECTS_BY_LEVEL[level] || CURSE_EFFECTS_BY_LEVEL[1];
+  
+  // Определяем подтип (боевое или ритуальное)
+  const subtype: CurseSubtype = level >= 5 && rng() > 0.6 ? 'ritual' : 'combat';
+  
+  // Выбираем эффект проклятия
+  const effectIndex = Math.floor(rng() * curseConfig.effects.length);
+  const curseEffect = curseConfig.effects[effectIndex];
+  
+  const duration = curseConfig.durationRange[0] + Math.floor(rng() * (curseConfig.durationRange[1] - curseConfig.durationRange[0]));
+  const qiCost = curseConfig.qiCostRange[0] + Math.floor(rng() * (curseConfig.qiCostRange[1] - curseConfig.qiCostRange[0]));
+  
+  const base: BaseTechnique = {
+    id, name: '', nameEn: '', type: 'curse', subtype, element, level,
+    baseDamage: subtype === 'combat' ? 5 + level * 3 : 0,  // Боевые могут наносить урон
+    baseQiCost: qiCost,
+    baseRange: subtype === 'combat' ? 15 : 0,  // Ритуальные не имеют дальности
+    baseDuration: duration,
+    minCultivationLevel: level,
+  };
+  
+  const modifiers: TechniqueModifiers = {
+    effects: { debuff: true },
+    effectValues: {
+      debuffStat: curseEffect,
+      debuffAmount: 10 + level * 5,
+      debuffDuration: duration,
+    },
+    penalties: subtype === 'ritual' ? { qiCostMultiplier: 1.5 } : {},
+    bonuses: {},
+  };
+  
+  const computed = computeFinalValues(base, modifiers);
+  const { name, nameEn } = generateName('curse', element, level, rng);
+  
+  const durationStr = duration < 60 ? `${duration} сек` : 
+                       duration < 3600 ? `${Math.floor(duration / 60)} мин` : 
+                       `${Math.floor(duration / 3600)} ч`;
+  
+  const description = `${name} — ${subtype === 'combat' ? 'боевое' : 'ритуальное'} проклятие уровня ${level}. ` +
+    `Эффект: ${curseEffect}. Длительность: ${durationStr}.`;
+  const rarity: Rarity = level <= 2 ? 'common' : level <= 4 ? 'uncommon' : level <= 6 ? 'rare' : 'legendary';
+  
+  return {
+    ...base, name, nameEn, description, rarity, modifiers, computed,
+    meta: { seed, template: `curse_${element}_${subtype}`, generatedAt: new Date().toISOString(), generatorVersion: '2.0.0' },
+  };
+}
+
+// ==================== ГЕНЕРАЦИЯ ОТРАВЛЕНИЙ ====================
+
+const POISON_STAGES = {
+  body: [
+    { onset: 15, duration: 30, effects: { fatigue: 20 } },
+    { onset: 45, duration: 60, effects: { hpDamage: 5 } },
+    { onset: 105, duration: 120, effects: { hpDamage: 15, paralysis: 20 } },
+  ],
+  qi: [
+    { onset: 30, duration: 60, effects: { qiDrain: 5 } },
+    { onset: 90, duration: 120, effects: { conductivityReduction: 20 } },
+    { onset: 210, duration: 240, effects: { techniqueBlock: true } },
+  ],
+};
+
+function generatePoisonTechnique(
+  id: string,
+  element: Element,
+  level: number,
+  seed: number
+): GeneratedTechnique {
+  const rng = seededRandom(seed);
+  
+  // Определяем подтип (тело или Ци)
+  const subtype: PoisonSubtype = element === 'void' || level >= 4 ? 
+    (rng() > 0.5 ? 'qi' : 'body') : 'body';
+  
+  const stages = POISON_STAGES[subtype];
+  const stageIndex = Math.min(Math.floor(level / 3), stages.length - 1);
+  const stage = stages[stageIndex];
+  
+  const deliveryTypes: PoisonDeliveryType[] = subtype === 'body' 
+    ? ['ingestion', 'contact', 'inhalation']
+    : ['technique', 'contaminated_qi'];
+  const delivery = deliveryTypes[Math.floor(rng() * deliveryTypes.length)];
+  
+  const qiCost = 30 + level * 20;
+  const totalDuration = stage.onset + stage.duration;
+  
+  const base: BaseTechnique = {
+    id, name: '', nameEn: '', type: 'poison', subtype, element, level,
+    baseDamage: subtype === 'body' ? stage.effects.hpDamage || 0 : 0,
+    baseQiCost: qiCost,
+    baseRange: delivery === 'technique' ? 10 : 0,
+    baseDuration: totalDuration,
+    minCultivationLevel: Math.max(1, level - 1),
+  };
+  
+  const modifiers: TechniqueModifiers = {
+    effects: { poison: true },
+    effectValues: {
+      poisonDamage: stage.effects.hpDamage || stage.effects.qiDrain || 0,
+      poisonDuration: totalDuration,
+    },
+    penalties: {},
+    bonuses: {},
+  };
+  
+  const computed = computeFinalValues(base, modifiers);
+  const { name, nameEn } = generateName('poison', element, level, rng);
+  
+  const description = `${name} — ${subtype === 'body' ? 'яд тела' : 'яд Ци'} уровня ${level}. ` +
+    `Способ доставки: ${delivery}. Длительность: ${totalDuration} мин.`;
+  const rarity: Rarity = level <= 2 ? 'common' : level <= 4 ? 'uncommon' : level <= 6 ? 'rare' : 'legendary';
+  
+  return {
+    ...base, name, nameEn, description, rarity, modifiers, computed,
+    meta: { seed, template: `poison_${element}_${subtype}`, generatedAt: new Date().toISOString(), generatorVersion: '2.0.0' },
+  };
+}
+
+// ==================== ГЛАВНАЯ ФУНКЦИЯ ГЕНЕРАЦИИ ====================
+
+/**
+ * Генерация одной техники по типу
+ */
+export function generateTechnique(
+  id: string,
+  type: TechniqueType,
+  element: Element,
+  level: number,
+  seed?: number
+): GeneratedTechnique {
+  const actualSeed = seed ?? hashString(id);
+  
+  switch (type) {
+    case 'combat':
+      return generateCombatTechnique(id, element, level, actualSeed);
+    case 'defense':
+      return generateDefenseTechnique(id, element, level, actualSeed);
+    case 'support':
+      return generateSupportTechnique(id, element, level, actualSeed);
+    case 'healing':
+      return generateHealingTechnique(id, element, level, actualSeed);
+    case 'movement':
+      return generateMovementTechnique(id, element, level, actualSeed);
+    case 'sensory':
+      return generateSensoryTechnique(id, element, level, actualSeed);
+    case 'cultivation':
+      return generateCultivationTechnique(id, element, level, actualSeed);
+    case 'curse':
+      return generateCurseTechnique(id, element, level, actualSeed);
+    case 'poison':
+      return generatePoisonTechnique(id, element, level, actualSeed);
+    default:
+      return generateCombatTechnique(id, element, level, actualSeed);
+  }
+}
+
+/**
+ * Генерация техник для уровня
+ */
+export function generateTechniquesForLevel(level: number, idCounter?: { current: number }): GeneratedTechnique[] {
+  // Распределение типов техник по уровню
+  const typesByLevel: Record<number, TechniqueType[]> = {
+    1: ['combat', 'defense', 'cultivation', 'support', 'movement', 'sensory', 'healing'],
+    2: ['combat', 'defense', 'cultivation', 'support', 'movement', 'sensory', 'healing', 'curse'],
+    3: ['combat', 'defense', 'cultivation', 'support', 'curse', 'poison'],
+    4: ['combat', 'defense', 'cultivation', 'curse', 'poison'],
+    5: ['combat', 'defense', 'cultivation', 'curse', 'poison'],
+    6: ['combat', 'defense', 'cultivation', 'curse', 'poison'],
+    7: ['combat', 'defense', 'cultivation', 'curse'],
+    8: ['combat', 'defense', 'cultivation', 'curse'],
+    9: ['combat', 'defense', 'cultivation', 'curse'],
+  };
+  
   const elements: Element[] = ['fire', 'water', 'earth', 'air', 'lightning', 'void', 'neutral'];
-  const count = Math.floor(1024 / Math.pow(2, level - 1));
+  const count = Math.floor(10000 / Math.pow(2, level - 1)); // До ~20000 техник
   
   const techniques: GeneratedTechnique[] = [];
+  const counter = idCounter || { current: 0 };
+  
+  const types = typesByLevel[level] || typesByLevel[1];
+  
   for (let i = 0; i < count; i++) {
     const type = types[i % types.length];
     const element = elements[i % elements.length];
-    const id = `gen_${type}_${element}_l${level}_${i}`;
+    const prefix = TYPE_ID_PREFIX[type];
+    const id = `${prefix}_${(counter.current + i + 1).toString().padStart(6, '0')}`;
     techniques.push(generateTechnique(id, type, element, level));
+  }
+  
+  if (idCounter) {
+    idCounter.current += count;
   }
   
   return techniques;
 }
 
+/**
+ * Генерация всех техник
+ */
 export function generateAllTechniques(): GeneratedTechnique[] {
   const all: GeneratedTechnique[] = [];
+  const counter = { current: 0 };
+  
   for (let level = 1; level <= 9; level++) {
-    all.push(...generateTechniquesForLevel(level));
+    all.push(...generateTechniquesForLevel(level, counter));
   }
   return all;
 }
 
-export function getTechniqueCountForLevel(level: number): number {
-  return Math.floor(1024 / Math.pow(2, level - 1));
+/**
+ * Генерация с расширенными опциями
+ */
+export function generateTechniquesWithOptions(options: GenerationOptions, idGenerator?: (prefix: string) => string): GenerationResult {
+  const techniques: GeneratedTechnique[] = [];
+  const errors: string[] = [];
+  const warnings: string[] = [];
+  
+  try {
+    const levels: number[] = [];
+    if (options.level) {
+      levels.push(options.level);
+    } else if (options.countPerLevel) {
+      levels.push(...Object.keys(options.countPerLevel).map(Number));
+    } else {
+      const minL = options.minLevel ?? 1;
+      const maxL = options.maxLevel ?? 9;
+      for (let l = minL; l <= maxL; l++) {
+        levels.push(l);
+      }
+    }
+    
+    const types: TechniqueType[] = options.types?.length 
+      ? options.types 
+      : ['combat', 'defense', 'cultivation', 'support', 'movement', 'sensory', 'healing', 'curse', 'poison'];
+    
+    const elements: Element[] = options.elements?.length
+      ? options.elements
+      : ['fire', 'water', 'earth', 'air', 'lightning', 'void', 'neutral'];
+    
+    let generated = 0;
+    const maxGenerate = options.count ?? 10000;
+    
+    for (const level of levels) {
+      const levelCount = options.countPerLevel?.[level] 
+        ?? Math.floor(10000 / Math.pow(2, level - 1));
+      
+      const actualCount = Math.min(levelCount, maxGenerate - generated);
+      
+      for (let i = 0; i < actualCount && generated < maxGenerate; i++) {
+        const type = types[i % types.length];
+        const element = elements[(i + level) % elements.length];
+        
+        const prefix = TYPE_ID_PREFIX[type];
+        const id = idGenerator 
+          ? idGenerator(prefix)
+          : `${prefix}_${(generated + 1).toString().padStart(6, '0')}`;
+        
+        const technique = generateTechnique(id, type, element, level);
+        
+        if (options.rarities?.length && !options.rarities.includes(technique.rarity)) {
+          continue;
+        }
+        
+        techniques.push(technique);
+        generated++;
+      }
+    }
+    
+    if (techniques.length === 0) {
+      warnings.push('Не сгенерировано ни одной техники. Проверьте параметры фильтрации.');
+    }
+    
+  } catch (error) {
+    errors.push(error instanceof Error ? error.message : 'Неизвестная ошибка');
+  }
+  
+  return {
+    success: errors.length === 0,
+    generated: techniques.length,
+    total: techniques.length,
+    techniques,
+    errors,
+    warnings,
+  };
 }
 
+/**
+ * Количество техник по уровню
+ * Базовое значение 10000 для уровня 1, уменьшается в 2 раза за каждый уровень
+ * Это позволяет генерировать до ~20000 техник
+ */
+export function getTechniqueCountForLevel(level: number): number {
+  return Math.floor(10000 / Math.pow(2, level - 1));
+}
+
+/**
+ * Общее количество техник
+ */
 export function getTotalTechniqueCount(): number {
   let total = 0;
   for (let level = 1; level <= 9; level++) {
     total += getTechniqueCountForLevel(level);
   }
   return total;
+}
+
+/**
+ * Получить статистику генерации
+ */
+export function getGenerationStats() {
+  return {
+    totalPossible: getTotalTechniqueCount(),
+    byLevel: Object.fromEntries(
+      Array.from({ length: 9 }, (_, i) => [i + 1, getTechniqueCountForLevel(i + 1)])
+    ),
+    types: ['combat', 'defense', 'cultivation', 'support', 'movement', 'sensory', 'healing', 'curse', 'poison'] as TechniqueType[],
+    elements: ['fire', 'water', 'earth', 'air', 'lightning', 'void', 'neutral'] as Element[],
+    rarities: ['common', 'uncommon', 'rare', 'legendary'] as Rarity[],
+  };
 }

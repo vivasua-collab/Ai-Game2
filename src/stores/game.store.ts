@@ -157,6 +157,21 @@ export const useGameStore = create<GameStoreState>()(
             isPaused: data.session.isPaused,
             daysSinceStart: data.session.daysSinceStart,
           });
+          
+          // Загружаем техники после загрузки игры
+          const characterId = data.session.character?.id;
+          if (characterId) {
+            try {
+              const techResponse = await fetch(`/api/character/data?characterId=${characterId}&type=techniques`);
+              const techData = await techResponse.json();
+              if (techData.success) {
+                set({ techniques: techData.techniques });
+              }
+            } catch {
+              console.error('Failed to load techniques on loadGame');
+            }
+          }
+          
           return true;
         } catch (error) {
           set({ isLoading: false, error: error instanceof Error ? error.message : "Unknown error" });

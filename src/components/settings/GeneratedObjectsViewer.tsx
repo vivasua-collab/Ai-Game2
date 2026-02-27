@@ -8,7 +8,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Input } from '@/components/ui/input';
@@ -20,9 +19,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import {
-  X,
   Search,
-  Filter,
   Sword,
   Flame,
   Droplet,
@@ -30,9 +27,9 @@ import {
   Wind,
   Zap,
   Eye,
-  Shield,
-  Heart,
   Sparkles,
+  Package,
+  Loader2,
 } from 'lucide-react';
 
 interface GeneratedObjectsViewerProps {
@@ -69,12 +66,15 @@ const ELEMENT_ICONS: Record<string, React.ReactNode> = {
 };
 
 const TYPE_NAMES: Record<string, string> = {
-  combat: '⚔️ Боевая',
+  combat: '⚔️ Атакующая',
+  defense: '🛡️ Защитная',
   cultivation: '🧘 Культивация',
-  support: '🛡️ Поддержка',
+  support: '✨ Поддержка',
   movement: '🏃 Перемещение',
   sensory: '👁️ Восприятие',
   healing: '💚 Исцеление',
+  curse: '💀 Проклятие',
+  poison: '☠️ Отравление',
 };
 
 const RARITY_COLORS: Record<string, string> = {
@@ -88,23 +88,20 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
   const [techniques, setTechniques] = useState<Technique[]>([]);
   const [filteredTechniques, setFilteredTechniques] = useState<Technique[]>([]);
   const [loading, setLoading] = useState(false);
+  const [loaded, setLoaded] = useState(false);
   const [selectedTechnique, setSelectedTechnique] = useState<Technique | null>(null);
   
-  // Фильтры
+  // Фильтры - доступны до загрузки
   const [search, setSearch] = useState('');
   const [levelFilter, setLevelFilter] = useState<string>('all');
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [elementFilter, setElementFilter] = useState<string>('all');
 
+  // Применяем фильтры при изменении данных или фильтров
   useEffect(() => {
-    if (open) {
-      loadTechniques();
-    }
-  }, [open]);
-
-  useEffect(() => {
+    if (!loaded || techniques.length === 0) return;
     applyFilters();
-  }, [techniques, search, levelFilter, typeFilter, elementFilter]);
+  }, [techniques, search, levelFilter, typeFilter, elementFilter, loaded]);
 
   const loadTechniques = async () => {
     setLoading(true);
@@ -113,6 +110,9 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
       const data = await res.json();
       if (data.success) {
         setTechniques(data.techniques);
+        setLoaded(true);
+        // Применяем фильтры сразу после загрузки
+        setTimeout(() => applyFilters(), 0);
       }
     } catch (error) {
       console.error('Failed to load techniques:', error);
@@ -128,7 +128,8 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
       const searchLower = search.toLowerCase();
       filtered = filtered.filter(t => 
         t.name.toLowerCase().includes(searchLower) ||
-        t.nameEn.toLowerCase().includes(searchLower)
+        t.nameEn.toLowerCase().includes(searchLower) ||
+        t.id.toLowerCase().includes(searchLower)
       );
     }
     
@@ -159,24 +160,41 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
         <div className="flex gap-4 h-[70vh]">
           {/* Список */}
           <div className="w-1/2 flex flex-col">
-            {/* Фильтры */}
+            {/* Фильтры - ВСЕГДА видны */}
             <div className="mb-3 space-y-2">
-              <div className="relative">
-                <Search className="absolute left-2 top-2 w-4 h-4 text-slate-400" />
-                <Input
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Поиск по названию..."
-                  className="pl-8 bg-slate-800 border-slate-600"
-                />
+              <div className="flex gap-2">
+                {/* Поиск */}
+                <div className="relative flex-1">
+                  <Search className="absolute left-2 top-2 w-4 h-4 text-slate-400" />
+                  <Input
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Поиск по названию или ID..."
+                    className="pl-8 bg-slate-800 border-slate-600 text-white"
+                  />
+                </div>
+                
+                {/* Кнопка Показать */}
+                <Button
+                  onClick={loadTechniques}
+                  disabled={loading}
+                  className="bg-amber-600 hover:bg-amber-700 shrink-0"
+                >
+                  {loading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Package className="w-4 h-4" />
+                  )}
+                  {loaded ? 'Обновить' : 'Показать'}
+                </Button>
               </div>
               
               <div className="flex gap-2">
                 <Select value={levelFilter} onValueChange={setLevelFilter}>
-                  <SelectTrigger className="w-24 bg-slate-800 border-slate-600 text-xs">
+                  <SelectTrigger className="w-24 bg-slate-800 border-slate-600 text-xs text-white">
                     <SelectValue placeholder="Уровень" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-slate-700">
                     <SelectItem value="all">Все уровни</SelectItem>
                     {Array.from({ length: 9 }, (_, i) => (
                       <SelectItem key={i + 1} value={String(i + 1)}>
@@ -187,25 +205,28 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
                 </Select>
 
                 <Select value={typeFilter} onValueChange={setTypeFilter}>
-                  <SelectTrigger className="w-32 bg-slate-800 border-slate-600 text-xs">
+                  <SelectTrigger className="w-32 bg-slate-800 border-slate-600 text-xs text-white">
                     <SelectValue placeholder="Тип" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-slate-700">
                     <SelectItem value="all">Все типы</SelectItem>
-                    <SelectItem value="combat">⚔️ Боевая</SelectItem>
+                    <SelectItem value="combat">⚔️ Атакующая</SelectItem>
+                    <SelectItem value="defense">🛡️ Защитная</SelectItem>
                     <SelectItem value="cultivation">🧘 Культивация</SelectItem>
-                    <SelectItem value="support">🛡️ Поддержка</SelectItem>
+                    <SelectItem value="support">✨ Поддержка</SelectItem>
                     <SelectItem value="movement">🏃 Перемещение</SelectItem>
                     <SelectItem value="sensory">👁️ Восприятие</SelectItem>
                     <SelectItem value="healing">💚 Исцеление</SelectItem>
+                    <SelectItem value="curse">💀 Проклятие</SelectItem>
+                    <SelectItem value="poison">☠️ Отравление</SelectItem>
                   </SelectContent>
                 </Select>
 
                 <Select value={elementFilter} onValueChange={setElementFilter}>
-                  <SelectTrigger className="w-28 bg-slate-800 border-slate-600 text-xs">
+                  <SelectTrigger className="w-28 bg-slate-800 border-slate-600 text-xs text-white">
                     <SelectValue placeholder="Элемент" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-slate-700">
                     <SelectItem value="all">Все</SelectItem>
                     <SelectItem value="fire">🔥 Огонь</SelectItem>
                     <SelectItem value="water">💧 Вода</SelectItem>
@@ -220,46 +241,67 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
             </div>
 
             {/* Результаты */}
-            <div className="text-xs text-slate-400 mb-2">
-              Найдено: {filteredTechniques.length} из {techniques.length}
-            </div>
-
-            <ScrollArea className="flex-1 border border-slate-700 rounded-lg">
-              {loading ? (
-                <div className="p-4 text-center text-slate-400">Загрузка...</div>
-              ) : (
-                <div className="divide-y divide-slate-700">
-                  {filteredTechniques.slice(0, 200).map((tech) => (
-                    <div
-                      key={tech.id}
-                      onClick={() => setSelectedTechnique(tech)}
-                      className={`p-2 cursor-pointer hover:bg-slate-800/50 transition-colors ${
-                        selectedTechnique?.id === tech.id ? 'bg-amber-900/20 border-l-2 border-amber-500' : ''
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          {ELEMENT_ICONS[tech.element]}
-                          <span className="text-sm font-medium">{tech.name}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Badge variant="outline" className="text-xs border-slate-600">
-                            Ур. {tech.level}
-                          </Badge>
-                          <span className={`text-xs ${RARITY_COLORS[tech.rarity]}`}>
-                            {tech.rarity === 'legendary' ? '★' : ''}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="text-xs text-slate-500 mt-1">
-                        {TYPE_NAMES[tech.type]}
-                        {tech.computed.finalDamage > 0 && ` • Урон: ${tech.computed.finalDamage}`}
-                      </div>
-                    </div>
-                  ))}
+            {loaded ? (
+              <>
+                <div className="text-xs text-slate-400 mb-2">
+                  Найдено: {filteredTechniques.length} из {techniques.length}
                 </div>
-              )}
-            </ScrollArea>
+
+                <ScrollArea className="flex-1 border border-slate-700 rounded-lg">
+                  {loading ? (
+                    <div className="p-4 text-center text-slate-400">
+                      <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2" />
+                      Загрузка...
+                    </div>
+                  ) : filteredTechniques.length === 0 ? (
+                    <div className="p-4 text-center text-slate-500">
+                      Нет объектов, соответствующих фильтрам
+                    </div>
+                  ) : (
+                    <div className="divide-y divide-slate-700">
+                      {filteredTechniques.slice(0, 500).map((tech) => (
+                        <div
+                          key={tech.id}
+                          onClick={() => setSelectedTechnique(tech)}
+                          className={`p-2 cursor-pointer hover:bg-slate-800/50 transition-colors ${
+                            selectedTechnique?.id === tech.id ? 'bg-amber-900/20 border-l-2 border-amber-500' : ''
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              {ELEMENT_ICONS[tech.element]}
+                              <span className="text-sm font-medium text-white">{tech.name}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Badge variant="outline" className="text-xs border-slate-500 text-white">
+                                Ур. {tech.level}
+                              </Badge>
+                              <span className={`text-xs ${RARITY_COLORS[tech.rarity]}`}>
+                                {tech.rarity === 'legendary' ? '★' : ''}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="text-xs text-slate-500 mt-1">
+                            {TYPE_NAMES[tech.type]} • {tech.id}
+                            {tech.computed.finalDamage > 0 && ` • Урон: ${tech.computed.finalDamage}`}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </ScrollArea>
+              </>
+            ) : (
+              <div className="flex-1 flex flex-col items-center justify-center border border-slate-700 rounded-lg">
+                <Package className="w-16 h-16 text-slate-600 mb-4" />
+                <p className="text-slate-400 mb-2 text-center">
+                  Настройте фильтры и нажмите "Показать"
+                </p>
+                <p className="text-xs text-slate-500 text-center">
+                  Загрузка большого количества объектов может занять время
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Детали */}
@@ -269,16 +311,16 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     {ELEMENT_ICONS[selectedTechnique.element]}
-                    <h3 className="text-xl font-bold">{selectedTechnique.name}</h3>
+                    <h3 className="text-xl font-bold text-white">{selectedTechnique.name}</h3>
                   </div>
                   <p className="text-sm text-slate-400">{selectedTechnique.nameEn}</p>
                 </div>
 
                 <div className="flex gap-2 flex-wrap">
-                  <Badge variant="outline" className="border-slate-600">
+                  <Badge variant="outline" className="border-slate-500 text-white">
                     {TYPE_NAMES[selectedTechnique.type]}
                   </Badge>
-                  <Badge variant="outline" className="border-slate-600">
+                  <Badge variant="outline" className="border-slate-500 text-white">
                     Уровень {selectedTechnique.level}
                   </Badge>
                   <Badge className={`
@@ -312,7 +354,7 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-400">ID:</span>
-                      <span className="text-slate-500 text-xs">{selectedTechnique.id}</span>
+                      <span className="text-slate-300 text-xs">{selectedTechnique.id}</span>
                     </div>
                   </div>
                 </div>
@@ -338,7 +380,11 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
               <div className="h-full flex items-center justify-center text-slate-400">
                 <div className="text-center">
                   <Sword className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                  <p>Выберите технику для просмотра</p>
+                  <p>
+                    {loaded 
+                      ? 'Выберите технику для просмотра' 
+                      : 'Настройте фильтры и нажмите "Показать"'}
+                  </p>
                 </div>
               </div>
             )}

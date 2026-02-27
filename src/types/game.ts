@@ -260,11 +260,62 @@ export type CombatTechniqueType =
   // === ДАЛЬНИЙ БОЙ ===
   | "ranged_projectile"  // Снаряд
   | "ranged_beam"        // Луч
-  | "ranged_aoe"         // Область
-  // === ЗАЩИТНЫЕ ===
-  | "defense_block"      // Блок (снижение урона)
-  | "defense_shield"     // Энергетический щит (поглощение)
-  | "defense_dodge";     // Уклонение (реакция)
+  | "ranged_aoe";        // Область
+
+/**
+ * Подтип защитной техники
+ */
+export type DefenseSubtype =
+  | "shield"       // Энергетический щит
+  | "barrier"      // Стационарный барьер
+  | "block"        // Активный блок
+  | "dodge"        // Уклонение
+  | "absorb"       // Поглощение урона
+  | "reflect";     // Отражение урона
+
+/**
+ * Подтип проклятия
+ */
+export type CurseSubtype =
+  | "combat"       // Боевое (секунды-минуты)
+  | "ritual";      // Ритуальное (часы-месяцы)
+
+/**
+ * Подтип отравления
+ */
+export type PoisonSubtype =
+  | "body"         // Отравление тела
+  | "qi";          // Отравление Ци
+
+/**
+ * Тип эффекта проклятия
+ */
+export type CurseEffectType =
+  | "weakness"       // Снижение силы
+  | "slowness"       // Замедление
+  | "blindness"      // Слепота
+  | "silence"        // Блокировка техник
+  | "confusion"      // Путаница
+  | "fear"           // Страх
+  | "exhaustion"     // Истощение
+  | "qi_drain"       // Истощение Ци
+  | "soul_burn"      // Жжение души (DoT)
+  | "cultivation_block" // Блокировка культивации
+  | "meridian_damage"   // Повреждение меридиан
+  | "core_corruption"   // Разрушение ядра
+  | "fate_binding"      // Связывание судьбы
+  | "soul_seal";        // Печать души
+
+/**
+ * Тип эффекта отравления
+ */
+export type PoisonDeliveryType =
+  | "ingestion"    // Употребление
+  | "contact"      // Контакт
+  | "injection"    // Инъекция
+  | "inhalation"   // Вдыхание
+  | "technique"    // Через технику
+  | "contaminated_qi"; // Заражённая Ци
 
 /**
  * Параметры дальности для боевых техник
@@ -300,21 +351,39 @@ export interface CombatTechniqueEffects {
 }
 
 /**
+ * Основной тип техники
+ */
+export type TechniqueType = 
+  | "combat"       // Атакующие боевые техники
+  | "defense"      // Защитные техники (новое)
+  | "cultivation"  // Техники культивации
+  | "support"      // Поддержка (баффы)
+  | "movement"     // Перемещение
+  | "sensory"      // Восприятие
+  | "healing"      // Исцеление
+  | "curse"        // Проклятия (новое)
+  | "poison"       // Отравления (новое)
+  | "formation";   // Формации
+
+/**
  * Флаги использования техник
  */
 export type TechniqueUsageFlag = 
   | 'cultivation'  // Техника культивации - используется через слот при медитации
   | 'formation'    // Формация - можно использовать из меню
   | 'combat'       // Боевая техника - используется через слоты быстрого доступа
-  | 'support'      // Поддержка - боевая слот
+  | 'defense'      // Защитная техника - боевой слот
+  | 'support'      // Поддержка - боевой слот
   | 'movement'     // Перемещение - боевой слот
   | 'sensory'      // Восприятие - боевой слот
-  | 'healing';     // Исцеление - боевой слот
+  | 'healing'      // Исцеление - боевой слот
+  | 'curse'        // Проклятие - отдельный слот
+  | 'poison';      // Отравление - боевой слот
 
 /**
  * Категория техники для UI
  */
-export type TechniqueUICategory = 'cultivation' | 'formations' | 'combat';
+export type TechniqueUICategory = 'cultivation' | 'formations' | 'combat' | 'defense' | 'curse' | 'poison';
 
 /**
  * Определяет категорию UI для типа техники
@@ -322,6 +391,9 @@ export type TechniqueUICategory = 'cultivation' | 'formations' | 'combat';
 export function getTechniqueUICategory(type: string): TechniqueUICategory {
   if (type === 'cultivation') return 'cultivation';
   if (type === 'formation') return 'formations';
+  if (type === 'defense') return 'defense';
+  if (type === 'curse') return 'curse';
+  if (type === 'poison') return 'poison';
   return 'combat'; // combat, support, movement, sensory, healing
 }
 
@@ -339,18 +411,22 @@ export function canUseTechniqueFromMenu(type: string): boolean {
 export function canAssignTechniqueToSlot(type: string): boolean {
   return type === 'cultivation' || 
          type === 'combat' || 
+         type === 'defense' || 
          type === 'support' || 
          type === 'movement' || 
          type === 'sensory' || 
-         type === 'healing';
+         type === 'healing' ||
+         type === 'curse' ||
+         type === 'poison';
 }
 
 /**
  * Возвращает тип слота для техники
  */
-export function getTechniqueSlotType(type: string): 'cultivation' | 'combat' | null {
+export function getTechniqueSlotType(type: string): 'cultivation' | 'combat' | 'curse' | null {
   if (type === 'cultivation') return 'cultivation';
-  if (['combat', 'support', 'movement', 'sensory', 'healing'].includes(type)) return 'combat';
+  if (type === 'curse') return 'curse';
+  if (['combat', 'defense', 'support', 'movement', 'sensory', 'healing', 'poison'].includes(type)) return 'combat';
   return null;
 }
 
@@ -358,7 +434,8 @@ export interface Technique {
   id: string;
   name: string;
   description: string;
-  type: "combat" | "cultivation" | "support" | "movement" | "sensory" | "healing" | "formation";
+  type: TechniqueType;
+  subtype?: CombatTechniqueType | DefenseSubtype | CurseSubtype | PoisonSubtype;
   element: "fire" | "water" | "earth" | "air" | "lightning" | "void" | "neutral";
   rarity: "common" | "uncommon" | "rare" | "legendary";
   level: number;
