@@ -95,6 +95,32 @@ interface DamageNumber {
   createdAt: number;
 }
 
+/**
+ * Техника в процессе зарядки
+ * 
+ * Время зарядки = qiCost / проводимость (секунды)
+ * Бонусы: +5% скорость за уровень культивации, +1% за 1% мастерства
+ */
+interface TechniqueCharging {
+  id: string;                    // Уникальный ID зарядки
+  techniqueId: string;           // ID техники
+  slotIndex: number;             // Индекс слота (1-6)
+  qiCost: number;                // Стоимость Ци
+  startTime: number;             // Время начала зарядки (ms)
+  chargeTime: number;            // Время зарядки (ms)
+  progress: number;              // Прогресс 0-1
+  techniqueData: {
+    damage: number;
+    range: number;
+    type: string;
+    element: string;
+    qiCost: number;
+    mastery?: number;
+  };
+  chargeBar?: Phaser.GameObjects.Graphics;  // Визуальный индикатор
+  chargeText?: Phaser.GameObjects.Text;     // Текст времени
+}
+
 // Global references
 let globalSessionId: string | null = null;
 let globalOnMovement: ((tiles: number) => void) | null = null;
@@ -110,6 +136,11 @@ let globalTargets: TrainingTarget[] = [];
 let globalDamageNumbers: DamageNumber[] = [];
 let globalPlayerRotation: number = 0;
 // globalOnUseTechnique removed - unused
+
+// Charging system globals
+let globalChargingTechniques: TechniqueCharging[] = [];
+let globalChargeBars: Map<number, Phaser.GameObjects.Graphics> = new Map();
+let globalChargeTexts: Map<number, Phaser.GameObjects.Text> = new Map();
 
 // ============================================
 // HELPER FUNCTIONS
@@ -478,6 +509,330 @@ function damageTarget(
       }
     });
   }
+}
+
+// ============================================
+// TECHNIQUE CHARGING SYSTEM
+// ============================================
+
+/**
+ * Calculate technique charge time based on Qi cost and conductivity
+ * 
+ * Formula: chargeTime = qiCost / effectiveSpeed
+ * effectiveSpeed = conductivity × (1 + cultivationLevelBonus) × (1 + masteryBonus)
+ * 
+ * @param qiCost Qi cost of the technique
+ * @param conductivity Character's meridian conductivity (Qi/second base)
+ * @param cultivationLevel Character's cultivation level
+ * @param mastery Technique mastery (0-100%)
+ * @returns Charge time in milliseconds
+ */
+function calculateChargeTime(
+  qiCost: number,
+  conductivity: number,
+  cultivationLevel: number = 1,
+  mastery: number = 0
+): number {
+  // Base speed = conductivity Qi/second
+  let effectiveSpeed = Math.max(0.1, conductivity);
+  
+  // Cultivation bonus: +5% speed per level above 1
+  const cultivationBonus = 1 + (cultivationLevel - 1) * 0.05;
+  effectiveSpeed *= cultivationBonus;
+  
+  // Mastery bonus: +1% speed per 1% mastery
+  const masteryBonus = 1 + mastery * 0.01;
+  effectiveSpeed *= masteryBonus;
+  
+  // Charge time in milliseconds
+  const chargeTimeMs = (qiCost / effectiveSpeed) * 1000;
+  
+  // Minimum 100ms
+  return Math.max(100, chargeTimeMs);
+}
+
+/**
+ * Get effective conductivity from character
+ */
+function getEffectiveConductivity(): number {
+  return globalCharacter?.conductivity || 1.0; // Default 1.0 Qi/sec
+}
+
+/**
+ * Get cultivation level from character
+ */
+function getCultivationLevel(): number {
+  return globalCharacter?.cultivationLevel || 1;
+}
+
+/**
+ * Check if a slot is already charging
+ */
+function isSlotCharging(slotIndex: number): boolean {
+  return globalChargingTechniques.some(ct => ct.slotIndex === slotIndex);
+}
+
+/**
+ * Start charging a technique
+ * 
+ * @returns true if charging started, false if already charging or invalid
+ */
+function startTechniqueCharging(
+  scene: Phaser.Scene,
+  slotIndex: number,
+  techniqueId: string,
+  techniqueData: {
+    damage: number;
+    range: number;
+    type: string;
+    element: string;
+    qiCost: number;
+    mastery?: number;
+  },
+  playerX: number,
+  playerY: number
+): boolean {
+  // Check if already charging this slot
+  if (isSlotCharging(slotIndex)) {
+    // Show "Already charging" message
+    const msgText = scene.add.text(playerX, playerY - 60, 'Уже заряжается...', {
+      fontSize: '12px',
+      fontFamily: 'Arial',
+      color: '#fbbf24',
+      stroke: '#000000',
+      strokeThickness: 2,
+    }).setOrigin(0.5).setDepth(200);
+    
+    scene.tweens.add({
+      targets: msgText,
+      y: playerY - 80,
+      alpha: 0,
+      duration: 1000,
+      onComplete: () => msgText.destroy(),
+    });
+    return false;
+  }
+  
+  // Check Qi availability
+  const currentQi = globalCharacter?.currentQi || 0;
+  if (techniqueData.qiCost > 0 && currentQi < techniqueData.qiCost) {
+    // Show "Not enough Qi" message
+    const noQiText = scene.add.text(playerX, playerY - 60, `Недостаточно Ци! Нужно: ${techniqueData.qiCost}`, {
+      fontSize: '14px',
+      fontFamily: 'Arial',
+      color: '#ff4444',
+      stroke: '#000000',
+      strokeThickness: 2,
+    }).setOrigin(0.5).setDepth(200);
+    
+    scene.tweens.add({
+      targets: noQiText,
+      y: playerY - 90,
+      alpha: 0,
+      duration: 1500,
+      onComplete: () => noQiText.destroy(),
+    });
+    return false;
+  }
+  
+  // Calculate charge time
+  const conductivity = getEffectiveConductivity();
+  const cultivationLevel = getCultivationLevel();
+  const mastery = techniqueData.mastery || 0;
+  const chargeTime = calculateChargeTime(techniqueData.qiCost, conductivity, cultivationLevel, mastery);
+  
+  // Create charge bar for this slot (will be updated in update loop)
+  const chargeBar = scene.add.graphics();
+  chargeBar.setDepth(150);
+  globalChargeBars.set(slotIndex, chargeBar);
+  
+  // Create charge text
+  const chargeText = scene.add.text(0, 0, '', {
+    fontSize: '10px',
+    fontFamily: 'Arial',
+    color: '#ffffff',
+    stroke: '#000000',
+    strokeThickness: 1,
+  }).setOrigin(0.5).setDepth(151);
+  globalChargeTexts.set(slotIndex, chargeText);
+  
+  // Create charging entry
+  const charging: TechniqueCharging = {
+    id: `charge_${slotIndex}_${Date.now()}`,
+    techniqueId,
+    slotIndex,
+    qiCost: techniqueData.qiCost,
+    startTime: Date.now(),
+    chargeTime,
+    progress: 0,
+    techniqueData: {
+      ...techniqueData,
+      qiCost: techniqueData.qiCost,
+    },
+    chargeBar,
+    chargeText,
+  };
+  
+  globalChargingTechniques.push(charging);
+  
+  // Show charging started message
+  const chargeSeconds = (chargeTime / 1000).toFixed(1);
+  const startText = scene.add.text(playerX, playerY - 50, `⚡ Зарядка: ${chargeSeconds}с`, {
+    fontSize: '12px',
+    fontFamily: 'Arial',
+    color: '#4ade80',
+    stroke: '#000000',
+    strokeThickness: 2,
+  }).setOrigin(0.5).setDepth(200);
+  
+  scene.tweens.add({
+    targets: startText,
+    y: playerY - 70,
+    alpha: 0,
+    duration: 1000,
+    onComplete: () => startText.destroy(),
+  });
+  
+  return true;
+}
+
+/**
+ * Update all charging techniques
+ * Returns techniques that finished charging this frame
+ */
+function updateChargingTechniques(scene: Phaser.Scene): TechniqueCharging[] {
+  const now = Date.now();
+  const finished: TechniqueCharging[] = [];
+  
+  for (const charging of globalChargingTechniques) {
+    const elapsed = now - charging.startTime;
+    charging.progress = Math.min(1, elapsed / charging.chargeTime);
+    
+    // Update visual charge bar
+    if (charging.chargeBar) {
+      charging.chargeBar.clear();
+      
+      // Background
+      charging.chargeBar.fillStyle(0x000000, 0.7);
+      charging.chargeBar.fillRect(-20, -8, 40, 6);
+      
+      // Progress
+      const progressColor = charging.progress >= 1 ? 0x4ade80 : 0xfbbf24;
+      charging.chargeBar.fillStyle(progressColor, 1);
+      charging.chargeBar.fillRect(-20, -8, 40 * charging.progress, 6);
+    }
+    
+    // Update charge text
+    if (charging.chargeText) {
+      const remaining = Math.max(0, (charging.chargeTime - elapsed) / 1000);
+      if (charging.progress >= 1) {
+        charging.chargeText.setText('ГОТОВО!');
+        charging.chargeText.setColor('#4ade80');
+      } else {
+        charging.chargeText.setText(`${remaining.toFixed(1)}с`);
+      }
+    }
+    
+    // Check if finished
+    if (charging.progress >= 1) {
+      finished.push(charging);
+    }
+  }
+  
+  return finished;
+}
+
+/**
+ * Execute a fully charged technique
+ */
+async function executeChargedTechnique(
+  scene: Phaser.Scene,
+  charging: TechniqueCharging,
+  playerX: number,
+  playerY: number,
+  playerRotation: number
+): Promise<boolean> {
+  // Remove from charging list
+  globalChargingTechniques = globalChargingTechniques.filter(ct => ct.id !== charging.id);
+  
+  // Clean up visuals
+  if (charging.chargeBar) {
+    charging.chargeBar.destroy();
+    globalChargeBars.delete(charging.slotIndex);
+  }
+  if (charging.chargeText) {
+    charging.chargeText.destroy();
+    globalChargeTexts.delete(charging.slotIndex);
+  }
+  
+  // Deduct Qi
+  const qiCost = charging.qiCost;
+  const currentQi = globalCharacter?.currentQi || 0;
+  
+  if (qiCost > 0) {
+    // Update local Qi immediately
+    if (globalCharacter) {
+      globalCharacter.currentQi = Math.max(0, currentQi - qiCost);
+    }
+    
+    // Sync with server (fire and forget)
+    if (globalSessionId && globalCharacter?.id) {
+      fetch('/api/technique/use', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          characterId: globalCharacter.id,
+          techniqueId: charging.techniqueId,
+          trainingMode: true,
+          qiCostOverride: qiCost,
+        }),
+      }).catch(err => console.error('Failed to sync Qi:', err));
+    }
+  }
+  
+  // Execute technique visuals
+  await useTechniqueInDirection(
+    scene,
+    charging.techniqueId,
+    {
+      damage: charging.techniqueData.damage,
+      range: charging.techniqueData.range,
+      type: charging.techniqueData.type,
+      element: charging.techniqueData.element,
+      qiCost: 0, // Already deducted
+    },
+    playerX,
+    playerY,
+    playerRotation
+  );
+  
+  return true;
+}
+
+/**
+ * Cancel charging for a slot
+ */
+function cancelCharging(slotIndex: number): void {
+  const charging = globalChargingTechniques.find(ct => ct.slotIndex === slotIndex);
+  if (charging) {
+    if (charging.chargeBar) {
+      charging.chargeBar.destroy();
+      globalChargeBars.delete(slotIndex);
+    }
+    if (charging.chargeText) {
+      charging.chargeText.destroy();
+      globalChargeTexts.delete(slotIndex);
+    }
+    globalChargingTechniques = globalChargingTechniques.filter(ct => ct.slotIndex !== slotIndex);
+  }
+}
+
+/**
+ * Get charging progress for a slot (0-1, or 0 if not charging)
+ */
+function getChargingProgress(slotIndex: number): number {
+  const charging = globalChargingTechniques.find(ct => ct.slotIndex === slotIndex);
+  return charging?.progress || 0;
 }
 
 /**
@@ -1086,20 +1441,42 @@ const GameSceneConfig = {
           slotBg.setInteractive();
           slotBg.on('pointerdown', () => {
             if (equipped) {
-              useTechniqueInDirection(
-                scene,
-                equipped.techniqueId,
-                {
-                  damage: equipped.technique.effects?.damage || 15,
-                  range: equipped.technique.effects?.distance || (equipped.technique.effects?.range?.max || 10),
-                  type: equipped.technique.effects?.combatType || equipped.technique.type,
-                  element: equipped.technique.element,
-                  qiCost: equipped.technique.qiCost || 0,
-                },
-                player.x,
-                player.y,
-                globalPlayerRotation
-              );
+              const qiCost = equipped.technique.qiCost || 0;
+              
+              // Techniques with 0 Qi cost execute instantly
+              if (qiCost === 0) {
+                useTechniqueInDirection(
+                  scene,
+                  equipped.techniqueId,
+                  {
+                    damage: equipped.technique.effects?.damage || 15,
+                    range: equipped.technique.effects?.distance || (equipped.technique.effects?.range?.max || 10),
+                    type: equipped.technique.effects?.combatType || equipped.technique.type,
+                    element: equipped.technique.element,
+                    qiCost: 0,
+                  },
+                  player.x,
+                  player.y,
+                  globalPlayerRotation
+                );
+              } else {
+                // Start charging for techniques that cost Qi
+                startTechniqueCharging(
+                  scene,
+                  i + 1,
+                  equipped.techniqueId,
+                  {
+                    damage: equipped.technique.effects?.damage || 15,
+                    range: equipped.technique.effects?.distance || (equipped.technique.effects?.range?.max || 10),
+                    type: equipped.technique.effects?.combatType || equipped.technique.type,
+                    element: equipped.technique.element,
+                    qiCost: qiCost,
+                    mastery: equipped.mastery || 0,
+                  },
+                  player.x,
+                  player.y
+                );
+              }
             } else if (isSlot1) {
               // Basic attack - NO Qi cost (physical attack, not a technique)
               useTechniqueInDirection(
@@ -1286,21 +1663,43 @@ const GameSceneConfig = {
           );
 
           if (equipped) {
-            // Use equipped technique
-            useTechniqueInDirection(
-              scene,
-              equipped.techniqueId,
-              {
-                damage: equipped.technique.effects?.damage || 15,
-                range: equipped.technique.effects?.distance || (equipped.technique.effects?.range?.max || 10),
-                type: equipped.technique.effects?.combatType || equipped.technique.type,
-                element: equipped.technique.element,
-                qiCost: equipped.technique.qiCost || 0,
-              },
-              player.x,
-              player.y,
-              globalPlayerRotation
-            );
+            // Start charging the technique instead of instant use
+            const qiCost = equipped.technique.qiCost || 0;
+            
+            // Techniques with 0 Qi cost (like basic attacks) execute instantly
+            if (qiCost === 0) {
+              useTechniqueInDirection(
+                scene,
+                equipped.techniqueId,
+                {
+                  damage: equipped.technique.effects?.damage || 15,
+                  range: equipped.technique.effects?.distance || (equipped.technique.effects?.range?.max || 10),
+                  type: equipped.technique.effects?.combatType || equipped.technique.type,
+                  element: equipped.technique.element,
+                  qiCost: 0,
+                },
+                player.x,
+                player.y,
+                globalPlayerRotation
+              );
+            } else {
+              // Start charging for techniques that cost Qi
+              startTechniqueCharging(
+                scene,
+                slotIndex,
+                equipped.techniqueId,
+                {
+                  damage: equipped.technique.effects?.damage || 15,
+                  range: equipped.technique.effects?.distance || (equipped.technique.effects?.range?.max || 10),
+                  type: equipped.technique.effects?.combatType || equipped.technique.type,
+                  element: equipped.technique.element,
+                  qiCost: qiCost,
+                  mastery: equipped.mastery || 0,
+                },
+                player.x,
+                player.y
+              );
+            }
           } else if (slotIndex === 1) {
             // Slot 1: Default basic attack - NO Qi cost (physical attack, not a technique)
             useTechniqueInDirection(
@@ -1508,6 +1907,20 @@ const GameSceneConfig = {
       }
     });
 
+    // === TECHNIQUE CHARGING UPDATE ===
+    // Update all charging techniques and auto-execute when ready
+    const finishedCharging = updateChargingTechniques(scene);
+    for (const charging of finishedCharging) {
+      // Execute the technique in current player direction
+      executeChargedTechnique(
+        scene,
+        charging,
+        player.x,
+        player.y,
+        globalPlayerRotation
+      );
+    }
+    
     // Time tracking
     const dx = player.x - lastPosition.x;
     const dy = player.y - lastPosition.y;
