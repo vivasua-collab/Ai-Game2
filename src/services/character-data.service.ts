@@ -276,6 +276,7 @@ function mapTechniqueFromDb(t: {
   name: string;
   description: string;
   type: string;
+  subtype?: string | null;
   element: string;
   rarity: string;
   level: number;
@@ -285,13 +286,20 @@ function mapTechniqueFromDb(t: {
   physicalFatigueCost: number;
   mentalFatigueCost: number;
   minCultivationLevel: number;
-  effects: string | null;
+  statRequirements?: string | null;
+  statScaling?: string | null;
+  effects?: string | null;
+  computedValues?: string | null;
+  modifiers?: string | null;
+  weaponType?: string | null;
+  isRangedQi?: boolean;
 }): Technique {
   return {
     id: t.id,
     name: t.name,
     description: t.description,
     type: t.type as Technique["type"],
+    subtype: t.subtype as Technique["subtype"],
     element: t.element as Technique["element"],
     rarity: t.rarity as Technique["rarity"],
     level: t.level,
@@ -303,6 +311,12 @@ function mapTechniqueFromDb(t: {
       mental: t.mentalFatigueCost,
     },
     minCultivationLevel: t.minCultivationLevel,
+    statRequirements: t.statRequirements ? JSON.parse(t.statRequirements) : undefined,
+    statScaling: t.statScaling ? JSON.parse(t.statScaling) : undefined,
+    computed: t.computedValues ? JSON.parse(t.computedValues) : undefined,
+    modifiers: t.modifiers ? JSON.parse(t.modifiers) : undefined,
+    weaponType: t.weaponType ?? undefined,
+    isRangedQi: t.isRangedQi ?? undefined,
     effects: t.effects ? JSON.parse(t.effects) : undefined,
   };
 }

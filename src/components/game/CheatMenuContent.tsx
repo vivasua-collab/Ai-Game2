@@ -23,7 +23,7 @@ type StatType = 'strength' | 'agility' | 'intelligence' | 'conductivity';
 
 export function CheatMenuContent() {
   const character = useGameCharacter();
-  const { loadState } = useGameActions();
+  const { loadState, loadTechniques } = useGameActions();
   
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
@@ -72,6 +72,10 @@ export function CheatMenuContent() {
       const data = await response.json();
       if (data.success) {
         await loadState();
+        // Перезагружаем техники если это была команда give_technique
+        if (command === 'give_technique') {
+          await loadTechniques();
+        }
         setResult(`✅ ${data.message}`);
       } else {
         setResult(`❌ Ошибка: ${data.error || data.message}`);

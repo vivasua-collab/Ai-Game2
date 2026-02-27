@@ -115,10 +115,14 @@ export interface TechniqueUseResult {
 
 /**
  * Расчёт эффективности техники от характеристик персонажа
+ * @param technique - техника
+ * @param character - персонаж
+ * @param mastery - мастерство (0-100) из CharacterTechnique
  */
 export function calculateTechniqueEffectiveness(
   technique: Technique,
-  character: Character
+  character: Character,
+  mastery: number = 0
 ): number {
   let multiplier = 1.0;
   
@@ -138,9 +142,10 @@ export function calculateTechniqueEffectiveness(
     multiplier += character.conductivity * technique.statScaling.conductivity;
   }
   
-  // Бонус от мастерства
-  const masteryBonus = 1 + (technique.masteryProgress / 100) * technique.masteryBonus;
-  multiplier *= masteryBonus;
+  // Бонус от мастерства (базовый бонус = 0.5 при 100% мастерства)
+  const masteryBonus = 0.5; // Фиксированный бонус мастерства
+  const masteryMultiplier = 1 + (mastery / 100) * masteryBonus;
+  multiplier *= masteryMultiplier;
   
   return Math.max(0.1, multiplier); // Минимум 10% эффективности
 }

@@ -1,0 +1,38 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-02-27T18:46:16.270Z",
+  "lastModifiedAt": "2026-02-27T18:46:16.270Z",
+  "techniques": {
+    "total": 50,
+    "byLevel": {
+      "1": 50
+    },
+    "byType": {
+      "combat": 50
+    },
+    "byElement": {
+      "water": 8,
+      "earth": 7,
+      "air": 7,
+      "lightning": 7,
+      "void": 7,
+      "neutral": 7,
+      "fire": 7
+    }
+  },
+  "formations": {
+    "total": 0,
+    "byLevel": {}
+  },
+  "items": {
+    "total": 0
+  },
+  "npcs": {
+    "total": 0
+  },
+  "fileSizeStats": {
+    "techniquesBytes": 70096,
+    "largestFileBytes": 70096,
+    "largestFileName": "/home/z/my-project/presets/techniques/level-1.json"
+  }
+}

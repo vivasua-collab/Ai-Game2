@@ -7,7 +7,8 @@
  * включая бонусы от редкости и специфичные параметры.
  */
 
-import { TechniqueType, Rarity, Element } from './technique-generator';
+import { TechniqueType, Rarity, Element, CombatSubtype } from './technique-generator';
+import { WeaponType } from './weapon-config';
 
 /**
  * Типы бонусов, которые может давать редкость
@@ -596,6 +597,397 @@ export const TECHNIQUE_TYPE_CONFIGS: Record<TechniqueType, TechniqueTypeConfig> 
     },
   },
 };
+
+/**
+ * ============================================================================
+ * КОНФИГУРАЦИЯ ПОДТИПОВ АТАКУЮЩИХ ТЕХНИК
+ * ============================================================================
+ */
+
+/**
+ * Диапазон затухания урона для дальних техник
+ */
+export interface DamageFalloff {
+  fullDamage: number;    // Дистанция полного урона (м)
+  halfDamage: number;    // Дистанция 50% урона (м)
+  max: number;           // Максимальная дистанция (м)
+}
+
+/**
+ * Конфигурация подтипа атакующей техники
+ */
+export interface CombatSubtypeConfig {
+  id: CombatSubtype;
+  name: string;
+  nameEn: string;
+  icon: string;
+  description: string;
+  
+  /**
+   * Требуется ли выбор типа оружия
+   */
+  requiresWeaponType: boolean;
+  
+  /**
+   * Базовая дальность (для melee_strike)
+   */
+  baseRange?: number;
+  
+  /**
+   * Прирост дальности за уровень редкости (м)
+   */
+  rangePerRarity?: number;
+  
+  /**
+   * Поддерживает ли дальний удар Ци для легендарных
+   */
+  canRangedQi: boolean;
+  
+  /**
+   * Имеет ли затухание урона по дистанции
+   */
+  hasDamageFalloff: boolean;
+  
+  /**
+   * Параметры для UI
+   */
+  params: TechniqueParam[];
+  
+  /**
+   * Бонусы по редкости для этого подтипа
+   */
+  bonusSlotsByRarity: Record<Rarity, BonusSlot[]>;
+  
+  /**
+   * Формула масштабирования характеристик
+   */
+  statScaling: {
+    primary: 'strength' | 'agility' | 'intelligence';
+    secondary?: 'strength' | 'agility' | 'intelligence';
+    primaryPercent: number;
+    secondaryPercent: number;
+  };
+}
+
+/**
+ * Конфигурация всех подтипов атакующих техник
+ */
+export const COMBAT_SUBTYPE_CONFIGS: Record<CombatSubtype, CombatSubtypeConfig> = {
+  melee_strike: {
+    id: 'melee_strike',
+    name: 'Удар телом',
+    nameEn: 'Body Strike',
+    icon: '👊',
+    description: 'Техники усиления тела для ближнего боя. Дальность равна диаметру тела.',
+    requiresWeaponType: false,
+    baseRange: 0.5, // Диаметр тела (0.5м)
+    rangePerRarity: 0.1, // +0.1м за уровень редкости
+    canRangedQi: false,
+    hasDamageFalloff: false,
+    params: [
+      {
+        id: 'damageBonus',
+        label: 'Бонус урона',
+        description: 'Дополнительный урон к базовому',
+        min: 0,
+        max: 50,
+        step: 5,
+        default: 0,
+        unit: '',
+      },
+      {
+        id: 'knockbackChance',
+        label: 'Шанс отбрасывания',
+        description: 'Вероятность отбросить противника',
+        min: 0,
+        max: 50,
+        step: 5,
+        default: 0,
+        unit: '%',
+      },
+    ],
+    bonusSlotsByRarity: {
+      common: [],
+      uncommon: [
+        { type: 'damage', minValue: 2, maxValue: 5, label: '+Урон', description: 'Увеличивает урон на 2-5' },
+      ],
+      rare: [
+        { type: 'damage', minValue: 3, maxValue: 8, label: '+Урон', description: 'Увеличивает урон на 3-8' },
+        { type: 'penetration', minValue: 5, maxValue: 15, label: '+Пробитие', description: 'Пробивает 5-15% защиты' },
+      ],
+      legendary: [
+        { type: 'damage', minValue: 5, maxValue: 15, label: '+Урон', description: 'Увеличивает урон на 5-15' },
+        { type: 'penetration', minValue: 10, maxValue: 25, label: '+Пробитие', description: 'Пробивает 10-25% защиты' },
+        { type: 'effectPower', minValue: 20, maxValue: 40, label: '+Оглушение', description: '20-40% шанс оглушения' },
+      ],
+    },
+    statScaling: {
+      primary: 'strength',
+      secondary: 'agility',
+      primaryPercent: 5,
+      secondaryPercent: 2.5,
+    },
+  },
+  
+  melee_weapon: {
+    id: 'melee_weapon',
+    name: 'Удар с оружием',
+    nameEn: 'Weapon Strike',
+    icon: '⚔️',
+    description: 'Техники усиления оружия. Дальность зависит от типа оружия. Легендарные могут выпускать волны Ци.',
+    requiresWeaponType: true,
+    canRangedQi: true, // Для легендарных техник
+    hasDamageFalloff: false,
+    params: [
+      {
+        id: 'damageBonus',
+        label: 'Бонус урона',
+        description: 'Дополнительный урон к базовому',
+        min: 0,
+        max: 50,
+        step: 5,
+        default: 0,
+        unit: '',
+      },
+      {
+        id: 'rangeBonus',
+        label: 'Бонус дальности',
+        description: 'Процент увеличения дальности оружия',
+        min: 0,
+        max: 50,
+        step: 5,
+        default: 0,
+        unit: '%',
+      },
+      {
+        id: 'critChanceBonus',
+        label: 'Бонус шанса крита',
+        description: 'Дополнительный шанс критического удара',
+        min: 0,
+        max: 25,
+        step: 1,
+        default: 0,
+        unit: '%',
+      },
+    ],
+    bonusSlotsByRarity: {
+      common: [],
+      uncommon: [
+        { type: 'damage', minValue: 2, maxValue: 6, label: '+Урон', description: 'Увеличивает урон на 2-6' },
+      ],
+      rare: [
+        { type: 'damage', minValue: 4, maxValue: 10, label: '+Урон', description: 'Увеличивает урон на 4-10' },
+        { type: 'critChance', minValue: 3, maxValue: 8, label: '+Шанс крита', description: 'Увеличивает шанс крита на 3-8%' },
+      ],
+      legendary: [
+        { type: 'damage', minValue: 8, maxValue: 20, label: '+Урон', description: 'Увеличивает урон на 8-20' },
+        { type: 'critChance', minValue: 5, maxValue: 15, label: '+Шанс крита', description: 'Увеличивает шанс крита на 5-15%' },
+        { type: 'penetration', minValue: 15, maxValue: 35, label: '+Пробитие', description: 'Пробивает 15-35% защиты' },
+      ],
+    },
+    statScaling: {
+      primary: 'agility',
+      secondary: 'strength',
+      primaryPercent: 5,
+      secondaryPercent: 2.5,
+    },
+  },
+  
+  ranged_projectile: {
+    id: 'ranged_projectile',
+    name: 'Снаряд',
+    nameEn: 'Projectile',
+    icon: '🎯',
+    description: 'Дистанционные техники со снарядом. Урон затухает с расстоянием.',
+    requiresWeaponType: false,
+    canRangedQi: false,
+    hasDamageFalloff: true,
+    params: [
+      {
+        id: 'projectileSpeed',
+        label: 'Скорость снаряда',
+        description: 'Скорость полёта снаряда',
+        min: 10,
+        max: 100,
+        step: 5,
+        default: 30,
+        unit: ' м/с',
+      },
+      {
+        id: 'projectileSize',
+        label: 'Размер снаряда',
+        description: 'Размер снаряда (метры)',
+        min: 0.1,
+        max: 2,
+        step: 0.1,
+        default: 0.3,
+        unit: 'м',
+      },
+      {
+        id: 'pierceCount',
+        label: 'Пробитие целей',
+        description: 'Количество пробиваемых целей',
+        min: 0,
+        max: 5,
+        step: 1,
+        default: 0,
+        unit: '',
+      },
+    ],
+    bonusSlotsByRarity: {
+      common: [],
+      uncommon: [
+        { type: 'damage', minValue: 2, maxValue: 5, label: '+Урон', description: 'Увеличивает урон на 2-5' },
+      ],
+      rare: [
+        { type: 'damage', minValue: 3, maxValue: 8, label: '+Урон', description: 'Увеличивает урон на 3-8' },
+        { type: 'range', minValue: 5, maxValue: 15, label: '+Дальность', description: 'Увеличивает дальность на 5-15м' },
+      ],
+      legendary: [
+        { type: 'damage', minValue: 5, maxValue: 15, label: '+Урон', description: 'Увеличивает урон на 5-15' },
+        { type: 'range', minValue: 10, maxValue: 30, label: '+Дальность', description: 'Увеличивает дальность на 10-30м' },
+        { type: 'penetration', minValue: 10, maxValue: 25, label: '+Пробитие', description: 'Пробивает 10-25% защиты' },
+      ],
+    },
+    statScaling: {
+      primary: 'intelligence',
+      secondary: 'agility',
+      primaryPercent: 5,
+      secondaryPercent: 2.5,
+    },
+  },
+  
+  ranged_beam: {
+    id: 'ranged_beam',
+    name: 'Луч',
+    nameEn: 'Beam',
+    icon: '💫',
+    description: 'Техники с непрерывным лучом энергии. Высокая точность, мгновенное попадание.',
+    requiresWeaponType: false,
+    canRangedQi: false,
+    hasDamageFalloff: true,
+    params: [
+      {
+        id: 'beamWidth',
+        label: 'Ширина луча',
+        description: 'Толщина луча энергии',
+        min: 0.1,
+        max: 2,
+        step: 0.1,
+        default: 0.2,
+        unit: 'м',
+      },
+      {
+        id: 'channelDuration',
+        label: 'Длительность канала',
+        description: 'Время поддержания луча',
+        min: 0.5,
+        max: 5,
+        step: 0.5,
+        default: 1,
+        unit: 'сек',
+      },
+    ],
+    bonusSlotsByRarity: {
+      common: [],
+      uncommon: [
+        { type: 'damage', minValue: 2, maxValue: 6, label: '+Урон', description: 'Увеличивает урон в секунду на 2-6' },
+      ],
+      rare: [
+        { type: 'damage', minValue: 4, maxValue: 10, label: '+Урон', description: 'Увеличивает урон в секунду на 4-10' },
+        { type: 'duration', minValue: 30, maxValue: 90, label: '+Длительность', description: 'Увеличивает длительность канала на 30-90%' },
+      ],
+      legendary: [
+        { type: 'damage', minValue: 8, maxValue: 20, label: '+Урон', description: 'Увеличивает урон в секунду на 8-20' },
+        { type: 'duration', minValue: 50, maxValue: 150, label: '+Длительность', description: 'Увеличивает длительность канала на 50-150%' },
+        { type: 'penetration', minValue: 15, maxValue: 40, label: '+Пробитие', description: 'Пробивает 15-40% защиты' },
+      ],
+    },
+    statScaling: {
+      primary: 'intelligence',
+      secondary: 'agility',
+      primaryPercent: 5,
+      secondaryPercent: 2.5,
+    },
+  },
+  
+  ranged_aoe: {
+    id: 'ranged_aoe',
+    name: 'Область',
+    nameEn: 'Area of Effect',
+    icon: '💥',
+    description: 'Техники с областью поражения. Наносят урон всем целям в зоне.',
+    requiresWeaponType: false,
+    canRangedQi: false,
+    hasDamageFalloff: false, // AoE имеет равномерный урон в зоне
+    params: [
+      {
+        id: 'aoeRadius',
+        label: 'Радиус области',
+        description: 'Радиус зоны поражения',
+        min: 2,
+        max: 20,
+        step: 1,
+        default: 5,
+        unit: 'м',
+      },
+      {
+        id: 'aoeDelay',
+        label: 'Задержка',
+        description: 'Задержка перед активацией',
+        min: 0,
+        max: 3,
+        step: 0.5,
+        default: 0,
+        unit: 'сек',
+      },
+    ],
+    bonusSlotsByRarity: {
+      common: [],
+      uncommon: [
+        { type: 'damage', minValue: 2, maxValue: 5, label: '+Урон', description: 'Увеличивает урон на 2-5' },
+      ],
+      rare: [
+        { type: 'damage', minValue: 3, maxValue: 8, label: '+Урон', description: 'Увеличивает урон на 3-8' },
+        { type: 'range', minValue: 2, maxValue: 6, label: '+Радиус', description: 'Увеличивает радиус на 2-6м' },
+      ],
+      legendary: [
+        { type: 'damage', minValue: 6, maxValue: 18, label: '+Урон', description: 'Увеличивает урон на 6-18' },
+        { type: 'range', minValue: 4, maxValue: 10, label: '+Радиус', description: 'Увеличивает радиус на 4-10м' },
+        { type: 'effectPower', minValue: 30, maxValue: 60, label: '+Замедление', description: '30-60% замедление в зоне' },
+      ],
+    },
+    statScaling: {
+      primary: 'intelligence',
+      secondary: 'agility',
+      primaryPercent: 5,
+      secondaryPercent: 2.5,
+    },
+  },
+};
+
+/**
+ * Получить конфигурацию подтипа атакующей техники
+ */
+export function getCombatSubtypeConfig(subtype: CombatSubtype): CombatSubtypeConfig {
+  return COMBAT_SUBTYPE_CONFIGS[subtype];
+}
+
+/**
+ * Получить список всех подтипов атакующих техник для UI
+ */
+export function getCombatSubtypeList(): CombatSubtypeConfig[] {
+  return Object.values(COMBAT_SUBTYPE_CONFIGS);
+}
+
+/**
+ * Вычислить дальность для melee_strike по редкости
+ */
+export function calculateMeleeStrikeRange(rarity: Rarity): number {
+  const config = COMBAT_SUBTYPE_CONFIGS.melee_strike;
+  const rarityIndex = ['common', 'uncommon', 'rare', 'legendary'].indexOf(rarity);
+  return (config.baseRange || 0.5) + (rarityIndex * (config.rangePerRarity || 0.1));
+}
 
 /**
  * Информация о редкости

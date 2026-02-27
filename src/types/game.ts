@@ -444,6 +444,49 @@ export interface Technique {
   qiCost: number;
   fatigueCost: { physical: number; mental: number };
   minCultivationLevel: number;
+  
+  // Требования к характеристикам (для изучения)
+  statRequirements?: {
+    strength?: number;
+    agility?: number;
+    intelligence?: number;
+    conductivity?: number;
+  };
+  
+  // Масштабирование от характеристик
+  statScaling?: {
+    strength?: number;      // +X% эффекта за единицу силы выше 10
+    agility?: number;
+    intelligence?: number;
+    conductivity?: number;
+  };
+  
+  // Вычисленные значения (для сгенерированных техник)
+  computed?: {
+    finalDamage: number;
+    finalQiCost: number;
+    finalRange: number;
+    finalDuration: number;
+    activeEffects?: Array<{
+      type: string;
+      value: number;
+      duration?: number;
+    }>;
+  };
+  
+  // Модификаторы (для сгенерированных техник)
+  modifiers?: {
+    effects?: Record<string, boolean>;
+    effectValues?: Record<string, number>;
+    penalties?: Record<string, number>;
+    bonuses?: Record<string, number>;
+  };
+  
+  // Дополнительные поля для combat техник
+  weaponType?: string;           // Тип оружия (для melee_weapon)
+  damageFalloff?: CombatRange;   // Затухание урона (для ranged)
+  isRangedQi?: boolean;          // Дальний удар Ци (для легендарных weapon)
+  
   effects?: {
     damage?: number;
     healing?: number;
@@ -453,10 +496,10 @@ export interface Technique {
     castSpeed?: number;       // Скорость каста
     duration?: number;
     distance?: number;
+    range?: number;           // Дальность техники
     statModifiers?: Record<string, number>;
     // === БОЕВЫЕ ТЕХНИКИ ===
     combatType?: CombatTechniqueType;     // Тип боевой техники
-    range?: CombatRange;                   // Параметры дальности
     contactRequired?: boolean;             // Требует контакта
     aoeRadius?: number;                    // Радиус AOE
     elementalEffect?: ElementalEffect;     // Элементальный эффект

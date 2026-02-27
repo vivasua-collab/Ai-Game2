@@ -121,6 +121,9 @@ export interface GenerationOptions {
     rangeMin?: number;
     rangeMax?: number;
   };
+  // Новые параметры для combat техник
+  combatSubtype?: CombatSubtype;
+  weaponType?: string;
 }
 
 /**
@@ -199,6 +202,15 @@ export interface TechniqueModifiers {
 }
 
 /**
+ * Диапазон затухания урона
+ */
+export interface DamageFalloffRange {
+  fullDamage: number;    // Дистанция полного урона (м)
+  halfDamage: number;    // Дистанция 50% урона (м)
+  max: number;           // Максимальная дистанция (м)
+}
+
+/**
  * Базовая техника
  */
 export interface BaseTechnique {
@@ -220,6 +232,10 @@ export interface BaseTechnique {
     intelligence?: number;
     conductivity?: number;
   };
+  // Новые поля для combat-техник
+  weaponType?: string;           // Тип оружия (для melee_weapon)
+  damageFalloff?: DamageFalloffRange; // Затухание урона (для ranged)
+  isRangedQi?: boolean;          // Дальний удар Ци (для легендарных weapon)
 }
 
 /**
@@ -560,6 +576,9 @@ interface TechniqueGenParams {
   rarity?: Rarity;
   damageVariance?: { min: number; max: number };
   paramBounds?: GenerationOptions['paramBounds'];
+  // Новые параметры для combat техник
+  combatSubtype?: CombatSubtype;
+  weaponType?: string;
 }
 
 function selectRarity(rng: () => number, forcedRarity?: Rarity): Rarity {
@@ -583,7 +602,26 @@ function applyDamageVariance(baseDamage: number, rng: () => number, variance?: {
   return Math.floor(baseDamage * multiplier);
 }
 
-function generateCombatTechnique(
+// ==================== ГЕНЕРАЦИЯ АТАКУЮЩИХ ТЕХНИК ПО ПОДТИПАМ ====================
+
+// Базовые значения дальности для ranged техник по уровню
+const RANGED_RANGE_BY_LEVEL: Record<number, { base: number; max: number }> = {
+  1: { base: 10, max: 20 },
+  2: { base: 15, max: 30 },
+  3: { base: 20, max: 40 },
+  4: { base: 25, max: 50 },
+  5: { base: 30, max: 60 },
+  6: { base: 35, max: 70 },
+  7: { base: 45, max: 90 },
+  8: { base: 55, max: 110 },
+  9: { base: 70, max: 140 },
+};
+
+/**
+ * Генерация техники ближнего боя (удар телом)
+ * Дальность = диаметр тела (0.5м) + 0.1м за уровень редкости
+ */
+function generateMeleeStrikeTechnique(
   id: string,
   element: Element,
   level: number,
@@ -594,16 +632,18 @@ function generateCombatTechnique(
   const baseValues = BASE_VALUES_BY_LEVEL[level] || BASE_VALUES_BY_LEVEL[1];
   const elementMult = ELEMENT_MULTIPLIERS[element];
   
-  // Выбор редкости
   const rarity = selectRarity(rng, params?.rarity);
   const rarityMult = RARITY_MULTIPLIERS[rarity];
+  const rarityIndex = ['common', 'uncommon', 'rare', 'legendary'].indexOf(rarity);
   
-  const subtypes: CombatSubtype[] = ['melee_strike', 'melee_weapon', 'ranged_projectile', 'ranged_beam', 'ranged_aoe'];
-  const subtype = subtypes[Math.floor(rng() * subtypes.length)];
+  // Дальность = диаметр тела (0.5м) + 0.1м за редкость
+  const BASE_BODY_RANGE = 0.5;
+  const RANGE_PER_RARITY = 0.1;
+  const baseRange = BASE_BODY_RANGE + (rarityIndex * RANGE_PER_RARITY);
   
-  // Базовый урон с разбросом и модификатором редкости
+  // Урон с модификаторами
   let baseDamage = applyDamageVariance(
-    baseValues.damage * elementMult.damage,
+    baseValues.damage * elementMult.damage * 1.1, // Ближний бой - чуть больше урона
     rng,
     params?.damageVariance
   );
@@ -616,37 +656,312 @@ function generateCombatTechnique(
     if (bounds.damageMax !== undefined) baseDamage = Math.min(baseDamage, bounds.damageMax);
   }
   
-  let baseQiCost = Math.floor(baseValues.qiCost * elementMult.qiCost * rarityMult.qiCostMult);
-  let baseRange = baseValues.range;
-  
-  if (params?.paramBounds) {
-    const bounds = params.paramBounds;
-    if (bounds.qiCostMin !== undefined) baseQiCost = Math.max(baseQiCost, bounds.qiCostMin);
-    if (bounds.qiCostMax !== undefined) baseQiCost = Math.min(baseQiCost, bounds.qiCostMax);
-    if (bounds.rangeMin !== undefined) baseRange = Math.max(baseRange, bounds.rangeMin);
-    if (bounds.rangeMax !== undefined) baseRange = Math.min(baseRange, bounds.rangeMax);
-  }
+  const baseQiCost = Math.floor(baseValues.qiCost * elementMult.qiCost * rarityMult.qiCostMult);
   
   const base: BaseTechnique = {
-    id, name: '', nameEn: '', type: 'combat', subtype, element, level,
+    id, name: '', nameEn: '', type: 'combat', subtype: 'melee_strike', element, level,
     baseDamage,
     baseQiCost,
     baseRange,
     baseDuration: baseValues.duration,
     minCultivationLevel: Math.max(1, level - 1),
+    statRequirements: {
+      strength: Math.floor(level * 3 + (rarityIndex * 2)),
+      agility: Math.floor(level * 1.5),
+    },
   };
   
   const modifiers = generateModifiers(base, rng, rarity);
   const computed = computeFinalValues(base, modifiers);
   const { name, nameEn } = generateName('combat', element, level, rng);
   
-  const description = `${name} — атакующая техника ${element === 'neutral' ? '' : `элемента ${element} `}уровня ${level}. ` +
-    `Редкость: ${rarity}. Базовый урон: ${baseDamage}.`;
+  const description = `${name} — техника удара телом ${element === 'neutral' ? '' : `элемента ${element} `}уровня ${level}. ` +
+    `Редкость: ${rarity}. Урон: ${baseDamage}. Дальность: ${baseRange.toFixed(1)}м.`;
   
   return {
     ...base, name, nameEn, description, rarity, modifiers, computed,
-    meta: { seed, template: `combat_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '2.1.0' },
+    meta: { seed, template: `combat_melee_strike_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '3.0.0' },
   };
+}
+
+/**
+ * Генерация техники ближнего боя с оружием
+ * Дальность = длина оружия + бонус редкости (+10% за уровень)
+ * Легендарные могут иметь дальний удар Ци
+ */
+function generateMeleeWeaponTechnique(
+  id: string,
+  element: Element,
+  level: number,
+  seed: number,
+  params?: TechniqueGenParams
+): GeneratedTechnique {
+  const rng = seededRandom(seed);
+  const baseValues = BASE_VALUES_BY_LEVEL[level] || BASE_VALUES_BY_LEVEL[1];
+  const elementMult = ELEMENT_MULTIPLIERS[element];
+  
+  const rarity = selectRarity(rng, params?.rarity);
+  const rarityMult = RARITY_MULTIPLIERS[rarity];
+  const rarityIndex = ['common', 'uncommon', 'rare', 'legendary'].indexOf(rarity);
+  
+  // Выбор типа оружия (если не указан)
+  const weaponTypes = ['sword', 'spear', 'staff', 'dagger', 'axe', 'hammer', 'whip', 'fist', 'claw', 'blade', 'halberd', 'fan'];
+  const weaponType = params?.weaponType || weaponTypes[Math.floor(rng() * weaponTypes.length)];
+  
+  // Базовая дальность оружия (по типам)
+  const weaponRanges: Record<string, { base: number; variance: number }> = {
+    sword: { base: 1.2, variance: 0.3 },
+    blade: { base: 1.0, variance: 0.2 },
+    spear: { base: 2.5, variance: 0.5 },
+    halberd: { base: 2.8, variance: 0.4 },
+    staff: { base: 1.8, variance: 0.3 },
+    dagger: { base: 0.4, variance: 0.1 },
+    claw: { base: 0.35, variance: 0.1 },
+    axe: { base: 1.0, variance: 0.2 },
+    hammer: { base: 1.2, variance: 0.2 },
+    whip: { base: 3.5, variance: 0.8 },
+    fist: { base: 0.5, variance: 0.1 },
+    fan: { base: 0.8, variance: 0.2 },
+  };
+  
+  const weaponConfig = weaponRanges[weaponType] || weaponRanges.sword;
+  const weaponBaseRange = weaponConfig.base + (rng() - 0.5) * weaponConfig.variance;
+  
+  // Бонус дальности от редкости (+10% за уровень)
+  const rarityRangeBonus = 1 + (rarityIndex * 0.1);
+  let baseRange = Math.round(weaponBaseRange * rarityRangeBonus * 100) / 100;
+  
+  // Урон с модификаторами
+  let baseDamage = applyDamageVariance(
+    baseValues.damage * elementMult.damage,
+    rng,
+    params?.damageVariance
+  );
+  baseDamage = Math.floor(baseDamage * rarityMult.damageMult);
+  
+  // Проверка на дальний удар Ци для легендарных
+  const canRangedQi = rarity === 'legendary' && 
+    ['sword', 'blade', 'spear', 'staff', 'axe', 'hammer', 'whip', 'fan', 'halberd'].includes(weaponType) &&
+    rng() > 0.4;
+  
+  let damageFalloff: DamageFalloffRange | undefined;
+  let isRangedQi = false;
+  
+  if (canRangedQi) {
+    isRangedQi = true;
+    // Волна Ци имеет затухание урона
+    const rangedRange = RANGED_RANGE_BY_LEVEL[level] || RANGED_RANGE_BY_LEVEL[1];
+    damageFalloff = {
+      fullDamage: baseRange + 5, // Ближняя зона - полный урон
+      halfDamage: rangedRange.base * 0.7,
+      max: rangedRange.base,
+    };
+    baseRange = damageFalloff.max; // Максимальная дальность техники
+    baseDamage = Math.floor(baseDamage * 0.8); // Волна Ци слабее прямого удара
+  }
+  
+  // Применение границ параметров
+  if (params?.paramBounds) {
+    const bounds = params.paramBounds;
+    if (bounds.damageMin !== undefined) baseDamage = Math.max(baseDamage, bounds.damageMin);
+    if (bounds.damageMax !== undefined) baseDamage = Math.min(baseDamage, bounds.damageMax);
+  }
+  
+  const baseQiCost = Math.floor(baseValues.qiCost * elementMult.qiCost * rarityMult.qiCostMult);
+  
+  const base: BaseTechnique = {
+    id, name: '', nameEn: '', type: 'combat', subtype: 'melee_weapon', element, level,
+    baseDamage,
+    baseQiCost,
+    baseRange,
+    baseDuration: baseValues.duration,
+    minCultivationLevel: Math.max(1, level - 1),
+    weaponType,
+    damageFalloff,
+    isRangedQi,
+    statRequirements: {
+      agility: Math.floor(level * 2.5 + (rarityIndex * 2)),
+      strength: Math.floor(level * 2),
+    },
+  };
+  
+  const modifiers = generateModifiers(base, rng, rarity);
+  const computed = computeFinalValues(base, modifiers);
+  const { name, nameEn } = generateName('combat', element, level, rng);
+  
+  let description = `${name} — техника владения ${weaponType} ${element === 'neutral' ? '' : `элемента ${element} `}уровня ${level}. ` +
+    `Редкость: ${rarity}. Урон: ${baseDamage}. Дальность: ${baseRange.toFixed(1)}м.`;
+  
+  if (isRangedQi) {
+    description += ` ⚡ Легендарная способность: волна Ци до ${damageFalloff?.max}м.`;
+  }
+  
+  return {
+    ...base, name, nameEn, description, rarity, modifiers, computed,
+    meta: { seed, template: `combat_melee_weapon_${weaponType}_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '3.0.0' },
+  };
+}
+
+/**
+ * Генерация дальнобойной техники
+ * Система затухания урона по дистанции
+ */
+function generateRangedTechnique(
+  id: string,
+  element: Element,
+  level: number,
+  seed: number,
+  params?: TechniqueGenParams,
+  subtype?: 'ranged_projectile' | 'ranged_beam' | 'ranged_aoe'
+): GeneratedTechnique {
+  const rng = seededRandom(seed);
+  const baseValues = BASE_VALUES_BY_LEVEL[level] || BASE_VALUES_BY_LEVEL[1];
+  const rangedRange = RANGED_RANGE_BY_LEVEL[level] || RANGED_RANGE_BY_LEVEL[1];
+  const elementMult = ELEMENT_MULTIPLIERS[element];
+  
+  const rarity = selectRarity(rng, params?.rarity);
+  const rarityMult = RARITY_MULTIPLIERS[rarity];
+  const rarityIndex = ['common', 'uncommon', 'rare', 'legendary'].indexOf(rarity);
+  
+  // Определяем подтип если не указан
+  const actualSubtype = subtype || params?.combatSubtype || 
+    (['ranged_projectile', 'ranged_beam', 'ranged_aoe'] as const)[Math.floor(rng() * 3)];
+  
+  // Базовый урон (дальние техники обычно слабее на единицу расстояния)
+  let baseDamage = applyDamageVariance(
+    baseValues.damage * elementMult.damage * 0.9,
+    rng,
+    params?.damageVariance
+  );
+  baseDamage = Math.floor(baseDamage * rarityMult.damageMult);
+  
+  // Специфичные модификаторы для подтипов
+  let baseRange = rangedRange.base;
+  let aoeRadius = 0;
+  let projectileSpeed = 30;
+  let beamWidth = 0.2;
+  
+  switch (actualSubtype) {
+    case 'ranged_projectile':
+      // Снаряд - стандартный урон, средняя дальность
+      baseRange = rangedRange.base;
+      projectileSpeed = 20 + level * 5 + rng() * 20;
+      break;
+    case 'ranged_beam':
+      // Луч - чуть меньше урона, но мгновенный
+      baseDamage = Math.floor(baseDamage * 0.85);
+      baseRange = rangedRange.base * 1.2; // Луч имеет большую дальность
+      beamWidth = 0.1 + rng() * 0.3;
+      break;
+    case 'ranged_aoe':
+      // AoE - меньше урона, но по площади
+      baseDamage = Math.floor(baseDamage * 0.7);
+      baseRange = rangedRange.base * 0.8;
+      aoeRadius = 2 + level * 0.5 + rarityIndex * 0.5;
+      break;
+  }
+  
+  // Бонус дальности от редкости (+15% за уровень для ranged)
+  baseRange = Math.round(baseRange * (1 + rarityIndex * 0.15) * 100) / 100;
+  
+  // Система затухания урона
+  const damageFalloff: DamageFalloffRange = {
+    fullDamage: Math.round(baseRange * 0.5), // Первая половина - полный урон
+    halfDamage: Math.round(baseRange * 0.75), // 50% урона
+    max: baseRange, // Максимальная дистанция
+  };
+  
+  // Применение границ параметров
+  if (params?.paramBounds) {
+    const bounds = params.paramBounds;
+    if (bounds.damageMin !== undefined) baseDamage = Math.max(baseDamage, bounds.damageMin);
+    if (bounds.damageMax !== undefined) baseDamage = Math.min(baseDamage, bounds.damageMax);
+    if (bounds.rangeMin !== undefined) baseRange = Math.max(baseRange, bounds.rangeMin);
+    if (bounds.rangeMax !== undefined) baseRange = Math.min(baseRange, bounds.rangeMax);
+  }
+  
+  const baseQiCost = Math.floor(baseValues.qiCost * elementMult.qiCost * rarityMult.qiCostMult);
+  
+  const base: BaseTechnique = {
+    id, name: '', nameEn: '', type: 'combat', subtype: actualSubtype, element, level,
+    baseDamage,
+    baseQiCost,
+    baseRange,
+    baseDuration: actualSubtype === 'ranged_beam' ? 1 + level * 0.2 : 0,
+    damageFalloff,
+    statRequirements: {
+      intelligence: Math.floor(level * 3 + (rarityIndex * 2)),
+      agility: Math.floor(level * 1.5),
+    },
+  };
+  
+  const modifiers = generateModifiers(base, rng, rarity);
+  
+  // Добавляем специфичные эффекты
+  if (actualSubtype === 'ranged_aoe') {
+    modifiers.effects.aoe = true;
+    modifiers.effectValues.aoeRadius = aoeRadius;
+  }
+  
+  const computed = computeFinalValues(base, modifiers);
+  const { name, nameEn } = generateName('combat', element, level, rng);
+  
+  const subtypeNames: Record<string, string> = {
+    ranged_projectile: 'снарядная',
+    ranged_beam: 'лучевая',
+    ranged_aoe: 'площадная',
+  };
+  
+  let description = `${name} — ${subtypeNames[actualSubtype]} техника ${element === 'neutral' ? '' : `элемента ${element} `}уровня ${level}. ` +
+    `Редкость: ${rarity}. Урон: ${baseDamage}. Дальность: ${baseRange}м.`;
+  
+  if (actualSubtype === 'ranged_aoe') {
+    description += ` Радиус: ${aoeRadius.toFixed(1)}м.`;
+  }
+  
+  description += ` Затухание: полный урон до ${damageFalloff.fullDamage}м, 50% до ${damageFalloff.halfDamage}м.`;
+  
+  return {
+    ...base, name, nameEn, description, rarity, modifiers, computed,
+    meta: { seed, template: `combat_${actualSubtype}_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '3.0.0' },
+  };
+}
+
+/**
+ * Главная функция генерации атакующей техники
+ * Маршрутизирует по подтипам
+ */
+function generateCombatTechnique(
+  id: string,
+  element: Element,
+  level: number,
+  seed: number,
+  params?: TechniqueGenParams
+): GeneratedTechnique {
+  const rng = seededRandom(seed);
+  
+  // Если указан конкретный подтип, используем его
+  let subtype = params?.combatSubtype;
+  
+  // Иначе выбираем случайно
+  if (!subtype) {
+    const subtypes: CombatSubtype[] = ['melee_strike', 'melee_weapon', 'ranged_projectile', 'ranged_beam', 'ranged_aoe'];
+    subtype = subtypes[Math.floor(rng() * subtypes.length)];
+  }
+  
+  // Маршрутизация по подтипу
+  switch (subtype) {
+    case 'melee_strike':
+      return generateMeleeStrikeTechnique(id, element, level, seed, params);
+    case 'melee_weapon':
+      return generateMeleeWeaponTechnique(id, element, level, seed, params);
+    case 'ranged_projectile':
+    case 'ranged_beam':
+    case 'ranged_aoe':
+      return generateRangedTechnique(id, element, level, seed, params, subtype);
+    default:
+      return generateMeleeStrikeTechnique(id, element, level, seed, params);
+  }
 }
 
 function generateDefenseTechnique(
@@ -1173,6 +1488,8 @@ export function generateTechniquesWithOptions(options: GenerationOptions, idGene
           rarity: options.rarity,
           damageVariance: options.damageVariance,
           paramBounds: options.paramBounds,
+          combatSubtype: options.combatSubtype,
+          weaponType: options.weaponType,
         };
         
         const technique = generateTechnique(id, type, element, level, undefined, params);

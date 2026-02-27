@@ -299,7 +299,11 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
   // Эффективность техники
   const effectiveness = useMemo(() => {
     if (!character || !selectedTechnique) return 1;
-    return calculateTechniqueEffectiveness(selectedTechnique.technique as any, character as any);
+    return calculateTechniqueEffectiveness(
+      selectedTechnique.technique as any, 
+      character as any,
+      selectedTechnique.mastery // Передаём мастерство из CharacterTechnique
+    );
   }, [character, selectedTechnique]);
 
   // Использование техники (только формации!)
@@ -650,28 +654,111 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
                       
                       {/* Параметры */}
                       <div className="bg-slate-700/50 rounded-lg p-3 space-y-2">
+                        {/* Подтип техники */}
+                        {selectedTechnique.technique.subtype && (
+                          <div className="flex justify-between text-sm">
+                            <span className="text-slate-400">Тип атаки:</span>
+                            <span className="text-amber-300">
+                              {selectedTechnique.technique.subtype === 'melee_strike' ? '👊 Удар телом' :
+                               selectedTechnique.technique.subtype === 'melee_weapon' ? '⚔️ Удар оружием' :
+                               selectedTechnique.technique.subtype === 'ranged_projectile' ? '🎯 Снаряд' :
+                               selectedTechnique.technique.subtype === 'ranged_beam' ? '⚡ Луч' :
+                               selectedTechnique.technique.subtype === 'ranged_aoe' ? '💥 По площади' :
+                               selectedTechnique.technique.subtype}
+                            </span>
+                          </div>
+                        )}
+                        
+                        {/* Тип оружия */}
+                        {selectedTechnique.technique.weaponType && (
+                          <div className="flex justify-between text-sm">
+                            <span className="text-slate-400">Оружие:</span>
+                            <span className="text-purple-300">{selectedTechnique.technique.weaponType}</span>
+                          </div>
+                        )}
+                        
                         <div className="flex justify-between text-sm">
                           <span className="text-slate-400">Уровень:</span>
                           <span className="text-white">{selectedTechnique.technique.level}</span>
                         </div>
+                        
                         <div className="flex justify-between text-sm">
                           <span className="text-slate-400">Затраты Ци:</span>
                           <span className="text-cyan-400">{selectedTechnique.technique.qiCost}</span>
                         </div>
-                        {selectedTechnique.technique.effects?.damage && (
+                        
+                        {/* Урон из effects или computed */}
+                        {(selectedTechnique.technique.effects?.damage ?? selectedTechnique.technique.computed?.finalDamage) && (
                           <div className="flex justify-between text-sm">
                             <span className="text-slate-400">Урон:</span>
-                            <span className="text-red-400">{selectedTechnique.technique.effects.damage}</span>
+                            <span className="text-red-400">
+                              {selectedTechnique.technique.computed?.finalDamage ?? selectedTechnique.technique.effects?.damage}
+                            </span>
                           </div>
                         )}
+                        
+                        {/* Дальность */}
+                        {(selectedTechnique.technique.effects?.range ?? selectedTechnique.technique.computed?.finalRange) && (
+                          <div className="flex justify-between text-sm">
+                            <span className="text-slate-400">Дальность:</span>
+                            <span className="text-blue-300">
+                              {(selectedTechnique.technique.computed?.finalRange ?? selectedTechnique.technique.effects?.range)?.toFixed(1)}м
+                            </span>
+                          </div>
+                        )}
+                        
+                        {/* Дальний удар Ци для легендарных */}
+                        {selectedTechnique.technique.isRangedQi && (
+                          <div className="flex justify-between text-sm">
+                            <span className="text-slate-400">⚡ Волна Ци:</span>
+                            <span className="text-amber-400">Да</span>
+                          </div>
+                        )}
+                        
                         <div className="flex justify-between text-sm">
                           <span className="text-slate-400">Эффективность:</span>
                           <span className="text-green-400">{Math.round(effectiveness * 100)}%</span>
                         </div>
+                        
                         <div className="flex justify-between text-sm">
                           <span className="text-slate-400">Мастерство:</span>
                           <span className="text-amber-400">{selectedTechnique.mastery}%</span>
                         </div>
+                        
+                        {/* Требования к характеристикам */}
+                        {selectedTechnique.technique.statRequirements && (
+                          <div className="border-t border-slate-600 pt-2 mt-2">
+                            <span className="text-xs text-slate-500 block mb-1">Требования:</span>
+                            <div className="flex flex-wrap gap-2">
+                              {selectedTechnique.technique.statRequirements.strength && (
+                                <Badge variant="outline" className="text-xs">Сила: {selectedTechnique.technique.statRequirements.strength}</Badge>
+                              )}
+                              {selectedTechnique.technique.statRequirements.agility && (
+                                <Badge variant="outline" className="text-xs">Ловкость: {selectedTechnique.technique.statRequirements.agility}</Badge>
+                              )}
+                              {selectedTechnique.technique.statRequirements.intelligence && (
+                                <Badge variant="outline" className="text-xs">Интеллект: {selectedTechnique.technique.statRequirements.intelligence}</Badge>
+                              )}
+                              {selectedTechnique.technique.statRequirements.conductivity && (
+                                <Badge variant="outline" className="text-xs">Проводимость: {selectedTechnique.technique.statRequirements.conductivity}</Badge>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                        
+                        {/* Активные эффекты */}
+                        {selectedTechnique.technique.computed?.activeEffects && selectedTechnique.technique.computed.activeEffects.length > 0 && (
+                          <div className="border-t border-slate-600 pt-2 mt-2">
+                            <span className="text-xs text-slate-500 block mb-1">Активные эффекты:</span>
+                            <div className="flex flex-wrap gap-1">
+                              {selectedTechnique.technique.computed.activeEffects.map((effect, idx) => (
+                                <Badge key={idx} variant="outline" className="text-xs border-green-500 text-green-400">
+                                  {effect.type}: {effect.value}{effect.duration ? ` (${effect.duration}с)` : ''}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                       
                       {/* Информация о слотах */}

@@ -346,7 +346,8 @@ model Technique {
   description String
   
   // === Классификация ===
-  type     String  // combat, cultivation, support, movement, sensory, healing
+  type     String  // combat, cultivation, support, movement, sensory, healing, defense, curse, poison
+  subtype  String? // melee_strike, melee_weapon, ranged_projectile, ranged_beam, ranged_aoe, shield, barrier...
   element  String  // fire, water, earth, air, void, neutral
   rarity   String  // common, uncommon, rare, legendary
   level    Int     @default(1) // Текущий уровень техники (1-9)
@@ -369,10 +370,20 @@ model Technique {
   statScaling String? // { strength, agility, intelligence, conductivity }
   
   // === Эффекты (JSON) ===
-  effects String? // { damage, healing, qiRegen, duration, statModifiers }
+  effects String? // { damage, healing, qiRegen, duration, statModifiers, combatType, range... }
+  
+  // === Вычисленные значения (JSON) ===
+  computedValues String? // { finalDamage, finalQiCost, finalRange, finalDuration, activeEffects }
+  
+  // === Модификаторы (JSON) ===
+  modifiers String? // { effects: {}, effectValues: {}, penalties: {}, bonuses: {} }
+  
+  // === Дополнительные поля для combat техник ===
+  weaponType   String?  // Тип оружия (для melee_weapon)
+  isRangedQi   Boolean  @default(false)  // Дальний удар Ци (для легендарных weapon)
   
   // === Источник ===
-  source String @default("created") // preset, npc, scroll, insight, created
+  source String @default("created") // preset, npc, scroll, insight, created, generated
   
   // Связи
   characterTechniques CharacterTechnique[]
