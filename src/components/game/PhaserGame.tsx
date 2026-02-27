@@ -55,6 +55,7 @@ const DAMAGE_COLORS: Record<string, string> = {
   air: '#CCCCCC',
   lightning: '#FFFF44',
   void: '#9944FF',
+  healing: '#44FF44',
 };
 
 // ============================================
@@ -103,59 +104,162 @@ let globalOnUseTechnique: ((techniqueId: string, rotation: number, playerX: numb
 // ============================================
 
 /**
- * Create player texture with direction indicator
+ * Create player texture with clear front/back distinction
+ * Front = face with eyes, Back = darker with hair/bun
  */
 function createPlayerTexture(scene: Phaser.Scene): void {
   const graphics = scene.make.graphics({ x: 0, y: 0 });
   const size = PLAYER_SIZE;
-  const cx = size + 8;
-  const cy = size + 8;
+  const cx = size + 12;
+  const cy = size + 12;
+  const textureSize = size * 2 + 24;
 
-  // Body (circle)
-  graphics.fillStyle(0x4ade80);
+  // === ROBE/BODY (main circle) ===
+  // Outer robe with gradient effect
+  graphics.fillStyle(0x2d5a3d);  // Dark green outer
   graphics.fillCircle(cx, cy, size);
-  
-  // Inner circle (darker)
-  graphics.fillStyle(0x22c55e);
-  graphics.fillCircle(cx, cy, size * 0.6);
-  
-  // Direction indicator (arrow pointing right by default)
-  graphics.fillStyle(0xFFFFFF);
+
+  // Inner robe (lighter)
+  graphics.fillStyle(0x3d7a5d);
+  graphics.fillCircle(cx, cy, size * 0.85);
+
+  // === BACK INDICATOR (darker area on back side) ===
+  // Semi-circle on the back (left side when facing right)
+  graphics.fillStyle(0x1d3a2d);
   graphics.beginPath();
-  graphics.moveTo(cx + size + 4, cy);        // Tip of arrow
-  graphics.lineTo(cx + size - 6, cy - 6);    // Top corner
-  graphics.lineTo(cx + size - 6, cy + 6);    // Bottom corner
+  graphics.arc(cx, cy, size * 0.7, Math.PI * 0.6, Math.PI * 1.4, false);
   graphics.closePath();
   graphics.fillPath();
 
-  graphics.generateTexture('player', size * 2 + 16, size * 2 + 16);
+  // === FRONT INDICATOR (face area) ===
+  // Face oval (facing right = front)
+  graphics.fillStyle(0xf5deb3);  // Skin tone
+  graphics.fillEllipse(cx + size * 0.35, cy, size * 0.5, size * 0.6);
+
+  // === FACE DETAILS ===
+  // Eye
+  graphics.fillStyle(0x000000);
+  graphics.fillCircle(cx + size * 0.45, cy - size * 0.08, size * 0.08);
+
+  // Eye highlight
+  graphics.fillStyle(0xFFFFFF);
+  graphics.fillCircle(cx + size * 0.48, cy - size * 0.1, size * 0.03);
+
+  // Eyebrow
+  graphics.lineStyle(2, 0x4a3728);
+  graphics.beginPath();
+  graphics.moveTo(cx + size * 0.35, cy - size * 0.2);
+  graphics.lineTo(cx + size * 0.55, cy - size * 0.18);
+  graphics.strokePath();
+
+  // === HAIR (top and back) ===
+  graphics.fillStyle(0x1a1a2e);
+  graphics.beginPath();
+  graphics.arc(cx, cy, size * 0.75, Math.PI * 1.6, Math.PI * 0.4, false);
+  graphics.closePath();
+  graphics.fillPath();
+
+  // Hair bun (cultivator style)
+  graphics.fillStyle(0x1a1a2e);
+  graphics.fillCircle(cx - size * 0.1, cy - size * 0.65, size * 0.25);
+
+  // === QI GLOW (subtle aura) ===
+  graphics.lineStyle(2, 0x4ade80, 0.5);
+  graphics.beginPath();
+  graphics.arc(cx, cy, size + 2, 0, Math.PI * 2);
+  graphics.strokePath();
+
+  // === DIRECTION ARROW (subtle, shows attack direction) ===
+  graphics.fillStyle(0x4ade80);
+  graphics.beginPath();
+  graphics.moveTo(cx + size + 6, cy);        // Tip
+  graphics.lineTo(cx + size - 2, cy - 5);    // Top
+  graphics.lineTo(cx + size - 2, cy + 5);    // Bottom
+  graphics.closePath();
+  graphics.fillPath();
+
+  graphics.generateTexture('player', textureSize, textureSize);
   graphics.destroy();
 }
 
 /**
- * Create target (straw dummy) texture
+ * Create target (straw dummy) texture - more detailed cultivator training dummy
  */
 function createTargetTexture(scene: Phaser.Scene): void {
   const graphics = scene.make.graphics({ x: 0, y: 0 });
-  const size = 32;
+  const width = 48;
+  const height = 80;
 
-  // Post (vertical pole)
-  graphics.fillStyle(0x8B4513);
-  graphics.fillRect(size / 2 - 3, 0, 6, size * 2);
+  // === WOODEN POST BASE ===
+  graphics.fillStyle(0x5c4033);
+  graphics.fillRect(width / 2 - 5, height * 0.6, 10, height * 0.4);
 
-  // Body (straw bundle)
-  graphics.fillStyle(0xDAA520);
-  graphics.fillCircle(size / 2, size * 0.5, size * 0.6);
-  
-  // Head
-  graphics.fillStyle(0xDEB887);
-  graphics.fillCircle(size / 2, size * 0.15, size * 0.25);
+  // Base platform
+  graphics.fillStyle(0x4a3728);
+  graphics.fillEllipse(width / 2, height * 0.95, 30, 8);
 
-  // Arms (horizontal bar)
-  graphics.fillStyle(0x8B4513);
-  graphics.fillRect(0, size * 0.5, size, 4);
+  // === STRAW BODY ===
+  // Main body (straw bundle)
+  graphics.fillStyle(0xdaa520);
+  graphics.fillEllipse(width / 2, height * 0.45, 22, 28);
 
-  graphics.generateTexture('target', size, size * 2);
+  // Straw texture lines
+  graphics.lineStyle(1, 0xb8860b);
+  for (let i = 0; i < 5; i++) {
+    const y = height * 0.3 + i * 6;
+    graphics.beginPath();
+    graphics.moveTo(width / 2 - 18, y);
+    graphics.lineTo(width / 2 + 18, y);
+    graphics.strokePath();
+  }
+
+  // === HEAD ===
+  graphics.fillStyle(0xdeb887);
+  graphics.fillCircle(width / 2, height * 0.18, 12);
+
+  // Face markings (target circles)
+  graphics.lineStyle(2, 0x8b0000);
+  graphics.beginPath();
+  graphics.arc(width / 2, height * 0.18, 6, 0, Math.PI * 2);
+  graphics.strokePath();
+
+  graphics.lineStyle(1, 0x8b0000);
+  graphics.beginPath();
+  graphics.arc(width / 2, height * 0.18, 3, 0, Math.PI * 2);
+  graphics.strokePath();
+
+  // === ARMS (horizontal bar) ===
+  graphics.fillStyle(0x5c4033);
+  graphics.fillRect(width / 2 - 24, height * 0.4, 48, 6);
+
+  // Arm end caps
+  graphics.fillStyle(0x8b4513);
+  graphics.fillCircle(width / 2 - 24, height * 0.43, 5);
+  graphics.fillCircle(width / 2 + 24, height * 0.43, 5);
+
+  // === VITAL POINT MARKERS ===
+  // Head vital point
+  graphics.fillStyle(0xff4444);
+  graphics.fillCircle(width / 2, height * 0.18, 2);
+
+  // Chest vital point
+  graphics.fillStyle(0xff4444);
+  graphics.fillCircle(width / 2, height * 0.4, 2);
+
+  // === WORN/USED EFFECTS ===
+  // Some straw pieces sticking out
+  graphics.lineStyle(2, 0xdaa520);
+  graphics.beginPath();
+  graphics.moveTo(width / 2 - 10, height * 0.35);
+  graphics.lineTo(width / 2 - 15, height * 0.28);
+  graphics.strokePath();
+
+  graphics.beginPath();
+  graphics.moveTo(width / 2 + 8, height * 0.5);
+  graphics.lineTo(width / 2 + 14, height * 0.55);
+  graphics.strokePath();
+
+  graphics.generateTexture('target', width, height);
   graphics.destroy();
 }
 
@@ -166,14 +270,14 @@ function createTarget(scene: Phaser.Scene, x: number, y: number, id: string): Tr
   const container = scene.add.container(x, y);
   container.setDepth(5);
 
-  // Target sprite
-  const sprite = scene.add.image(0, 16, 'target');
+  // Target sprite (texture is 48x80, anchor at bottom center)
+  const sprite = scene.add.image(0, -40, 'target').setOrigin(0.5, 1);
   container.add(sprite);
 
   // HP bar background
   const hpBarBg = scene.add.graphics();
   hpBarBg.fillStyle(0x000000, 0.7);
-  hpBarBg.fillRect(-20, -20, 40, 6);
+  hpBarBg.fillRect(-25, -100, 50, 8);
   container.add(hpBarBg);
 
   // HP bar
@@ -181,9 +285,10 @@ function createTarget(scene: Phaser.Scene, x: number, y: number, id: string): Tr
   container.add(hpBar);
 
   // Target label
-  const label = scene.add.text(0, -35, 'Соломенное чучело', {
-    fontSize: '10px',
+  const label = scene.add.text(0, -115, '🎯 Соломенное чучело', {
+    fontSize: '11px',
     color: '#fbbf24',
+    fontFamily: 'Arial',
   }).setOrigin(0.5);
   container.add(label);
 
@@ -225,7 +330,7 @@ function updateTargetHpBar(target: TrainingTarget): void {
   target.hpBar.clear();
   
   const hpPercent = target.hp / target.maxHp;
-  const barWidth = 38 * hpPercent;
+  const barWidth = 48 * hpPercent;
   
   // Color based on HP
   let color = 0x22c55e; // Green
@@ -234,7 +339,7 @@ function updateTargetHpBar(target: TrainingTarget): void {
   else if (hpPercent < 0.75) color = 0xeab308; // Yellow
 
   target.hpBar.fillStyle(color);
-  target.hpBar.fillRect(-19, -19, barWidth, 4);
+  target.hpBar.fillRect(-24, -99, barWidth, 6);
 }
 
 /**
@@ -249,20 +354,21 @@ function showDamageNumber(
 ): void {
   const color = DAMAGE_COLORS[type] || DAMAGE_COLORS.normal;
   const isCrit = type === 'critical';
+  const isHeal = type === 'healing';
   
-  const text = scene.add.text(x, y - 20, damage.toString(), {
-    fontSize: isCrit ? '20px' : '16px',
+  const text = scene.add.text(x, y, damage.toString(), {
+    fontSize: isCrit ? '24px' : '18px',
     fontFamily: 'Arial',
     color: color,
     fontStyle: 'bold',
     stroke: '#000000',
-    strokeThickness: 2,
+    strokeThickness: 3,
   }).setOrigin(0.5).setDepth(200);
 
   const damageNum: DamageNumber = {
     id: `dmg_${Date.now()}_${Math.random()}`,
     x,
-    y: y - 20,
+    y,
     damage,
     type,
     text,
@@ -274,10 +380,10 @@ function showDamageNumber(
   // Animate: float up and fade
   scene.tweens.add({
     targets: text,
-    y: y - 60,
+    y: y - 50,
     alpha: 0,
-    scale: isCrit ? 1.5 : 1.2,
-    duration: 1000,
+    scale: isCrit ? 1.8 : (isHeal ? 1.0 : 1.3),
+    duration: 1200,
     ease: 'Power2',
     onComplete: () => {
       text.destroy();
@@ -301,16 +407,23 @@ function damageTarget(
   // Update HP bar
   updateTargetHpBar(target);
 
-  // Show damage number
-  showDamageNumber(scene, target.x, target.y - 30, damage, type);
+  // Show damage number (positioned above the target)
+  showDamageNumber(scene, target.x, target.y - 90, damage, type);
 
   // Flash effect
   if (target.sprite) {
     const sprite = target.sprite.getAt(0) as Phaser.GameObjects.Image;
     if (sprite && sprite.setTint) {
-      sprite.setTint(0xff0000);
-      scene.time.delayedCall(100, () => {
-        sprite.clearTint();
+      sprite.setTint(0xff4444);
+      scene.tweens.add({
+        targets: sprite,
+        alpha: 0.7,
+        duration: 50,
+        yoyo: true,
+        onComplete: () => {
+          sprite.clearTint();
+          sprite.setAlpha(1);
+        },
       });
     }
   }
@@ -320,14 +433,14 @@ function damageTarget(
     scene.time.delayedCall(500, () => {
       target.hp = target.maxHp;
       updateTargetHpBar(target);
-      showDamageNumber(scene, target.x, target.y - 30, 0, 'healing');
+      showDamageNumber(scene, target.x, target.y - 90, 1000, 'healing');
       
       // Respawn message
       if (target.sprite) {
         const label = target.sprite.getAt(3) as Phaser.GameObjects.Text;
         if (label) {
-          const originalText = label.text;
-          label.setText('Восстановлено!');
+          const originalText = '🎯 Соломенное чучело';
+          label.setText('✅ Восстановлено!');
           label.setColor('#22c55e');
           scene.time.delayedCall(1500, () => {
             label.setText(originalText);
@@ -372,6 +485,22 @@ function isInAttackCone(
 }
 
 /**
+ * Get element color for visual effects
+ */
+function getElementColor(element: string): number {
+  const colors: Record<string, number> = {
+    fire: 0xff6622,
+    water: 0x4488ff,
+    earth: 0x886622,
+    air: 0xaaccff,
+    lightning: 0xffff00,
+    void: 0x9944ff,
+    neutral: 0x4ade80,
+  };
+  return colors[element] || colors.neutral;
+}
+
+/**
  * Use technique in direction
  */
 function useTechniqueInDirection(
@@ -385,36 +514,94 @@ function useTechniqueInDirection(
   const range = (techniqueData.range || 2) * METERS_TO_PIXELS;
   const damage = techniqueData.damage || 10;
   const element = techniqueData.element || 'neutral';
+  const techniqueType = techniqueData.type || 'combat';
 
-  // Visual effect: beam/projectile
-  const beamLength = range;
   const rad = playerRotation * Math.PI / 180;
-  const endX = playerX + Math.cos(rad) * beamLength;
-  const endY = playerY + Math.sin(rad) * beamLength;
+  const endX = playerX + Math.cos(rad) * range;
+  const endY = playerY + Math.sin(rad) * range;
+  const elementColor = getElementColor(element);
 
-  // Draw beam
-  const beam = scene.add.graphics();
-  beam.lineStyle(3, 0x4ade80, 0.8);
-  beam.beginPath();
-  beam.moveTo(playerX, playerY);
-  beam.lineTo(endX, endY);
-  beam.strokePath();
-  beam.setDepth(15);
+  // === VISUAL EFFECTS BASED ON TECHNIQUE TYPE ===
+  
+  if (techniqueType === 'ranged_beam' || techniqueType === 'ranged_projectile') {
+    // Beam effect
+    const beam = scene.add.graphics();
+    beam.lineStyle(4, elementColor, 0.9);
+    beam.beginPath();
+    beam.moveTo(playerX, playerY);
+    beam.lineTo(endX, endY);
+    beam.strokePath();
+    beam.setDepth(15);
 
-  // Fade out beam
-  scene.tweens.add({
-    targets: beam,
-    alpha: 0,
-    duration: 300,
-    onComplete: () => beam.destroy(),
-  });
+    // Glow effect
+    beam.lineStyle(8, elementColor, 0.3);
+    beam.beginPath();
+    beam.moveTo(playerX, playerY);
+    beam.lineTo(endX, endY);
+    beam.strokePath();
+
+    // Impact point
+    const impact = scene.add.circle(endX, endY, 10, elementColor, 0.7);
+    impact.setDepth(16);
+
+    scene.tweens.add({
+      targets: [beam, impact],
+      alpha: 0,
+      scale: 1.5,
+      duration: 400,
+      onComplete: () => {
+        beam.destroy();
+        impact.destroy();
+      },
+    });
+  } else {
+    // Melee/Combat - cone effect
+    const cone = scene.add.graphics();
+    const coneAngle = 60 * Math.PI / 180; // 60 degree cone
+    const coneRadius = range;
+
+    cone.fillStyle(elementColor, 0.3);
+    cone.beginPath();
+    cone.moveTo(playerX, playerY);
+    cone.arc(playerX, playerY, coneRadius, rad - coneAngle / 2, rad + coneAngle / 2, false);
+    cone.closePath();
+    cone.fillPath();
+    cone.setDepth(15);
+
+    // Edge line
+    cone.lineStyle(2, elementColor, 0.8);
+    cone.beginPath();
+    cone.moveTo(playerX, playerY);
+    cone.lineTo(playerX + Math.cos(rad - coneAngle / 2) * coneRadius, playerY + Math.sin(rad - coneAngle / 2) * coneRadius);
+    cone.moveTo(playerX, playerY);
+    cone.lineTo(playerX + Math.cos(rad + coneAngle / 2) * coneRadius, playerY + Math.sin(rad + coneAngle / 2) * coneRadius);
+    cone.strokePath();
+
+    scene.tweens.add({
+      targets: cone,
+      alpha: 0,
+      duration: 300,
+      onComplete: () => cone.destroy(),
+    });
+  }
 
   // Check each target
   for (const target of globalTargets) {
     if (isInAttackCone(playerX, playerY, playerRotation, target.x, target.y, 60, range)) {
       // Hit!
-      const isCrit = Math.random() < 0.1; // 10% crit chance
+      const isCrit = Math.random() < 0.15; // 15% crit chance
       const finalDamage = isCrit ? Math.floor(damage * 1.5) : damage;
+      
+      // Hit effect on target position
+      const hitEffect = scene.add.circle(target.x, target.y - 40, 15, elementColor, 0.8);
+      hitEffect.setDepth(200);
+      scene.tweens.add({
+        targets: hitEffect,
+        scale: 2,
+        alpha: 0,
+        duration: 300,
+        onComplete: () => hitEffect.destroy(),
+      });
       
       damageTarget(scene, target, finalDamage, isCrit ? 'critical' : element);
     }
