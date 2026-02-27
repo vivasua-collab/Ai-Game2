@@ -775,6 +775,94 @@ const GameSceneConfig = {
     uiContainer.add(worldTimeText);
     scene.data.set('worldTimeText', worldTimeText);
 
+    // === HP BAR (under time) ===
+    const hpBarContainer = scene.add.container(10, 85);
+    hpBarContainer.setScrollFactor(0);
+    uiContainer.add(hpBarContainer);
+
+    const hpBarBg = scene.add.graphics();
+    hpBarBg.fillStyle(0x000000, 0.7);
+    hpBarBg.fillRect(0, 0, 120, 16);
+    hpBarContainer.add(hpBarBg);
+
+    const hpBarFill = scene.add.graphics();
+    hpBarContainer.add(hpBarFill);
+    scene.data.set('hpBarFill', hpBarFill);
+
+    const hpLabel = scene.add.text(5, 2, '❤️ HP: 100%', {
+      fontSize: '11px',
+      color: '#ffffff',
+      fontFamily: 'Arial',
+    });
+    hpBarContainer.add(hpLabel);
+    scene.data.set('hpLabel', hpLabel);
+
+    // === QI BAR (under HP) ===
+    const qiBarContainer = scene.add.container(10, 105);
+    qiBarContainer.setScrollFactor(0);
+    uiContainer.add(qiBarContainer);
+
+    const qiBarBg = scene.add.graphics();
+    qiBarBg.fillStyle(0x000000, 0.7);
+    qiBarBg.fillRect(0, 0, 120, 16);
+    qiBarContainer.add(qiBarBg);
+
+    const qiBarFill = scene.add.graphics();
+    qiBarContainer.add(qiBarFill);
+    scene.data.set('qiBarFill', qiBarFill);
+
+    const qiLabel = scene.add.text(5, 2, '✨ Ци: 100/100', {
+      fontSize: '11px',
+      color: '#ffffff',
+      fontFamily: 'Arial',
+    });
+    qiBarContainer.add(qiLabel);
+    scene.data.set('qiLabel', qiLabel);
+
+    // Function to update HP/Qi bars
+    const updateStatusBars = () => {
+      const char = globalCharacter;
+      if (!char) return;
+
+      // HP
+      const hpPercent = Math.max(0, Math.min(100, char.health || 100));
+      const hpBar = scene.data.get('hpBarFill') as Phaser.GameObjects.Graphics;
+      const hpLabelText = scene.data.get('hpLabel') as Phaser.GameObjects.Text;
+      
+      if (hpBar) {
+        hpBar.clear();
+        const hpWidth = 118 * (hpPercent / 100);
+        let hpColor = 0x22c55e; // Green
+        if (hpPercent < 25) hpColor = 0xef4444; // Red
+        else if (hpPercent < 50) hpColor = 0xf97316; // Orange
+        else if (hpPercent < 75) hpColor = 0xeab308; // Yellow
+        
+        hpBar.fillStyle(hpColor);
+        hpBar.fillRect(1, 1, hpWidth, 14);
+      }
+      if (hpLabelText) {
+        hpLabelText.setText(`❤️ HP: ${hpPercent}%`);
+      }
+
+      // Qi
+      const currentQi = char.currentQi || 0;
+      const maxQi = char.coreCapacity || 100;
+      const qiPercent = Math.max(0, Math.min(100, (currentQi / maxQi) * 100));
+      const qiBar = scene.data.get('qiBarFill') as Phaser.GameObjects.Graphics;
+      const qiLabelText = scene.data.get('qiLabel') as Phaser.GameObjects.Text;
+      
+      if (qiBar) {
+        qiBar.clear();
+        const qiWidth = 118 * (qiPercent / 100);
+        qiBar.fillStyle(0x4ade80); // Green for Qi
+        qiBar.fillRect(1, 1, qiWidth, 14);
+      }
+      if (qiLabelText) {
+        qiLabelText.setText(`✨ Ци: ${Math.round(currentQi)}/${maxQi}`);
+      }
+    };
+    scene.data.set('updateStatusBars', updateStatusBars);
+
     // === TARGETS INFO (top-right) ===
     const targetsInfo = scene.add.text(0, 60, '', {
       fontSize: '11px',
@@ -852,12 +940,14 @@ const GameSceneConfig = {
         const x = startX + i * (slotSize + slotSpacing);
         const isAvailable = i < availableSlots;
         const equipped = equippedBySlot.get(i + 1);
+        const isSlot1 = i === 0;
+        const hasContent = equipped || (isSlot1 && isAvailable); // Slot 1 always has basic attack
         const slotKey = String(i + 1);
 
         const slotBg = scene.add.rectangle(x, slotsY, slotSize, slotSize,
-          isAvailable ? (equipped ? 0x22c55e : 0x1e293b) : 0x0f172a, 1
+          isAvailable ? (hasContent ? 0x22c55e : 0x1e293b) : 0x0f172a, 1
         );
-        slotBg.setStrokeStyle(2, isAvailable ? (equipped ? 0x22c55e : 0x4ade80) : 0x334155);
+        slotBg.setStrokeStyle(2, isAvailable ? (hasContent ? 0x22c55e : 0x4ade80) : 0x334155);
         combatSlotsContainer.add(slotBg);
         slotBackgrounds.push(slotBg);
 
@@ -867,33 +957,64 @@ const GameSceneConfig = {
         }).setOrigin(0.5);
         combatSlotsContainer.add(keyLabel);
 
-        const icon = equipped ? (equipped.technique.element === 'fire' ? '🔥' : 
-                       equipped.technique.element === 'water' ? '💧' :
-                       equipped.technique.element === 'earth' ? '🪨' :
-                       equipped.technique.element === 'air' ? '💨' :
-                       equipped.technique.element === 'lightning' ? '⚡' : '⚔️') : '';
+        // Icon: equipped technique, or basic attack for slot 1
+        let icon = '';
+        if (equipped) {
+          icon = equipped.technique.element === 'fire' ? '🔥' : 
+                 equipped.technique.element === 'water' ? '💧' :
+                 equipped.technique.element === 'earth' ? '🪨' :
+                 equipped.technique.element === 'air' ? '💨' :
+                 equipped.technique.element === 'lightning' ? '⚡' : '⚔️';
+        } else if (isSlot1 && isAvailable) {
+          icon = '👊'; // Basic attack
+        }
         
         const slotContent = scene.add.text(x, slotsY, icon, {
           fontSize: '18px',
         }).setOrigin(0.5);
         combatSlotsContainer.add(slotContent);
 
-        if (isAvailable && equipped) {
+        // Slot tooltip
+        let tooltip = '';
+        if (equipped) {
+          tooltip = equipped.technique.name;
+        } else if (isSlot1 && isAvailable) {
+          tooltip = 'Базовый удар';
+        }
+
+        if (isAvailable && hasContent) {
           slotBg.setInteractive();
           slotBg.on('pointerdown', () => {
-            useTechniqueInDirection(
-              scene,
-              equipped.techniqueId,
-              {
-                damage: equipped.technique.effects?.damage || 15,
-                range: equipped.technique.effects?.distance || 2,
-                type: equipped.technique.type,
-                element: equipped.technique.element,
-              },
-              player.x,
-              player.y,
-              globalPlayerRotation
-            );
+            if (equipped) {
+              useTechniqueInDirection(
+                scene,
+                equipped.techniqueId,
+                {
+                  damage: equipped.technique.effects?.damage || 15,
+                  range: equipped.technique.effects?.distance || (equipped.technique.effects?.range?.max || 10),
+                  type: equipped.technique.effects?.combatType || equipped.technique.type,
+                  element: equipped.technique.element,
+                },
+                player.x,
+                player.y,
+                globalPlayerRotation
+              );
+            } else if (isSlot1) {
+              // Basic attack
+              useTechniqueInDirection(
+                scene,
+                'basic_training_strike',
+                {
+                  damage: 25,
+                  range: 5,
+                  type: 'melee_strike',
+                  element: 'neutral',
+                },
+                player.x,
+                player.y,
+                globalPlayerRotation
+              );
+            }
             
             scene.tweens.add({
               targets: slotBg,
@@ -1034,10 +1155,11 @@ const GameSceneConfig = {
       chatInputDisplay.setText(currentText + '|');
     });
 
-    // Combat slot keys
-    COMBAT_SLOT_KEYS.slice(0, 6).forEach((keyName, index) => {
-      const keyCode = Phaser.Input.Keyboard.KeyCodes[keyName as keyof typeof Phaser.Input.Keyboard.KeyCodes];
-      scene.input.keyboard?.on(`keydown-${keyCode}`, () => {
+    // Combat slot keys - use direct key names
+    const numberKeys = ['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'];
+    
+    numberKeys.forEach((keyName, index) => {
+      scene.input.keyboard?.on(`keydown-${keyName}`, () => {
         if (isChatFocused) return;
 
         const slotIndex = index + 1;
@@ -1051,30 +1173,47 @@ const GameSceneConfig = {
           );
 
           if (equipped) {
+            // Use equipped technique
             useTechniqueInDirection(
               scene,
               equipped.techniqueId,
               {
                 damage: equipped.technique.effects?.damage || 15,
-                range: equipped.technique.effects?.distance || 2,
-                type: equipped.technique.type,
+                range: equipped.technique.effects?.distance || (equipped.technique.effects?.range?.max || 10),
+                type: equipped.technique.effects?.combatType || equipped.technique.type,
                 element: equipped.technique.element,
               },
               player.x,
               player.y,
               globalPlayerRotation
             );
+          } else if (slotIndex === 1) {
+            // Slot 1: Default basic attack for training ground
+            useTechniqueInDirection(
+              scene,
+              'basic_training_strike',
+              {
+                damage: 25,
+                range: 5, // 5 meters
+                type: 'melee_strike',
+                element: 'neutral',
+              },
+              player.x,
+              player.y,
+              globalPlayerRotation
+            );
+          }
 
-            const slotBg = slotBackgrounds[index];
-            if (slotBg) {
-              scene.tweens.add({
-                targets: slotBg,
-                scaleX: 1.2,
-                scaleY: 1.2,
-                duration: 100,
-                yoyo: true,
-              });
-            }
+          // Visual feedback
+          const slotBg = slotBackgrounds[index];
+          if (slotBg) {
+            scene.tweens.add({
+              targets: slotBg,
+              scaleX: 1.2,
+              scaleY: 1.2,
+              duration: 100,
+              yoyo: true,
+            });
           }
         }
       });
@@ -1090,6 +1229,10 @@ const GameSceneConfig = {
           const timeStr = `📅 ${globalWorldTime.day}.${globalWorldTime.month}.${globalWorldTime.year} ⏰ ${globalWorldTime.hour.toString().padStart(2, '0')}:${globalWorldTime.minute.toString().padStart(2, '0')}`;
           worldTimeTextEl.setText(timeStr);
         }
+
+        // Update HP/Qi bars
+        const updateBars = scene.data.get('updateStatusBars') as (() => void) | undefined;
+        if (updateBars) updateBars();
         
         // Chat
         if (chatMessagesText) {
