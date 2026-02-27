@@ -247,10 +247,10 @@ export function useTechnique(
   }
   
   // Расчёт эффективности с учётом характеристик
-  const effectiveness = calculateTechniqueEffectiveness(technique, character);
+  const effectiveness = calculateTechniqueEffectiveness(technique, character, technique.masteryProgress);
   
   // Применяем эффективность к эффектам
-  const effects = { ...technique.effects };
+  const effects = technique.effects ? { ...technique.effects } : {};
   if (effects.damage) {
     effects.damage = Math.floor(effects.damage * effectiveness);
   }
@@ -263,7 +263,7 @@ export function useTechnique(
   
   // Затраты
   const qiSpent = technique.qiCost;
-  const fatigueGained = technique.fatigueCost;
+  const fatigueGained = technique.fatigueCost || { physical: 0, mental: 0 };
   
   // Прирост мастерства (уменьшается с ростом мастерства)
   const masteryGained = Math.max(0.1, 1 * (1 - technique.masteryProgress / 100));

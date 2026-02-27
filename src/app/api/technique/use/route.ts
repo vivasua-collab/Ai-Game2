@@ -61,20 +61,24 @@ export async function POST(request: NextRequest) {
     }
 
     // Формируем объект техники для проверки
+    const tech = characterTechnique.technique;
     const technique = {
-      id: characterTechnique.technique.id,
-      name: characterTechnique.technique.name,
-      description: characterTechnique.technique.description || '',
-      type: characterTechnique.technique.type as any,
-      element: characterTechnique.technique.element as any,
-      rarity: characterTechnique.technique.rarity as any,
-      level: characterTechnique.technique.level,
-      minCultivationLevel: characterTechnique.technique.minCultivationLevel,
-      qiCost: characterTechnique.technique.qiCost,
-      fatigueCost: characterTechnique.technique.fatigueCost as { physical: number; mental: number },
-      statRequirements: characterTechnique.technique.statRequirements as any,
-      statScaling: characterTechnique.technique.statScaling as any,
-      effects: characterTechnique.technique.effects as any,
+      id: tech.id,
+      name: tech.name,
+      description: tech.description || '',
+      type: tech.type as any,
+      element: tech.element as any,
+      rarity: tech.rarity as any,
+      level: tech.level,
+      minCultivationLevel: tech.minCultivationLevel,
+      qiCost: tech.qiCost,
+      fatigueCost: { 
+        physical: tech.physicalFatigueCost, 
+        mental: tech.mentalFatigueCost 
+      },
+      statRequirements: tech.statRequirements ? JSON.parse(tech.statRequirements) : undefined,
+      statScaling: tech.statScaling ? JSON.parse(tech.statScaling) : undefined,
+      effects: tech.effects ? JSON.parse(tech.effects) : undefined,
       masteryProgress: characterTechnique.mastery,
       masteryBonus: 0.5,
       source: 'preset' as const,
