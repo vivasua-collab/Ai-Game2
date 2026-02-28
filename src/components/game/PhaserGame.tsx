@@ -2125,7 +2125,7 @@ const GameSceneConfig = {
         
         // Chat
         if (chatMessagesText) {
-          if (globalMessages.length > 0) {
+          if (globalMessages && globalMessages.length > 0) {
             const recentMessages = globalMessages.slice(-25); // More messages for larger chat (3x)
             const text = recentMessages.map(m => {
               const prefix = m.sender === 'player' ? '👤' : '📖';
@@ -2342,7 +2342,7 @@ export function PhaserGame() {
   useEffect(() => { globalSessionId = sessionId; }, [sessionId]);
   useEffect(() => { globalCharacter = character; }, [character]);
   useEffect(() => { globalTechniques = techniques; }, [techniques]);
-  useEffect(() => { globalMessages = messages; }, [messages]);
+  useEffect(() => { globalMessages = messages || []; }, [messages]);
   useEffect(() => { globalWorldTime = worldTime; }, [worldTime]);
 
   const handleMovement = useCallback(async (tilesMoved: number) => {
