@@ -343,3 +343,32 @@ export function getConductivityTrainingAdvice(
   
   return advice;
 }
+
+/**
+ * Рассчитать время переноса Ци
+ * 
+ * Используется для:
+ * - Медитации на проводимость
+ * - Медитации на прорыв
+ * - Отображения времени в UI
+ * 
+ * @param coreCapacity - Ёмкость ядра персонажа
+ * @param conductivity - Проводимость (Ци/сек)
+ * @returns Время переноса в секундах
+ */
+export function calculateTransferTime(coreCapacity: number, conductivity: number): number {
+  // Защита от деления на ноль
+  const safeConductivity = Math.max(0.1, conductivity);
+  return Math.ceil(coreCapacity / safeConductivity);
+}
+
+/**
+ * Рассчитать время переноса Ци в минутах
+ * 
+ * @param coreCapacity - Ёмкость ядра персонажа
+ * @param conductivity - Проводимость (Ци/сек)
+ * @returns Время переноса в минутах
+ */
+export function calculateTransferTimeMinutes(coreCapacity: number, conductivity: number): number {
+  return Math.ceil(calculateTransferTime(coreCapacity, conductivity) / 60);
+}

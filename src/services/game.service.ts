@@ -13,6 +13,9 @@ import {
   attemptBreakthrough,
 } from '@/lib/game/qi-system';
 import {
+  calculateBreakthroughRequirements,
+} from '@/lib/game/qi-shared';
+import {
   calculateFatigueFromAction,
   type ActionType,
 } from '@/lib/game/fatigue-system';
@@ -217,11 +220,15 @@ export class GameService {
 
       let responseContent = '';
       if (result.coreWasFilled) {
+        // Используем единую функцию из qi-shared.ts
         const newAccumulated = character.accumulatedQi + result.accumulatedQiGained;
-        const currentFills = Math.floor(newAccumulated / character.coreCapacity);
-        const requiredFills = character.cultivationLevel * 10 + character.cultivationSubLevel;
-        const fillsNeeded = Math.max(0, requiredFills - currentFills);
-        responseContent = `⚡ **Ядро заполнено!**\n\n📊 Прогресс: ${currentFills}/${requiredFills} заполнений\n🔄 Осталось: ${fillsNeeded}\n\n⚠️ **Потратьте Ци (техники, бой) чтобы продолжить!**${breakdownText}\n⏱️ Время: ${result.duration} мин.\n😌 Усталость снижена.${safetyInfo}`;
+        const breakthroughProgress = calculateBreakthroughRequirements(
+          character.cultivationLevel,
+          character.cultivationSubLevel,
+          newAccumulated,
+          character.coreCapacity
+        );
+        responseContent = `⚡ **Ядро заполнено!**\n\n📊 Прогресс: ${breakthroughProgress.currentFills}/${breakthroughProgress.requiredFills} заполнений\n🔄 Осталось: ${breakthroughProgress.fillsNeeded}\n\n⚠️ **Потратьте Ци (техники, бой) чтобы продолжить!**${breakdownText}\n⏱️ Время: ${result.duration} мин.\n😌 Усталость снижена.${safetyInfo}`;
       } else {
         responseContent = `🧘 Медитация завершена.\n\n⚡ Накоплено Ци: +${result.qiGained}${breakdownText}\n  Ядро: ${character.currentQi + result.qiGained}/${character.coreCapacity}\n😌 Усталость снижена.\n⏱️ Время: ${result.duration} мин.${safetyInfo}`;
       }

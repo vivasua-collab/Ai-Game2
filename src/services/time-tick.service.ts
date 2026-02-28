@@ -24,7 +24,7 @@ import {
   calculatePassiveQiDissipation,
   type QiDissipationResult,
 } from '@/lib/game/qi-shared';
-import { calculateTotalConductivity } from '@/lib/game/conductivity-system';
+import { calculateTotalConductivity, getBaseConductivity, getMaxConductivityMeditations } from '@/lib/game/conductivity-system';
 import { advanceWorldTime } from '@/lib/game/time-db';
 
 // ==================== ТИПЫ ====================
@@ -214,7 +214,8 @@ export async function processTimeTickEffects(
     character.conductivityMeditations || 0
   );
   
-  const baseConductivity = character.coreCapacity / 360;
+  // Используем единую функцию из conductivity-system.ts
+  const baseConductivity = getBaseConductivity(character.coreCapacity);
   const meditationBonus = conductivity - baseConductivity;
   
   return {
@@ -283,24 +284,21 @@ export async function getCharacterConductivity(characterId: string): Promise<{
     };
   }
   
-  const baseConductivity = character.coreCapacity / 360;
+  // Используем единые функции из conductivity-system.ts
+  const baseConductivity = getBaseConductivity(character.coreCapacity);
   const totalConductivity = calculateTotalConductivity(
     character.coreCapacity,
     character.cultivationLevel,
     character.conductivityMeditations || 0
   );
   
-  // Максимальное количество медитаций для уровня
-  const maxMeditationsByLevel: Record<number, number> = {
-    1: 5, 2: 10, 3: 15, 4: 20, 5: 25,
-    6: 30, 7: 40, 8: 50, 9: 60,
-  };
+  const maxMeditations = getMaxConductivityMeditations(character.cultivationLevel);
   
   return {
     base: baseConductivity,
     total: totalConductivity,
     meditationBonus: totalConductivity - baseConductivity,
     meditationCount: character.conductivityMeditations || 0,
-    maxMeditations: maxMeditationsByLevel[character.cultivationLevel] || 5,
+    maxMeditations,
   };
 }

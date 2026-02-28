@@ -50,6 +50,7 @@ import {
 import type { WorldTime } from '@/lib/game/time-system';
 import {
   getConductivityMeditationProgress,
+  calculateTransferTime,
 } from '@/lib/game/conductivity-system';
 
 type RestActivityType = 'meditation' | 'light' | 'sleep';
@@ -274,7 +275,8 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
     }
     
     if (meditationType === 'conductivity') {
-      const secondsPerTransfer = Math.ceil(maxQi / character.conductivity);
+      // Используем единую функцию из conductivity-system.ts
+      const secondsPerTransfer = calculateTransferTime(maxQi, character.conductivity);
       
       if (isFull) {
         return {

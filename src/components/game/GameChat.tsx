@@ -22,6 +22,10 @@ import {
   useGameTechniques,
   useGameSkills,
 } from "@/stores/game.store";
+import {
+  getCoreFillPercent,
+  getBreakthroughProgress,
+} from "@/lib/game/qi-shared";
 
 // Типы боковых панелей
 type PanelType = "character" | "inventory" | "techniques" | "skills" | "map" | "quests" | "relations" | null;
@@ -91,20 +95,23 @@ const StatusBar = memo(function StatusBar() {
   const location = useGameLocation();
   const daysSinceStart = useGameDaysSinceStart();
 
+  // Используем единые функции из qi-shared.ts
   const qiPercent = useMemo(() => 
-    character ? (character.currentQi / character.coreCapacity) * 100 : 0,
+    character ? getCoreFillPercent(character.currentQi, character.coreCapacity) : 0,
     [character?.currentQi, character?.coreCapacity]
   );
   
   const healthPercent = useMemo(() => character?.health ?? 0, [character?.health]);
   
-  // Прогресс прорыва: accumulatedQi / (coreCapacity * requiredFills)
+  // Прогресс прорыва: используем единую функцию
   const breakthroughProgress = useMemo(() => {
-    if (!character) return { percent: 0, fills: 0, required: 0 };
-    const requiredFills = character.cultivationLevel * 10 + character.cultivationSubLevel;
-    const currentFills = Math.floor(character.accumulatedQi / character.coreCapacity);
-    const percent = Math.min(100, (character.accumulatedQi / (character.coreCapacity * requiredFills)) * 100);
-    return { percent, fills: currentFills, required: requiredFills };
+    if (!character) return { percent: 0, current: 0, required: 0 };
+    return getBreakthroughProgress(
+      character.cultivationLevel,
+      character.cultivationSubLevel,
+      character.accumulatedQi,
+      character.coreCapacity
+    );
   }, [character?.accumulatedQi, character?.coreCapacity, character?.cultivationLevel, character?.cultivationSubLevel]);
 
   if (!character) return null;
@@ -128,7 +135,7 @@ const StatusBar = memo(function StatusBar() {
             <div className="w-16 h-2 bg-slate-700 rounded-full overflow-hidden">
               <div className="h-full bg-amber-500 transition-all duration-300" style={{ width: `${breakthroughProgress.percent}%` }} />
             </div>
-            <span className="text-xs text-amber-400">{breakthroughProgress.fills}/{breakthroughProgress.required}</span>
+            <span className="text-xs text-amber-400">{breakthroughProgress.current}/{breakthroughProgress.required}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-slate-400">HP:</span>
@@ -156,10 +163,14 @@ const CharacterPanel = memo(function CharacterPanel({ isOpen, onClose }: { isOpe
   const character = useGameCharacter();
   if (!character || !isOpen) return null;
   
-  // Расчёт прогресса прорыва
-  const requiredFills = character.cultivationLevel * 10 + character.cultivationSubLevel;
-  const currentFills = Math.floor(character.accumulatedQi / character.coreCapacity);
-  const breakthroughPercent = Math.min(100, (character.accumulatedQi / (character.coreCapacity * requiredFills)) * 100);
+  // Используем единые функции из qi-shared.ts
+  const qiPercent = getCoreFillPercent(character.currentQi, character.coreCapacity);
+  const breakthroughProgress = getBreakthroughProgress(
+    character.cultivationLevel,
+    character.cultivationSubLevel,
+    character.accumulatedQi,
+    character.coreCapacity
+  );
 
   return (
     <Card className="absolute left-14 top-[104px] w-72 bg-slate-800/95 border-slate-700 shadow-xl z-30">
@@ -181,7 +192,7 @@ const CharacterPanel = memo(function CharacterPanel({ isOpen, onClose }: { isOpe
           <span className="text-slate-400">Ци:</span>
           <div className="flex items-center gap-2">
             <div className="w-16 h-2 bg-slate-700 rounded-full overflow-hidden">
-              <div className="h-full bg-cyan-500" style={{ width: `${(character.currentQi / character.coreCapacity) * 100}%` }} />
+              <div className="h-full bg-cyan-500" style={{ width: `${qiPercent}%` }} />
             </div>
             <span className="text-slate-200 text-xs">{character.currentQi}/{character.coreCapacity}</span>
           </div>
@@ -190,13 +201,13 @@ const CharacterPanel = memo(function CharacterPanel({ isOpen, onClose }: { isOpe
         <div className="text-amber-400 text-xs font-medium">⚡ Прогресс прорыва</div>
         <div className="flex justify-between items-center">
           <span className="text-slate-400">Заполнений:</span>
-          <span className="text-amber-400">{currentFills}/{requiredFills}</span>
+          <span className="text-amber-400">{breakthroughProgress.current}/{breakthroughProgress.required}</span>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-slate-400">Накоплено:</span>
           <div className="flex items-center gap-2">
             <div className="w-16 h-2 bg-slate-700 rounded-full overflow-hidden">
-              <div className="h-full bg-amber-500" style={{ width: `${breakthroughPercent}%` }} />
+              <div className="h-full bg-amber-500" style={{ width: `${breakthroughProgress.percent}%` }} />
             </div>
             <span className="text-slate-200 text-xs">{character.accumulatedQi}</span>
           </div>

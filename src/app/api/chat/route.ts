@@ -561,11 +561,15 @@ export async function POST(request: NextRequest) {
         if (!result.success) {
           responseContent = `❌ ${result.interruptionReason}`;
         } else if (result.coreWasFilled) {
+          // Используем единую функцию из qi-shared.ts
           const newAccumulated = session.character.accumulatedQi + result.accumulatedQiGained;
-          const currentFills = Math.floor(newAccumulated / session.character.coreCapacity);
-          const requiredFills = session.character.cultivationLevel * 10 + session.character.cultivationSubLevel;
-          const fillsNeeded = Math.max(0, requiredFills - currentFills);
-          responseContent = `⚡ **Ядро заполнено!**\n\n📊 Прогресс: ${currentFills}/${requiredFills} заполнений\n🔄 Осталось: ${fillsNeeded}\n\n⚠️ **Потратьте Ци (техники, бой) чтобы продолжить!**${breakdownText}\n⏱️ Время: ${result.duration} мин.\n😌 Усталость снижена.${safetyInfo}`;
+          const breakthroughProgress = calculateBreakthroughRequirements(
+            session.character.cultivationLevel,
+            session.character.cultivationSubLevel,
+            newAccumulated,
+            session.character.coreCapacity
+          );
+          responseContent = `⚡ **Ядро заполнено!**\n\n📊 Прогресс: ${breakthroughProgress.currentFills}/${breakthroughProgress.requiredFills} заполнений\n🔄 Осталось: ${breakthroughProgress.fillsNeeded}\n\n⚠️ **Потратьте Ци (техники, бой) чтобы продолжить!**${breakdownText}\n⏱️ Время: ${result.duration} мин.\n😌 Усталость снижена.${safetyInfo}`;
         } else {
           responseContent = `🧘 Медитация завершена.\n\n⚡ Накоплено Ци: +${result.qiGained}${breakdownText}\n  Ядро: ${session.character.currentQi + result.qiGained}/${session.character.coreCapacity}\n😌 Усталость снижена.\n⏱️ Время: ${result.duration} мин.${safetyInfo}`;
         }
@@ -602,8 +606,13 @@ export async function POST(request: NextRequest) {
 
     // Проверка мира (--ПМ) - возвращаем текущее состояние без LLM расчётов
     if (message.trim().startsWith("--ПМ") || message.trim().toLowerCase().startsWith("--пм")) {
-      const currentFills = Math.floor(session.character.accumulatedQi / session.character.coreCapacity);
-      const requiredFills = session.character.cultivationLevel * 10 + session.character.cultivationSubLevel;
+      // Используем единую функцию из qi-shared.ts
+      const breakthroughProgress = calculateBreakthroughRequirements(
+        session.character.cultivationLevel,
+        session.character.cultivationSubLevel,
+        session.character.accumulatedQi,
+        session.character.coreCapacity
+      );
       
       const verifyResult = {
         character: {
@@ -612,7 +621,7 @@ export async function POST(request: NextRequest) {
           currentQi: session.character.currentQi,
           coreCapacity: session.character.coreCapacity,
           accumulatedQi: session.character.accumulatedQi,
-          fillsProgress: `${currentFills}/${requiredFills}`, // Прогресс прорыва
+          fillsProgress: `${breakthroughProgress.currentFills}/${breakthroughProgress.requiredFills}`, // Прогресс прорыва
           fatigue: session.character.fatigue,
           mentalFatigue: session.character.mentalFatigue || 0,
         },
