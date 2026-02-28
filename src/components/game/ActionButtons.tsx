@@ -15,7 +15,8 @@ import { GameMenuDialog } from './GameMenuDialog';
 import { InventoryDialog } from './InventoryDialog';
 import { SettingsPanel } from '@/components/settings/SettingsPanel';
 import { GeneratedObjectsViewer } from '@/components/settings/GeneratedObjectsViewer';
-import { Settings } from 'lucide-react';
+import { EventBusTest } from './EventBusTest';
+import { Settings, Activity, Menu } from 'lucide-react';
 
 interface ActionButtonsProps {
   className?: string;
@@ -29,6 +30,7 @@ export function ActionButtons({ className = '' }: ActionButtonsProps) {
   const [gameMenuOpen, setGameMenuOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [generatedObjectsOpen, setGeneratedObjectsOpen] = useState(false);
+  const [eventBusOpen, setEventBusOpen] = useState(false);
 
   // Слушатель события открытия меню игры
   useEffect(() => {
@@ -54,7 +56,7 @@ export function ActionButtons({ className = '' }: ActionButtonsProps) {
           className="border-green-600/50 text-green-400 hover:bg-green-900/30 h-9"
           onClick={() => setRestOpen(true)}
         >
-          ⏸️ Отдых/Медитация
+          ⏸️ Отдых
         </Button>
         <Button
           variant="outline"
@@ -75,11 +77,29 @@ export function ActionButtons({ className = '' }: ActionButtonsProps) {
         <Button
           variant="outline"
           size="sm"
-          className="border-cyan-600/50 text-cyan-400 hover:bg-cyan-900/30 h-9"
+          className="border-slate-600/50 text-slate-400 hover:bg-slate-900/30 h-9"
           disabled
           title="В разработке"
         >
           🗺️ Карта
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="border-cyan-600/50 text-cyan-400 hover:bg-cyan-900/30 h-9"
+          onClick={() => setEventBusOpen(true)}
+          title="Тест Event Bus"
+        >
+          <Activity className="w-4 h-4" />
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
+          className="border-orange-600/50 text-orange-400 hover:bg-orange-900/30 h-9"
+          onClick={() => setGameMenuOpen(true)}
+          title="Меню игры (Сохранить, Читы, Редактор тела)"
+        >
+          <Menu className="w-4 h-4" />
         </Button>
         <Button
           variant="outline"
@@ -115,6 +135,11 @@ export function ActionButtons({ className = '' }: ActionButtonsProps) {
       <GameMenuDialog
         open={gameMenuOpen}
         onOpenChange={setGameMenuOpen}
+      />
+
+      <EventBusTest
+        open={eventBusOpen}
+        onOpenChange={setEventBusOpen}
       />
 
       <SettingsPanel

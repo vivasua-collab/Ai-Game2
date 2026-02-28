@@ -28,17 +28,12 @@ import {
   Loader2,
   Check,
   AlertCircle,
-  Trash2,
   Shield,
-  Wrench,
   Shirt,
   Users,
-  User,
 } from 'lucide-react';
-import { CheatMenuContent } from '@/components/game/CheatMenuContent';
 import { TechniqueGeneratorPanel } from './TechniqueGeneratorPanel';
 import { Rarity, TechniqueType, CombatSubtype } from '@/lib/generator/technique-generator';
-import { BodyDollEditor } from '@/components/game/BodyDollEditor';
 
 interface SettingsPanelProps {
   open: boolean;
@@ -329,7 +324,7 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
         </DialogHeader>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-7 bg-slate-800">
+          <TabsList className="grid w-full grid-cols-5 bg-slate-800">
             <TabsTrigger value="generator" className="data-[state=active]:bg-amber-600">
               <Sparkles className="w-4 h-4 mr-1" />
               Техники
@@ -342,17 +337,9 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
               <Users className="w-4 h-4 mr-1" />
               NPC
             </TabsTrigger>
-            <TabsTrigger value="body" className="data-[state=active]:bg-amber-600">
-              <User className="w-4 h-4 mr-1" />
-              Тело
-            </TabsTrigger>
             <TabsTrigger value="formations" className="data-[state=active]:bg-amber-600">
               <Shield className="w-4 h-4 mr-1" />
               Формации
-            </TabsTrigger>
-            <TabsTrigger value="cheats" className="data-[state=active]:bg-amber-600">
-              <Wrench className="w-4 h-4 mr-1" />
-              Читы
             </TabsTrigger>
             <TabsTrigger value="storage" className="data-[state=active]:bg-amber-600">
               <Package className="w-4 h-4 mr-1" />
@@ -435,25 +422,6 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
             </div>
           </TabsContent>
 
-          {/* РЕДАКТОР ТЕЛА */}
-          <TabsContent value="body" className="mt-4 overflow-hidden" style={{ maxHeight: '70vh' }}>
-            <div className="bg-slate-800/50 rounded-lg p-4 h-full">
-              <h3 className="text-lg font-medium text-amber-400 mb-3 flex items-center gap-2">
-                <User className="w-5 h-5" />
-                Редактор куклы тела
-              </h3>
-              <p className="text-sm text-slate-400 mb-4">
-                Создание и настройка визуальных кукол для персонажей и монстров.
-                Загружайте изображения частей тела, размещайте их и экспортируйте конфигурацию.
-              </p>
-              <div className="h-[calc(70vh-180px)] overflow-auto">
-                <BodyDollEditor 
-                  entityName="Человек"
-                />
-              </div>
-            </div>
-          </TabsContent>
-
           <TabsContent value="formations" className="mt-4 space-y-4 overflow-y-auto max-h-[60vh]">
             <div className="bg-slate-800/50 rounded-lg p-4">
               <h3 className="text-lg font-medium text-amber-400 mb-3">
@@ -510,10 +478,6 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
                 <li><span className="text-purple-400">Специальные</span> — усиление элементов</li>
               </ul>
             </div>
-          </TabsContent>
-
-          <TabsContent value="cheats" className="mt-4 overflow-y-auto max-h-[60vh]">
-            <CheatMenuContent />
           </TabsContent>
 
           <TabsContent value="storage" className="mt-4 space-y-4 overflow-y-auto max-h-[60vh]">

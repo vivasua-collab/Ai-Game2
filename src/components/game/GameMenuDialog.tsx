@@ -1,5 +1,5 @@
 /**
- * Game Menu Dialog - Save, New, Load game functionality
+ * Game Menu Dialog - Save, New, Load, Cheats, Body Editor
  */
 
 'use client';
@@ -13,8 +13,14 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useGameSessionId, useGameActions } from '@/stores/game.store';
-import { Save, Plus, FolderOpen, Trash2, Clock } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useGameSessionId, useGameActions, useGameCharacter } from '@/stores/game.store';
+import { 
+  Save, Plus, FolderOpen, Trash2, Clock, 
+  Wrench, User, ChevronRight 
+} from 'lucide-react';
+import { CheatMenuContent } from './CheatMenuContent';
+import { BodyDollEditor } from './BodyDollEditor';
 
 interface GameMenuDialogProps {
   open: boolean;
@@ -34,15 +40,19 @@ const SAVES_KEY = 'cultivation_saves_list';
 
 export function GameMenuDialog({ open, onOpenChange }: GameMenuDialogProps) {
   const sessionId = useGameSessionId();
+  const character = useGameCharacter();
   const { saveAndExit, startGame, resetGame } = useGameActions();
   
   const [saves, setSaves] = useState<SaveData[]>([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState('game');
 
   useEffect(() => {
     if (open) {
       loadSaves();
+      // Сброс на вкладку "Игра" при открытии
+      setActiveTab('game');
     }
   }, [open]);
 
@@ -73,8 +83,8 @@ export function GameMenuDialog({ open, onOpenChange }: GameMenuDialogProps) {
       const savesList: SaveData[] = JSON.parse(localStorage.getItem(SAVES_KEY) || '[]');
       const newSave: SaveData = {
         sessionId,
-        characterName: 'Персонаж', // TODO: получить из стора
-        level: 1, // TODO: получить из стора
+        characterName: character?.name || 'Персонаж',
+        level: character?.cultivationLevel || 1,
         savedAt: new Date().toISOString(),
         worldDay: 1, // TODO: получить из стора
       };
@@ -153,94 +163,136 @@ export function GameMenuDialog({ open, onOpenChange }: GameMenuDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-md">
-        <DialogHeader>
+      <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-4xl max-h-[90vh] p-0">
+        <DialogHeader className="px-4 pt-4 pb-2">
           <DialogTitle className="text-amber-400 flex items-center gap-2">
             <FolderOpen className="w-5 h-5" />
-            Игра
+            Главное меню
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
-          {/* Кнопки действий */}
-          <div className="grid grid-cols-2 gap-3">
-            <Button
-              onClick={saveCurrentGame}
-              disabled={loading || !sessionId}
-              className="bg-emerald-600 hover:bg-emerald-700"
-            >
-              <Save className="w-4 h-4 mr-2" />
-              Сохранить
-            </Button>
-            
-            <Button
-              onClick={startNewGame}
-              disabled={loading}
-              className="bg-amber-600 hover:bg-amber-700"
-            >
-              <Plus className="w-4 h-4 mr-2" />
-              Новая
-            </Button>
-          </div>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-3 bg-slate-800 mx-4 rounded-lg" style={{ width: 'calc(100% - 2rem)' }}>
+            <TabsTrigger value="game" className="data-[state=active]:bg-amber-600">
+              <FolderOpen className="w-4 h-4 mr-2" />
+              Игра
+            </TabsTrigger>
+            <TabsTrigger value="cheats" className="data-[state=active]:bg-red-600">
+              <Wrench className="w-4 h-4 mr-2" />
+              Читы
+            </TabsTrigger>
+            <TabsTrigger value="body" className="data-[state=active]:bg-purple-600">
+              <User className="w-4 h-4 mr-2" />
+              Редактор тела
+            </TabsTrigger>
+          </TabsList>
 
-          {/* Сохранения */}
-          <div>
-            <h3 className="text-sm font-medium text-slate-400 mb-2 flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              Сохранения
-            </h3>
-            
-            {saves.length === 0 ? (
-              <div className="text-center text-slate-500 py-4 bg-slate-800/50 rounded-lg">
-                Нет сохранений
-              </div>
-            ) : (
-              <ScrollArea className="h-48 border border-slate-700 rounded-lg">
-                <div className="divide-y divide-slate-700">
-                  {saves.map((save) => (
-                    <div
-                      key={save.sessionId}
-                      className={`p-3 flex items-center justify-between ${
-                        save.sessionId === sessionId ? 'bg-amber-900/20' : 'bg-slate-800/30'
-                      } hover:bg-slate-800/50`}
-                    >
-                      <div 
-                        className="flex-1 cursor-pointer"
-                        onClick={() => loadSave(save.sessionId)}
-                      >
-                        <div className="flex items-center gap-2">
-                          <span className="font-medium">{save.characterName}</span>
-                          {save.sessionId === sessionId && (
-                            <span className="text-xs text-amber-400">(текущая)</span>
-                          )}
-                        </div>
-                        <div className="text-xs text-slate-400">
-                          Ур. {save.level} • День {save.worldDay} • {formatDate(save.savedAt)}
-                        </div>
-                      </div>
-                      
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="text-red-400 hover:text-red-300 hover:bg-red-900/30"
-                        onClick={() => deleteSave(save.sessionId)}
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              </ScrollArea>
-            )}
-          </div>
-
-          {/* Сообщение */}
-          {message && (
-            <div className="text-sm text-center p-2 bg-slate-800/50 rounded-lg">
-              {message}
+          {/* Вкладка "Игра" */}
+          <TabsContent value="game" className="p-4 space-y-4 mt-0">
+            {/* Кнопки действий */}
+            <div className="grid grid-cols-2 gap-3">
+              <Button
+                onClick={saveCurrentGame}
+                disabled={loading || !sessionId}
+                className="bg-emerald-600 hover:bg-emerald-700"
+              >
+                <Save className="w-4 h-4 mr-2" />
+                Сохранить
+              </Button>
+              
+              <Button
+                onClick={startNewGame}
+                disabled={loading}
+                className="bg-amber-600 hover:bg-amber-700"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Новая игра
+              </Button>
             </div>
-          )}
-        </div>
+
+            {/* Сохранения */}
+            <div>
+              <h3 className="text-sm font-medium text-slate-400 mb-2 flex items-center gap-2">
+                <Clock className="w-4 h-4" />
+                Сохранения
+              </h3>
+              
+              {saves.length === 0 ? (
+                <div className="text-center text-slate-500 py-4 bg-slate-800/50 rounded-lg">
+                  Нет сохранений
+                </div>
+              ) : (
+                <ScrollArea className="h-48 border border-slate-700 rounded-lg">
+                  <div className="divide-y divide-slate-700">
+                    {saves.map((save) => (
+                      <div
+                        key={save.sessionId}
+                        className={`p-3 flex items-center justify-between ${
+                          save.sessionId === sessionId ? 'bg-amber-900/20' : 'bg-slate-800/30'
+                        } hover:bg-slate-800/50`}
+                      >
+                        <div 
+                          className="flex-1 cursor-pointer"
+                          onClick={() => loadSave(save.sessionId)}
+                        >
+                          <div className="flex items-center gap-2">
+                            <span className="font-medium">{save.characterName}</span>
+                            {save.sessionId === sessionId && (
+                              <span className="text-xs text-amber-400">(текущая)</span>
+                            )}
+                          </div>
+                          <div className="text-xs text-slate-400">
+                            Ур. {save.level} • День {save.worldDay} • {formatDate(save.savedAt)}
+                          </div>
+                        </div>
+                        
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-red-400 hover:text-red-300 hover:bg-red-900/30"
+                          onClick={() => deleteSave(save.sessionId)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+              )}
+            </div>
+
+            {/* Сообщение */}
+            {message && (
+              <div className="text-sm text-center p-2 bg-slate-800/50 rounded-lg">
+                {message}
+              </div>
+            )}
+          </TabsContent>
+
+          {/* Вкладка "Читы" */}
+          <TabsContent value="cheats" className="mt-0 overflow-y-auto max-h-[60vh]">
+            <CheatMenuContent />
+          </TabsContent>
+
+          {/* Вкладка "Редактор тела" */}
+          <TabsContent value="body" className="mt-0 overflow-hidden p-4" style={{ maxHeight: '65vh' }}>
+            <div className="bg-slate-800/50 rounded-lg p-4 h-full">
+              <h3 className="text-lg font-medium text-amber-400 mb-3 flex items-center gap-2">
+                <User className="w-5 h-5" />
+                Редактор куклы тела
+              </h3>
+              <p className="text-sm text-slate-400 mb-4">
+                Создание и настройка визуальных кукол для персонажей и монстров.
+                Загружайте изображения частей тела, размещайте их и экспортируйте конфигурацию.
+              </p>
+              <div className="h-[calc(60vh-160px)] overflow-auto">
+                <BodyDollEditor 
+                  entityName="Человек"
+                />
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );

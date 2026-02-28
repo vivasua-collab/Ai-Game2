@@ -12,29 +12,62 @@ const querySchema = z.object({
 });
 
 export async function GET(request: NextRequest) {
+  const startTime = Date.now();
+  
   try {
     const { searchParams } = new URL(request.url);
+    const characterId = searchParams.get("characterId");
     
-    const validation = querySchema.safeParse({
-      characterId: searchParams.get("characterId"),
-    });
+    console.log("[inventory/state] Request received for characterId:", characterId);
+    
+    const validation = querySchema.safeParse({ characterId });
     
     if (!validation.success) {
+      console.error("[inventory/state] Validation error:", validation.error.issues);
       return NextResponse.json(
         { success: false, error: validation.error.issues[0]?.message || "Invalid data" },
         { status: 400 }
       );
     }
 
-    const { characterId } = validation.data;
+    const { characterId: validId } = validation.data;
     
-    // Получаем все данные параллельно
-    const [inventory, equipment, storage, items] = await Promise.all([
-      inventoryService.getInventoryState(characterId),
-      inventoryService.getCharacterEquipment(characterId),
-      inventoryService.getSpiritStorage(characterId),
-      inventoryService.getCharacterItems(characterId),
-    ]);
+    // Получаем все данные последовательно с обработкой ошибок
+    let inventory = null;
+    let equipment: Map<string, unknown> = new Map();
+    let storage = null;
+    let items: unknown[] = [];
+
+    try {
+      inventory = await inventoryService.getInventoryState(validId);
+      console.log("[inventory/state] Inventory loaded:", inventory ? "OK" : "NULL");
+    } catch (err) {
+      console.error("[inventory/state] getInventoryState error:", err);
+    }
+
+    try {
+      equipment = await inventoryService.getCharacterEquipment(validId);
+      console.log("[inventory/state] Equipment loaded:", equipment.size, "items");
+    } catch (err) {
+      console.error("[inventory/state] getCharacterEquipment error:", err);
+    }
+
+    try {
+      storage = await inventoryService.getSpiritStorage(validId);
+      console.log("[inventory/state] Storage loaded:", storage ? "OK" : "NULL");
+    } catch (err) {
+      console.error("[inventory/state] getSpiritStorage error:", err);
+    }
+
+    try {
+      items = await inventoryService.getCharacterItems(validId);
+      console.log("[inventory/state] Items loaded:", items.length, "items");
+    } catch (err) {
+      console.error("[inventory/state] getCharacterItems error:", err);
+    }
+
+    const elapsed = Date.now() - startTime;
+    console.log(`[inventory/state] Completed in ${elapsed}ms`);
 
     return NextResponse.json({
       success: true,
@@ -44,9 +77,15 @@ export async function GET(request: NextRequest) {
       items,
     });
   } catch (error) {
-    console.error("Error fetching inventory state:", error);
+    const elapsed = Date.now() - startTime;
+    console.error(`[inventory/state] Critical error after ${elapsed}ms:`, error);
+    
     return NextResponse.json(
-      { success: false, error: "Failed to fetch inventory state" },
+      { 
+        success: false, 
+        error: "Failed to fetch inventory state",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
       { status: 500 }
     );
   }

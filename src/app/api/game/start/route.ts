@@ -393,7 +393,6 @@ export async function POST(request: NextRequest) {
               source: "preset",
             };
           }),
-          skipDuplicates: true,
         });
         
         // Получаем ID созданных техник
@@ -425,10 +424,11 @@ export async function POST(request: NextRequest) {
         learningSource: string;
       }>;
       
-      await tx.characterTechnique.createMany({
-        data: characterTechniquesData,
-        skipDuplicates: true,
-      });
+      if (characterTechniquesData.length > 0) {
+        await tx.characterTechnique.createMany({
+          data: characterTechniquesData,
+        });
+      }
 
       return { character, session, location, sect };
     });
