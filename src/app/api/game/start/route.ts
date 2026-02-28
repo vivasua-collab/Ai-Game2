@@ -152,6 +152,29 @@ export async function POST(request: NextRequest) {
       ? `Мир секты "${startConfig.sectName}"` 
       : variant === 2 ? "Дикие земли" : "Неизвестный мир";
 
+    // === ПОДГОТОВКА ПРОМПТА И ПАРАЛЛЕЛЬНЫЙ ЗАПУСК ===
+    // Готовим промпт параллельно с транзакцией БД
+    let systemPrompt: string;
+    if (variant === 1) {
+      systemPrompt = buildSectStartPrompt();
+    } else if (variant === 2) {
+      systemPrompt = buildRandomStartPrompt();
+    } else {
+      systemPrompt = buildCustomStartPrompt({
+        location: customConfig?.location,
+        age: customConfig?.age,
+        coreCapacity: customConfig?.coreCapacity,
+        knowsAboutSystem: customConfig?.knowsAboutSystem,
+      });
+    }
+
+    // Запускаем LLM генерацию параллельно с созданием сущностей в БД
+    const llmPromise = generateGameResponse(systemPrompt, "Начни игру. Опиши момент пробуждения ГГ. Кратко, 2-3 предложения.", [])
+      .catch(err => {
+        logError("LLM", `LLM generation failed: ${err}`, {});
+        return null;
+      });
+
     // === АТОМАРНОЕ СОЗДАНИЕ В ТРАНЗАКЦИИ ===
     const dbResult = await db.$transaction(async (tx) => {
       // 1. Создаём персонажа
@@ -419,30 +442,11 @@ export async function POST(request: NextRequest) {
       locationId: dbResult.location.id,
     });
 
-    // === LLM ГЕНЕРАЦИЯ (вне транзакции) ===
-    let systemPrompt: string;
-    if (variant === 1) {
-      systemPrompt = buildSectStartPrompt();
-    } else if (variant === 2) {
-      systemPrompt = buildRandomStartPrompt();
-    } else {
-      systemPrompt = buildCustomStartPrompt({
-        location: customConfig?.location,
-        age: customConfig?.age,
-        coreCapacity: customConfig?.coreCapacity,
-        knowsAboutSystem: customConfig?.knowsAboutSystem,
-      });
-    }
-
-    let gameResponse;
-    try {
-      const llmTimer = new LogTimer("LLM", "Generate opening narration", dbResult.session.id);
-      gameResponse = await generateGameResponse(systemPrompt, "Начни игру. Опиши момент пробуждения ГГ.", []);
-      await llmTimer.end("INFO", { contentLength: gameResponse.content.length });
-    } catch (llmError) {
-      const errorMsg = llmError instanceof Error ? llmError.message : "Unknown LLM error";
-      await logError("LLM", `LLM generation failed: ${errorMsg}`, { sessionId: dbResult.session.id });
-      // Сессия создана, возвращаем с дефолтным текстом
+    // === ОЖИДАНИЕ LLM РЕЗУЛЬТАТА (уже запущен параллельно) ===
+    const gameResponse = await llmPromise;
+    
+    if (!gameResponse) {
+      // LLM не смог сгенерировать, возвращаем с дефолтным текстом
       return NextResponse.json({
         success: true,
         session: { id: dbResult.session.id, worldId: dbResult.session.worldId },
