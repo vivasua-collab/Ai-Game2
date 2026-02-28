@@ -402,6 +402,134 @@ class TruthSystemImpl {
     return { success: true, data: { currentQi: session.character.currentQi } };
   }
 
+  // ==================== FATIGUE OPERATIONS ====================
+
+  /**
+   * Обновить усталость
+   */
+  updateFatigue(
+    sessionId: string,
+    physicalChange: number,
+    mentalChange: number
+  ): TruthResult<{ fatigue: number; mentalFatigue: number }> {
+    const session = this.sessions.get(sessionId);
+    if (!session) {
+      return { success: false, error: 'Session not loaded' };
+    }
+
+    const char = session.character;
+    char.fatigue = Math.max(0, Math.min(100, char.fatigue + physicalChange));
+    char.mentalFatigue = Math.max(0, Math.min(100, char.mentalFatigue + mentalChange));
+    session.isDirty = true;
+
+    return { success: true, data: { fatigue: char.fatigue, mentalFatigue: char.mentalFatigue } };
+  }
+
+  /**
+   * Восстановить усталость (отрицательные значения = восстановление)
+   */
+  recoverFatigue(
+    sessionId: string,
+    physicalRecovery: number,
+    mentalRecovery: number
+  ): TruthResult<{ fatigue: number; mentalFatigue: number }> {
+    return this.updateFatigue(sessionId, -physicalRecovery, -mentalRecovery);
+  }
+
+  // ==================== BREAKTHROUGH OPERATIONS ====================
+
+  /**
+   * Применить результаты прорыва
+   * КРИТИЧЕСКАЯ ОПЕРАЦИЯ - немедленное сохранение в БД!
+   */
+  async applyBreakthrough(
+    sessionId: string,
+    breakthroughData: {
+      newLevel: number;
+      newSubLevel: number;
+      newCoreCapacity: number;
+      newConductivity: number;
+      qiConsumed: number;
+    }
+  ): Promise<TruthResult<CharacterState>> {
+    const session = this.sessions.get(sessionId);
+    if (!session) {
+      return { success: false, error: 'Session not loaded' };
+    }
+
+    try {
+      const char = session.character;
+
+      // Обновляем в памяти
+      char.cultivationLevel = breakthroughData.newLevel;
+      char.cultivationSubLevel = breakthroughData.newSubLevel;
+      char.coreCapacity = breakthroughData.newCoreCapacity;
+      char.conductivity = breakthroughData.newConductivity;
+      char.accumulatedQi = Math.max(0, char.accumulatedQi - breakthroughData.qiConsumed);
+
+      // Сохраняем в БД (КРИТИЧЕСКАЯ ОПЕРАЦИЯ!)
+      await db.character.update({
+        where: { id: char.id },
+        data: {
+          cultivationLevel: char.cultivationLevel,
+          cultivationSubLevel: char.cultivationSubLevel,
+          coreCapacity: char.coreCapacity,
+          conductivity: char.conductivity,
+          accumulatedQi: char.accumulatedQi,
+          updatedAt: new Date(),
+        },
+      });
+
+      session.lastSavedAt = new Date();
+      session.isDirty = false;
+
+      console.log(`[TruthSystem] Breakthrough applied and saved: Level ${char.cultivationLevel}.${char.cultivationSubLevel}`);
+      return { success: true, data: char };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      return { success: false, error: `Failed to apply breakthrough: ${message}` };
+    }
+  }
+
+  /**
+   * Обновить проводимость после медитации
+   * КРИТИЧЕСКАЯ ОПЕРАЦИЯ - немедленное сохранение в БД!
+   */
+  async updateConductivity(
+    sessionId: string,
+    newConductivity: number,
+    meditationGained: number
+  ): Promise<TruthResult<{ conductivity: number; conductivityMeditations: number }>> {
+    const session = this.sessions.get(sessionId);
+    if (!session) {
+      return { success: false, error: 'Session not loaded' };
+    }
+
+    try {
+      const char = session.character;
+      char.conductivity = newConductivity;
+      char.conductivityMeditations += meditationGained;
+
+      // Сохраняем в БД
+      await db.character.update({
+        where: { id: char.id },
+        data: {
+          conductivity: char.conductivity,
+          conductivityMeditations: char.conductivityMeditations,
+          updatedAt: new Date(),
+        },
+      });
+
+      session.lastSavedAt = new Date();
+
+      console.log(`[TruthSystem] Conductivity updated: ${char.conductivity.toFixed(3)} (meditations: ${char.conductivityMeditations})`);
+      return { success: true, data: { conductivity: char.conductivity, conductivityMeditations: char.conductivityMeditations } };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      return { success: false, error: `Failed to update conductivity: ${message}` };
+    }
+  }
+
   // ==================== TECHNIQUE OPERATIONS ====================
 
   /**

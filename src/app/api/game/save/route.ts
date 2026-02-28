@@ -6,6 +6,7 @@ import {
   validateOrError,
   validationErrorResponse,
 } from "@/lib/validations/game";
+import { TruthSystem } from "@/lib/game/truth-system";
 
 // GET - получить список сохранений
 export async function GET(request: NextRequest) {
@@ -149,6 +150,71 @@ export async function PUT(request: NextRequest) {
     console.error("Update save API error:", error);
     return NextResponse.json(
       {
+        error: "Internal server error",
+        message: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 }
+    );
+  }
+}
+
+// POST - Принудительное сохранение через TruthSystem
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { sessionId, saveType = 'full' } = body;
+
+    if (!sessionId) {
+      return NextResponse.json(
+        { error: "sessionId is required" },
+        { status: 400 }
+      );
+    }
+
+    const truthSystem = TruthSystem.getInstance();
+    const sessionState = truthSystem.getSessionState(sessionId);
+
+    if (!sessionState) {
+      // Сессия не в памяти - просто обновляем timestamp в БД
+      await db.gameSession.update({
+        where: { id: sessionId },
+        data: { updatedAt: new Date() },
+      });
+
+      return NextResponse.json({
+        success: true,
+        source: "database",
+        message: "Session not in memory, updated timestamp only",
+      });
+    }
+
+    // Сессия в памяти - сохраняем через TruthSystem
+    let result;
+    if (saveType === 'quick') {
+      result = await truthSystem.quickSave(sessionId);
+    } else {
+      result = await truthSystem.saveToDatabase(sessionId);
+    }
+
+    if (!result.success) {
+      return NextResponse.json(
+        { success: false, error: result.error },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      source: "memory",
+      saveType,
+      savedAt: sessionState.lastSavedAt,
+      stats: truthSystem.getStats(),
+    });
+  } catch (error) {
+    console.error("Force save API error:", error);
+    return NextResponse.json(
+      {
+        success: false,
         error: "Internal server error",
         message: error instanceof Error ? error.message : "Unknown error",
       },
