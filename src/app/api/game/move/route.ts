@@ -4,7 +4,10 @@
  * Handles player movement with time advancement.
  * Each tile moved = 1 tick (1 minute) of game time.
  * 
- * Использует ЕДИНЫЙ сервис обработки тиков времени (time-tick.service.ts)
+ * ИНТЕГРАЦИЯ TRUTHSYSTEM:
+ * - Проверяет наличие сессии в памяти (ПАМЯТЬ ПЕРВИЧНА!)
+ * - Использует quickProcessQiTick для эффеков времени
+ * - Продвигает время через TruthSystem.advanceTime()
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -12,6 +15,7 @@ import { db } from '@/lib/db';
 import { quickProcessQiTick } from '@/services/time-tick.service';
 import { formatWorldTimeForResponse } from '@/lib/game/time-db';
 import { ACTION_TICK_COSTS } from '@/lib/game/constants';
+import { TruthSystem } from '@/lib/game/truth-system';
 
 interface MoveRequest {
   sessionId: string;
@@ -31,31 +35,35 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get session with character
-    const session = await db.gameSession.findUnique({
-      where: { id: sessionId },
-      select: {
-        id: true,
-        character: {
-          select: {
-            id: true,
-            coreCapacity: true,
-            currentQi: true,
-            cultivationLevel: true,
-            conductivityMeditations: true,
-          },
-        },
-      },
-    });
-
-    if (!session || !session.character) {
-      return NextResponse.json(
-        { success: false, error: 'Session or character not found' },
-        { status: 404 }
-      );
+    // === ПРОВЕРКА TRUTHSYSTEM (ПАМЯТЬ ПЕРВИЧНА!) ===
+    const truthSystem = TruthSystem.getInstance();
+    const memoryState = truthSystem.getSessionState(sessionId);
+    
+    let source: 'memory' | 'database' = 'database';
+    let characterId: string;
+    
+    if (memoryState) {
+      source = 'memory';
+      characterId = memoryState.characterId;
+    } else {
+      // Загружаем из БД
+      const session = await db.gameSession.findUnique({
+        where: { id: sessionId },
+        select: { characterId: true },
+      });
+      
+      if (!session) {
+        return NextResponse.json(
+          { success: false, error: 'Session not found' },
+          { status: 404 }
+        );
+      }
+      
+      characterId = session.characterId;
+      
+      // Загружаем сессию в память для будущих запросов
+      await truthSystem.loadSession(sessionId);
     }
-
-    const character = session.character;
 
     // Calculate ticks (1 tile = 1 tick per ACTION_TICK_COSTS.move_tile)
     const ticksPerTile = ACTION_TICK_COSTS.move_tile || 1;
@@ -65,13 +73,14 @@ export async function POST(request: NextRequest) {
     if (totalTicks <= 0) {
       return NextResponse.json({
         success: true,
+        source,
         timeAdvanced: false,
         message: 'No movement detected',
       });
     }
 
     // === ИСПОЛЬЗУЕМ ЕДИНЫЙ СЕРВИС ОБРАБОТКИ ТИКОВ ===
-    const tickResult = await quickProcessQiTick(character.id, sessionId, totalTicks);
+    const tickResult = await quickProcessQiTick(characterId, sessionId, totalTicks);
 
     if (!tickResult.success) {
       return NextResponse.json(
@@ -80,24 +89,35 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get updated world time
-    const updatedSession = await db.gameSession.findUnique({
-      where: { id: sessionId },
-      select: { worldYear: true, worldMonth: true, worldDay: true, worldHour: true, worldMinute: true },
-    });
+    // === СИНХРОНИЗАЦИЯ С TRUTHSYSTEM ===
+    // Продвигаем время в памяти
+    truthSystem.advanceTime(sessionId, totalTicks);
+    
+    // Обновляем Ци в памяти если было изменение
+    if (tickResult.qiEffects.passiveGain > 0 || tickResult.qiEffects.dissipation > 0) {
+      truthSystem.updateCharacter(sessionId, {
+        currentQi: tickResult.qiEffects.finalQi,
+      });
+    }
+
+    // Получаем время из памяти (ПЕРВИЧНЫЙ ИСТОЧНИК)
+    const worldTimeFromMemory = truthSystem.getWorldTime(sessionId);
 
     return NextResponse.json({
       success: true,
+      source, // Указываем источник данных
       timeAdvanced: true,
       ticksAdvanced: totalTicks,
-      worldTime: updatedSession ? formatWorldTimeForResponse({
-        year: updatedSession.worldYear,
-        month: updatedSession.worldMonth,
-        day: updatedSession.worldDay,
-        hour: updatedSession.worldHour,
-        minute: updatedSession.worldMinute,
-        totalMinutes: updatedSession.worldHour * 60 + updatedSession.worldMinute,
-      }) : null,
+      worldTime: worldTimeFromMemory ? {
+        year: worldTimeFromMemory.year,
+        month: worldTimeFromMemory.month,
+        day: worldTimeFromMemory.day,
+        hour: worldTimeFromMemory.hour,
+        minute: worldTimeFromMemory.minute,
+        formatted: worldTimeFromMemory.formatted,
+        season: worldTimeFromMemory.season,
+        daysSinceStart: worldTimeFromMemory.daysSinceStart,
+      } : null,
       dayChanged: tickResult.dayChanged,
       qiEffects: {
         passiveGain: tickResult.qiEffects.passiveGain,

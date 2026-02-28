@@ -1,10 +1,16 @@
 /**
  * Сервис работы с инвентарём
+ * 
+ * ИНТЕГРАЦИЯ TRUTHSYSTEM:
+ * - Проверяет наличие сессии в памяти (ПАМЯТЬ ПЕРВИЧНА!)
+ * - Обновляет состояние через TruthSystem если сессия активна
+ * - Fallback на прямую БД если сессия не в памяти
  */
 
 import { db } from "@/lib/db";
 import type { InventoryItem } from "@/types/game";
 import { clampQiWithOverflow } from '@/lib/game/qi-shared';
+import { TruthSystem } from '@/lib/game/truth-system';
 
 // ============================================
 // ТИПЫ
@@ -202,11 +208,23 @@ export class InventoryService {
 
   /**
    * Использовать предмет
+   * 
+   * ИНТЕГРАЦИЯ TRUTHSYSTEM:
+   * - Проверяет наличие сессии в памяти (ПАМЯТЬ ПЕРВИЧНА!)
+   * - Обновляет данные через TruthSystem если сессия активна
+   * - Fallback на прямую БД если сессия не в памяти
    */
   async useItem(
     characterId: string,
-    itemId: string
-  ): Promise<UseItemResult> {
+    itemId: string,
+    sessionId?: string // Опционально - для интеграции с TruthSystem
+  ): Promise<UseItemResult & { source?: 'memory' | 'database' }> {
+    // === ПРОВЕРКА TRUTHSYSTEM (ПАМЯТЬ ПЕРВИЧНА!) ===
+    const truthSystem = TruthSystem.getInstance();
+    const memoryState = truthSystem.getSessionByCharacter(characterId);
+    const useMemory = !!memoryState;
+    const source: 'memory' | 'database' = useMemory ? 'memory' : 'database';
+    
     // Получаем предмет
     const item = await db.inventoryItem.findFirst({
       where: { id: itemId, characterId },
@@ -218,21 +236,39 @@ export class InventoryService {
         message: "Предмет не найден",
         consumed: false,
         quantityLeft: 0,
+        source,
       };
     }
 
     // Получаем персонажа
-    const character = await db.character.findUnique({
-      where: { id: characterId },
-    });
-
-    if (!character) {
-      return {
-        success: false,
-        message: "Персонаж не найден",
-        consumed: false,
-        quantityLeft: item.quantity,
+    let character;
+    if (useMemory && memoryState) {
+      // Используем данные из памяти
+      character = {
+        id: memoryState.character.id,
+        currentQi: memoryState.character.currentQi,
+        coreCapacity: memoryState.character.coreCapacity,
+        health: memoryState.character.health,
+        fatigue: memoryState.character.fatigue,
+        mentalFatigue: memoryState.character.mentalFatigue,
       };
+    } else {
+      // Fallback: загружаем из БД
+      const dbCharacter = await db.character.findUnique({
+        where: { id: characterId },
+      });
+      
+      if (!dbCharacter) {
+        return {
+          success: false,
+          message: "Персонаж не найден",
+          consumed: false,
+          quantityLeft: item.quantity,
+          source,
+        };
+      }
+      
+      character = dbCharacter;
     }
 
     // Парсим эффекты
@@ -242,7 +278,8 @@ export class InventoryService {
     let fatigueChange = 0;
     let mentalFatigueChange = 0;
 
-    // Применяем эффекты
+    // === ПРИМЕНЯЕМ ЭФФЕКТЫ ===
+    
     if (effects.qiRestore) {
       // Используем централизованную функцию ограничения Ци
       const qiResult = clampQiWithOverflow(
@@ -251,37 +288,61 @@ export class InventoryService {
         character.currentQi
       );
       qiChange = qiResult.qiAdded;
-      await db.character.update({
-        where: { id: characterId },
-        data: { currentQi: qiResult.actualQi },
-      });
+      
+      if (useMemory && memoryState) {
+        // ОБНОВЛЯЕМ ЧЕРЕЗ TRUTHSYSTEM (КРИТИЧЕСКАЯ ОПЕРАЦИЯ!)
+        truthSystem.addQi(memoryState.sessionId, effects.qiRestore);
+      } else {
+        // Fallback: прямое обновление БД
+        await db.character.update({
+          where: { id: characterId },
+          data: { currentQi: qiResult.actualQi },
+        });
+      }
     }
 
     if (effects.healthRestore) {
       healthChange = Math.min(effects.healthRestore, 100 - character.health);
-      await db.character.update({
-        where: { id: characterId },
-        data: { health: { increment: healthChange } },
-      });
+      
+      if (useMemory && memoryState) {
+        truthSystem.updateCharacter(memoryState.sessionId, {
+          health: character.health + healthChange,
+        });
+      } else {
+        await db.character.update({
+          where: { id: characterId },
+          data: { health: { increment: healthChange } },
+        });
+      }
     }
 
     if (effects.fatigueRestore) {
       fatigueChange = Math.min(effects.fatigueRestore, character.fatigue);
-      await db.character.update({
-        where: { id: characterId },
-        data: { fatigue: { decrement: fatigueChange } },
-      });
+      
+      if (useMemory && memoryState) {
+        truthSystem.recoverFatigue(memoryState.sessionId, fatigueChange, 0);
+      } else {
+        await db.character.update({
+          where: { id: characterId },
+          data: { fatigue: { decrement: fatigueChange } },
+        });
+      }
     }
 
     if (effects.mentalFatigueRestore) {
       mentalFatigueChange = Math.min(effects.mentalFatigueRestore, character.mentalFatigue);
-      await db.character.update({
-        where: { id: characterId },
-        data: { mentalFatigue: { decrement: mentalFatigueChange } },
-      });
+      
+      if (useMemory && memoryState) {
+        truthSystem.recoverFatigue(memoryState.sessionId, 0, mentalFatigueChange);
+      } else {
+        await db.character.update({
+          where: { id: characterId },
+          data: { mentalFatigue: { decrement: mentalFatigueChange } },
+        });
+      }
     }
 
-    // Уменьшаем количество или удаляем
+    // Уменьшаем количество или удаляем (всегда в БД - это инвентарь)
     let quantityLeft = item.quantity;
     let updatedItem: InventoryItem | undefined;
 
@@ -290,6 +351,12 @@ export class InventoryService {
         // Удаляем предмет
         await db.inventoryItem.delete({ where: { id: itemId } });
         quantityLeft = 0;
+        
+        // Обновляем память если есть
+        if (useMemory && memoryState) {
+          // Удаляем из массива inventory в памяти (если он синхронизирован)
+          // Note: inventory в TruthSystem пока не синхронизирован
+        }
       } else {
         // Уменьшаем количество
         const updated = await db.inventoryItem.update({
@@ -313,6 +380,7 @@ export class InventoryService {
         fatigueChange: -fatigueChange,
         mentalFatigueChange: -mentalFatigueChange,
       },
+      source,
     };
   }
 
