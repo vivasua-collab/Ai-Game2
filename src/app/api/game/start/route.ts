@@ -6,7 +6,7 @@ import {
   buildCustomStartPrompt,
 } from "@/data/prompts/game-master";
 import { generateGameResponse, initializeLLM, isLLMReady } from "@/lib/llm";
-import { calculateBaseConductivity } from "@/data/cultivation-levels";
+import { getBaseConductivity } from "@/lib/game/conductivity-system";
 import { logError, logInfo, logWarn, logDebug, LogTimer } from "@/lib/logger";
 import {
   startGameSchema,
@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
       startConfig.qiDensity = calculateQiDensity(startConfig.distanceFromCenter);
     }
 
-    const conductivity = calculateBaseConductivity(startConfig.coreCapacity);
+    const conductivity = getBaseConductivity(startConfig.coreCapacity);
     const worldId = `world-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const worldName = startConfig.sectName 
       ? `Мир секты "${startConfig.sectName}"` 

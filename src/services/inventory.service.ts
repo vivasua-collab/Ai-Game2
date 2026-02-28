@@ -4,6 +4,7 @@
 
 import { db } from "@/lib/db";
 import type { InventoryItem } from "@/types/game";
+import { clampQiWithOverflow } from '@/lib/game/qi-shared';
 
 // ============================================
 // ТИПЫ
@@ -243,10 +244,16 @@ export class InventoryService {
 
     // Применяем эффекты
     if (effects.qiRestore) {
-      qiChange = Math.min(effects.qiRestore, character.coreCapacity - character.currentQi);
+      // Используем централизованную функцию ограничения Ци
+      const qiResult = clampQiWithOverflow(
+        character.currentQi + effects.qiRestore,
+        character.coreCapacity,
+        character.currentQi
+      );
+      qiChange = qiResult.qiAdded;
       await db.character.update({
         where: { id: characterId },
-        data: { currentQi: { increment: qiChange } },
+        data: { currentQi: qiResult.actualQi },
       });
     }
 

@@ -380,3 +380,143 @@ export function getBreakthroughProgress(
     percent: Math.round((requirements.currentFills / requirements.requiredFills) * 100),
   };
 }
+
+// ==================== ЗАЩИТА ОТ ПЕРЕПОЛНЕНИЯ ЦИ ====================
+
+/**
+ * Результат ограничения Ци
+ */
+export interface QiClampResult {
+  /** Фактическое значение Ци после ограничения */
+  actualQi: number;
+  /** Сколько Ци было добавлено реально */
+  qiAdded: number;
+  /** Сколько Ци рассеялось в окружающее пространство */
+  qiDissipated: number;
+  /** Было ли переполнение */
+  wasOverflow: boolean;
+}
+
+/**
+ * Ограничение Ци с защитой от переполнения ядра
+ * 
+ * ЕДИНАЯ ТОЧКА КОНТРОЛЯ для всех операций добавления Ци.
+ * При переполнении ёмкости ядра, излишки Ци рассеиваются в окружающее пространство.
+ * 
+ * @param newQiValue - Новое значение Ци (может быть любым)
+ * @param coreCapacity - Максимальная ёмкость ядра
+ * @param previousQi - Предыдущее значение Ци (для расчёта дельты)
+ * @returns Результат ограничения с информацией о рассеянии
+ * 
+ * @example
+ * // Попытка добавить 500 Ци при полной ёмкости 1000
+ * const result = clampQiWithOverflow(1500, 1000, 800);
+ * // result = { actualQi: 1000, qiAdded: 200, qiDissipated: 300, wasOverflow: true }
+ */
+export function clampQiWithOverflow(
+  newQiValue: number,
+  coreCapacity: number,
+  previousQi: number = 0
+): QiClampResult {
+  // Гарантируем, что coreCapacity > 0
+  const maxQi = Math.max(1, coreCapacity);
+  
+  // Рассчитываем, сколько Ци пытались добавить
+  const attemptedAdd = Math.max(0, newQiValue - previousQi);
+  
+  // Ограничиваем значение
+  const actualQi = Math.max(0, Math.min(newQiValue, maxQi));
+  
+  // Сколько реально добавилось
+  const qiAdded = Math.max(0, actualQi - previousQi);
+  
+  // Сколько рассеялось
+  const qiDissipated = Math.max(0, attemptedAdd - qiAdded);
+  
+  // Было ли переполнение
+  const wasOverflow = qiDissipated > 0;
+  
+  return {
+    actualQi,
+    qiAdded,
+    qiDissipated,
+    wasOverflow,
+  };
+}
+
+/**
+ * Форматирование сообщения о рассеянии Ци
+ */
+export function formatQiDissipationMessage(qiDissipated: number): string {
+  if (qiDissipated <= 0) return '';
+  
+  return `💨 ${qiDissipated} Ци рассеялось в окружающее пространство (ядро переполнено).`;
+}
+
+// ==================== ПАССИВНОЕ РАССЕИВАНИЕ ЦИ ====================
+
+/**
+ * Результат пассивного рассеивания Ци
+ */
+export interface QiDissipationResult {
+  /** Новое значение Ци после рассеивания */
+  newQi: number;
+  /** Сколько Ци рассеялось */
+  dissipated: number;
+  /** Было ли рассеивание */
+  wasOvercharged: boolean;
+}
+
+/**
+ * Расчёт пассивного рассеивания избыточной Ци
+ * 
+ * ЕДИНСТВЕННАЯ функция для рассеивания - работает при currentQi > coreCapacity.
+ * Избыточная Ци "вытекает" через меридианы со скоростью проводимости.
+ * 
+ * @param currentQi - Текущее количество Ци
+ * @param coreCapacity - Ёмкость ядра
+ * @param conductivity - Проводимость (Ци/сек)
+ * @param deltaTimeSeconds - Время в секундах
+ * @returns Результат рассеивания
+ * 
+ * @example
+ * // Переполненное ядро: 1974 Ци при ёмкости 1000
+ * // Проводимость 3.61 Ци/сек, прошло 60 секунд (1 минута)
+ * const result = calculatePassiveQiDissipation(1974, 1000, 3.61, 60);
+ * // dissipated = min(1974 - 1000, 3.61 * 60) = min(974, 216.6) = 216.6
+ * // newQi = 1974 - 216.6 = 1757.4
+ */
+export function calculatePassiveQiDissipation(
+  currentQi: number,
+  coreCapacity: number,
+  conductivity: number,
+  deltaTimeSeconds: number
+): QiDissipationResult {
+  // Если нет переполнения - нет рассеивания
+  if (currentQi <= coreCapacity) {
+    return {
+      newQi: currentQi,
+      dissipated: 0,
+      wasOvercharged: false,
+    };
+  }
+  
+  // Избыточная Ци
+  const excessQi = currentQi - coreCapacity;
+  
+  // Скорость рассеивания = проводимость (сколько Ци может "вытекать" в секунду)
+  // Рассеивание происходит со скоростью проводимости
+  const maxDissipation = conductivity * deltaTimeSeconds;
+  
+  // Рассеиваем не больше избытка
+  const dissipated = Math.min(excessQi, maxDissipation);
+  
+  // Новое значение Ци
+  const newQi = currentQi - dissipated;
+  
+  return {
+    newQi: Math.max(coreCapacity, newQi), // Не опускаемся ниже ёмкости
+    dissipated: Math.floor(dissipated),
+    wasOvercharged: true,
+  };
+}

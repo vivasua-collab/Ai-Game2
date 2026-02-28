@@ -15,6 +15,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { useGameSessionId, useGameActions, useGameCharacter, useGameTechniques, useGameMessages, useGameTime } from '@/stores/game.store';
 import type { Message, CharacterTechnique, Character } from '@/types/game';
 import { getCombatSlotsCount } from '@/types/game';
+import { calculateTotalConductivity } from '@/lib/game/conductivity-system';
 
 // Game dimensions
 const BASE_WIDTH = 1200;
@@ -517,40 +518,31 @@ function damageTarget(
 // ============================================
 
 /**
- * Множители проводимости по уровням культивации
- */
-const CONDUCTIVITY_MULTIPLIERS: Record<number, number> = {
-  1: 1, 2: 1.2, 3: 1.5, 4: 2, 5: 3, 6: 5, 7: 8, 8: 15, 9: 50, 10: 100
-};
-
-/**
  * Calculate technique charge time based on Qi cost and conductivity
  * 
  * Formula: chargeTime = qiCost / effectiveSpeed
- * effectiveSpeed = conductivity × levelMultiplier × (1 + masteryBonus)
- * 
- * ВАЖНО: Проводимость должна рассчитываться как (coreCapacity / 360) * levelMultiplier
+ * effectiveSpeed = conductivity × (1 + masteryBonus)
  * 
  * @param qiCost Qi cost of the technique
- * @param coreCapacity Character's core capacity (for conductivity calculation)
+ * @param coreCapacity Character's core capacity
  * @param cultivationLevel Character's cultivation level
  * @param mastery Technique mastery (0-100%)
+ * @param conductivityMeditations Number of conductivity meditations (default 0)
  * @returns Charge time in milliseconds
  */
 function calculateChargeTime(
   qiCost: number,
   coreCapacity: number,
   cultivationLevel: number = 1,
-  mastery: number = 0
+  mastery: number = 0,
+  conductivityMeditations: number = 0
 ): number {
-  // Базовая проводимость = coreCapacity / 360 (Ци/сек)
-  const baseConductivity = coreCapacity / 360;
-  
-  // Множитель проводимости от уровня культивации
-  const levelMultiplier = CONDUCTIVITY_MULTIPLIERS[cultivationLevel] || 1;
-  
-  // Итоговая проводимость с учётом уровня
-  const totalConductivity = baseConductivity * levelMultiplier;
+  // Используем ЕДИНУЮ функцию проводимости из conductivity-system.ts
+  const totalConductivity = calculateTotalConductivity(
+    coreCapacity,
+    cultivationLevel,
+    conductivityMeditations
+  );
   
   // Base speed = conductivity Qi/second
   let effectiveSpeed = Math.max(0.1, totalConductivity);
@@ -568,19 +560,18 @@ function calculateChargeTime(
 
 /**
  * Get effective conductivity from character
- * Рассчитывает проводимость на основе coreCapacity и уровня культивации
+ * Использует ЕДИНУЮ функцию проводимости из conductivity-system.ts
  */
 function getEffectiveConductivity(): number {
   const char = globalCharacter;
   if (!char) return 1.0;
   
-  // Базовая проводимость = coreCapacity / 360
-  const baseConductivity = (char.coreCapacity || 360) / 360;
-  
-  // Множитель от уровня культивации
-  const levelMultiplier = CONDUCTIVITY_MULTIPLIERS[char.cultivationLevel] || 1;
-  
-  return baseConductivity * levelMultiplier;
+  // Используем единую функцию проводимости
+  return calculateTotalConductivity(
+    char.coreCapacity,
+    char.cultivationLevel,
+    char.conductivityMeditations || 0
+  );
 }
 
 /**
@@ -667,11 +658,12 @@ function startTechniqueCharging(
     return false;
   }
   
-  // Calculate charge time using coreCapacity (не conductivity из БД - он не обновляется!)
+  // Calculate charge time using coreCapacity and conductivity meditations
   const coreCapacity = getCoreCapacity();
   const cultivationLevel = getCultivationLevel();
   const mastery = techniqueData.mastery || 0;
-  const chargeTime = calculateChargeTime(techniqueData.qiCost, coreCapacity, cultivationLevel, mastery);
+  const conductivityMeditations = globalCharacter?.conductivityMeditations || 0;
+  const chargeTime = calculateChargeTime(techniqueData.qiCost, coreCapacity, cultivationLevel, mastery, conductivityMeditations);
   
   // Create charge bar for this slot (will be updated in update loop)
   const chargeBar = scene.add.graphics();

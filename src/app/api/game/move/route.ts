@@ -3,14 +3,15 @@
  * 
  * Handles player movement with time advancement.
  * Each tile moved = 1 tick (1 minute) of game time.
- * Includes passive Qi generation from core.
+ * 
+ * Использует ЕДИНЫЙ сервис обработки тиков времени (time-tick.service.ts)
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { advanceWorldTime, formatWorldTimeForResponse } from '@/lib/game/time-db';
-import { ACTION_TICK_COSTS, QI_CONSTANTS } from '@/lib/game/constants';
-import { calculateCoreGenerationRate, calculatePassiveQiGain } from '@/lib/game/qi-shared';
+import { quickProcessQiTick } from '@/services/time-tick.service';
+import { formatWorldTimeForResponse } from '@/lib/game/time-db';
+import { ACTION_TICK_COSTS } from '@/lib/game/constants';
 
 interface MoveRequest {
   sessionId: string;
@@ -40,6 +41,8 @@ export async function POST(request: NextRequest) {
             id: true,
             coreCapacity: true,
             currentQi: true,
+            cultivationLevel: true,
+            conductivityMeditations: true,
           },
         },
       },
@@ -67,39 +70,41 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Advance world time
-    const timeResult = await advanceWorldTime(sessionId, totalTicks);
+    // === ИСПОЛЬЗУЕМ ЕДИНЫЙ СЕРВИС ОБРАБОТКИ ТИКОВ ===
+    const tickResult = await quickProcessQiTick(character.id, sessionId, totalTicks);
 
-    // Calculate passive Qi gain during movement
-    const durationSeconds = totalTicks * 60; // ticks to seconds
-    const coreGenerationRate = calculateCoreGenerationRate(character.coreCapacity);
-    const passiveQiGain = calculatePassiveQiGain(
-      character.currentQi,
-      character.coreCapacity,
-      coreGenerationRate,
-      durationSeconds
-    );
-
-    // Update character Qi if there's passive gain
-    if (passiveQiGain > 0) {
-      const newQi = Math.min(
-        character.coreCapacity * QI_CONSTANTS.PASSIVE_QI_CAP, // Cap at 90%
-        character.currentQi + passiveQiGain
+    if (!tickResult.success) {
+      return NextResponse.json(
+        { success: false, error: 'Failed to process time tick' },
+        { status: 500 }
       );
-
-      await db.character.update({
-        where: { id: character.id },
-        data: { currentQi: Math.floor(newQi) },
-      });
     }
+
+    // Get updated world time
+    const updatedSession = await db.gameSession.findUnique({
+      where: { id: sessionId },
+      select: { worldYear: true, worldMonth: true, worldDay: true, worldHour: true, worldMinute: true },
+    });
 
     return NextResponse.json({
       success: true,
       timeAdvanced: true,
       ticksAdvanced: totalTicks,
-      worldTime: formatWorldTimeForResponse(timeResult.newTime),
-      dayChanged: timeResult.dayChanged,
-      passiveQiGain,
+      worldTime: updatedSession ? formatWorldTimeForResponse({
+        year: updatedSession.worldYear,
+        month: updatedSession.worldMonth,
+        day: updatedSession.worldDay,
+        hour: updatedSession.worldHour,
+        minute: updatedSession.worldMinute,
+        totalMinutes: updatedSession.worldHour * 60 + updatedSession.worldMinute,
+      }) : null,
+      dayChanged: tickResult.dayChanged,
+      qiEffects: {
+        passiveGain: tickResult.qiEffects.passiveGain,
+        dissipation: tickResult.qiEffects.dissipation,
+        finalQi: tickResult.qiEffects.finalQi,
+      },
+      conductivityInfo: tickResult.conductivityInfo,
     });
 
   } catch (error) {

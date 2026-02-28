@@ -225,12 +225,6 @@ export function calculateRequiredQiForBreakthrough(
   return coreCapacity * (isMajorBreakthrough ? 100 : 10);
 }
 
-// Функция расчёта базовой проводимости
-export function calculateBaseConductivity(coreCapacity: number): number {
-  // Проводимость = объём ядра / 360 сек
-  return coreCapacity / 360;
-}
-
 // Функция получения информации об уровне
 export function getCultivationLevel(level: number): CultivationLevel | undefined {
   return CULTIVATION_LEVELS.find((l) => l.level === level);

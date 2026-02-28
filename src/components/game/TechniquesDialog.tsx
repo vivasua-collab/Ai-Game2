@@ -73,7 +73,7 @@ const RARITY_COLORS: Record<string, string> = {
 
 // Форматирование мастерства - 2 знака после запятой
 function formatMastery(mastery: number): string {
-  return mastery.toFixed(2);
+  return Number(mastery).toFixed(2);
 }
 
 // Функция для получения количества боевых слотов
@@ -897,7 +897,7 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
                           <div className="flex justify-between text-sm">
                             <span className="text-slate-400">Урон:</span>
                             <span className="text-red-400">
-                              {selectedTechnique.technique.computed?.finalDamage ?? selectedTechnique.technique.effects?.damage}
+                              {Number(selectedTechnique.technique.computed?.finalDamage ?? selectedTechnique.technique.effects?.damage)}
                             </span>
                           </div>
                         )}
@@ -907,7 +907,7 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
                           <div className="flex justify-between text-sm">
                             <span className="text-slate-400">Дальность:</span>
                             <span className="text-blue-300">
-                              {(selectedTechnique.technique.computed?.finalRange ?? selectedTechnique.technique.effects?.range)?.toFixed(1)}м
+                              {Number(selectedTechnique.technique.computed?.finalRange ?? selectedTechnique.technique.effects?.range).toFixed(1)}м
                             </span>
                           </div>
                         )}

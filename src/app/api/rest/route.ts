@@ -5,14 +5,13 @@
  * - Лёгкий отдых: восстановление физическое и ментальное (медленно)
  * - Сон: полное восстановление (быстро, но требует больше времени)
  * 
- * Также включает пассивное восстановление Ци ядром.
+ * Использует ЕДИНЫЙ сервис обработки тиков времени (time-tick.service.ts)
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { FATIGUE_CONSTANTS, FATIGUE_RECOVERY_BY_LEVEL, QI_CONSTANTS } from '@/lib/game/constants';
-import { advanceWorldTime, formatWorldTimeForResponse } from '@/lib/game/time-db';
-import { calculateCoreGenerationRate, calculatePassiveQiGain } from '@/lib/game/qi-shared';
+import { processTimeTickEffects } from '@/services/time-tick.service';
+import { formatWorldTimeForResponse } from '@/lib/game/time-db';
 
 interface RestRequest {
   characterId: string;
@@ -85,52 +84,40 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Продвигаем мировое время
-    const timeResult = await advanceWorldTime(session.id, durationMinutes);
+    // === ИСПОЛЬЗУЕМ ЕДИНЫЙ СЕРВИС ОБРАБОТКИ ТИКОВ ===
+    const tickResult = await processTimeTickEffects({
+      characterId,
+      sessionId: session.id,
+      ticks: durationMinutes,
+      restType,
+      applyPassiveQi: true,
+      applyDissipation: true,
+    });
 
-    // Расчёт восстановления усталости
-    const levelMultiplier = FATIGUE_RECOVERY_BY_LEVEL[character.cultivationLevel] || 1.0;
-
-    let physicalRecovery: number;
-    let mentalRecovery: number;
-
-    if (restType === 'sleep') {
-      // Сон: быстрое восстановление обоих типов
-      physicalRecovery = durationMinutes * FATIGUE_CONSTANTS.SLEEP_PHYSICAL_RECOVERY * levelMultiplier;
-      mentalRecovery = durationMinutes * FATIGUE_CONSTANTS.SLEEP_MENTAL_RECOVERY * levelMultiplier;
-    } else {
-      // Лёгкий отдых: медленное восстановление
-      physicalRecovery = durationMinutes * FATIGUE_CONSTANTS.REST_LIGHT_PHYSICAL * levelMultiplier;
-      mentalRecovery = durationMinutes * FATIGUE_CONSTANTS.REST_LIGHT_MENTAL * levelMultiplier;
+    if (!tickResult.success) {
+      return NextResponse.json(
+        { success: false, error: 'Failed to process time tick' },
+        { status: 500 }
+      );
     }
 
-    // Применяем восстановление усталости (не может уйти ниже 0)
-    const newPhysicalFatigue = Math.max(0, character.fatigue - physicalRecovery);
-    const newMentalFatigue = Math.max(0, character.mentalFatigue - mentalRecovery);
-
-    // === Пассивное восстановление Ци ядром ===
-    const durationSeconds = durationMinutes * 60;
-    const coreGenerationRate = calculateCoreGenerationRate(character.coreCapacity);
-    const passiveQiGain = calculatePassiveQiGain(
-      character.currentQi,
-      character.coreCapacity,
-      coreGenerationRate,
-      durationSeconds
-    );
-
-    // Новое количество Ци (с капом 90% для пассивного)
-    const qiCap = character.coreCapacity * QI_CONSTANTS.PASSIVE_QI_CAP;
-    const newQi = Math.min(qiCap, character.currentQi + passiveQiGain);
-
-    // Обновляем персонажа
-    const updatedCharacter = await db.character.update({
+    // Получаем обновлённого персонажа
+    const updatedCharacter = await db.character.findUnique({
       where: { id: characterId },
-      data: {
-        fatigue: newPhysicalFatigue,
-        mentalFatigue: newMentalFatigue,
-        currentQi: Math.floor(newQi),
+      select: {
+        currentQi: true,
+        coreCapacity: true,
+        fatigue: true,
+        mentalFatigue: true,
       },
     });
+
+    if (!updatedCharacter) {
+      return NextResponse.json(
+        { success: false, error: 'Character not found after update' },
+        { status: 500 }
+      );
+    }
 
     // Формируем сообщение
     const hours = Math.floor(durationMinutes / 60);
@@ -142,16 +129,32 @@ export async function POST(request: NextRequest) {
       : `🌿 Отдых завершён!\n\n`;
 
     message += `⏱️ Время: ${timeStr}\n`;
-    message += `\n💚 Физ. усталость: ${updatedCharacter.fatigue.toFixed(0)}% (-${physicalRecovery.toFixed(1)}%)\n`;
-    message += `💜 Мент. усталость: ${updatedCharacter.mentalFatigue.toFixed(0)}% (-${mentalRecovery.toFixed(1)}%)\n`;
-
-    if (passiveQiGain > 0) {
-      message += `💫 Ци: ${updatedCharacter.currentQi}/${updatedCharacter.coreCapacity} (+${Math.floor(passiveQiGain)} от ядра)\n`;
+    
+    // Эффекты усталости
+    if (tickResult.fatigueEffects) {
+      message += `\n💚 Физ. усталость: ${tickResult.fatigueEffects.finalPhysical.toFixed(0)}% (-${tickResult.fatigueEffects.physicalRecovery.toFixed(1)}%)\n`;
+      message += `💜 Мент. усталость: ${tickResult.fatigueEffects.finalMental.toFixed(0)}% (-${tickResult.fatigueEffects.mentalRecovery.toFixed(1)}%)\n`;
+    }
+    
+    // Эффекты Ци
+    if (tickResult.qiEffects.passiveGain > 0) {
+      message += `💫 Ци: ${updatedCharacter.currentQi}/${updatedCharacter.coreCapacity} (+${tickResult.qiEffects.passiveGain} от ядра)\n`;
+    }
+    
+    // Рассеивание избыточной Ци
+    if (tickResult.qiEffects.dissipation > 0) {
+      message += `💨 Рассеяно избыточной Ци: -${tickResult.qiEffects.dissipation}\n`;
     }
 
-    if (timeResult.dayChanged) {
+    if (tickResult.dayChanged) {
       message += `\n🌅 Наступил новый день!`;
     }
+
+    // Информация о проводимости
+    const worldTime = await db.gameSession.findUnique({
+      where: { id: session.id },
+      select: { worldYear: true, worldMonth: true, worldDay: true, worldHour: true, worldMinute: true },
+    });
 
     return NextResponse.json({
       success: true,
@@ -159,21 +162,29 @@ export async function POST(request: NextRequest) {
       result: {
         duration: durationMinutes,
         restType,
-        physicalRecovery: physicalRecovery.toFixed(1),
-        mentalRecovery: mentalRecovery.toFixed(1),
-        passiveQiGain: Math.floor(passiveQiGain),
+        physicalRecovery: tickResult.fatigueEffects?.physicalRecovery.toFixed(1) || '0',
+        mentalRecovery: tickResult.fatigueEffects?.mentalRecovery.toFixed(1) || '0',
+        passiveQiGain: tickResult.qiEffects.passiveGain,
+        qiDissipation: tickResult.qiEffects.dissipation,
       },
       character: {
-        id: updatedCharacter.id,
+        id: characterId,
         fatigue: updatedCharacter.fatigue,
         mentalFatigue: updatedCharacter.mentalFatigue,
         currentQi: updatedCharacter.currentQi,
         coreCapacity: updatedCharacter.coreCapacity,
       },
-      worldTime: formatWorldTimeForResponse(timeResult.newTime),
+      worldTime: worldTime ? formatWorldTimeForResponse({
+        year: worldTime.worldYear,
+        month: worldTime.worldMonth,
+        day: worldTime.worldDay,
+        hour: worldTime.worldHour,
+        minute: worldTime.worldMinute,
+        totalMinutes: worldTime.worldHour * 60 + worldTime.worldMinute,
+      }) : null,
       timeAdvanced: {
-        ticks: timeResult.ticksAdvanced,
-        dayChanged: timeResult.dayChanged,
+        ticks: tickResult.ticksAdvanced,
+        dayChanged: tickResult.dayChanged,
       },
     });
 

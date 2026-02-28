@@ -23,7 +23,7 @@ import {
   performConductivityMeditation,
   attemptBreakthrough,
 } from '@/lib/game/qi-system';
-import { getCoreFillPercent, calculateQiRates, calculateBreakthroughRequirements, getCultivationLevelName } from '@/lib/game/qi-shared';
+import { getCoreFillPercent, calculateQiRates, calculateBreakthroughRequirements, getCultivationLevelName, calculatePassiveQiDissipation } from '@/lib/game/qi-shared';
 import { QI_CONSTANTS, TIME_CONSTANTS, MEDITATION_TYPE_CONSTANTS, BREAKTHROUGH_CONSTANTS } from '@/lib/game/constants';
 import { advanceWorldTime, formatWorldTimeForResponse } from '@/lib/game/time-db';
 import { 
@@ -177,6 +177,37 @@ export async function POST(request: NextRequest) {
         { success: false, error: 'No active session for character' },
         { status: 404 }
       );
+    }
+    
+    // === РАССЕИВАНИЕ ИЗБЫТОЧНОЙ ЦИ ===
+    // Если ядро переполнено (от читов или других источников), рассеиваем излишки
+    let dissipationBeforeMeditation = 0;
+    if (character.currentQi > character.coreCapacity) {
+      const conductivity = calculateTotalConductivity(
+        character.coreCapacity,
+        character.cultivationLevel,
+        character.conductivityMeditations || 0
+      );
+      
+      // Рассеивание происходит мгновенно при любом действии
+      // Избыточная Ци "вытекает" через меридианы
+      const dissipationResult = calculatePassiveQiDissipation(
+        character.currentQi,
+        character.coreCapacity,
+        conductivity,
+        60 // Минимум 60 секунд на рассеивание при старте медитации
+      );
+      
+      if (dissipationResult.dissipated > 0) {
+        dissipationBeforeMeditation = dissipationResult.dissipated;
+        character.currentQi = dissipationResult.newQi;
+        
+        // Обновляем в БД
+        await db.character.update({
+          where: { id: characterId },
+          data: { currentQi: dissipationResult.newQi },
+        });
+      }
     }
     
     // Build location data
@@ -649,6 +680,12 @@ export async function POST(request: NextRequest) {
       // Generate message
       const qiPercent = getCoreFillPercent(updatedCharacter.currentQi, updatedCharacter.coreCapacity);
       message = `🧘 Медитация завершена!\n\n`;
+      
+      // Показываем рассеивание, если было
+      if (dissipationBeforeMeditation > 0) {
+        message += `💨 Рассеяно избыточной Ци: -${dissipationBeforeMeditation}\n\n`;
+      }
+      
       message += `⏱️ Время: ${result.duration} минут (${Math.floor(result.duration / 60)} ч ${result.duration % 60} мин)\n`;
       message += `💫 Прирост Ци: +${result.qiGained}`;
       if (result.breakdown) {
@@ -696,6 +733,7 @@ export async function POST(request: NextRequest) {
           duration: result.duration,
           coreWasFilled: result.coreWasFilled,
           breakdown: result.breakdown,
+          dissipation: dissipationBeforeMeditation,
         },
         techniqueUsed: techniqueData ? {
           name: techniqueData.name,
