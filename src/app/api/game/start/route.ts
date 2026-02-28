@@ -342,96 +342,93 @@ export async function POST(request: NextRequest) {
         }
       }
 
-      // 6. Создаём базовые техники для персонажа
-      for (const preset of BASIC_TECHNIQUES) {
-        // Создаём или находим технику в каталоге
-        const technique = await tx.technique.upsert({
-          where: { nameId: preset.id },
-          create: {
-            name: preset.name,
-            nameId: preset.id,
-            description: preset.description,
-            type: preset.techniqueType,
-            element: preset.element,
-            rarity: preset.rarity,
-            level: preset.level,
-            minLevel: preset.minLevel,
-            maxLevel: preset.maxLevel,
-            canEvolve: preset.canEvolve ?? true,
-            minCultivationLevel: preset.minCultivationLevel,
-            qiCost: preset.qiCost,
-            physicalFatigueCost: preset.fatigueCost.physical,
-            mentalFatigueCost: preset.fatigueCost.mental,
-            statRequirements: preset.statRequirements ? JSON.stringify(preset.statRequirements) : null,
-            statScaling: preset.scaling ? JSON.stringify(preset.scaling) : null,
-            effects: preset.effects ? JSON.stringify(preset.effects) : null,
-            source: "preset",
-          },
-          update: {
-            // Обновляем только если уже существует
-            description: preset.description,
-          },
+      // 6. Создаём базовые техники и формации для персонажа (ОПТИМИЗИРОВАНО)
+      // Вместо 20 запросов (upsert + create для каждого) делаем 2-3 запроса
+      
+      const allPresets = [...BASIC_TECHNIQUES, ...BASIC_FORMATIONS];
+      const presetNameIds = allPresets.map(p => p.id);
+      
+      // Получаем существующие техники ОДНИМ запросом
+      const existingTechniques = await tx.technique.findMany({
+        where: { nameId: { in: presetNameIds } },
+        select: { id: true, nameId: true }
+      });
+      
+      const existingNameIds = new Set(existingTechniques.map(t => t.nameId));
+      const techniqueIdMap = new Map(existingTechniques.map(t => [t.nameId, t.id]));
+      
+      // Определяем какие техники нужно создать
+      const techniquesToCreate = allPresets.filter(p => !existingNameIds.has(p.id));
+      
+      if (techniquesToCreate.length > 0) {
+        // Пакетное создание техник (вместо цикла upsert)
+        await tx.technique.createMany({
+          data: techniquesToCreate.map(preset => {
+            const isFormation = 'formationType' in preset;
+            return {
+              name: preset.name,
+              nameId: preset.id,
+              description: preset.description,
+              type: isFormation ? 'formation' : preset.techniqueType,
+              element: isFormation ? 'neutral' : preset.element,
+              rarity: preset.rarity,
+              level: preset.level || 1,
+              minLevel: preset.minLevel || 1,
+              maxLevel: preset.maxLevel || (isFormation ? (preset as any).qualityLevels : 9),
+              canEvolve: preset.canEvolve ?? true,
+              minCultivationLevel: preset.minCultivationLevel || 1,
+              qiCost: preset.qiCost || 0,
+              physicalFatigueCost: (preset as any).fatigueCost?.physical || 0,
+              mentalFatigueCost: (preset as any).fatigueCost?.mental || (isFormation ? 5 : 0),
+              statRequirements: (preset as any).statRequirements ? JSON.stringify((preset as any).statRequirements) : null,
+              statScaling: (preset as any).scaling ? JSON.stringify((preset as any).scaling) : null,
+              effects: preset.effects ? JSON.stringify(preset.effects) : 
+                       isFormation ? JSON.stringify({
+                         formationType: (preset as any).formationType,
+                         formationEffects: (preset as any).formationEffects,
+                         setupTime: (preset as any).setupTime,
+                         duration: (preset as any).duration,
+                         difficulty: (preset as any).difficulty,
+                       }) : null,
+              source: "preset",
+            };
+          }),
+          skipDuplicates: true,
         });
-
-        // Создаём связь персонажа с техникой
-        await tx.characterTechnique.create({
-          data: {
-            characterId: character.id,
-            techniqueId: technique.id,
-            mastery: 0,
-            learningProgress: 100, // Базовые техники уже изучены
-            learningSource: "preset",
-          },
+        
+        // Получаем ID созданных техник
+        const newTechniques = await tx.technique.findMany({
+          where: { nameId: { in: techniquesToCreate.map(p => p.id) } },
+          select: { id: true, nameId: true }
         });
+        
+        newTechniques.forEach(t => techniqueIdMap.set(t.nameId, t.id));
       }
-
-      // 7. Создаём базовые формации для персонажа
-      for (const preset of BASIC_FORMATIONS) {
-        // Создаём или находим формацию в каталоге
-        const formation = await tx.technique.upsert({
-          where: { nameId: preset.id },
-          create: {
-            name: preset.name,
-            nameId: preset.id,
-            description: preset.description,
-            type: "formation",
-            element: "neutral",
-            rarity: preset.rarity,
-            level: 1,
-            minLevel: 1,
-            maxLevel: preset.qualityLevels,
-            canEvolve: true,
-            minCultivationLevel: preset.requirements?.cultivationLevel || 1,
-            qiCost: preset.requirements?.qiCost || 50,
-            physicalFatigueCost: 0,
-            mentalFatigueCost: 5,
-            statRequirements: null,
-            statScaling: null,
-            effects: JSON.stringify({
-              formationType: preset.formationType,
-              formationEffects: preset.formationEffects,
-              setupTime: preset.setupTime,
-              duration: preset.duration,
-              difficulty: preset.difficulty,
-            }),
-            source: "preset",
-          },
-          update: {
-            description: preset.description,
-          },
-        });
-
-        // Создаём связь персонажа с формацией
-        await tx.characterTechnique.create({
-          data: {
-            characterId: character.id,
-            techniqueId: formation.id,
-            mastery: 0,
-            learningProgress: 100, // Базовые формации уже изучены
-            learningSource: "preset",
-          },
-        });
-      }
+      
+      // Пакетное создание связей персонаж-техника
+      const characterTechniquesData = allPresets.map(preset => {
+        const techniqueId = techniqueIdMap.get(preset.id);
+        if (!techniqueId) return null;
+        
+        return {
+          characterId: character.id,
+          techniqueId,
+          mastery: 0,
+          learningProgress: 100,
+          learningSource: "preset",
+        };
+      }).filter(Boolean) as Array<{
+        characterId: string;
+        techniqueId: string;
+        mastery: number;
+        learningProgress: number;
+        learningSource: string;
+      }>;
+      
+      await tx.characterTechnique.createMany({
+        data: characterTechniquesData,
+        skipDuplicates: true,
+      });
 
       return { character, session, location, sect };
     });
