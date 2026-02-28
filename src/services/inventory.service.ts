@@ -67,7 +67,7 @@ interface MoveItemData {
 export async function getCharacterItems(characterId: string) {
   const items = await db.inventoryItem.findMany({
     where: { characterId },
-    orderBy: [{ location: 'asc' }, { posY: 'asc' }, { posX: 'asc' }],
+    orderBy: [{ posY: 'asc' }, { posX: 'asc' }],
   });
   
   return items;

@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { createQiStoneItem, QiStoneQuality, QI_STONE_DEFINITIONS } from "@/types/qi-stones";
+import { TruthSystem } from "@/lib/game/truth-system";
 
 export async function POST(request: NextRequest) {
   try {
@@ -136,6 +137,27 @@ export async function POST(request: NextRequest) {
       });
 
       console.log(`[QiStone] Created item: ${itemData.name} x${quantity} at (${posX}, ${posY})`);
+    }
+
+    // Обновляем инвентарь в TruthSystem если сессия загружена
+    const session = TruthSystem.getSessionByCharacter(characterId);
+    if (session) {
+      // Перезагружаем инвентарь из БД в память
+      const allItems = await db.inventoryItem.findMany({
+        where: { characterId },
+      });
+      
+      TruthSystem.updateInventory(session.sessionId, allItems.map(i => ({
+        id: i.id,
+        name: i.name,
+        type: i.type,
+        quantity: i.quantity,
+        rarity: i.rarity,
+        isConsumable: i.isConsumable,
+        effects: i.effects ? JSON.parse(i.effects) : null,
+      })));
+      
+      console.log(`[QiStone] TruthSystem inventory updated`);
     }
 
     return NextResponse.json({

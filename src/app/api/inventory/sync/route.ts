@@ -112,7 +112,7 @@ export async function GET(request: NextRequest) {
     // Получаем все предметы
     const items = await db.inventoryItem.findMany({
       where: { characterId },
-      orderBy: [{ location: "asc" }, { posY: "asc" }, { posX: "asc" }],
+      orderBy: [{ posY: "asc" }, { posX: "asc" }],
     });
 
     // Получаем экипировку
