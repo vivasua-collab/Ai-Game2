@@ -6,11 +6,18 @@
  * - Списание Ци
  * - Применение эффектов
  * - Прирост мастерства
+ * 
+ * ИНТЕГРАЦИЯ TRUTHSYSTEM:
+ * - Проверяет наличие сессии в памяти (ПАМЯТЬ ПЕРВИЧНА!)
+ * - Списание Ци через TruthSystem.spendQi()
+ * - Обновление усталости через TruthSystem.updateFatigue()
+ * - Мастерство - критическая операция, сохраняется в БД
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { useTechnique as executeTechnique, canUseTechnique, calculateTechniqueEffectiveness } from '@/lib/game/techniques';
+import { useTechnique as executeTechnique, canUseTechnique } from '@/lib/game/techniques';
+import { TruthSystem } from '@/lib/game/truth-system';
 
 interface UseTechniqueRequest {
   characterId: string;
@@ -30,19 +37,60 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Получаем персонажа
-    const character = await db.character.findUnique({
-      where: { id: characterId },
-    });
-
-    if (!character) {
-      return NextResponse.json(
-        { success: false, error: 'Character not found' },
-        { status: 404 }
-      );
+    // === ПРОВЕРКА TRUTHSYSTEM (ПАМЯТЬ ПЕРВИЧНА!) ===
+    const truthSystem = TruthSystem.getInstance();
+    const memoryState = truthSystem.getSessionByCharacter(characterId);
+    
+    let sessionId: string | null = null;
+    let source: 'memory' | 'database' = 'database';
+    
+    if (memoryState) {
+      sessionId = memoryState.sessionId;
+      source = 'memory';
     }
 
-    // Получаем технику персонажа
+    // Получаем персонажа (из памяти или БД)
+    let character;
+    if (memoryState) {
+      // Формируем объект character из состояния памяти
+      character = {
+        id: memoryState.character.id,
+        name: memoryState.character.name,
+        age: memoryState.character.age,
+        cultivationLevel: memoryState.character.cultivationLevel,
+        cultivationSubLevel: memoryState.character.cultivationSubLevel,
+        coreCapacity: memoryState.character.coreCapacity,
+        coreQuality: memoryState.character.coreQuality,
+        currentQi: memoryState.character.currentQi,
+        accumulatedQi: memoryState.character.accumulatedQi,
+        strength: memoryState.character.strength,
+        agility: memoryState.character.agility,
+        intelligence: memoryState.character.intelligence,
+        conductivity: memoryState.character.conductivity,
+        health: memoryState.character.health,
+        fatigue: memoryState.character.fatigue,
+        mentalFatigue: memoryState.character.mentalFatigue,
+        hasAmnesia: memoryState.character.hasAmnesia,
+        knowsAboutSystem: memoryState.character.knowsAboutSystem,
+        sectRole: memoryState.character.sectRole,
+        currentLocationId: null,
+        sectId: memoryState.character.sectId,
+      };
+    } else {
+      // Загружаем из БД
+      character = await db.character.findUnique({
+        where: { id: characterId },
+      });
+
+      if (!character) {
+        return NextResponse.json(
+          { success: false, error: 'Character not found' },
+          { status: 404 }
+        );
+      }
+    }
+
+    // Получаем технику персонажа (всегда из БД - мастерство хранится там)
     const characterTechnique = await db.characterTechnique.findFirst({
       where: {
         characterId,
@@ -106,36 +154,69 @@ export async function POST(request: NextRequest) {
 
     // Рассчитываем новые значения
     const fatigueGained = result.fatigueGained || { physical: 0, mental: 0 };
-    const newQi = Math.max(0, character.currentQi - result.qiSpent);
-    const newFatigue = Math.min(100, character.fatigue + fatigueGained.physical);
-    const newMentalFatigue = Math.min(100, character.mentalFatigue + fatigueGained.mental);
+    const qiSpent = result.qiSpent;
     const newMastery = Math.min(100, characterTechnique.mastery + (result.masteryGained || 0));
 
-    // Обновляем персонажа в БД
-    await db.character.update({
-      where: { id: characterId },
-      data: {
-        currentQi: newQi,
-        fatigue: newFatigue,
-        mentalFatigue: newMentalFatigue,
-      },
-    });
+    // === ОБНОВЛЕНИЕ ЧЕРЕЗ TRUTHSYSTEM (ПАМЯТЬ ПЕРВИЧНА!) ===
+    if (memoryState && sessionId) {
+      // Списываем Ци через TruthSystem
+      const qiResult = truthSystem.spendQi(sessionId, qiSpent);
+      if (!qiResult.success) {
+        return NextResponse.json({
+          success: false,
+          error: qiResult.error || 'Not enough Qi',
+        });
+      }
 
-    // Обновляем мастерство техники
+      // Обновляем усталость через TruthSystem
+      truthSystem.updateFatigue(sessionId, fatigueGained.physical, fatigueGained.mental);
+
+      // Обновляем здоровье если есть лечение
+      if (result.effects.healing) {
+        const currentHealth = memoryState.character.health;
+        truthSystem.updateCharacter(sessionId, {
+          health: Math.min(100, currentHealth + result.effects.healing),
+        });
+      }
+    } else {
+      // Fallback: обновляем БД напрямую
+      const newQi = Math.max(0, character.currentQi - qiSpent);
+      const newFatigue = Math.min(100, character.fatigue + fatigueGained.physical);
+      const newMentalFatigue = Math.min(100, character.mentalFatigue + fatigueGained.mental);
+
+      await db.character.update({
+        where: { id: characterId },
+        data: {
+          currentQi: newQi,
+          fatigue: newFatigue,
+          mentalFatigue: newMentalFatigue,
+        },
+      });
+
+      // Обновляем здоровье если есть лечение
+      if (result.effects.healing) {
+        const healAmount = result.effects.healing;
+        const newHealth = Math.min(100, character.health + healAmount);
+        await db.character.update({
+          where: { id: characterId },
+          data: { health: newHealth },
+        });
+      }
+    }
+
+    // === МАСТЕРСТВО - КРИТИЧЕСКАЯ ОПЕРАЦИЯ (СОХРАНЯЕМ В БД) ===
     await db.characterTechnique.update({
       where: { id: characterTechnique.id },
       data: { mastery: newMastery },
     });
 
-    // Обновляем здоровье если есть лечение
-    if (result.effects.healing) {
-      const healAmount = result.effects.healing;
-      const newHealth = Math.min(100, character.health + healAmount);
-      await db.character.update({
-        where: { id: characterId },
-        data: { health: newHealth },
-      });
-    }
+    // Получаем финальное состояние из памяти
+    const finalState = sessionId ? truthSystem.getSessionState(sessionId) : null;
+    const finalChar = finalState?.character || {
+      currentQi: character.currentQi - qiSpent,
+      fatigue: Math.min(100, character.fatigue + fatigueGained.physical),
+      mentalFatigue: Math.min(100, character.mentalFatigue + fatigueGained.mental),
+    };
 
     // Формируем сообщение
     let message = `⚡ Техника: ${technique.name}\n\n`;
@@ -155,6 +236,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
+      source, // Указываем источник данных
       message,
       result: {
         qiSpent: result.qiSpent,
@@ -165,10 +247,10 @@ export async function POST(request: NextRequest) {
         newMastery,
       },
       character: {
-        id: character.id,
-        currentQi: newQi,
-        fatigue: newFatigue,
-        mentalFatigue: newMentalFatigue,
+        id: characterId,
+        currentQi: finalChar.currentQi,
+        fatigue: finalChar.fatigue,
+        mentalFatigue: finalChar.mentalFatigue,
       },
     });
 

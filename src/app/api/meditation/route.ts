@@ -13,6 +13,12 @@
  * - accumulation: обычная накопительная (по умолчанию)
  * - breakthrough: медитация на прорыв (заполнение → опустошение в accumulatedQi)
  * - conductivity: медитация на проводимость (+1 к МедП при заполнении)
+ * 
+ * ИНТЕГРАЦИЯ TRUTHSYSTEM:
+ * - Проверяет наличие сессии в памяти (ПАМЯТЬ ПЕРВИЧНА!)
+ * - Накопление Ци через TruthSystem.addQi()
+ * - Обновление усталости через TruthSystem.updateFatigue()
+ * - КРИТИЧЕСКИЕ операции (прорыв, проводимость) через TruthSystem.applyBreakthrough/updateConductivity
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -23,18 +29,18 @@ import {
   performConductivityMeditation,
   attemptBreakthrough,
 } from '@/lib/game/qi-system';
-import { getCoreFillPercent, calculateQiRates, calculateBreakthroughRequirements, getCultivationLevelName, calculatePassiveQiDissipation } from '@/lib/game/qi-shared';
-import { QI_CONSTANTS, TIME_CONSTANTS, MEDITATION_TYPE_CONSTANTS, BREAKTHROUGH_CONSTANTS } from '@/lib/game/constants';
+import { getCoreFillPercent, calculateBreakthroughRequirements, getCultivationLevelName, calculatePassiveQiDissipation } from '@/lib/game/qi-shared';
+import { QI_CONSTANTS, TIME_CONSTANTS } from '@/lib/game/constants';
 import { advanceWorldTime, formatWorldTimeForResponse } from '@/lib/game/time-db';
 import { 
   checkMeditationInterruption
 } from '@/lib/game/meditation-interruption';
 import { 
   canDoConductivityMeditation,
-  getMaxConductivityMeditations,
   calculateTotalConductivity,
   getConductivityMeditationProgress,
 } from '@/lib/game/conductivity-system';
+import { TruthSystem } from '@/lib/game/truth-system';
 import type { LocationData } from '@/types/game-shared';
 import type { Character, WorldTime } from '@/types/game';
 
@@ -68,11 +74,9 @@ export async function POST(request: NextRequest) {
     }
     
     // === DURATION VALIDATION ===
-    // Breakthrough/conductivity have FIXED durations - ignore user input
     let actualDurationMinutes = durationMinutes || 0;
     
     if (meditationType === 'accumulation') {
-      // Accumulation requires user-specified duration
       if (!durationMinutes) {
         return NextResponse.json(
           { success: false, error: 'Missing durationMinutes for accumulation meditation' },
@@ -103,7 +107,6 @@ export async function POST(request: NextRequest) {
       
       actualDurationMinutes = durationMinutes;
     }
-    // Note: breakthrough/conductivity duration will be calculated after loading character
     
     // Validate meditation type
     if (!['accumulation', 'breakthrough', 'conductivity'].includes(meditationType)) {
@@ -113,8 +116,14 @@ export async function POST(request: NextRequest) {
       );
     }
     
+    // === ПРОВЕРКА TRUTHSYSTEM (ПАМЯТЬ ПЕРВИЧНА!) ===
+    const truthSystem = TruthSystem.getInstance();
+    const memoryState = truthSystem.getSessionByCharacter(characterId);
+    
+    let source: 'memory' | 'database' = 'database';
+    
     // Get character with location and session
-    const character = await db.character.findUnique({
+    const dbCharacter = await db.character.findUnique({
       where: { id: characterId },
       include: {
         currentLocation: true,
@@ -131,22 +140,65 @@ export async function POST(request: NextRequest) {
             }
           : {
               where: { 
-                quickSlot: 0,  // Cultivation slot (default)
+                quickSlot: 0,
               },
               include: { technique: true },
             },
       },
     });
     
-    if (!character) {
+    if (!dbCharacter) {
       return NextResponse.json(
         { success: false, error: 'Character not found' },
         { status: 404 }
       );
     }
     
+    const session = dbCharacter.sessions[0];
+    if (!session) {
+      return NextResponse.json(
+        { success: false, error: 'No active session for character' },
+        { status: 404 }
+      );
+    }
+    
+    const sessionId = session.id;
+    
+    // Если сессия не в памяти - загружаем
+    if (memoryState) {
+      source = 'memory';
+    } else {
+      await truthSystem.loadSession(sessionId);
+    }
+    
+    // Теперь получаем персонажа из памяти (ПЕРВИЧНЫЙ ИСТОЧНИК)
+    const currentMemoryState = truthSystem.getSessionState(sessionId);
+    if (!currentMemoryState) {
+      return NextResponse.json(
+        { success: false, error: 'Failed to load session into memory' },
+        { status: 500 }
+      );
+    }
+    
+    // Используем данные из памяти
+    const character = {
+      ...dbCharacter,
+      // Переопределяем данными из памяти
+      currentQi: currentMemoryState.character.currentQi,
+      accumulatedQi: currentMemoryState.character.accumulatedQi,
+      fatigue: currentMemoryState.character.fatigue,
+      mentalFatigue: currentMemoryState.character.mentalFatigue,
+      cultivationLevel: currentMemoryState.character.cultivationLevel,
+      cultivationSubLevel: currentMemoryState.character.cultivationSubLevel,
+      coreCapacity: currentMemoryState.character.coreCapacity,
+      coreQuality: currentMemoryState.character.coreQuality,
+      conductivity: currentMemoryState.character.conductivity,
+      conductivityMeditations: currentMemoryState.character.conductivityMeditations,
+      health: currentMemoryState.character.health,
+    };
+    
     // Get cultivation technique
-    const cultivationTechnique = character.techniques[0];
+    const cultivationTechnique = dbCharacter.techniques[0];
     const techniqueData = cultivationTechnique?.technique;
     
     // Calculate technique bonuses
@@ -171,16 +223,7 @@ export async function POST(request: NextRequest) {
       unnoticeabilityBonus *= masteryMultiplier;
     }
     
-    const session = character.sessions[0];
-    if (!session) {
-      return NextResponse.json(
-        { success: false, error: 'No active session for character' },
-        { status: 404 }
-      );
-    }
-    
     // === РАССЕИВАНИЕ ИЗБЫТОЧНОЙ ЦИ ===
-    // Если ядро переполнено (от читов или других источников), рассеиваем излишки
     let dissipationBeforeMeditation = 0;
     if (character.currentQi > character.coreCapacity) {
       const conductivity = calculateTotalConductivity(
@@ -189,36 +232,32 @@ export async function POST(request: NextRequest) {
         character.conductivityMeditations || 0
       );
       
-      // Рассеивание происходит мгновенно при любом действии
-      // Избыточная Ци "вытекает" через меридианы
       const dissipationResult = calculatePassiveQiDissipation(
         character.currentQi,
         character.coreCapacity,
         conductivity,
-        60 // Минимум 60 секунд на рассеивание при старте медитации
+        60
       );
       
       if (dissipationResult.dissipated > 0) {
         dissipationBeforeMeditation = dissipationResult.dissipated;
-        character.currentQi = dissipationResult.newQi;
-        
-        // Обновляем в БД
-        await db.character.update({
-          where: { id: characterId },
-          data: { currentQi: dissipationResult.newQi },
+        // Обновляем в памяти через TruthSystem
+        truthSystem.updateCharacter(sessionId, {
+          currentQi: dissipationResult.newQi,
         });
+        character.currentQi = dissipationResult.newQi;
       }
     }
     
     // Build location data
     let location: LocationData | null = null;
-    if (character.currentLocation) {
+    if (dbCharacter.currentLocation) {
       location = {
-        name: character.currentLocation.name,
-        qiDensity: character.currentLocation.qiDensity || QI_CONSTANTS.DEFAULT_QI_DENSITY,
-        qiFlowRate: character.currentLocation.qiFlowRate || 1,
-        distanceFromCenter: character.currentLocation.distanceFromCenter || 0,
-        terrainType: character.currentLocation.terrainType,
+        name: dbCharacter.currentLocation.name,
+        qiDensity: dbCharacter.currentLocation.qiDensity || QI_CONSTANTS.DEFAULT_QI_DENSITY,
+        qiFlowRate: dbCharacter.currentLocation.qiFlowRate || 1,
+        distanceFromCenter: dbCharacter.currentLocation.distanceFromCenter || 0,
+        terrainType: dbCharacter.currentLocation.terrainType,
       };
     } else {
       location = {
@@ -229,13 +268,13 @@ export async function POST(request: NextRequest) {
     
     // Build world time for interruption checks
     const worldTime: WorldTime = {
-      year: session.worldYear,
-      month: session.worldMonth,
-      day: session.worldDay,
-      hour: session.worldHour,
-      minute: session.worldMinute,
-      formatted: '',
-      season: session.worldMonth <= 6 ? 'тёплый' : 'холодный',
+      year: currentMemoryState.worldTime.year,
+      month: currentMemoryState.worldTime.month,
+      day: currentMemoryState.worldTime.day,
+      hour: currentMemoryState.worldTime.hour,
+      minute: currentMemoryState.worldTime.minute,
+      formatted: currentMemoryState.worldTime.formatted,
+      season: currentMemoryState.worldTime.season,
     };
     
     // === SPECIAL CHECKS FOR CONDUCTIVITY MEDITATION ===
@@ -252,14 +291,9 @@ export async function POST(request: NextRequest) {
       }
     }
     
-    // === DURATION FOR BREAKTHROUGH/CONDUCTIVITY IS AUTO-CALCULATED ===
-    // These meditation types have AUTOMATIC duration - calculated in the function
-    // Just pass 0 as placeholder, the actual duration comes from the result
-    
     // === CHECK FOR INTERRUPTIONS (ONLY FOR ACCUMULATION TYPE) ===
     let interruptionResult = null;
     
-    // Breakthrough and conductivity are NOT subject to interruptions
     if (meditationType === 'accumulation' && actualDurationMinutes >= 60) {
       const charForCheck: Character = {
         id: character.id,
@@ -289,7 +323,7 @@ export async function POST(request: NextRequest) {
         charForCheck,
         location,
         worldTime,
-        durationMinutes,
+        durationMinutes!,
         {
           formationId: formationId as any,
           formationQuality: formationQuality,
@@ -308,110 +342,106 @@ export async function POST(request: NextRequest) {
     
     // === PERFORM MEDITATION BASED ON TYPE ===
     let result: any;
-    let updateData: any = {};
     let message = '';
     
     if (meditationType === 'breakthrough') {
       // === BREAKTHROUGH MEDITATION ===
-      // Длительность автоматическая: 1 минута если ядро полное, иначе время накопления + 1 минута
       result = performBreakthroughMeditation(character, location, 0);
       
-      // Use actual duration from result
       actualDurationMinutes = result.duration;
       
-      // Apply qi absorption bonus
       if (qiAbsorptionBonus > 0) {
         result.qiGained = Math.floor(result.qiGained * (1 + qiAbsorptionBonus / 100));
       }
       
-      // NO INTERRUPTION for breakthrough meditation
+      // Продвигаем время в БД и памяти
+      await advanceWorldTime(sessionId, actualDurationMinutes);
       
-      // Normal completion
-      const timeResult = await advanceWorldTime(session.id, actualDurationMinutes);
-      
-      // При прорыве с полным ядром - currentQi не меняется (остаётся max)
-      // При прорыве с неполным ядром - currentQi устанавливается в результат
+      // Обновляем через TruthSystem
       const wasCoreFullAtStart = character.currentQi >= character.coreCapacity;
-      const newCurrentQi = wasCoreFullAtStart 
-        ? character.coreCapacity  // Ядро остаётся полным
-        : (result.coreWasEmptied ? 0 : character.currentQi);
       
-      updateData = {
-        currentQi: newCurrentQi,
+      // Добавляем накопленную Ци
+      truthSystem.updateCharacter(sessionId, {
         accumulatedQi: character.accumulatedQi + result.qiGained,
         mentalFatigue: Math.min(100, character.mentalFatigue + result.fatigueGained.mental),
-      };
-      
-      const updatedCharacter = await db.character.update({
-        where: { id: characterId },
-        data: updateData,
       });
       
+      if (!wasCoreFullAtStart && result.coreWasEmptied) {
+        truthSystem.updateCharacter(sessionId, { currentQi: 0 });
+      }
+      
+      truthSystem.advanceTime(sessionId, actualDurationMinutes);
+      
+      // Получаем обновлённое состояние из памяти
+      const stateAfterMeditation = truthSystem.getSessionState(sessionId);
+      if (!stateAfterMeditation) {
+        return NextResponse.json({ success: false, error: 'Lost session state' }, { status: 500 });
+      }
+      
       // === AUTO-BREAKTHROUGH CHECK ===
-      // Проверяем, достигнут ли прорыв
-      const newAccumulatedQi = updatedCharacter.accumulatedQi;
+      const newAccumulatedQi = stateAfterMeditation.character.accumulatedQi;
       const breakthroughReq = calculateBreakthroughRequirements(
-        updatedCharacter.cultivationLevel,
-        updatedCharacter.cultivationSubLevel,
+        stateAfterMeditation.character.cultivationLevel,
+        stateAfterMeditation.character.cultivationSubLevel,
         newAccumulatedQi,
-        updatedCharacter.coreCapacity
+        stateAfterMeditation.character.coreCapacity
       );
       
       let autoBreakthrough = null;
       if (breakthroughReq.canAttempt) {
-        // Автоматический прорыв!
-        const breakthroughResult = attemptBreakthrough(updatedCharacter);
+        // Формируем объект для attemptBreakthrough
+        const charForBreakthrough = {
+          ...stateAfterMeditation.character,
+          physicalFatigue: stateAfterMeditation.character.fatigue,
+        };
+        const breakthroughResult = attemptBreakthrough(charForBreakthrough as any);
         
         if (breakthroughResult.success) {
-          // Применяем прорыв
-          const postBreakthroughData = {
-            cultivationLevel: breakthroughResult.newLevel,
-            cultivationSubLevel: breakthroughResult.newSubLevel,
-            coreCapacity: breakthroughResult.newCoreCapacity,
-            conductivity: breakthroughResult.newConductivity,
-            accumulatedQi: newAccumulatedQi - breakthroughResult.qiConsumed,
-            mentalFatigue: Math.min(100, updatedCharacter.mentalFatigue + breakthroughResult.fatigueGained.mental),
-            physicalFatigue: Math.min(100, (updatedCharacter.physicalFatigue || 0) + breakthroughResult.fatigueGained.physical),
-          };
-          
-          const postBreakthroughChar = await db.character.update({
-            where: { id: characterId },
-            data: postBreakthroughData,
-          });
-          
-          const newLevelName = getCultivationLevelName(breakthroughResult.newLevel);
-          const isMajor = updatedCharacter.cultivationSubLevel >= 9;
-          
-          autoBreakthrough = {
-            success: true,
-            oldLevel: updatedCharacter.cultivationLevel,
-            oldSubLevel: updatedCharacter.cultivationSubLevel,
+          // КРИТИЧЕСКАЯ ОПЕРАЦИЯ - применяем через TruthSystem
+          const breakthroughData = {
             newLevel: breakthroughResult.newLevel,
             newSubLevel: breakthroughResult.newSubLevel,
-            levelName: newLevelName,
-            isMajorBreakthrough: isMajor,
+            newCoreCapacity: breakthroughResult.newCoreCapacity,
+            newConductivity: breakthroughResult.newConductivity,
             qiConsumed: breakthroughResult.qiConsumed,
-            message: breakthroughResult.message,
-            character: {
-              cultivationLevel: postBreakthroughChar.cultivationLevel,
-              cultivationSubLevel: postBreakthroughChar.cultivationSubLevel,
-              coreCapacity: postBreakthroughChar.coreCapacity,
-              conductivity: postBreakthroughChar.conductivity,
-              accumulatedQi: postBreakthroughChar.accumulatedQi,
-              mentalFatigue: postBreakthroughChar.mentalFatigue,
-            },
           };
           
-          // Обновляем updatedCharacter для последующего использования
-          Object.assign(updatedCharacter, postBreakthroughChar);
+          const applyResult = await truthSystem.applyBreakthrough(sessionId, breakthroughData);
+          
+          if (applyResult.success) {
+            // Добавляем усталость от прорыва
+            truthSystem.updateFatigue(
+              sessionId, 
+              breakthroughResult.fatigueGained.physical, 
+              breakthroughResult.fatigueGained.mental
+            );
+            
+            const newLevelName = getCultivationLevelName(breakthroughResult.newLevel);
+            const isMajor = stateAfterMeditation.character.cultivationSubLevel >= 9;
+            
+            autoBreakthrough = {
+              success: true,
+              oldLevel: stateAfterMeditation.character.cultivationLevel,
+              oldSubLevel: stateAfterMeditation.character.cultivationSubLevel,
+              newLevel: breakthroughResult.newLevel,
+              newSubLevel: breakthroughResult.newSubLevel,
+              levelName: newLevelName,
+              isMajorBreakthrough: isMajor,
+              qiConsumed: breakthroughResult.qiConsumed,
+              message: breakthroughResult.message,
+            };
+          }
         }
       }
+      
+      // Получаем финальное состояние
+      const finalState = truthSystem.getSessionState(sessionId);
+      const finalWorldTime = truthSystem.getWorldTime(sessionId);
       
       message = `🔥 Медитация на прорыв завершена!\n\n`;
       message += `⏱️ Время: ${result.duration} минут\n`;
       
       if (wasCoreFullAtStart) {
-        // Медитация начиналась с полным ядром - только перенос
         message += `💫 Ци перенесено в накопленную: +${result.qiGained}\n`;
         message += `⚡ Перенос: ${character.coreCapacity} Ци за 1 минуту\n`;
       } else {
@@ -422,14 +452,13 @@ export async function POST(request: NextRequest) {
         }
       }
       
-      message += `\n📊 Накопленная Ци: ${updatedCharacter.accumulatedQi}`;
-      message += `\n💜 Мент. усталость: ${updatedCharacter.mentalFatigue.toFixed(0)}% (+${result.fatigueGained.mental.toFixed(1)}%)`;
+      message += `\n📊 Накопленная Ци: ${finalState?.character.accumulatedQi}`;
+      message += `\n💜 Мент. усталость: ${finalState?.character.mentalFatigue.toFixed(0)}% (+${result.fatigueGained.mental.toFixed(1)}%)`;
       
       if (result.coreWasEmptied) {
         message += `\n\n⚡ Ядро опустошено! Один перенос завершён.`;
       }
       
-      // Add auto-breakthrough message if occurred
       if (autoBreakthrough) {
         message += `\n\n${'═'.repeat(30)}`;
         message += `\n🌟 АВТОМАТИЧЕСКИЙ ПРОРЫВ!`;
@@ -445,12 +474,13 @@ export async function POST(request: NextRequest) {
         
         message += `📛 Новая ступень: ${autoBreakthrough.levelName}\n`;
         message += `💫 Ци израсходовано: ${autoBreakthrough.qiConsumed}\n`;
-        message += `🔷 Новая ёмкость ядра: ${autoBreakthrough.character.coreCapacity}\n`;
-        message += `⚡ Проводимость: ${autoBreakthrough.character.conductivity.toFixed(2)}`;
+        message += `🔷 Новая ёмкость ядра: ${finalState?.character.coreCapacity}\n`;
+        message += `⚡ Проводимость: ${finalState?.character.conductivity.toFixed(2)}`;
       }
       
       return NextResponse.json({
         success: true,
+        source,
         message,
         meditationType: 'breakthrough',
         result: {
@@ -461,62 +491,64 @@ export async function POST(request: NextRequest) {
         },
         autoBreakthrough,
         character: {
-          id: updatedCharacter.id,
-          currentQi: updatedCharacter.currentQi,
-          accumulatedQi: updatedCharacter.accumulatedQi,
-          cultivationLevel: updatedCharacter.cultivationLevel,
-          cultivationSubLevel: updatedCharacter.cultivationSubLevel,
-          coreCapacity: updatedCharacter.coreCapacity,
-          conductivity: updatedCharacter.conductivity,
-          mentalFatigue: updatedCharacter.mentalFatigue,
+          id: characterId,
+          currentQi: finalState?.character.currentQi,
+          accumulatedQi: finalState?.character.accumulatedQi,
+          cultivationLevel: finalState?.character.cultivationLevel,
+          cultivationSubLevel: finalState?.character.cultivationSubLevel,
+          coreCapacity: finalState?.character.coreCapacity,
+          conductivity: finalState?.character.conductivity,
+          mentalFatigue: finalState?.character.mentalFatigue,
         },
-        worldTime: formatWorldTimeForResponse(timeResult.newTime),
+        worldTime: formatWorldTimeForResponse({
+          year: finalWorldTime?.year || 0,
+          month: finalWorldTime?.month || 0,
+          day: finalWorldTime?.day || 0,
+          hour: finalWorldTime?.hour || 0,
+          minute: finalWorldTime?.minute || 0,
+          daysSinceStart: finalWorldTime?.daysSinceStart || 0,
+          worldYear: finalWorldTime?.year || 0,
+          worldMonth: finalWorldTime?.month || 0,
+          worldDay: finalWorldTime?.day || 0,
+          worldHour: finalWorldTime?.hour || 0,
+          worldMinute: finalWorldTime?.minute || 0,
+        }),
       });
       
     } else if (meditationType === 'conductivity') {
       // === CONDUCTIVITY MEDITATION ===
-      // Длительность автоматическая: coreCapacity/conductivity секунд если ядро полное
       result = performConductivityMeditation(
         character, 
         location, 
-        0, // Игнорируется - длительность автоматическая
+        0,
         character.conductivityMeditations
       );
       
-      // Use actual duration from result
       actualDurationMinutes = result.duration;
       
-      // Apply qi absorption bonus
       if (qiAbsorptionBonus > 0 && result.qiGained > 0) {
         result.qiGained = Math.floor(result.qiGained * (1 + qiAbsorptionBonus / 100));
       }
       
-      // NO INTERRUPTION for conductivity meditation
-      
-      // Normal completion
-      const timeResult = await advanceWorldTime(session.id, result.duration);
+      // Продвигаем время
+      await advanceWorldTime(sessionId, actualDurationMinutes);
       
       // Calculate new conductivity
       const newConductivityMeditations = character.conductivityMeditations + result.conductivityMeditationsGained;
       const newConductivity = calculateTotalConductivity(character.coreCapacity, character.cultivationLevel, newConductivityMeditations);
       
-      // При проводимости с полным ядром - currentQi не меняется (остаётся max)
-      const wasCoreFullAtStart = character.currentQi >= character.coreCapacity;
-      const newCurrentQi = wasCoreFullAtStart 
-        ? character.coreCapacity  // Ядро остаётся полным
-        : (result.coreWasFilled ? character.coreCapacity : character.currentQi + result.qiGained);
+      // КРИТИЧЕСКАЯ ОПЕРАЦИЯ - обновляем через TruthSystem
+      await truthSystem.updateConductivity(sessionId, newConductivity, result.conductivityMeditationsGained);
       
-      updateData = {
-        currentQi: newCurrentQi,
-        mentalFatigue: Math.min(100, character.mentalFatigue + result.fatigueGained.mental),
-        conductivityMeditations: newConductivityMeditations,
-        conductivity: newConductivity,
-      };
+      // Обновляем усталость
+      truthSystem.updateFatigue(sessionId, 0, result.fatigueGained.mental);
       
-      const updatedCharacter = await db.character.update({
-        where: { id: characterId },
-        data: updateData,
-      });
+      // Продвигаем время в памяти
+      truthSystem.advanceTime(sessionId, actualDurationMinutes);
+      
+      // Получаем финальное состояние
+      const finalState = truthSystem.getSessionState(sessionId);
+      const finalWorldTime = truthSystem.getWorldTime(sessionId);
       
       const progress = getConductivityMeditationProgress(
         character.coreCapacity, 
@@ -526,19 +558,17 @@ export async function POST(request: NextRequest) {
       
       message = `⚡ Медитация на проводимость завершена!\n\n`;
       message += `⏱️ Время: ${result.duration} минут\n`;
-      
-      // Теперь всегда один перенос за медитацию
-      const secondsPerTransfer = Math.ceil(character.coreCapacity / character.conductivity);
       message += `✨ Каналы меридиан расширены!\n`;
       message += `📈 Медитации на проводимость: ${character.conductivityMeditations} → ${newConductivityMeditations} (+${result.conductivityMeditationsGained})\n`;
       message += `⚡ Проводимость: ${character.conductivity.toFixed(3)} → ${newConductivity.toFixed(3)}\n`;
+      const secondsPerTransfer = Math.ceil(character.coreCapacity / newConductivity);
       message += `⏳ Время переноса: ${secondsPerTransfer} сек\n`;
       message += `📊 Прогресс: ${progress.current}/${progress.max} (${progress.percent}%)`;
-      
-      message += `\n\n💜 Мент. усталость: ${updatedCharacter.mentalFatigue.toFixed(0)}% (+${result.fatigueGained.mental.toFixed(1)}%)`;
+      message += `\n\n💜 Мент. усталость: ${finalState?.character.mentalFatigue.toFixed(0)}% (+${result.fatigueGained.mental.toFixed(1)}%)`;
       
       return NextResponse.json({
         success: true,
+        source,
         message,
         meditationType: 'conductivity',
         result: {
@@ -551,13 +581,25 @@ export async function POST(request: NextRequest) {
           breakdown: result.breakdown,
         },
         character: {
-          id: updatedCharacter.id,
-          currentQi: updatedCharacter.currentQi,
-          conductivity: updatedCharacter.conductivity,
-          conductivityMeditations: updatedCharacter.conductivityMeditations,
-          mentalFatigue: updatedCharacter.mentalFatigue,
+          id: characterId,
+          currentQi: finalState?.character.currentQi,
+          conductivity: finalState?.character.conductivity,
+          conductivityMeditations: finalState?.character.conductivityMeditations,
+          mentalFatigue: finalState?.character.mentalFatigue,
         },
-        worldTime: formatWorldTimeForResponse(timeResult.newTime),
+        worldTime: formatWorldTimeForResponse({
+          year: finalWorldTime?.year || 0,
+          month: finalWorldTime?.month || 0,
+          day: finalWorldTime?.day || 0,
+          hour: finalWorldTime?.hour || 0,
+          minute: finalWorldTime?.minute || 0,
+          daysSinceStart: finalWorldTime?.daysSinceStart || 0,
+          worldYear: finalWorldTime?.year || 0,
+          worldMonth: finalWorldTime?.month || 0,
+          worldDay: finalWorldTime?.day || 0,
+          worldHour: finalWorldTime?.hour || 0,
+          worldMinute: finalWorldTime?.minute || 0,
+        }),
       });
       
     } else {
@@ -569,7 +611,6 @@ export async function POST(request: NextRequest) {
         'accumulation'
       );
       
-      // Apply qi absorption bonus
       let qiGainedWithBonus = baseResult.qiGained;
       if (qiAbsorptionBonus > 0 && baseResult.success) {
         qiGainedWithBonus = Math.floor(baseResult.qiGained * (1 + qiAbsorptionBonus / 100));
@@ -598,23 +639,14 @@ export async function POST(request: NextRequest) {
           `${event.canIgnore ? '💡 Можно проигнорировать и продолжить.' : ''}\n` +
           `${event.canHide ? '💡 Можно попытаться скрыться.' : ''}`;
         
-        const partialQi = Math.min(
-          character.coreCapacity,
-          character.currentQi + result.qiGained
-        );
-        
-        await db.character.update({
-          where: { id: characterId },
-          data: {
-            currentQi: partialQi,
-            mentalFatigue: Math.min(100, character.mentalFatigue + result.fatigueGained.mental),
-          },
-        });
-        
-        await advanceWorldTime(session.id, actualDurationMinutes);
+        // Добавляем Ци через TruthSystem
+        truthSystem.addQi(sessionId, result.qiGained);
+        truthSystem.updateFatigue(sessionId, 0, result.fatigueGained.mental);
+        truthSystem.advanceTime(sessionId, actualDurationMinutes);
         
         return NextResponse.json({
           success: true,
+          source,
           interrupted: true,
           message: interruptedMessage,
           result: {
@@ -638,50 +670,38 @@ export async function POST(request: NextRequest) {
       }
       
       // Normal completion
-      const timeResult = await advanceWorldTime(session.id, actualDurationMinutes);
+      await advanceWorldTime(sessionId, actualDurationMinutes);
       
-      const newQi = Math.min(
-        character.coreCapacity,
-        character.currentQi + result.qiGained
-      );
+      // Добавляем Ци через TruthSystem
+      truthSystem.addQi(sessionId, result.qiGained);
       
-      const newPhysicalFatigue = character.fatigue;
-      const newMentalFatigue = Math.min(100, character.mentalFatigue + result.fatigueGained.mental);
+      // Обновляем усталость
+      truthSystem.updateFatigue(sessionId, 0, result.fatigueGained.mental);
       
-      const updatedCharacter = await db.character.update({
-        where: { id: characterId },
-        data: {
-          currentQi: newQi,
-          fatigue: newPhysicalFatigue,
-          mentalFatigue: newMentalFatigue,
-          accumulatedQi: result.coreWasFilled 
-            ? character.accumulatedQi + character.coreCapacity 
-            : character.accumulatedQi,
-        },
-      });
+      // Продвигаем время в памяти
+      truthSystem.advanceTime(sessionId, actualDurationMinutes);
       
-      // Increase technique mastery
+      // Increase technique mastery (КРИТИЧЕСКАЯ ОПЕРАЦИЯ - в БД)
       let masteryGain = 0;
       if (cultivationTechnique) {
         masteryGain = Math.round((actualDurationMinutes / 30) * 10) / 10;
         const currentMastery = cultivationTechnique.mastery || 0;
         const newMastery = Math.min(100, currentMastery + masteryGain);
         
-        console.log(`[Meditation] Updating mastery: ${currentMastery}% -> ${newMastery}% (+${masteryGain}%) for technique ${cultivationTechnique.techniqueId}`);
-        
         await db.characterTechnique.update({
           where: { id: cultivationTechnique.id },
           data: { mastery: newMastery },
         });
-      } else {
-        console.log(`[Meditation] No cultivation technique assigned to slot 0. Mastery not updated.`);
       }
       
+      // Получаем финальное состояние
+      const finalState = truthSystem.getSessionState(sessionId);
+      const finalWorldTime = truthSystem.getWorldTime(sessionId);
+      
       // Generate message
-      const qiPercent = getCoreFillPercent(updatedCharacter.currentQi, updatedCharacter.coreCapacity);
+      const qiPercent = getCoreFillPercent(finalState?.character.currentQi || 0, finalState?.character.coreCapacity || 1);
       message = `🧘 Медитация завершена!\n\n`;
       
-      // Показываем рассеивание, если было
       if (dissipationBeforeMeditation > 0) {
         message += `💨 Рассеяно избыточной Ци: -${dissipationBeforeMeditation}\n\n`;
       }
@@ -712,20 +732,22 @@ export async function POST(request: NextRequest) {
         }
       }
       
-      message += `\n\n🌊 Текущая Ци: ${updatedCharacter.currentQi}/${updatedCharacter.coreCapacity} (${qiPercent}%)`;
-      message += `\n💚 Физ. усталость: ${updatedCharacter.fatigue.toFixed(0)}%`;
-      message += `\n💜 Мент. усталость: ${updatedCharacter.mentalFatigue.toFixed(0)}% (+${result.fatigueGained.mental.toFixed(1)}% от концентрации)`;
+      message += `\n\n🌊 Текущая Ци: ${finalState?.character.currentQi}/${finalState?.character.coreCapacity} (${qiPercent}%)`;
+      message += `\n💚 Физ. усталость: ${finalState?.character.fatigue.toFixed(0)}%`;
+      message += `\n💜 Мент. усталость: ${finalState?.character.mentalFatigue.toFixed(0)}% (+${result.fatigueGained.mental.toFixed(1)}% от концентрации)`;
       
       if (result.coreWasFilled) {
         message += `\n\n⚡ Ядро заполнено! Накопленная Ци увеличена.`;
       }
       
-      if (timeResult.dayChanged) {
+      const dayChanged = finalWorldTime?.day !== worldTime.day;
+      if (dayChanged) {
         message += `\n\n🌅 Наступил новый день!`;
       }
       
       return NextResponse.json({
         success: true,
+        source,
         message,
         meditationType: 'accumulation',
         result: {
@@ -741,17 +763,29 @@ export async function POST(request: NextRequest) {
           unnoticeabilityBonus: Math.round(unnoticeabilityBonus),
         } : null,
         character: {
-          id: updatedCharacter.id,
-          currentQi: updatedCharacter.currentQi,
-          coreCapacity: updatedCharacter.coreCapacity,
-          fatigue: updatedCharacter.fatigue,
-          mentalFatigue: updatedCharacter.mentalFatigue,
-          accumulatedQi: updatedCharacter.accumulatedQi,
+          id: characterId,
+          currentQi: finalState?.character.currentQi,
+          coreCapacity: finalState?.character.coreCapacity,
+          fatigue: finalState?.character.fatigue,
+          mentalFatigue: finalState?.character.mentalFatigue,
+          accumulatedQi: finalState?.character.accumulatedQi,
         },
-        worldTime: formatWorldTimeForResponse(timeResult.newTime),
+        worldTime: formatWorldTimeForResponse({
+          year: finalWorldTime?.year || 0,
+          month: finalWorldTime?.month || 0,
+          day: finalWorldTime?.day || 0,
+          hour: finalWorldTime?.hour || 0,
+          minute: finalWorldTime?.minute || 0,
+          daysSinceStart: finalWorldTime?.daysSinceStart || 0,
+          worldYear: finalWorldTime?.year || 0,
+          worldMonth: finalWorldTime?.month || 0,
+          worldDay: finalWorldTime?.day || 0,
+          worldHour: finalWorldTime?.hour || 0,
+          worldMinute: finalWorldTime?.minute || 0,
+        }),
         timeAdvanced: {
-          ticks: timeResult.ticksAdvanced,
-          dayChanged: timeResult.dayChanged,
+          ticks: actualDurationMinutes,
+          dayChanged,
         },
       });
     }
