@@ -1,5 +1,5 @@
 // Prisma schema for Cultivation World Simulator
-// Version: 7
+// Version: 8
 // v1: Базовая схема
 // v2: Добавлена система логирования (SystemLog)
 // v3: Добавлены поля worldId, worldName, startType в GameSession; name в Character
@@ -7,6 +7,7 @@
 // v5: Расширена модель InventoryItem (isConsumable, durability, qiCharge, effects, icon)
 // v6: Добавлены модели Building и WorldObject для системы карты
 // v7: Добавлена система тела (bodyState) для Kenshi-style повреждений
+// v8: Добавлена система инвентаря и экипировки (Equipment, SpiritStorage)
 
 generator client {
   provider = "prisma-client-js"
@@ -127,9 +128,11 @@ model Character {
   bodyState String @default("{}")
   
   // Связи
-  sessions   GameSession[]
-  inventory  InventoryItem[]
-  techniques CharacterTechnique[]
+  sessions       GameSession[]
+  inventory      InventoryItem[]
+  equipment      Equipment[]
+  spiritStorage  SpiritStorage?
+  techniques     CharacterTechnique[]
   techniquePools TechniquePool[]
 }
 
@@ -311,12 +314,32 @@ model InventoryItem {
   name        String
   nameId      String?     // Для поиска пресета
   description String?     // Описание
-  type        String      // material, artifact, consumable, equipment, spirit_stone
-  rarity      String?     // common, uncommon, rare, legendary
-  icon        String?     // Эмодзи или путь к иконке
+  type        String      // weapon_sword, armor_torso, consumable_pill, material_ore, etc.
+  category    String      // weapon, armor, accessory, consumable, material, technique, quest, misc
+  rarity      String      // common, uncommon, rare, epic, legendary, mythic
+  icon        String      // Эмодзи или путь к иконке
 
   // === Количество ===
-  quantity Int @default(1)
+  quantity    Int  @default(1)
+  maxStack    Int  @default(1)
+  stackable   Boolean @default(false)
+
+  // === Размер в сетке инвентаря ===
+  sizeWidth   Int  @default(1)   // 1-2
+  sizeHeight  Int  @default(1)   // 1-3
+
+  // === Физика ===
+  weight      Float @default(0.0)  // Вес в кг
+
+  // === Позиция в инвентаре ===
+  posX        Int?   // X в сетке (0-6)
+  posY        Int?   // Y в сетке (0-6)
+  
+  // === Местоположение ===
+  location    String  @default("inventory") // inventory, equipment, storage
+
+  // === Экипировка ===
+  equipmentSlot String?  // head, torso, left_hand, right_hand, legs, feet, accessory1, accessory2, back, backpack
 
   // === Тип использования ===
   isConsumable Boolean  @default(false) // Расходуемый?
@@ -330,11 +353,84 @@ model InventoryItem {
   qiCharge    Int?    // Текущий заряд
   maxQiCharge Int?    // Максимальный заряд
 
+  // === Статы (JSON) ===
+  stats       String? // { damage: 45, defense: 20, qiBonus: 100, ... }
+  
   // === Эффекты (JSON) ===
-  effects String? // Эффекты при использовании: { qiRestore: 100, healthRestore: 50 }
+  effects     String? // Эффекты при использовании: { qiRestore: 100, healthRestore: 50 }
+
+  // === Требования (JSON) ===
+  requirements String? // { level: 3, strength: 10, ... }
 
   // === Свойства (JSON string) ===
-  properties String? // Дополнительные свойства
+  properties  String? // Дополнительные свойства
+
+  // === Стоимость ===
+  value       Int     @default(0)  // Базовая стоимость
+  currency    String  @default("spirit_stones") // spirit_stones, contribution, gold
+
+  // === Флаги ===
+  isEquipped  Boolean @default(false)
+  isBound     Boolean @default(false)  // Привязан к персонажу
+  isQuestItem Boolean @default(false)
+  
+  // === Связь с техникой ===
+  techniqueId String?
+
+  // === Связи ===
+  equipmentSlotRef Equipment? @relation(name: "EquipmentSlot")
+
+  // Индексы
+  @@index([characterId])
+  @@index([category])
+  @@index([location])
+}
+
+// ==================== EQUIPMENT ====================
+
+// Экипированные предметы (быстрый доступ)
+model Equipment {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  characterId String
+  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  // === Слот ===
+  slotId      String  // head, torso, left_hand, right_hand, legs, feet, accessory1, accessory2, back, backpack
+
+  // === Предмет ===
+  itemId      String   @unique
+  item        InventoryItem @relation(fields: [itemId], references: [id], onDelete: Cascade, name: "EquipmentSlot")
+
+  // === Время экипировки ===
+  equippedAt  DateTime @default(now())
+
+  @@unique([characterId, slotId])
+  @@index([characterId])
+}
+
+// ==================== SPIRIT STORAGE ====================
+
+// Духовное хранилище (кольцо хранения)
+model SpiritStorage {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  characterId String
+  character   Character @relation(fields: [characterId], references: [id], onDelete: Cascade)
+
+  // === Вместимость ===
+  capacity    Int     @default(20)  // Количество слотов
+  unlocked    Boolean @default(false)
+  requiredLevel Int   @default(3)   // Уровень культивации для открытия
+
+  // === Предметы (JSON массив) ===
+  items       String  @default("[]")  // [{ id, name, type, ... }]
+
+  @@unique([characterId])
 }
 
 // ==================== TECHNIQUES ====================

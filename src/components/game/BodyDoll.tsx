@@ -1,16 +1,16 @@
 /**
- * BodyDoll - Кукла тела из изображений
+ * BodyDoll - Схематичная кукла тела (SVG)
  * 
- * Использует PNG изображения частей тела:
- * - Голова, Торс, Руки (левая/правая), Ноги (левая/правая)
- * - HP бары на каждой части
- * - Коричневый цвет для отрубленных (CSS filter)
+ * Простое SVG отображение с:
+ * - Схематичным силуэтом человека
+ * - HP барами на каждой части
+ * - Подсветкой при выборе
+ * - Коричневым цветом для отрубленных
  */
 
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import type { BodyStructure, BodyPart, LimbStatus } from '@/types/body';
 
 interface BodyDollProps {
@@ -19,62 +19,106 @@ interface BodyDollProps {
   selectedPartId?: string | null;
 }
 
-// ==================== КОНСТАНТЫ ====================
+// Размеры куклы (компактные)
+const DOLL_WIDTH = 180;
+const DOLL_HEIGHT = 320;
 
-// Размеры контейнера куклы
-const DOLL_WIDTH = 400;
-const DOLL_HEIGHT = 500;
-
-// Конфигурация частей тела (настроено через редактор)
-const BODY_PARTS_CONFIG = {
+// Конфигурация частей тела для SVG
+const BODY_PARTS = {
+  // Голова
   head: {
-    image: '/images/body/head.png',
-    naturalWidth: 32,
-    naturalHeight: 39,
-    position: { top: 107, left: 206 },
-    scale: 1,
-    hpBar: { x: 2, y: 15, width: 28 },
+    name: 'Голова',
+    path: 'M70,8 L110,8 Q120,8 120,18 L120,38 Q120,50 110,50 L70,50 Q60,50 60,38 L60,18 Q60,8 70,8',
+    center: { x: 90, y: 29 },
+    hpOffset: { x: 68, y: 18 },
+    hpWidth: 44,
   },
+  // Торс
   torso: {
-    image: '/images/body/torso.png',
-    naturalWidth: 96,
-    naturalHeight: 174,
-    position: { top: 153, left: 175 },
-    scale: 1,
-    hpBar: { x: 20, y: 50, width: 56 },
+    name: 'Торс',
+    path: 'M55,55 L125,55 L130,130 L120,145 L90,150 L60,145 L50,130 Z',
+    center: { x: 90, y: 100 },
+    hpOffset: { x: 62, y: 85 },
+    hpWidth: 56,
   },
-  armLeft: {
-    image: '/images/body/arm-left.png',
-    naturalWidth: 32,
-    naturalHeight: 105,
-    position: { top: 199, left: 263 },
-    scale: 1,
-    hpBar: { x: 2, y: 30, width: 28 },
+  // Левая рука
+  leftArm: {
+    name: 'Левая рука',
+    path: 'M50,58 L28,62 L18,105 L12,145 L25,148 L35,110 L45,70 L50,95 L50,58',
+    center: { x: 30, y: 100 },
+    hpOffset: { x: 14, y: 90 },
+    hpWidth: 24,
   },
-  armRight: {
-    image: '/images/body/arm-right.png',
-    naturalWidth: 32,
-    naturalHeight: 101,
-    position: { top: 193, left: 147 },
-    scale: 1,
-    hpBar: { x: 2, y: 30, width: 28 },
+  // Правая рука
+  rightArm: {
+    name: 'Правая рука',
+    path: 'M130,58 L152,62 L162,105 L168,145 L155,148 L145,110 L135,70 L130,95 L130,58',
+    center: { x: 150, y: 100 },
+    hpOffset: { x: 142, y: 90 },
+    hpWidth: 24,
   },
-  legLeft: {
-    image: '/images/body/leg-left.png',
-    naturalWidth: 32,
-    naturalHeight: 138,
-    position: { top: 331, left: 235 },
-    scale: 1,
-    hpBar: { x: 2, y: 40, width: 28 },
+  // Левая ладонь
+  leftHand: {
+    name: 'Левая кисть',
+    path: 'M10,150 Q5,150 5,158 L5,178 Q5,186 12,186 L22,186 Q30,186 30,178 L30,158 Q30,150 25,150 Z',
+    center: { x: 17, y: 168 },
+    hpOffset: { x: 8, y: 155 },
+    hpWidth: 18,
   },
-  legRight: {
-    image: '/images/body/leg-right.png',
-    naturalWidth: 32,
-    naturalHeight: 138,
-    position: { top: 331, left: 185 },
-    scale: 1,
-    hpBar: { x: 2, y: 40, width: 28 },
+  // Правая ладонь
+  rightHand: {
+    name: 'Правая кисть',
+    path: 'M155,150 Q150,150 150,158 L150,178 Q150,186 158,186 L168,186 Q175,186 175,178 L175,158 Q175,150 170,150 Z',
+    center: { x: 162, y: 168 },
+    hpOffset: { x: 152, y: 155 },
+    hpWidth: 18,
   },
+  // Левая нога
+  leftLeg: {
+    name: 'Левая нога',
+    path: 'M62,148 L72,150 L68,205 L62,255 L50,255 L56,205 L56,150 Z',
+    center: { x: 61, y: 200 },
+    hpOffset: { x: 48, y: 185 },
+    hpWidth: 22,
+  },
+  // Правая нога
+  rightLeg: {
+    name: 'Правая нога',
+    path: 'M118,148 L108,150 L112,205 L118,255 L130,255 L124,205 L124,150 Z',
+    center: { x: 119, y: 200 },
+    hpOffset: { x: 108, y: 185 },
+    hpWidth: 22,
+  },
+  // Левая ступня
+  leftFoot: {
+    name: 'Левая стопа',
+    path: 'M45,260 Q40,260 40,268 L40,285 Q40,295 50,295 L68,295 Q75,295 75,288 L75,270 Q75,260 68,260 Z',
+    center: { x: 57, y: 278 },
+    hpOffset: { x: 44, y: 265 },
+    hpWidth: 20,
+  },
+  // Правая ступня
+  rightFoot: {
+    name: 'Правая стопа',
+    path: 'M112,260 Q105,260 105,270 L105,288 Q105,295 112,295 L130,295 Q140,295 140,285 L140,268 Q140,260 135,260 Z',
+    center: { x: 123, y: 278 },
+    hpOffset: { x: 112, y: 265 },
+    hpWidth: 20,
+  },
+};
+
+// Маппинг ID
+const PART_MAPPING: Record<string, keyof typeof BODY_PARTS> = {
+  head: 'head',
+  torso: 'torso',
+  left_arm: 'leftArm',
+  right_arm: 'rightArm',
+  left_hand: 'leftHand',
+  right_hand: 'rightHand',
+  left_leg: 'leftLeg',
+  right_leg: 'rightLeg',
+  left_foot: 'leftFoot',
+  right_foot: 'rightFoot',
 };
 
 // ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
@@ -89,130 +133,174 @@ function getHPPercent(part: BodyPart): { functional: number; structural: number 
   return { functional, structural };
 }
 
-// ==================== КОМПОНЕНТ HP БАРА ====================
-
-interface HPBarProps {
-  part: BodyPart;
-  x: number;
-  y: number;
-  width: number;
+function getStatusColor(status: LimbStatus): string {
+  switch (status) {
+    case 'healthy': return '#22c55e';
+    case 'damaged': return '#eab308';
+    case 'crippled': return '#f97316';
+    case 'paralyzed': return '#ef4444';
+    case 'critical': return '#dc2626';
+    case 'severed': return '#78350f';
+    default: return '#64748b';
+  }
 }
 
-function HPBar({ part, x, y, width }: HPBarProps) {
-  const { functional, structural } = getHPPercent(part);
-  const isSevered = part.status === 'severed';
-  const isHeart = part.type === 'heart';
-  
-  if (isSevered) return null;
-  
+// ==================== КОМПОНЕНТ ====================
+
+export function BodyDoll({ bodyState, onPartClick, selectedPartId }: BodyDollProps) {
+  const [hoveredPart, setHoveredPart] = useState<string | null>(null);
+
+  const getPart = (id: string): BodyPart | undefined => bodyState?.parts.get(id);
+
   return (
-    <div 
-      className="absolute pointer-events-none"
-      style={{ left: x, top: y, width }}
-    >
-      {/* Функциональная HP */}
-      <div className="h-1 rounded-sm bg-gray-800/80 mb-0.5 relative overflow-hidden">
-        <div 
-          className="absolute inset-y-0 left-0 bg-red-600 rounded-sm transition-all duration-300"
-          style={{ width: `${functional}%` }}
-        />
-      </div>
-      
-      {/* Структурная HP (не показываем для сердца) */}
-      {!isHeart && (
-        <div className="h-1 rounded-sm bg-gray-800/80 relative overflow-hidden">
-          <div 
-            className="absolute inset-y-0 left-0 bg-gray-400 rounded-sm transition-all duration-300"
-            style={{ width: `${structural}%` }}
+    <div className="relative flex items-center justify-center w-full h-full">
+      <svg
+        viewBox="0 0 180 320"
+        className="w-full h-full max-w-[180px]"
+        style={{ maxHeight: DOLL_HEIGHT }}
+      >
+        {/* Фон */}
+        <rect x="0" y="0" width="180" height="320" fill="#1e293b" rx="8" />
+
+        {/* Части тела */}
+        {Object.entries(BODY_PARTS).map(([key, config]) => {
+          const partId = Object.entries(PART_MAPPING).find(([, v]) => v === key)?.[0] || key;
+          const part = getPart(partId);
+          const isSevered = part?.status === 'severed';
+          const isSelected = selectedPartId === partId;
+          const isHovered = hoveredPart === partId;
+
+          let fillColor = '#1f2937';
+          let strokeColor = '#475569';
+
+          if (isSevered) {
+            fillColor = '#78350f';
+            strokeColor = '#92400e';
+          } else if (part) {
+            strokeColor = getStatusColor(part.status);
+            if (isSelected) {
+              fillColor = '#374151';
+            }
+          }
+
+          return (
+            <g key={key}>
+              {/* Часть тела */}
+              <path
+                d={config.path}
+                fill={fillColor}
+                stroke={isSelected ? '#f59e0b' : isHovered ? '#94a3b8' : strokeColor}
+                strokeWidth={isSelected ? 2.5 : isHovered ? 2 : 1.5}
+                className="cursor-pointer transition-all duration-150"
+                onClick={() => onPartClick?.(partId)}
+                onMouseEnter={() => setHoveredPart(partId)}
+                onMouseLeave={() => setHoveredPart(null)}
+              />
+
+              {/* HP бары (если не отрублена) */}
+              {part && !isSevered && (
+                <g>
+                  {/* Функциональная HP */}
+                  <rect
+                    x={config.hpOffset.x}
+                    y={config.hpOffset.y}
+                    width={config.hpWidth}
+                    height={3}
+                    fill="#374151"
+                    rx={1}
+                  />
+                  <rect
+                    x={config.hpOffset.x}
+                    y={config.hpOffset.y}
+                    width={config.hpWidth * (getHPPercent(part).functional / 100)}
+                    height={3}
+                    fill="#dc2626"
+                    rx={1}
+                  />
+
+                  {/* Структурная HP */}
+                  <rect
+                    x={config.hpOffset.x}
+                    y={config.hpOffset.y + 4}
+                    width={config.hpWidth}
+                    height={3}
+                    fill="#374151"
+                    rx={1}
+                  />
+                  <rect
+                    x={config.hpOffset.x}
+                    y={config.hpOffset.y + 4}
+                    width={config.hpWidth * (getHPPercent(part).structural / 100)}
+                    height={3}
+                    fill="#6b7280"
+                    rx={1}
+                  />
+                </g>
+              )}
+
+              {/* Индикатор отрубленной части */}
+              {isSevered && (
+                <text
+                  x={config.center.x}
+                  y={config.center.y}
+                  textAnchor="middle"
+                  dominantBaseline="middle"
+                  fill="#ef4444"
+                  fontSize="10"
+                  fontWeight="bold"
+                >
+                  ✕
+                </text>
+              )}
+            </g>
+          );
+        })}
+
+        {/* Сердце (точка в центре торса) */}
+        {bodyState?.heart && (
+          <circle
+            cx="90"
+            cy="90"
+            r={selectedPartId === 'heart' ? 7 : 6}
+            fill={bodyState.heart.hp.current > 40 ? '#991b1b' : '#450a0a'}
+            stroke={selectedPartId === 'heart' ? '#f59e0b' : '#dc2626'}
+            strokeWidth={selectedPartId === 'heart' ? 2 : 1}
+            className="cursor-pointer"
+            onClick={() => onPartClick?.('heart')}
           />
-        </div>
-      )}
-    </div>
-  );
-}
+        )}
 
-// ==================== КОМПОНЕНТ ЧАСТИ ТЕЛА ====================
+        {/* Легенда */}
+        <g transform="translate(5, 300)">
+          <rect x="0" y="0" width="10" height="4" fill="#dc2626" rx={1} />
+          <text x="13" y="4" fill="#94a3b8" fontSize="6">Функ</text>
+          
+          <rect x="40" y="0" width="10" height="4" fill="#6b7280" rx={1} />
+          <text x="53" y="4" fill="#94a3b8" fontSize="6">Струк</text>
+          
+          <rect x="80" y="0" width="8" height="8" fill="#78350f" rx={1} />
+          <text x="91" y="6" fill="#94a3b8" fontSize="6">Отруб</text>
+        </g>
+      </svg>
 
-interface BodyPartImageProps {
-  partId: string;
-  part: BodyPart | undefined;
-  config: typeof BODY_PARTS_CONFIG[keyof BODY_PARTS_CONFIG];
-  onClick?: () => void;
-  isSelected?: boolean;
-  onHover?: (part: BodyPart | null) => void;
-}
-
-function BodyPartImage({ partId, part, config, onClick, isSelected, onHover }: BodyPartImageProps) {
-  const isSevered = part?.status === 'severed';
-  
-  const width = config.naturalWidth * config.scale;
-  const height = config.naturalHeight * config.scale;
-  
-  // Фильтр для отрубленных частей (коричневый)
-  const filterStyle = isSevered 
-    ? 'sepia(100%) saturate(400%) hue-rotate(15deg) brightness(0.6)'
-    : 'none';
-  
-  return (
-    <div
-      className={`absolute cursor-pointer transition-all duration-200 ${
-        isSelected ? 'z-10' : ''
-      }`}
-      style={{
-        top: config.position.top,
-        left: config.position.left,
-        width,
-        height,
-        opacity: isSevered ? 0.5 : 1,
-        filter: filterStyle,
-      }}
-      onClick={onClick}
-      onMouseEnter={() => part && onHover?.(part)}
-      onMouseLeave={() => onHover?.(null)}
-    >
-      {/* Изображение части */}
-      <Image
-        src={config.image}
-        alt={partId}
-        width={width}
-        height={height}
-        className={`transition-all duration-200 ${isSelected ? 'ring-2 ring-amber-400 rounded' : ''}`}
-        style={{ objectFit: 'contain' }}
-      />
-      
-      {/* HP бар */}
-      {part && !isSevered && (
-        <HPBar
-          part={part}
-          x={config.hpBar.x}
-          y={config.hpBar.y}
-          width={config.hpBar.width}
+      {/* Тултип при наведении */}
+      {hoveredPart && bodyState && (
+        <BodyPartTooltip 
+          part={getPart(hoveredPart)} 
+          partId={hoveredPart}
         />
       )}
-      
-      {/* Индикатор отрубания */}
-      {isSevered && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-red-500 text-lg font-bold bg-black/60 rounded-full w-6 h-6 flex items-center justify-center">
-            ✕
-          </span>
-        </div>
-      )}
     </div>
   );
 }
 
-// ==================== HP ТУЛТИП ====================
+// ==================== ТУЛТИП ====================
 
-interface HPTooltipProps {
-  part: BodyPart;
-  position: { x: number; y: number };
-}
+function BodyPartTooltip({ part, partId }: { part: BodyPart | undefined; partId: string }) {
+  if (!part) return null;
 
-function HPTooltip({ part, position }: HPTooltipProps) {
   const { functional, structural } = getHPPercent(part);
-  const isHeart = part.type === 'heart';
-  
+
   const getStatusText = (status: LimbStatus): string => {
     switch (status) {
       case 'healthy': return 'Здорова';
@@ -224,176 +312,31 @@ function HPTooltip({ part, position }: HPTooltipProps) {
       default: return 'Неизвестно';
     }
   };
-  
-  const getStatusColor = (status: LimbStatus): string => {
-    switch (status) {
-      case 'healthy': return 'text-green-400';
-      case 'damaged': return 'text-yellow-400';
-      case 'crippled': return 'text-orange-400';
-      case 'paralyzed': return 'text-red-400';
-      case 'critical': return 'text-red-500';
-      case 'severed': return 'text-gray-400';
-      default: return 'text-slate-400';
-    }
-  };
-  
+
   return (
-    <div 
-      className="fixed z-50 bg-slate-900 border border-slate-600 rounded-lg p-3 shadow-xl pointer-events-none min-w-[180px]"
-      style={{ left: position.x + 15, top: position.y + 10 }}
-    >
-      <div className="flex items-center justify-between gap-3 mb-2">
-        <span className="text-sm font-medium text-white">{part.name}</span>
-        <span className={`text-xs font-medium ${getStatusColor(part.status)}`}>
+    <div className="absolute left-0 top-0 bg-slate-900 border border-slate-600 rounded p-2 text-xs z-50 shadow-lg pointer-events-none ml-2 mt-2">
+      <div className="flex items-center gap-2 mb-1">
+        <span className="text-white font-medium">{part.name}</span>
+        <span style={{ color: getStatusColor(part.status) }}>
           {getStatusText(part.status)}
         </span>
       </div>
-      
-      <div className="space-y-1">
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-red-400 w-14">Функция</span>
-          <div className="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
-            <div className="h-full bg-red-600" style={{ width: `${functional}%` }} />
+      {part.status !== 'severed' && (
+        <div className="space-y-0.5">
+          <div className="flex items-center gap-1">
+            <div className="w-12 h-1.5 bg-slate-700 rounded overflow-hidden">
+              <div className="h-full bg-red-600" style={{ width: `${functional}%` }} />
+            </div>
+            <span className="text-slate-400">{part.hp.functional.current}</span>
           </div>
-          <span className="text-xs text-slate-400 w-12 text-right">
-            {part.hp.functional.current}/{part.hp.functional.max}
-          </span>
-        </div>
-        
-        {!isHeart && (
-          <div className="flex items-center gap-2">
-            <span className="text-xs text-gray-400 w-14">Структура</span>
-            <div className="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
+          <div className="flex items-center gap-1">
+            <div className="w-12 h-1.5 bg-slate-700 rounded overflow-hidden">
               <div className="h-full bg-gray-500" style={{ width: `${structural}%` }} />
             </div>
-            <span className="text-xs text-slate-400 w-12 text-right">
-              {part.hp.structural.current}/{part.hp.structural.max}
-            </span>
-          </div>
-        )}
-      </div>
-      
-      <div className="text-xs text-slate-500 mt-2">Эффективность: {part.efficiency}%</div>
-    </div>
-  );
-}
-
-// ==================== ГЛАВНЫЙ КОМПОНЕНТ ====================
-
-export function BodyDoll({ bodyState, onPartClick, selectedPartId }: BodyDollProps) {
-  const [hoveredPart, setHoveredPart] = useState<BodyPart | null>(null);
-  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
-  
-  const getPart = (id: string): BodyPart | undefined => bodyState?.parts.get(id);
-  
-  const handleMouseEnter = (e: React.MouseEvent, part: BodyPart) => {
-    setHoveredPart(part);
-    setTooltipPosition({ x: e.clientX, y: e.clientY });
-  };
-  
-  // Маппинг ID частей к конфигу
-  const partMappings = [
-    { id: 'head', config: BODY_PARTS_CONFIG.head },
-    { id: 'torso', config: BODY_PARTS_CONFIG.torso },
-    { id: 'left_arm', config: BODY_PARTS_CONFIG.armLeft },
-    { id: 'right_arm', config: BODY_PARTS_CONFIG.armRight },
-    { id: 'left_leg', config: BODY_PARTS_CONFIG.legLeft },
-    { id: 'right_leg', config: BODY_PARTS_CONFIG.legRight },
-  ];
-  
-  return (
-    <div 
-      className="relative flex items-center justify-center w-full h-full bg-slate-800/50 rounded-lg"
-      onMouseMove={(e) => {
-        if (hoveredPart) {
-          setTooltipPosition({ x: e.clientX, y: e.clientY });
-        }
-      }}
-      onMouseLeave={() => setHoveredPart(null)}
-    >
-      {/* Контейнер куклы */}
-      <div 
-        className="relative"
-        style={{ width: DOLL_WIDTH, height: DOLL_HEIGHT }}
-      >
-        {/* Части тела */}
-        {partMappings.map(({ id, config }) => {
-          const part = getPart(id);
-          return (
-            <BodyPartImage
-              key={id}
-              partId={id}
-              part={part}
-              config={config}
-              onClick={() => onPartClick?.(id)}
-              isSelected={selectedPartId === id}
-              onHover={(p) => {
-                if (p) {
-                  const rect = document.activeElement?.getBoundingClientRect();
-                  handleMouseEnter({ clientX: tooltipPosition.x || 0, clientY: tooltipPosition.y || 0 } as React.MouseEvent, p);
-                }
-              }}
-            />
-          );
-        })}
-        
-        {/* Сердце (индикатор внутри торса) */}
-        {bodyState?.heart && (
-          <div
-            className="absolute cursor-pointer"
-            style={{ top: 200, left: 205 }}
-            onClick={() => onPartClick?.('heart')}
-            onMouseEnter={(e) => {
-              const heartPart: BodyPart = {
-                id: 'heart',
-                name: 'Сердце',
-                type: 'heart',
-                status: 'healthy',
-                hp: {
-                  functional: { max: bodyState.heart.hp.max, current: bodyState.heart.hp.current },
-                  structural: { max: 0, current: 0 }
-                },
-                functions: ['circulation'],
-                efficiency: bodyState.heart.efficiency,
-                armor: 0,
-                damageThreshold: 0,
-                hitboxRadius: 0.02,
-              };
-              handleMouseEnter(e, heartPart);
-            }}
-          >
-            <div 
-              className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${
-                selectedPartId === 'heart' ? 'ring-2 ring-amber-400' : ''
-              }`}
-              style={{ backgroundColor: bodyState.heart.hp.current > 40 ? 'rgba(127, 29, 29, 0.8)' : 'rgba(69, 10, 10, 0.9)' }}
-            >
-              <span className="text-sm">❤️</span>
-            </div>
-          </div>
-        )}
-      </div>
-      
-      {/* HP Tooltip */}
-      {hoveredPart && <HPTooltip part={hoveredPart} position={tooltipPosition} />}
-      
-      {/* Легенда */}
-      <div className="absolute bottom-2 left-2 right-2 bg-slate-900/80 rounded-lg p-2">
-        <div className="flex items-center justify-center gap-4 text-xs">
-          <div className="flex items-center gap-1">
-            <div className="w-4 h-1.5 bg-red-600 rounded-sm" />
-            <span className="text-slate-400">Функция</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-4 h-1.5 bg-gray-400 rounded-sm" />
-            <span className="text-slate-400">Структура</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-4 h-3 rounded bg-amber-800 opacity-60" />
-            <span className="text-slate-400">Отрублена</span>
+            <span className="text-slate-400">{part.hp.structural.current}</span>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

@@ -144,6 +144,9 @@ let globalChargingTechniques: TechniqueCharging[] = [];
 let globalChargeBars: Map<number, Phaser.GameObjects.Graphics> = new Map();
 let globalChargeTexts: Map<number, Phaser.GameObjects.Text> = new Map();
 
+// Inventory toggle callback
+let globalOnToggleInventory: (() => void) | null = null;
+
 // ============================================
 // HELPER FUNCTIONS
 // ============================================
@@ -1343,6 +1346,489 @@ async function executeTechniqueInDirection(
 }
 
 // ============================================
+// INVENTORY SCENE CONFIG (Overlay)
+// ============================================
+
+const INVENTORY_CELL_SIZE = 40;
+const INVENTORY_COLS = 7;
+const INVENTORY_ROWS = 7;
+
+// Цвета редкости предметов
+const RARITY_COLORS_PHASER: Record<string, number> = {
+  common: 0x9ca3af,
+  uncommon: 0x22c55e,
+  rare: 0x3b82f6,
+  epic: 0xa855f7,
+  legendary: 0xf97316,
+  mythic: 0xef4444,
+};
+
+// Цвета статуса частей тела
+const BODY_STATUS_COLORS: Record<string, number> = {
+  healthy: 0x22c55e,
+  damaged: 0xeab308,
+  crippled: 0xf97316,
+  paralyzed: 0xef4444,
+  critical: 0xdc2626,
+  severed: 0x78350f,
+};
+
+// Конфигурация частей тела для схематичной куклы
+interface BodyPartConfig {
+  id: string;
+  name: string;
+  x: number;
+  y: number;
+  hpBarOffset: { x: number; y: number };
+  slotOffset: { x: number; y: number };
+  equipmentSlot: string;
+}
+
+const BODY_PARTS_CONFIG: BodyPartConfig[] = [
+  { id: 'head', name: 'Голова', x: 100, y: 25, hpBarOffset: { x: 0, y: -20 }, slotOffset: { x: 0, y: 0 }, equipmentSlot: 'head' },
+  { id: 'torso', name: 'Торс', x: 100, y: 75, hpBarOffset: { x: 0, y: -20 }, slotOffset: { x: 0, y: 0 }, equipmentSlot: 'torso' },
+  { id: 'left_arm', name: 'Левая рука', x: 50, y: 70, hpBarOffset: { x: -25, y: 0 }, slotOffset: { x: -20, y: 10 }, equipmentSlot: 'left_hand' },
+  { id: 'right_arm', name: 'Правая рука', x: 150, y: 70, hpBarOffset: { x: 25, y: 0 }, slotOffset: { x: 20, y: 10 }, equipmentSlot: 'right_hand' },
+  { id: 'left_leg', name: 'Левая нога', x: 80, y: 130, hpBarOffset: { x: -20, y: 5 }, slotOffset: { x: 0, y: 20 }, equipmentSlot: 'legs' },
+  { id: 'right_leg', name: 'Правая нога', x: 120, y: 130, hpBarOffset: { x: 20, y: 5 }, slotOffset: { x: 0, y: 20 }, equipmentSlot: 'legs' },
+];
+
+// Демо данные HP для частей тела
+interface BodyPartHP {
+  functional: { current: number; max: number };
+  structural: { current: number; max: number };
+  status: string;
+}
+
+const DEMO_BODY_HP: Record<string, BodyPartHP> = {
+  head: { functional: { current: 100, max: 100 }, structural: { current: 100, max: 100 }, status: 'healthy' },
+  torso: { functional: { current: 60, max: 150 }, structural: { current: 80, max: 100 }, status: 'damaged' },
+  left_arm: { functional: { current: 25, max: 80 }, structural: { current: 70, max: 100 }, status: 'crippled' },
+  right_arm: { functional: { current: 80, max: 80 }, structural: { current: 100, max: 100 }, status: 'healthy' },
+  left_leg: { functional: { current: 90, max: 100 }, structural: { current: 100, max: 100 }, status: 'healthy' },
+  right_leg: { functional: { current: 45, max: 100 }, structural: { current: 85, max: 100 }, status: 'damaged' },
+};
+
+const InventorySceneConfig = {
+  key: 'InventoryScene',
+
+  create(this: Phaser.Scene) {
+    const scene = this as Phaser.Scene;
+    const width = scene.cameras.main.width;
+    const height = scene.cameras.main.height;
+    
+    // === ФОН (полупрозрачный) ===
+    const bg = scene.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.85);
+    bg.setInteractive();
+    
+    // === КОНТЕЙНЕР ИНВЕНТАРЯ ===
+    const panelWidth = 750;
+    const panelHeight = 480;
+    const panelX = (width - panelWidth) / 2;
+    const panelY = (height - panelHeight) / 2;
+    
+    // Панель инвентаря
+    const panel = scene.add.rectangle(
+      panelX + panelWidth / 2, 
+      panelY + panelHeight / 2, 
+      panelWidth, 
+      panelHeight, 
+      0x1a1a2e, 
+      0.98
+    );
+    panel.setStrokeStyle(2, 0xfbbf24);
+    
+    // === ЗАГОЛОВОК ===
+    const title = scene.add.text(panelX + 20, panelY + 15, '📦 ИНВЕНТАРЬ', {
+      fontSize: '18px',
+      color: '#fbbf24',
+      fontFamily: 'Arial',
+    });
+    
+    // Закрыть по клику на крестик
+    const closeBtn = scene.add.text(panelX + panelWidth - 30, panelY + 10, '✕', {
+      fontSize: '20px',
+      color: '#ef4444',
+      fontFamily: 'Arial',
+    });
+    closeBtn.setInteractive({ useHandCursor: true });
+    closeBtn.on('pointerdown', () => {
+      scene.scene.stop('InventoryScene');
+    });
+    closeBtn.on('pointerover', () => closeBtn.setColor('#fbbf24'));
+    closeBtn.on('pointerout', () => closeBtn.setColor('#ef4444'));
+    
+    // === ЛЕВАЯ ПАНЕЛЬ: КУКЛА И ЭКИПИРОВКА ===
+    const leftPanelX = panelX + 15;
+    const leftPanelY = panelY + 45;
+    const leftPanelWidth = 210;
+    const leftPanelHeight = 420;
+    
+    // Фон левой панели
+    const leftPanel = scene.add.rectangle(
+      leftPanelX + leftPanelWidth / 2,
+      leftPanelY + leftPanelHeight / 2,
+      leftPanelWidth,
+      leftPanelHeight,
+      0x0f0f1a,
+      0.9
+    );
+    leftPanel.setStrokeStyle(1, 0x3a3a5a);
+    
+    // === СХЕМАТИЧНАЯ КУКЛА ТЕЛА ===
+    const dollX = leftPanelX + leftPanelWidth / 2;
+    const dollY = leftPanelY + 100;
+    
+    // Рисуем схематичную куклу с Graphics
+    const dollGraphics = scene.add.graphics();
+    
+    // Голова (круг)
+    const headHp = DEMO_BODY_HP.head;
+    const headColor = BODY_STATUS_COLORS[headHp.status] || BODY_STATUS_COLORS.healthy;
+    dollGraphics.fillStyle(headColor, 0.8);
+    dollGraphics.fillCircle(dollX, dollY, 20);
+    dollGraphics.lineStyle(2, 0xffffff, 0.5);
+    dollGraphics.strokeCircle(dollX, dollY, 20);
+    
+    // Торс (прямоугольник)
+    const torsoHp = DEMO_BODY_HP.torso;
+    const torsoColor = BODY_STATUS_COLORS[torsoHp.status] || BODY_STATUS_COLORS.healthy;
+    dollGraphics.fillStyle(torsoColor, 0.8);
+    dollGraphics.fillRect(dollX - 25, dollY + 30, 50, 60);
+    dollGraphics.lineStyle(2, 0xffffff, 0.5);
+    dollGraphics.strokeRect(dollX - 25, dollY + 30, 50, 60);
+    
+    // Левая рука (прямоугольник)
+    const leftArmHp = DEMO_BODY_HP.left_arm;
+    const leftArmColor = BODY_STATUS_COLORS[leftArmHp.status] || BODY_STATUS_COLORS.healthy;
+    dollGraphics.fillStyle(leftArmColor, 0.8);
+    dollGraphics.fillRect(dollX - 50, dollY + 35, 20, 50);
+    dollGraphics.lineStyle(2, 0xffffff, 0.5);
+    dollGraphics.strokeRect(dollX - 50, dollY + 35, 20, 50);
+    
+    // Правая рука (прямоугольник)
+    const rightArmHp = DEMO_BODY_HP.right_arm;
+    const rightArmColor = BODY_STATUS_COLORS[rightArmHp.status] || BODY_STATUS_COLORS.healthy;
+    dollGraphics.fillStyle(rightArmColor, 0.8);
+    dollGraphics.fillRect(dollX + 30, dollY + 35, 20, 50);
+    dollGraphics.lineStyle(2, 0xffffff, 0.5);
+    dollGraphics.strokeRect(dollX + 30, dollY + 35, 20, 50);
+    
+    // Левая нога (прямоугольник)
+    const leftLegHp = DEMO_BODY_HP.left_leg;
+    const leftLegColor = BODY_STATUS_COLORS[leftLegHp.status] || BODY_STATUS_COLORS.healthy;
+    dollGraphics.fillStyle(leftLegColor, 0.8);
+    dollGraphics.fillRect(dollX - 20, dollY + 95, 15, 45);
+    dollGraphics.lineStyle(2, 0xffffff, 0.5);
+    dollGraphics.strokeRect(dollX - 20, dollY + 95, 15, 45);
+    
+    // Правая нога (прямоугольник)
+    const rightLegHp = DEMO_BODY_HP.right_leg;
+    const rightLegColor = BODY_STATUS_COLORS[rightLegHp.status] || BODY_STATUS_COLORS.healthy;
+    dollGraphics.fillStyle(rightLegColor, 0.8);
+    dollGraphics.fillRect(dollX + 5, dollY + 95, 15, 45);
+    dollGraphics.lineStyle(2, 0xffffff, 0.5);
+    dollGraphics.strokeRect(dollX + 5, dollY + 95, 15, 45);
+    
+    // === HP БАРЫ НА ЧАСТЯХ ТЕЛА ===
+    const hpBarWidth = 30;
+    const hpBarHeight = 4;
+    
+    // Функция для рисования HP бара
+    const drawHpBar = (x: number, y: number, hp: BodyPartHP) => {
+      // Функциональный HP (фон + заполнение)
+      const funcBg = scene.add.rectangle(x, y, hpBarWidth, hpBarHeight, 0x000000, 0.9);
+      const funcPercent = hp.functional.current / hp.functional.max;
+      const funcFill = scene.add.rectangle(
+        x - hpBarWidth / 2 + (hpBarWidth * funcPercent) / 2,
+        y,
+        Math.max(1, hpBarWidth * funcPercent),
+        hpBarHeight,
+        0xdc2626,
+        1
+      );
+      
+      // Структурный HP (фон + заполнение)
+      const structBg = scene.add.rectangle(x, y + 5, hpBarWidth, hpBarHeight, 0x000000, 0.9);
+      const structPercent = hp.structural.current / hp.structural.max;
+      const structFill = scene.add.rectangle(
+        x - hpBarWidth / 2 + (hpBarWidth * structPercent) / 2,
+        y + 5,
+        Math.max(1, hpBarWidth * structPercent),
+        hpBarHeight,
+        0x6b7280,
+        1
+      );
+    };
+    
+    // HP бары для каждой части
+    drawHpBar(dollX, dollY - 25, headHp); // Голова
+    drawHpBar(dollX, dollY + 25, torsoHp); // Торс
+    drawHpBar(dollX - 55, dollY + 55, leftArmHp); // Левая рука
+    drawHpBar(dollX + 55, dollY + 55, rightArmHp); // Правая рука
+    drawHpBar(dollX - 25, dollY + 115, leftLegHp); // Левая нога
+    drawHpBar(dollX + 25, dollY + 115, rightLegHp); // Правая нога
+    
+    // === СЛОТЫ ЭКИПИРОВКИ ПО КРАЯМ ПАНЕЛИ ===
+    const slotSize = 36;
+    const slotSpacing = 42;
+    
+    // Иконки слотов
+    const slotIcons: Record<string, string> = {
+      head: '🧢',
+      torso: '👕',
+      left_hand: '🛡️',
+      right_hand: '⚔️',
+      legs: '👖',
+      feet: '👞',
+      accessory1: '💍',
+      accessory2: '📿',
+      back: '🧥',
+    };
+    
+    // Названия слотов
+    const slotNames: Record<string, string> = {
+      head: 'Голова',
+      torso: 'Броня',
+      left_hand: 'Левая',
+      right_hand: 'Правая',
+      legs: 'Ноги',
+      feet: 'Обувь',
+      accessory1: 'Аксес.1',
+      accessory2: 'Аксес.2',
+      back: 'Спина',
+    };
+    
+    // ЛЕВАЯ КОЛОНКА слотов (сверху вниз)
+    const leftSlots = ['head', 'torso', 'legs', 'feet'];
+    const leftColumnX = leftPanelX + 25;
+    const leftColumnStartY = leftPanelY + 55;
+    
+    leftSlots.forEach((slotId, index) => {
+      const slotY = leftColumnStartY + index * slotSpacing;
+      
+      // Фон слота
+      const slotBg = scene.add.rectangle(leftColumnX, slotY, slotSize, slotSize, 0x1a1a2e, 0.95);
+      slotBg.setStrokeStyle(2, 0x4a4a6a);
+      slotBg.setInteractive({ useHandCursor: true });
+      
+      // Иконка слота
+      scene.add.text(leftColumnX, slotY - 2, slotIcons[slotId] || '📦', {
+        fontSize: '18px'
+      }).setOrigin(0.5);
+      
+      // Название слота (под иконкой)
+      scene.add.text(leftColumnX, slotY + 14, slotNames[slotId] || slotId, {
+        fontSize: '7px',
+        color: '#9ca3af'
+      }).setOrigin(0.5);
+      
+      // Hover эффект
+      slotBg.on('pointerover', () => {
+        slotBg.setStrokeStyle(2, 0xfbbf24);
+      });
+      slotBg.on('pointerout', () => {
+        slotBg.setStrokeStyle(2, 0x4a4a6a);
+      });
+      
+      // Данные слота
+      slotBg.setData('slotId', slotId);
+    });
+    
+    // ПРАВАЯ КОЛОНКА слотов (сверху вниз)
+    const rightSlots = ['right_hand', 'left_hand', 'accessory1', 'accessory2'];
+    const rightColumnX = leftPanelX + leftPanelWidth - 25;
+    const rightColumnStartY = leftPanelY + 55;
+    
+    rightSlots.forEach((slotId, index) => {
+      const slotY = rightColumnStartY + index * slotSpacing;
+      
+      // Фон слота
+      const slotBg = scene.add.rectangle(rightColumnX, slotY, slotSize, slotSize, 0x1a1a2e, 0.95);
+      slotBg.setStrokeStyle(2, 0x4a4a6a);
+      slotBg.setInteractive({ useHandCursor: true });
+      
+      // Иконка слота
+      scene.add.text(rightColumnX, slotY - 2, slotIcons[slotId] || '📦', {
+        fontSize: '18px'
+      }).setOrigin(0.5);
+      
+      // Название слота (под иконкой)
+      scene.add.text(rightColumnX, slotY + 14, slotNames[slotId] || slotId, {
+        fontSize: '7px',
+        color: '#9ca3af'
+      }).setOrigin(0.5);
+      
+      // Hover эффект
+      slotBg.on('pointerover', () => {
+        slotBg.setStrokeStyle(2, 0xfbbf24);
+      });
+      slotBg.on('pointerout', () => {
+        slotBg.setStrokeStyle(2, 0x4a4a6a);
+      });
+      
+      // Данные слота
+      slotBg.setData('slotId', slotId);
+    });
+    
+    // Легенда HP баров
+    const legendY = leftPanelY + leftPanelHeight - 20;
+    const legendX = leftPanelX + 15;
+    
+    // Функ. HP
+    scene.add.rectangle(legendX, legendY, 12, 4, 0xdc2626);
+    scene.add.text(legendX + 10, legendY, 'Функ', { fontSize: '8px', color: '#9ca3af' }).setOrigin(0, 0.5);
+    
+    // Структ. HP
+    scene.add.rectangle(legendX + 50, legendY, 12, 4, 0x6b7280);
+    scene.add.text(legendX + 60, legendY, 'Струк', { fontSize: '8px', color: '#9ca3af' }).setOrigin(0, 0.5);
+    
+    // Статусы
+    scene.add.circle(legendX + 110, legendY, 4, BODY_STATUS_COLORS.healthy);
+    scene.add.text(legendX + 118, legendY, 'OK', { fontSize: '8px', color: '#22c55e' }).setOrigin(0, 0.5);
+    
+    scene.add.circle(legendX + 145, legendY, 4, BODY_STATUS_COLORS.damaged);
+    scene.add.text(legendX + 153, legendY, 'Повр', { fontSize: '8px', color: '#eab308' }).setOrigin(0, 0.5);
+    
+    // === ПРАВАЯ ПАНЕЛЬ: СЕТКА ИНВЕНТАРЯ ===
+    const rightPanelX = panelX + 240;
+    const rightPanelY = panelY + 50;
+    const gridWidth = INVENTORY_COLS * INVENTORY_CELL_SIZE;
+    const gridHeight = INVENTORY_ROWS * INVENTORY_CELL_SIZE;
+    
+    // Фон сетки
+    const gridBg = scene.add.rectangle(
+      rightPanelX + gridWidth / 2,
+      rightPanelY + gridHeight / 2,
+      gridWidth + 10,
+      gridHeight + 10,
+      0x0f0f1a,
+      0.9
+    );
+    gridBg.setStrokeStyle(1, 0x3a3a5a);
+    
+    // === СЕТКА ИНВЕНТАРЯ ===
+    const inventoryItems: { x: number; y: number; cell: Phaser.GameObjects.Rectangle }[] = [];
+    
+    for (let row = 0; row < INVENTORY_ROWS; row++) {
+      for (let col = 0; col < INVENTORY_COLS; col++) {
+        const cellX = rightPanelX + col * INVENTORY_CELL_SIZE + INVENTORY_CELL_SIZE / 2;
+        const cellY = rightPanelY + row * INVENTORY_CELL_SIZE + INVENTORY_CELL_SIZE / 2;
+        
+        const cell = scene.add.rectangle(
+          cellX, cellY,
+          INVENTORY_CELL_SIZE - 2,
+          INVENTORY_CELL_SIZE - 2,
+          0x1a1a2e,
+          0.9
+        );
+        cell.setStrokeStyle(1, 0x3a3a5a);
+        cell.setInteractive({ useHandCursor: true });
+        
+        // Hover эффект
+        cell.on('pointerover', () => {
+          cell.setFillStyle(0x2a2a4e, 1);
+        });
+        cell.on('pointerout', () => {
+          cell.setFillStyle(0x1a1a2e, 0.9);
+        });
+        
+        inventoryItems.push({ x: col, y: row, cell });
+      }
+    }
+    
+    // === ДЕМО ПРЕДМЕТЫ ===
+    const demoItems = [
+      { name: 'Духовный меч', icon: '🗡️', rarity: 'rare', x: 0, y: 0, slot: 'right_hand' },
+      { name: 'Мантия', icon: '👘', rarity: 'uncommon', x: 1, y: 0, slot: 'torso' },
+      { name: 'Таблетка Ци', icon: '💊', rarity: 'common', x: 2, y: 0, qty: 12 },
+      { name: 'Эликсир', icon: '🧴', rarity: 'uncommon', x: 3, y: 0, qty: 5 },
+      { name: 'Камень духа', icon: '💎', rarity: 'rare', x: 0, y: 1, qty: 25 },
+      { name: 'Свиток', icon: '📜', rarity: 'epic', x: 1, y: 1 },
+      { name: 'Шлем', icon: '🧢', rarity: 'uncommon', x: 2, y: 1, slot: 'head' },
+      { name: 'Сапоги', icon: '👢', rarity: 'common', x: 3, y: 1, slot: 'feet' },
+    ];
+    
+    demoItems.forEach(item => {
+      const cellX = rightPanelX + item.x * INVENTORY_CELL_SIZE + INVENTORY_CELL_SIZE / 2;
+      const cellY = rightPanelY + item.y * INVENTORY_CELL_SIZE + INVENTORY_CELL_SIZE / 2;
+      
+      // Рамка редкости
+      const rarityColor = RARITY_COLORS_PHASER[item.rarity] || RARITY_COLORS_PHASER.common;
+      const rarityBorder = scene.add.rectangle(cellX, cellY, INVENTORY_CELL_SIZE - 4, INVENTORY_CELL_SIZE - 4, 0x1a1a2e, 1);
+      rarityBorder.setStrokeStyle(2, rarityColor);
+      
+      // Иконка
+      const iconText = scene.add.text(cellX, cellY - 3, item.icon, { fontSize: '20px' }).setOrigin(0.5);
+      iconText.setInteractive({ useHandCursor: true, draggable: true });
+      
+      // Сохраняем данные предмета
+      iconText.setData('itemData', item);
+      
+      // Количество
+      if (item.qty) {
+        scene.add.text(cellX + 10, cellY + 10, String(item.qty), {
+          fontSize: '10px',
+          color: '#ffffff',
+          fontFamily: 'Arial',
+          stroke: '#000000',
+          strokeThickness: 2,
+        }).setOrigin(0.5);
+      }
+      
+      // Tooltip
+      iconText.on('pointerover', () => {
+        const tooltipText = item.slot 
+          ? `${item.name}\nСлот: ${item.slot}` 
+          : item.name;
+        const tooltip = scene.add.text(cellX, cellY - 40, tooltipText, {
+          fontSize: '11px',
+          color: '#ffffff',
+          backgroundColor: '#000000ee',
+          padding: { x: 6, y: 3 },
+          align: 'center',
+        }).setOrigin(0.5).setDepth(100);
+        iconText.setData('tooltip', tooltip);
+      });
+      iconText.on('pointerout', () => {
+        const tooltip = iconText.getData('tooltip') as Phaser.GameObjects.Text;
+        if (tooltip) tooltip.destroy();
+      });
+    });
+    
+    // === СТАТУС БАР (вес) ===
+    const statusY = panelY + panelHeight - 25;
+    scene.add.text(panelX + 20, statusY, '⚖️ Вес: 12.5 / 50.0 кг', {
+      fontSize: '11px',
+      color: '#9ca3af',
+      fontFamily: 'Arial',
+    });
+    
+    scene.add.text(panelX + 200, statusY, '📦 Слоты: 8 / 49', {
+      fontSize: '11px',
+      color: '#9ca3af',
+      fontFamily: 'Arial',
+    });
+    
+    // === ПОДСКАЗКА ===
+    scene.add.text(panelX + panelWidth - 100, statusY, '[I] или [ESC] - закрыть', {
+      fontSize: '10px',
+      color: '#6b7280',
+      fontFamily: 'Arial',
+    }).setOrigin(0.5, 0);
+    
+    // === ОБРАБОТКА КЛАВИШ ===
+    scene.input.keyboard?.on('keydown-I', () => {
+      scene.scene.stop('InventoryScene');
+    });
+    
+    scene.input.keyboard?.on('keydown-ESC', () => {
+      scene.scene.stop('InventoryScene');
+    });
+  },
+};
+
+// ============================================
 // SCENE CONFIG
 // ============================================
 
@@ -2000,6 +2486,25 @@ const GameSceneConfig = {
       }
     });
 
+    // Inventory toggle (I key) - запускает InventoryScene как overlay
+    scene.input.keyboard?.on('keydown-I', () => {
+      if (!isChatFocused) {
+        // Проверяем, открыта ли уже сцена инвентаря
+        if (scene.scene.isActive('InventoryScene')) {
+          scene.scene.stop('InventoryScene');
+        } else {
+          scene.scene.launch('InventoryScene');
+        }
+      }
+    });
+
+    // ESC to close inventory (только если открыт инвентарь)
+    scene.input.keyboard?.on('keydown-ESC', () => {
+      if (scene.scene.isActive('InventoryScene')) {
+        scene.scene.stop('InventoryScene');
+      }
+    });
+
     scene.input.keyboard?.on('keydown', (event: KeyboardEvent) => {
       if (!isChatFocused) return;
       let currentText = (scene.data.get('chatInputText') as string) || '';
@@ -2397,7 +2902,7 @@ export function PhaserGame() {
             default: 'arcade',
             arcade: { gravity: { x: 0, y: 0 }, debug: false },
           },
-          scene: [GameSceneConfig],
+          scene: [GameSceneConfig, InventorySceneConfig],
           scale: {
             mode: Phaser.Scale.RESIZE,
             autoCenter: Phaser.Scale.CENTER_BOTH,
