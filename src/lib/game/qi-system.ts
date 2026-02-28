@@ -346,6 +346,7 @@ export function attemptBreakthrough(
     character.cultivationSubLevel,
     character.coreCapacity,
     character.accumulatedQi,
-    character.conductivity
+    character.conductivity,
+    character.conductivityMeditations || 0  // ИСПРАВЛЕНО: передаём медитации!
   );
 }
