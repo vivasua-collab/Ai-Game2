@@ -4,7 +4,7 @@
  * Функции:
  * - Схематичная кукла тела с экипировкой
  * - Сетка инвентаря 7x7
- * - Духовное хранилище
+ * - Духовное хранилище (в той же вкладке, список)
  * - Drag & Drop между всеми зонами
  */
 
@@ -17,7 +17,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { BodyDoll } from './BodyDoll';
@@ -133,73 +132,6 @@ function DraggableItem({
   );
 }
 
-interface DropZoneProps {
-  onDrop: (data: DragItemData) => void;
-  acceptedTypes: ('inventory' | 'equipment' | 'storage')[];
-  className?: string;
-  children?: React.ReactNode;
-  isOver?: boolean;
-  isValid?: boolean;
-}
-
-function DropZone({ 
-  onDrop, 
-  acceptedTypes, 
-  className = '',
-  children,
-}: DropZoneProps) {
-  const [isOver, setIsOver] = useState(false);
-  const [isValid, setIsValid] = useState(true);
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    
-    try {
-      const data = JSON.parse(e.dataTransfer.getData('application/json'));
-      setIsValid(acceptedTypes.includes(data.type));
-    } catch {
-      setIsValid(false);
-    }
-    
-    setIsOver(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsOver(false);
-    setIsValid(true);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsOver(false);
-    
-    try {
-      const data = JSON.parse(e.dataTransfer.getData('application/json')) as DragItemData;
-      if (acceptedTypes.includes(data.type)) {
-        onDrop(data);
-      }
-    } catch (err) {
-      console.error('Drop error:', err);
-    }
-  };
-
-  return (
-    <div
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
-      className={`
-        ${className}
-        ${isOver ? (isValid ? 'bg-green-900/30 ring-2 ring-green-500' : 'bg-red-900/30 ring-2 ring-red-500') : ''}
-        transition-colors
-      `}
-    >
-      {children}
-    </div>
-  );
-}
-
 // ==================== ПАНЕЛЬ ДЕТАЛЕЙ ЧАСТИ ТЕЛА ====================
 
 function BodyPartDetails({ part, heart }: { part: BodyPart | null; heart?: BodyStructure['heart'] | null }) {
@@ -289,7 +221,7 @@ interface EquipmentSlotProps {
   isValidTarget?: boolean;
 }
 
-function EquipmentSlot({ slotId, item, onDrop, onUnequip, isValidTarget }: EquipmentSlotProps) {
+function EquipmentSlot({ slotId, item, onDrop, onUnequip }: EquipmentSlotProps) {
   const slot = EQUIPMENT_SLOTS.find(s => s.id === slotId);
   const [isOver, setIsOver] = useState(false);
 
@@ -442,7 +374,7 @@ function InventoryGrid({
   );
 }
 
-// ==================== ПАНЕЛЬ ХРАНИЛИЩА ====================
+// ==================== ПАНЕЛЬ ХРАНИЛИЩА (СПИСОК) ====================
 
 interface StoragePanelProps {
   storage: { slots: (InventoryItem | null)[]; unlocked: boolean; capacity: number; requiredLevel: number } | null;
@@ -505,48 +437,86 @@ function StoragePanel({
     }
   };
 
+  // Фильтруем только непустые слоты для списка
+  const nonEmptySlots = storage.slots
+    .map((item, index) => ({ item, index }))
+    .filter(({ item }) => item !== null);
+
   return (
-    <div className="bg-slate-800/50 rounded p-3">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-purple-400 text-sm font-medium">🔮 Духовное хранилище</span>
-        <span className="text-slate-500 text-xs">
-          {storage.slots.filter(s => s).length}/{storage.capacity}
+    <div 
+      className="bg-slate-800/50 rounded p-2 min-h-[80px]"
+      onDragOver={(e) => {
+        e.preventDefault();
+        if (dragOverIndex === null) setDragOverIndex(-1);
+      }}
+      onDragLeave={() => setDragOverIndex(null)}
+      onDrop={(e) => {
+        e.preventDefault();
+        setDragOverIndex(null);
+        try {
+          const data = JSON.parse(e.dataTransfer.getData('application/json'));
+          onDrop(data, storage.slots.filter(s => s).length);
+        } catch (err) {
+          console.error('Storage drop error:', err);
+        }
+      }}
+    >
+      <div className="flex items-center justify-between mb-2 px-1">
+        <span className="text-purple-400 text-xs font-medium flex items-center gap-1">
+          <span>🔮</span>
+          <span>Хранилище</span>
+          <span className="text-slate-500">({nonEmptySlots.length}/{storage.capacity})</span>
+        </span>
+        <span className="text-slate-600 text-[10px]">
+          в другом измерении
         </span>
       </div>
       
-      <div className="grid grid-cols-5 gap-1">
-        {storage.slots.map((item, index) => {
-          const isOver = dragOverIndex === index;
-          
-          return (
+      {nonEmptySlots.length === 0 ? (
+        <div 
+          className={`
+            text-center py-3 text-slate-500 text-xs border-2 border-dashed rounded
+            ${dragOverIndex === -1 ? 'border-purple-500 bg-purple-900/20' : 'border-slate-700'}
+          `}
+        >
+          Перетащите предмет сюда
+        </div>
+      ) : (
+        <div className="space-y-0.5 max-h-32 overflow-y-auto">
+          {nonEmptySlots.map(({ item, index }) => (
             <div
               key={index}
+              onClick={() => onMoveToInventory(index)}
+              className={`
+                flex items-center gap-2 p-1.5 rounded cursor-pointer transition-colors
+                hover:bg-slate-700/50 border-l-2
+                ${selectedItem?.id === item?.id ? 'bg-slate-700/50' : ''}
+                ${dragOverIndex === index ? 'bg-purple-900/20' : ''}
+              `}
+              style={{ borderLeftColor: item ? RARITY_COLORS[item.rarity] : '#475569' }}
               onDragOver={(e) => handleDragOver(e, index)}
               onDragLeave={handleDragLeave}
               onDrop={(e) => handleDrop(e, index)}
-              className={`
-                aspect-square bg-slate-700/50 rounded border transition-colors
-                ${isOver ? 'border-purple-500 bg-purple-900/20' : 'border-slate-600'}
-              `}
             >
-              {item ? (
-                <div 
-                  className="w-full h-full flex flex-col items-center justify-center cursor-pointer hover:bg-slate-600/50 rounded"
-                  onClick={() => onMoveToInventory(index)}
-                  style={getRarityStyle(item.rarity)}
+              <span className="text-base">{item?.icon}</span>
+              <span className="text-sm text-slate-300 flex-1 truncate">{item?.name}</span>
+              {item?.quantity && item.quantity > 1 && (
+                <span className="text-xs text-slate-400">×{item.quantity}</span>
+              )}
+              {item && (
+                <span 
+                  className="text-[10px] px-1 rounded"
+                  style={{ color: RARITY_COLORS[item.rarity] }}
                 >
-                  <span className="text-lg">{item.icon}</span>
-                  {item.quantity > 1 && (
-                    <span className="text-xs text-slate-400">{item.quantity}</span>
-                  )}
-                </div>
-              ) : null}
+                  {RARITY_NAMES[item.rarity]}
+                </span>
+              )}
             </div>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      )}
       
-      <div className="text-slate-500 text-xs mt-2 text-center">
+      <div className="text-slate-600 text-[10px] mt-1 text-center">
         Клик — переместить в инвентарь
       </div>
     </div>
@@ -561,11 +531,10 @@ interface InventoryDialogProps {
   defaultTab?: 'inventory' | 'storage';
 }
 
-export function InventoryDialog({ open, onOpenChange, defaultTab = 'inventory' }: InventoryDialogProps) {
+export function InventoryDialog({ open, onOpenChange }: InventoryDialogProps) {
   const character = useGameCharacter();
   const [selectedPartId, setSelectedPartId] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
-  const [activeTab, setActiveTab] = useState<string>(defaultTab);
 
   const {
     inventory,
@@ -689,10 +658,10 @@ export function InventoryDialog({ open, onOpenChange, defaultTab = 'inventory' }
         </DialogHeader>
 
         <div className="flex h-[calc(85vh-80px)]">
-          {/* ЛЕВАЯ ПАНЕЛЬ: Кукла тела + Экипировка */}
-          <div className="w-[240px] flex-shrink-0 border-r border-slate-700 flex flex-col p-3">
-            {/* Кукла - уменьшенная высота */}
-            <div className="h-[180px] flex items-center justify-center">
+          {/* ЛЕВАЯ ПАНЕЛЬ: Кукла тела + Экипировка (увеличена на 20%) */}
+          <div className="w-[288px] flex-shrink-0 border-r border-slate-700 flex flex-col p-3">
+            {/* Кукла - увеличенная высота на 20% (было 180px, стало 216px) */}
+            <div className="h-[216px] flex items-center justify-center">
               <BodyDoll
                 bodyState={bodyState}
                 onPartClick={setSelectedPartId}
@@ -725,76 +694,67 @@ export function InventoryDialog({ open, onOpenChange, defaultTab = 'inventory' }
             </div>
           </div>
 
-          {/* ПРАВАЯ ПАНЕЛЬ: Инвентарь + Хранилище */}
+          {/* ПРАВАЯ ПАНЕЛЬ: Инвентарь + Хранилище (в одной вкладке) */}
           <div className="flex-1 p-4 flex flex-col min-w-0">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
-              <TabsList className="grid w-full grid-cols-2 bg-slate-800 mb-3 h-9">
-                <TabsTrigger value="inventory" className="data-[state=active]:bg-amber-600 text-sm">
-                  📦 Инвентарь ({inventory?.usedSlots || 0}/{inventory?.totalSlots || 49})
-                </TabsTrigger>
-                <TabsTrigger value="storage" className="data-[state=active]:bg-purple-600 text-sm">
-                  🔮 Хранилище
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="inventory" className="flex-1 mt-0 flex flex-col">
-                {/* Вес */}
-                {inventory && (
-                  <div className="text-xs text-slate-500 mb-2">
-                    Вес: <span className="text-amber-400">{inventory.currentWeight.toFixed(1)}</span>
-                    /{inventory.maxWeight} кг
-                  </div>
-                )}
-                
-                {/* Сетка инвентаря */}
-                <ScrollArea className="flex-1">
-                  <InventoryGrid 
-                    items={inventory?.slots || []}
-                    selectedItem={selectedItem}
-                    onSelect={setSelectedItem}
-                    onDrop={handleInventoryDrop}
-                    width={inventory?.baseWidth || 7}
-                    height={inventory?.baseHeight || 7}
-                  />
-                </ScrollArea>
-                
-                {/* Детали выбранного предмета */}
-                {selectedItem && (
-                  <div className="mt-3 p-2 bg-slate-800 rounded border border-slate-600">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl">{selectedItem.icon}</span>
-                      <div>
-                        <div className="text-sm font-medium text-white">{selectedItem.name}</div>
-                        <div className="text-xs" style={{ color: RARITY_COLORS[selectedItem.rarity] }}>
-                          {RARITY_NAMES[selectedItem.rarity]}
-                        </div>
-                      </div>
+            {/* Заголовок инвентаря */}
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-amber-400 text-sm font-medium">
+                📦 Инвентарь ({inventory?.usedSlots || 0}/{inventory?.totalSlots || 49})
+              </span>
+              {inventory && (
+                <span className="text-xs text-slate-500">
+                  Вес: <span className="text-amber-400">{inventory.currentWeight.toFixed(1)}</span>
+                  /{inventory.maxWeight} кг
+                </span>
+              )}
+            </div>
+            
+            {/* Сетка инвентаря */}
+            <ScrollArea className="flex-1 mb-3">
+              <InventoryGrid 
+                items={inventory?.slots || []}
+                selectedItem={selectedItem}
+                onSelect={setSelectedItem}
+                onDrop={handleInventoryDrop}
+                width={inventory?.baseWidth || 7}
+                height={inventory?.baseHeight || 7}
+              />
+            </ScrollArea>
+            
+            {/* Детали выбранного предмета */}
+            {selectedItem && (
+              <div className="mb-3 p-2 bg-slate-800 rounded border border-slate-600">
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">{selectedItem.icon}</span>
+                  <div>
+                    <div className="text-sm font-medium text-white">{selectedItem.name}</div>
+                    <div className="text-xs" style={{ color: RARITY_COLORS[selectedItem.rarity] }}>
+                      {RARITY_NAMES[selectedItem.rarity]}
                     </div>
-                    {selectedItem.description && (
-                      <div className="text-xs text-slate-400 mt-1">{selectedItem.description}</div>
-                    )}
-                    {selectedItem.stats && (
-                      <div className="text-xs text-slate-500 mt-1">
-                        {selectedItem.stats.damage && `⚔️ Урон: ${selectedItem.stats.damage} `}
-                        {selectedItem.stats.defense && `🛡️ Защита: ${selectedItem.stats.defense} `}
-                        {selectedItem.stats.qiBonus && `✨ Ци: +${selectedItem.stats.qiBonus}`}
-                      </div>
-                    )}
+                  </div>
+                </div>
+                {selectedItem.description && (
+                  <div className="text-xs text-slate-400 mt-1">{selectedItem.description}</div>
+                )}
+                {selectedItem.stats && (
+                  <div className="text-xs text-slate-500 mt-1">
+                    {selectedItem.stats.damage && `⚔️ Урон: ${selectedItem.stats.damage} `}
+                    {selectedItem.stats.defense && `🛡️ Защита: ${selectedItem.stats.defense} `}
+                    {selectedItem.stats.qiBonus && `✨ Ци: +${selectedItem.stats.qiBonus}`}
                   </div>
                 )}
-              </TabsContent>
+              </div>
+            )}
 
-              <TabsContent value="storage" className="flex-1 mt-0">
-                <StoragePanel
-                  storage={storage}
-                  selectedItem={selectedItem}
-                  onSelect={setSelectedItem}
-                  onDrop={(data) => handleStorageDrop(data)}
-                  onMoveToInventory={moveFromStorage}
-                  cultivationLevel={character?.cultivationLevel || 1}
-                />
-              </TabsContent>
-            </Tabs>
+            {/* Духовное хранилище (в той же вкладке) */}
+            <StoragePanel
+              storage={storage}
+              selectedItem={selectedItem}
+              onSelect={setSelectedItem}
+              onDrop={(data) => handleStorageDrop(data)}
+              onMoveToInventory={moveFromStorage}
+              cultivationLevel={character?.cultivationLevel || 1}
+            />
           </div>
         </div>
       </DialogContent>

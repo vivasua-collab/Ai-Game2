@@ -46,6 +46,7 @@ export type ItemType =
   | 'material_herb'     // Трава
   | 'material_crystal'  // Кристалл
   | 'material_essence'  // Эссенция
+  | 'material_qi_stone' // Камень Ци - кристаллизованная энергия Ци
   // Прочее
   | 'technique_scroll'  // Свиток техники
   | 'quest_item'        // Квестовый предмет

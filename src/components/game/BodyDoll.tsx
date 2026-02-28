@@ -6,6 +6,8 @@
  * - HP барами на каждой части
  * - Подсветкой при выборе
  * - Коричневым цветом для отрубленных
+ * 
+ * Масштаб: увеличен на 20% от исходного размера
  */
 
 'use client';
@@ -19,91 +21,91 @@ interface BodyDollProps {
   selectedPartId?: string | null;
 }
 
-// Размеры куклы (компактные)
-const DOLL_WIDTH = 180;
-const DOLL_HEIGHT = 320;
+// Размеры куклы (увеличены на 20%: было 180x320, стало 216x384)
+const DOLL_WIDTH = 216;
+const DOLL_HEIGHT = 384;
 
-// Конфигурация частей тела для SVG
+// Конфигурация частей тела для SVG (координаты увеличены на 20%)
 const BODY_PARTS = {
   // Голова
   head: {
     name: 'Голова',
-    path: 'M70,8 L110,8 Q120,8 120,18 L120,38 Q120,50 110,50 L70,50 Q60,50 60,38 L60,18 Q60,8 70,8',
-    center: { x: 90, y: 29 },
-    hpOffset: { x: 68, y: 18 },
-    hpWidth: 44,
+    path: 'M84,10 L132,10 Q144,10 144,22 L144,46 Q144,60 132,60 L84,60 Q72,60 72,46 L72,22 Q72,10 84,10',
+    center: { x: 108, y: 35 },
+    hpOffset: { x: 82, y: 22 },
+    hpWidth: 53,
   },
   // Торс
   torso: {
     name: 'Торс',
-    path: 'M55,55 L125,55 L130,130 L120,145 L90,150 L60,145 L50,130 Z',
-    center: { x: 90, y: 100 },
-    hpOffset: { x: 62, y: 85 },
-    hpWidth: 56,
+    path: 'M66,66 L150,66 L156,156 L144,174 L108,180 L72,174 L60,156 Z',
+    center: { x: 108, y: 120 },
+    hpOffset: { x: 74, y: 102 },
+    hpWidth: 67,
   },
   // Левая рука
   leftArm: {
     name: 'Левая рука',
-    path: 'M50,58 L28,62 L18,105 L12,145 L25,148 L35,110 L45,70 L50,95 L50,58',
-    center: { x: 30, y: 100 },
-    hpOffset: { x: 14, y: 90 },
-    hpWidth: 24,
+    path: 'M60,70 L34,74 L22,126 L14,174 L30,178 L42,132 L54,84 L60,114 L60,70',
+    center: { x: 36, y: 120 },
+    hpOffset: { x: 17, y: 108 },
+    hpWidth: 29,
   },
   // Правая рука
   rightArm: {
     name: 'Правая рука',
-    path: 'M130,58 L152,62 L162,105 L168,145 L155,148 L145,110 L135,70 L130,95 L130,58',
-    center: { x: 150, y: 100 },
-    hpOffset: { x: 142, y: 90 },
-    hpWidth: 24,
+    path: 'M156,70 L182,74 L194,126 L202,174 L186,178 L174,132 L162,84 L156,114 L156,70',
+    center: { x: 180, y: 120 },
+    hpOffset: { x: 170, y: 108 },
+    hpWidth: 29,
   },
   // Левая ладонь
   leftHand: {
     name: 'Левая кисть',
-    path: 'M10,150 Q5,150 5,158 L5,178 Q5,186 12,186 L22,186 Q30,186 30,178 L30,158 Q30,150 25,150 Z',
-    center: { x: 17, y: 168 },
-    hpOffset: { x: 8, y: 155 },
-    hpWidth: 18,
+    path: 'M12,180 Q6,180 6,190 L6,214 Q6,223 14,223 L26,223 Q36,223 36,214 L36,190 Q36,180 30,180 Z',
+    center: { x: 20, y: 202 },
+    hpOffset: { x: 10, y: 186 },
+    hpWidth: 22,
   },
   // Правая ладонь
   rightHand: {
     name: 'Правая кисть',
-    path: 'M155,150 Q150,150 150,158 L150,178 Q150,186 158,186 L168,186 Q175,186 175,178 L175,158 Q175,150 170,150 Z',
-    center: { x: 162, y: 168 },
-    hpOffset: { x: 152, y: 155 },
-    hpWidth: 18,
+    path: 'M186,180 Q180,180 180,190 L180,214 Q180,223 190,223 L202,223 Q210,223 210,214 L210,190 Q210,180 204,180 Z',
+    center: { x: 194, y: 202 },
+    hpOffset: { x: 182, y: 186 },
+    hpWidth: 22,
   },
   // Левая нога
   leftLeg: {
     name: 'Левая нога',
-    path: 'M62,148 L72,150 L68,205 L62,255 L50,255 L56,205 L56,150 Z',
-    center: { x: 61, y: 200 },
-    hpOffset: { x: 48, y: 185 },
-    hpWidth: 22,
+    path: 'M74,178 L86,180 L82,246 L74,306 L60,306 L67,246 L67,180 Z',
+    center: { x: 73, y: 240 },
+    hpOffset: { x: 58, y: 222 },
+    hpWidth: 26,
   },
   // Правая нога
   rightLeg: {
     name: 'Правая нога',
-    path: 'M118,148 L108,150 L112,205 L118,255 L130,255 L124,205 L124,150 Z',
-    center: { x: 119, y: 200 },
-    hpOffset: { x: 108, y: 185 },
-    hpWidth: 22,
+    path: 'M142,178 L130,180 L134,246 L142,306 L156,306 L149,246 L149,180 Z',
+    center: { x: 143, y: 240 },
+    hpOffset: { x: 130, y: 222 },
+    hpWidth: 26,
   },
   // Левая ступня
   leftFoot: {
     name: 'Левая стопа',
-    path: 'M45,260 Q40,260 40,268 L40,285 Q40,295 50,295 L68,295 Q75,295 75,288 L75,270 Q75,260 68,260 Z',
-    center: { x: 57, y: 278 },
-    hpOffset: { x: 44, y: 265 },
-    hpWidth: 20,
+    path: 'M54,312 Q48,312 48,322 L48,342 Q48,354 60,354 L82,354 Q90,354 90,346 L90,324 Q90,312 82,312 Z',
+    center: { x: 68, y: 334 },
+    hpOffset: { x: 53, y: 318 },
+    hpWidth: 24,
   },
   // Правая ступня
   rightFoot: {
     name: 'Правая стопа',
-    path: 'M112,260 Q105,260 105,270 L105,288 Q105,295 112,295 L130,295 Q140,295 140,285 L140,268 Q140,260 135,260 Z',
-    center: { x: 123, y: 278 },
-    hpOffset: { x: 112, y: 265 },
-    hpWidth: 20,
+    path: 'M134,312 Q126,312 126,324 L126,346 Q126,354 134,354 L156,354 Q168,354 168,342 L168,322 Q168,312 162,312 Z',
+    center: { x: 148, y: 334 },
+    hpOffset: { x: 134, y: 318 },
+    hpWidth: 24,
   },
 };
 
@@ -155,12 +157,12 @@ export function BodyDoll({ bodyState, onPartClick, selectedPartId }: BodyDollPro
   return (
     <div className="relative flex items-center justify-center w-full h-full">
       <svg
-        viewBox="0 0 180 320"
-        className="w-full h-full max-w-[180px]"
+        viewBox="0 0 216 384"
+        className="w-full h-full max-w-[216px]"
         style={{ maxHeight: DOLL_HEIGHT }}
       >
         {/* Фон */}
-        <rect x="0" y="0" width="180" height="320" fill="#1e293b" rx="8" />
+        <rect x="0" y="0" width="216" height="384" fill="#1e293b" rx="10" />
 
         {/* Части тела */}
         {Object.entries(BODY_PARTS).map(([key, config]) => {
@@ -190,7 +192,7 @@ export function BodyDoll({ bodyState, onPartClick, selectedPartId }: BodyDollPro
                 d={config.path}
                 fill={fillColor}
                 stroke={isSelected ? '#f59e0b' : isHovered ? '#94a3b8' : strokeColor}
-                strokeWidth={isSelected ? 2.5 : isHovered ? 2 : 1.5}
+                strokeWidth={isSelected ? 3 : isHovered ? 2.4 : 1.8}
                 className="cursor-pointer transition-all duration-150"
                 onClick={() => onPartClick?.(partId)}
                 onMouseEnter={() => setHoveredPart(partId)}
@@ -205,7 +207,7 @@ export function BodyDoll({ bodyState, onPartClick, selectedPartId }: BodyDollPro
                     x={config.hpOffset.x}
                     y={config.hpOffset.y}
                     width={config.hpWidth}
-                    height={3}
+                    height={4}
                     fill="#374151"
                     rx={1}
                   />
@@ -213,7 +215,7 @@ export function BodyDoll({ bodyState, onPartClick, selectedPartId }: BodyDollPro
                     x={config.hpOffset.x}
                     y={config.hpOffset.y}
                     width={config.hpWidth * (getHPPercent(part).functional / 100)}
-                    height={3}
+                    height={4}
                     fill="#dc2626"
                     rx={1}
                   />
@@ -221,17 +223,17 @@ export function BodyDoll({ bodyState, onPartClick, selectedPartId }: BodyDollPro
                   {/* Структурная HP */}
                   <rect
                     x={config.hpOffset.x}
-                    y={config.hpOffset.y + 4}
+                    y={config.hpOffset.y + 5}
                     width={config.hpWidth}
-                    height={3}
+                    height={4}
                     fill="#374151"
                     rx={1}
                   />
                   <rect
                     x={config.hpOffset.x}
-                    y={config.hpOffset.y + 4}
+                    y={config.hpOffset.y + 5}
                     width={config.hpWidth * (getHPPercent(part).structural / 100)}
-                    height={3}
+                    height={4}
                     fill="#6b7280"
                     rx={1}
                   />
@@ -246,7 +248,7 @@ export function BodyDoll({ bodyState, onPartClick, selectedPartId }: BodyDollPro
                   textAnchor="middle"
                   dominantBaseline="middle"
                   fill="#ef4444"
-                  fontSize="10"
+                  fontSize="12"
                   fontWeight="bold"
                 >
                   ✕
@@ -259,27 +261,27 @@ export function BodyDoll({ bodyState, onPartClick, selectedPartId }: BodyDollPro
         {/* Сердце (точка в центре торса) */}
         {bodyState?.heart && (
           <circle
-            cx="90"
-            cy="90"
-            r={selectedPartId === 'heart' ? 7 : 6}
+            cx="108"
+            cy="108"
+            r={selectedPartId === 'heart' ? 8 : 7}
             fill={bodyState.heart.hp.current > 40 ? '#991b1b' : '#450a0a'}
             stroke={selectedPartId === 'heart' ? '#f59e0b' : '#dc2626'}
-            strokeWidth={selectedPartId === 'heart' ? 2 : 1}
+            strokeWidth={selectedPartId === 'heart' ? 2.4 : 1.2}
             className="cursor-pointer"
             onClick={() => onPartClick?.('heart')}
           />
         )}
 
         {/* Легенда */}
-        <g transform="translate(5, 300)">
-          <rect x="0" y="0" width="10" height="4" fill="#dc2626" rx={1} />
-          <text x="13" y="4" fill="#94a3b8" fontSize="6">Функ</text>
+        <g transform="translate(6, 360)">
+          <rect x="0" y="0" width="12" height="5" fill="#dc2626" rx={1} />
+          <text x="16" y="5" fill="#94a3b8" fontSize="7">Функ</text>
           
-          <rect x="40" y="0" width="10" height="4" fill="#6b7280" rx={1} />
-          <text x="53" y="4" fill="#94a3b8" fontSize="6">Струк</text>
+          <rect x="48" y="0" width="12" height="5" fill="#6b7280" rx={1} />
+          <text x="64" y="5" fill="#94a3b8" fontSize="7">Струк</text>
           
-          <rect x="80" y="0" width="8" height="8" fill="#78350f" rx={1} />
-          <text x="91" y="6" fill="#94a3b8" fontSize="6">Отруб</text>
+          <rect x="96" y="0" width="10" height="10" fill="#78350f" rx={1} />
+          <text x="109" y="7" fill="#94a3b8" fontSize="7">Отруб</text>
         </g>
       </svg>
 
@@ -324,13 +326,13 @@ function BodyPartTooltip({ part, partId }: { part: BodyPart | undefined; partId:
       {part.status !== 'severed' && (
         <div className="space-y-0.5">
           <div className="flex items-center gap-1">
-            <div className="w-12 h-1.5 bg-slate-700 rounded overflow-hidden">
+            <div className="w-14 h-2 bg-slate-700 rounded overflow-hidden">
               <div className="h-full bg-red-600" style={{ width: `${functional}%` }} />
             </div>
             <span className="text-slate-400">{part.hp.functional.current}</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-12 h-1.5 bg-slate-700 rounded overflow-hidden">
+            <div className="w-14 h-2 bg-slate-700 rounded overflow-hidden">
               <div className="h-full bg-gray-500" style={{ width: `${structural}%` }} />
             </div>
             <span className="text-slate-400">{part.hp.structural.current}</span>

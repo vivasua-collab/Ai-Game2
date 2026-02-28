@@ -659,6 +659,17 @@ class TruthSystemImpl {
     return session?.inventory || [];
   }
 
+  /**
+   * Обновить инвентарь из внешнего источника (например, после синхронизации)
+   */
+  updateInventory(sessionId: string, items: InventoryItemState[]): void {
+    const session = this.sessions.get(sessionId);
+    if (!session) return;
+    
+    session.inventory = items;
+    session.isDirty = true;
+  }
+
   // ==================== LOCATION OPERATIONS ====================
 
   /**

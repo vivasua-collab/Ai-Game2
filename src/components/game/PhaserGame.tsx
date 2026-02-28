@@ -1749,18 +1749,53 @@ const InventorySceneConfig = {
       { name: 'Сапоги', icon: '👢', rarity: 'common', x: 3, y: 1, slot: 'feet' },
     ];
     
-    demoItems.forEach(item => {
-      const cellX = rightPanelX + item.x * INVENTORY_CELL_SIZE + INVENTORY_CELL_SIZE / 2;
-      const cellY = rightPanelY + item.y * INVENTORY_CELL_SIZE + INVENTORY_CELL_SIZE / 2;
+    // Маппинг типов предметов на иконки
+    const typeToIcon: Record<string, string> = {
+      pill: '💊',
+      elixir: '🧴',
+      stone: '💎',
+      scroll: '📜',
+      weapon: '🗡️',
+      armor: '👘',
+      accessory: '💍',
+      material: '🪨',
+      material_qi_stone: '💎',
+      herb: '🌿',
+      food: '🍖',
+      book: '📖',
+      key: '🔑',
+      default: '📦',
+    };
+    
+    // Маппинг rarity на цвета
+    const rarityToColor: Record<string, number> = {
+      mythic: 0xef4444,    // red
+      legendary: 0xfbbf24, // amber/gold
+      epic: 0xa855f7,      // purple
+      rare: 0x3b82f6,      // blue
+      uncommon: 0x22c55e,  // green
+      common: 0x6b7280,    // gray
+    };
+    
+    // Отображаем реальные предметы из инвентаря
+    inventoryItems2.forEach((item, index) => {
+      const col = index % INVENTORY_COLS;
+      const row = Math.floor(index / INVENTORY_COLS);
+      
+      if (row >= INVENTORY_ROWS) return; // Не выходим за границы сетки
+      
+      const cellX = rightPanelX + col * INVENTORY_CELL_SIZE + INVENTORY_CELL_SIZE / 2;
+      const cellY = rightPanelY + row * INVENTORY_CELL_SIZE + INVENTORY_CELL_SIZE / 2;
       
       // Рамка редкости
-      const rarityColor = RARITY_COLORS_PHASER[item.rarity] || RARITY_COLORS_PHASER.common;
+      const rarityColor = rarityToColor[item.rarity] || rarityToColor.common;
       const rarityBorder = scene.add.rectangle(cellX, cellY, INVENTORY_CELL_SIZE - 4, INVENTORY_CELL_SIZE - 4, 0x1a1a2e, 1);
       rarityBorder.setStrokeStyle(2, rarityColor);
       
-      // Иконка
-      const iconText = scene.add.text(cellX, cellY - 3, item.icon, { fontSize: '20px' }).setOrigin(0.5);
-      iconText.setInteractive({ useHandCursor: true, draggable: true });
+      // Иконка - приоритет: item.icon > typeToIcon[type] > default
+      const icon = (item as { icon?: string }).icon || typeToIcon[item.type] || typeToIcon.default;
+      const iconText = scene.add.text(cellX, cellY - 3, icon, { fontSize: '20px' }).setOrigin(0.5);
+      iconText.setInteractive({ useHandCursor: true });
       
       // Сохраняем данные предмета
       iconText.setData('itemData', item);
@@ -2842,13 +2877,25 @@ export function PhaserGame() {
   const techniques = useGameTechniques();
   const messages = useGameMessages();
   const worldTime = useGameTime();
-  const { loadState, sendMessage } = useGameActions();
+  const { loadState, sendMessage, loadInventory } = useGameActions();
 
   useEffect(() => { globalSessionId = sessionId; }, [sessionId]);
   useEffect(() => { globalCharacter = character; }, [character]);
   useEffect(() => { globalTechniques = techniques; }, [techniques]);
   useEffect(() => { globalMessages = messages || []; }, [messages]);
   useEffect(() => { globalWorldTime = worldTime; }, [worldTime]);
+
+  // === ПЕРИОДИЧЕСКОЕ ОБНОВЛЕНИЕ ИНВЕНТАРЯ (каждые 10 секунд) ===
+  useEffect(() => {
+    if (!character?.id) return;
+    
+    // Загружаем инвентарь каждые 10 секунд
+    const intervalId = setInterval(() => {
+      loadInventory();
+    }, 10000);
+    
+    return () => clearInterval(intervalId);
+  }, [character?.id, loadInventory]);
 
   const handleMovement = useCallback(async (tilesMoved: number) => {
     if (!sessionId) return;

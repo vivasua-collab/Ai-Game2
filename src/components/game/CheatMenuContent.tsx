@@ -18,12 +18,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useGameCharacter, useGameActions } from '@/stores/game.store';
+import { QI_STONE_DEFINITIONS, QiStoneQuality } from '@/types/qi-stones';
 
 type StatType = 'strength' | 'agility' | 'intelligence' | 'conductivity';
 
 export function CheatMenuContent() {
   const character = useGameCharacter();
-  const { loadState, loadTechniques } = useGameActions();
+  const { loadState, loadTechniques, loadInventory } = useGameActions();
   
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<string | null>(null);
@@ -45,6 +46,8 @@ export function CheatMenuContent() {
   const [contributionPoints, setContributionPoints] = useState(500);
   const [worldHour, setWorldHour] = useState(12);
   const [worldDay, setWorldDay] = useState(1);
+  const [qiStoneQuality, setQiStoneQuality] = useState<QiStoneQuality>('stone');
+  const [qiStoneQuantity, setQiStoneQuantity] = useState(1);
 
   if (!character) {
     return (
@@ -121,6 +124,36 @@ export function CheatMenuContent() {
 
   // Resources command
   const handleAddResources = () => executeCheat('add_resources', { stones: spiritStones, points: contributionPoints });
+
+  // Qi Stone command
+  const handleAddQiStone = async () => {
+    setIsLoading(true);
+    setResult(null);
+    
+    try {
+      const response = await fetch('/api/inventory/add-qi-stone', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          characterId: character.id,
+          quality: qiStoneQuality,
+          quantity: qiStoneQuantity,
+        }),
+      });
+      
+      const data = await response.json();
+      if (data.success) {
+        await loadInventory();
+        setResult(`✅ ${data.message}`);
+      } else {
+        setResult(`❌ Ошибка: ${data.error}`);
+      }
+    } catch (error) {
+      setResult(`❌ Ошибка: ${error instanceof Error ? error.message : 'Unknown'}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -490,6 +523,46 @@ export function CheatMenuContent() {
                 className="w-full bg-indigo-600 hover:bg-indigo-700 h-9"
               >
                 🕐 Установить время
+              </Button>
+            </div>
+
+            {/* Qi Stones */}
+            <div className="bg-slate-800/50 rounded-lg p-4 space-y-3">
+              <h4 className="text-cyan-400 font-medium">💎 Камни Ци</h4>
+              <div className="grid grid-cols-2 gap-2">
+                <div>
+                  <Label className="text-xs text-slate-400">Качество</Label>
+                  <Select value={qiStoneQuality} onValueChange={(v) => setQiStoneQuality(v as QiStoneQuality)}>
+                    <SelectTrigger className="bg-slate-700 border-slate-600 h-9">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-700">
+                      {Object.entries(QI_STONE_DEFINITIONS).map(([quality, def]) => (
+                        <SelectItem key={quality} value={quality}>
+                          {def.icon} {def.name} ({def.qiContent} Ци)
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-xs text-slate-400">Количество</Label>
+                  <Input
+                    type="number"
+                    min={1}
+                    max={100}
+                    value={qiStoneQuantity}
+                    onChange={(e) => setQiStoneQuantity(Number(e.target.value))}
+                    className="bg-slate-700 border-slate-600 h-9"
+                  />
+                </div>
+              </div>
+              <Button
+                onClick={handleAddQiStone}
+                disabled={isLoading}
+                className="w-full bg-cyan-600 hover:bg-cyan-700 h-9"
+              >
+                💎 Добавить Камень Ци
               </Button>
             </div>
 
