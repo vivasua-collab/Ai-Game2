@@ -130,6 +130,17 @@ export const useGameStore = create<GameStoreState>()(
             } catch {
               console.error('Failed to load skills after start');
             }
+            
+            // Загружаем инвентарь
+            try {
+              const invResponse = await fetch(`/api/inventory?characterId=${characterId}`);
+              const invData = await invResponse.json();
+              if (invData.success) {
+                set({ inventory: invData.inventory });
+              }
+            } catch {
+              console.error('Failed to load inventory after start');
+            }
           }
           
           return true;

@@ -12,7 +12,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { useGameSessionId, useGameActions, useGameCharacter, useGameTechniques, useGameMessages, useGameTime } from '@/stores/game.store';
+import { useGameSessionId, useGameActions, useGameCharacter, useGameTechniques, useGameInventory, useGameMessages, useGameTime } from '@/stores/game.store';
 import type { Message, CharacterTechnique, Character } from '@/types/game';
 import { getCombatSlotsCount } from '@/types/game';
 import { calculateTotalConductivity } from '@/lib/game/conductivity-system';
@@ -129,6 +129,7 @@ let globalOnMovement: ((tiles: number) => void) | null = null;
 let globalOnSendMessage: ((message: string) => void) | null = null;
 let globalCharacter: Character | null = null;
 let globalTechniques: CharacterTechnique[] = [];
+let globalInventory: { id: string; name: string; type: string; quantity: number; rarity?: string | null }[] = [];
 let globalMessages: Message[] = [];
 // globalIsLoading removed - unused
 let globalWorldTime: { year: number; month: number; day: number; hour: number; minute: number } | null = null;
@@ -1737,37 +1738,62 @@ const InventorySceneConfig = {
       }
     }
     
-    // === ДЕМО ПРЕДМЕТЫ ===
-    const demoItems = [
-      { name: 'Духовный меч', icon: '🗡️', rarity: 'rare', x: 0, y: 0, slot: 'right_hand' },
-      { name: 'Мантия', icon: '👘', rarity: 'uncommon', x: 1, y: 0, slot: 'torso' },
-      { name: 'Таблетка Ци', icon: '💊', rarity: 'common', x: 2, y: 0, qty: 12 },
-      { name: 'Эликсир', icon: '🧴', rarity: 'uncommon', x: 3, y: 0, qty: 5 },
-      { name: 'Камень духа', icon: '💎', rarity: 'rare', x: 0, y: 1, qty: 25 },
-      { name: 'Свиток', icon: '📜', rarity: 'epic', x: 1, y: 1 },
-      { name: 'Шлем', icon: '🧢', rarity: 'uncommon', x: 2, y: 1, slot: 'head' },
-      { name: 'Сапоги', icon: '👢', rarity: 'common', x: 3, y: 1, slot: 'feet' },
-    ];
+    // === ПРЕДМЕТЫ ИЗ REACT STORE ===
+    // Используем globalInventory (синхронизируется с React store)
+    const inventoryItems2 = globalInventory || [];
     
-    demoItems.forEach(item => {
-      const cellX = rightPanelX + item.x * INVENTORY_CELL_SIZE + INVENTORY_CELL_SIZE / 2;
-      const cellY = rightPanelY + item.y * INVENTORY_CELL_SIZE + INVENTORY_CELL_SIZE / 2;
+    // Маппинг типов предметов на иконки
+    const typeToIcon: Record<string, string> = {
+      pill: '💊',
+      elixir: '🧴',
+      stone: '💎',
+      scroll: '📜',
+      weapon: '🗡️',
+      armor: '👘',
+      accessory: '💍',
+      material: '🪨',
+      herb: '🌿',
+      food: '🍖',
+      book: '📖',
+      key: '🔑',
+      default: '📦',
+    };
+    
+    // Маппинг rarity на цвета
+    const rarityToColor: Record<string, number> = {
+      legendary: 0xfbbf24, // amber/gold
+      epic: 0xa855f7,      // purple
+      rare: 0x3b82f6,      // blue
+      uncommon: 0x22c55e,  // green
+      common: 0x6b7280,    // gray
+    };
+    
+    // Отображаем реальные предметы из инвентаря
+    inventoryItems2.forEach((item, index) => {
+      const col = index % INVENTORY_COLS;
+      const row = Math.floor(index / INVENTORY_COLS);
+      
+      if (row >= INVENTORY_ROWS) return; // Не выходим за границы сетки
+      
+      const cellX = rightPanelX + col * INVENTORY_CELL_SIZE + INVENTORY_CELL_SIZE / 2;
+      const cellY = rightPanelY + row * INVENTORY_CELL_SIZE + INVENTORY_CELL_SIZE / 2;
       
       // Рамка редкости
-      const rarityColor = RARITY_COLORS_PHASER[item.rarity] || RARITY_COLORS_PHASER.common;
+      const rarityColor = rarityToColor[item.rarity || 'common'] || rarityToColor.common;
       const rarityBorder = scene.add.rectangle(cellX, cellY, INVENTORY_CELL_SIZE - 4, INVENTORY_CELL_SIZE - 4, 0x1a1a2e, 1);
       rarityBorder.setStrokeStyle(2, rarityColor);
       
       // Иконка
-      const iconText = scene.add.text(cellX, cellY - 3, item.icon, { fontSize: '20px' }).setOrigin(0.5);
-      iconText.setInteractive({ useHandCursor: true, draggable: true });
+      const icon = typeToIcon[item.type] || typeToIcon.default;
+      const iconText = scene.add.text(cellX, cellY - 3, icon, { fontSize: '20px' }).setOrigin(0.5);
+      iconText.setInteractive({ useHandCursor: true });
       
       // Сохраняем данные предмета
       iconText.setData('itemData', item);
       
       // Количество
-      if (item.qty) {
-        scene.add.text(cellX + 10, cellY + 10, String(item.qty), {
+      if (item.quantity > 1) {
+        scene.add.text(cellX + 10, cellY + 10, String(item.quantity), {
           fontSize: '10px',
           color: '#ffffff',
           fontFamily: 'Arial',
@@ -1778,10 +1804,7 @@ const InventorySceneConfig = {
       
       // Tooltip
       iconText.on('pointerover', () => {
-        const tooltipText = item.slot 
-          ? `${item.name}\nСлот: ${item.slot}` 
-          : item.name;
-        const tooltip = scene.add.text(cellX, cellY - 40, tooltipText, {
+        const tooltip = scene.add.text(cellX, cellY - 40, item.name, {
           fontSize: '11px',
           color: '#ffffff',
           backgroundColor: '#000000ee',
@@ -2840,6 +2863,7 @@ export function PhaserGame() {
   const sessionId = useGameSessionId();
   const character = useGameCharacter();
   const techniques = useGameTechniques();
+  const inventory = useGameInventory();
   const messages = useGameMessages();
   const worldTime = useGameTime();
   const { loadState, sendMessage } = useGameActions();
@@ -2847,6 +2871,7 @@ export function PhaserGame() {
   useEffect(() => { globalSessionId = sessionId; }, [sessionId]);
   useEffect(() => { globalCharacter = character; }, [character]);
   useEffect(() => { globalTechniques = techniques; }, [techniques]);
+  useEffect(() => { globalInventory = inventory || []; }, [inventory]);
   useEffect(() => { globalMessages = messages || []; }, [messages]);
   useEffect(() => { globalWorldTime = worldTime; }, [worldTime]);
 
