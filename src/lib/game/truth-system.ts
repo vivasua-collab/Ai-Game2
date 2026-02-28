@@ -891,4 +891,3 @@ class TruthSystemImpl {
 // ==================== EXPORTS ====================
 
 export const TruthSystem = TruthSystemImpl;
-export type { SessionState, CharacterState, WorldTimeState, LocationState, InventoryItemState, TechniqueState };

@@ -21,6 +21,7 @@ import {
   payloadTooLargeResponse, 
   REQUEST_SIZE_LIMITS 
 } from "@/lib/request-size-validator";
+import { TruthSystem } from "@/lib/game/truth-system";
 
 // Инициализируем LLM
 let llmInitialized = false;
@@ -468,6 +469,12 @@ export async function POST(request: NextRequest) {
         messages: { orderBy: { createdAt: "asc" } },
       },
     });
+
+    // === ЗАГРУЗКА В TRUTH SYSTEM ===
+    // Загружаем созданную сессию в память (ПАМЯТЬ ПЕРВИЧНА!)
+    const truthSystem = TruthSystem.getInstance();
+    await truthSystem.loadSession(dbResult.session.id);
+    await logDebug("SYSTEM", "Session loaded into TruthSystem", { sessionId: dbResult.session.id });
 
     await timer.end("INFO", { sessionId: dbResult.session.id, variant, success: true });
     await logInfo("GAME", "Game started successfully", {

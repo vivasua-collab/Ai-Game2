@@ -5,6 +5,7 @@ import {
   validateOrError,
   validationErrorResponse,
 } from "@/lib/validations/game";
+import { TruthSystem } from "@/lib/game/truth-system";
 
 export async function GET(request: NextRequest) {
   try {
@@ -20,6 +21,76 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // === ПРОВЕРЯЕМ TRUTH SYSTEM СНАЧАЛА ===
+    // ПАМЯТЬ ПЕРВИЧНА - если сессия загружена, берём из памяти
+    const truthSystem = TruthSystem.getInstance();
+    const memoryState = truthSystem.getSessionState(validation.data.sessionId);
+
+    if (memoryState) {
+      // Возвращаем данные из памяти (истина!)
+      const worldTime = {
+        year: memoryState.worldTime.year,
+        month: memoryState.worldTime.month,
+        day: memoryState.worldTime.day,
+        hour: memoryState.worldTime.hour,
+        minute: memoryState.worldTime.minute,
+        formatted: memoryState.worldTime.formatted,
+        season: memoryState.worldTime.season,
+      };
+
+      const cultivationInfo = {
+        level: memoryState.character.cultivationLevel,
+        subLevel: memoryState.character.cultivationSubLevel,
+        formatted: `${memoryState.character.cultivationLevel}.${memoryState.character.cultivationSubLevel}`,
+        qiDensity: Math.pow(2, memoryState.character.cultivationLevel - 1),
+        progressToNextSubLevel:
+          memoryState.character.accumulatedQi /
+          (memoryState.character.coreCapacity * 10),
+        progressToNextMajorLevel:
+          memoryState.character.accumulatedQi /
+          (memoryState.character.coreCapacity * 100),
+      };
+
+      return NextResponse.json({
+        success: true,
+        source: "memory", // Указываем источник данных
+        session: {
+          id: memoryState.sessionId,
+          isPaused: false, // Активная сессия
+          daysSinceStart: memoryState.worldTime.daysSinceStart,
+          worldTime,
+          character: {
+            id: memoryState.character.id,
+            name: memoryState.character.name,
+            age: memoryState.character.age,
+            strength: memoryState.character.strength,
+            agility: memoryState.character.agility,
+            intelligence: memoryState.character.intelligence,
+            conductivity: memoryState.character.conductivity,
+            cultivationLevel: memoryState.character.cultivationLevel,
+            cultivationSubLevel: memoryState.character.cultivationSubLevel,
+            coreCapacity: memoryState.character.coreCapacity,
+            coreQuality: memoryState.character.coreQuality,
+            currentQi: memoryState.character.currentQi,
+            accumulatedQi: memoryState.character.accumulatedQi,
+            health: memoryState.character.health,
+            fatigue: memoryState.character.fatigue,
+            mentalFatigue: memoryState.character.mentalFatigue,
+            sectId: memoryState.character.sectId,
+            sectRole: memoryState.character.sectRole,
+            contributionPoints: memoryState.character.contributionPoints,
+            spiritStones: memoryState.character.spiritStones,
+            cultivationInfo,
+            currentLocation: memoryState.currentLocation,
+          },
+          techniques: memoryState.techniques,
+          inventory: memoryState.inventory,
+        },
+      });
+    }
+
+    // === ЕСЛИ НЕТ В ПАМЯТИ - ЗАГРУЖАЕМ ИЗ БД ===
+    // И сразу загружаем в память для будущих запросов
     const session = await db.gameSession.findUnique({
       where: { id: validation.data.sessionId },
       include: {
@@ -28,12 +99,14 @@ export async function GET(request: NextRequest) {
             currentLocation: true,
             sect: true,
             inventory: true,
-            techniques: true,
+            techniques: {
+              include: { technique: true },
+            },
           },
         },
         messages: {
           orderBy: { createdAt: "desc" },
-          take: 10, // Оптимизация: берём только нужное количество
+          take: 10,
         },
         events: {
           where: { processed: false },
@@ -46,6 +119,9 @@ export async function GET(request: NextRequest) {
     if (!session) {
       return NextResponse.json({ error: "Session not found" }, { status: 404 });
     }
+
+    // Загружаем в TruthSystem для будущих запросов
+    await truthSystem.loadSession(validation.data.sessionId);
 
     // Форматируем время
     const worldTime = {
@@ -74,6 +150,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
+      source: "database", // Указываем источник данных
       session: {
         id: session.id,
         startVariant: session.startVariant,
@@ -84,7 +161,7 @@ export async function GET(request: NextRequest) {
           ...session.character,
           cultivationInfo,
         },
-        recentMessages: session.messages.reverse(), // Уже ограничено take: 10
+        recentMessages: session.messages.reverse(),
         pendingEvents: session.events,
       },
     });
