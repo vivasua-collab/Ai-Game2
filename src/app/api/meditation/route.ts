@@ -117,8 +117,8 @@ export async function POST(request: NextRequest) {
     }
     
     // === ПРОВЕРКА TRUTHSYSTEM (ПАМЯТЬ ПЕРВИЧНА!) ===
-    const truthSystem = TruthSystem.getInstance();
-    const memoryState = truthSystem.getSessionByCharacter(characterId);
+    // TruthSystem is already a singleton instance
+    const memoryState = TruthSystem.getSessionByCharacter(characterId);
     
     let source: 'memory' | 'database' = 'database';
     
@@ -168,11 +168,11 @@ export async function POST(request: NextRequest) {
     if (memoryState) {
       source = 'memory';
     } else {
-      await truthSystem.loadSession(sessionId);
+      await TruthSystem.loadSession(sessionId);
     }
     
     // Теперь получаем персонажа из памяти (ПЕРВИЧНЫЙ ИСТОЧНИК)
-    const currentMemoryState = truthSystem.getSessionState(sessionId);
+    const currentMemoryState = TruthSystem.getSessionState(sessionId);
     if (!currentMemoryState) {
       return NextResponse.json(
         { success: false, error: 'Failed to load session into memory' },
@@ -242,7 +242,7 @@ export async function POST(request: NextRequest) {
       if (dissipationResult.dissipated > 0) {
         dissipationBeforeMeditation = dissipationResult.dissipated;
         // Обновляем в памяти через TruthSystem
-        truthSystem.updateCharacter(sessionId, {
+        TruthSystem.updateCharacter(sessionId, {
           currentQi: dissipationResult.newQi,
         });
         character.currentQi = dissipationResult.newQi;
@@ -361,19 +361,19 @@ export async function POST(request: NextRequest) {
       const wasCoreFullAtStart = character.currentQi >= character.coreCapacity;
       
       // Добавляем накопленную Ци
-      truthSystem.updateCharacter(sessionId, {
+      TruthSystem.updateCharacter(sessionId, {
         accumulatedQi: character.accumulatedQi + result.qiGained,
         mentalFatigue: Math.min(100, character.mentalFatigue + result.fatigueGained.mental),
       });
       
       if (!wasCoreFullAtStart && result.coreWasEmptied) {
-        truthSystem.updateCharacter(sessionId, { currentQi: 0 });
+        TruthSystem.updateCharacter(sessionId, { currentQi: 0 });
       }
       
-      truthSystem.advanceTime(sessionId, actualDurationMinutes);
+      TruthSystem.advanceTime(sessionId, actualDurationMinutes);
       
       // Получаем обновлённое состояние из памяти
-      const stateAfterMeditation = truthSystem.getSessionState(sessionId);
+      const stateAfterMeditation = TruthSystem.getSessionState(sessionId);
       if (!stateAfterMeditation) {
         return NextResponse.json({ success: false, error: 'Lost session state' }, { status: 500 });
       }
@@ -406,11 +406,11 @@ export async function POST(request: NextRequest) {
             qiConsumed: breakthroughResult.qiConsumed,
           };
           
-          const applyResult = await truthSystem.applyBreakthrough(sessionId, breakthroughData);
+          const applyResult = await TruthSystem.applyBreakthrough(sessionId, breakthroughData);
           
           if (applyResult.success) {
             // Добавляем усталость от прорыва
-            truthSystem.updateFatigue(
+            TruthSystem.updateFatigue(
               sessionId, 
               breakthroughResult.fatigueGained.physical, 
               breakthroughResult.fatigueGained.mental
@@ -435,8 +435,8 @@ export async function POST(request: NextRequest) {
       }
       
       // Получаем финальное состояние
-      const finalState = truthSystem.getSessionState(sessionId);
-      const finalWorldTime = truthSystem.getWorldTime(sessionId);
+      const finalState = TruthSystem.getSessionState(sessionId);
+      const finalWorldTime = TruthSystem.getWorldTime(sessionId);
       
       message = `🔥 Медитация на прорыв завершена!\n\n`;
       message += `⏱️ Время: ${result.duration} минут\n`;
@@ -538,17 +538,17 @@ export async function POST(request: NextRequest) {
       const newConductivity = calculateTotalConductivity(character.coreCapacity, character.cultivationLevel, newConductivityMeditations);
       
       // КРИТИЧЕСКАЯ ОПЕРАЦИЯ - обновляем через TruthSystem
-      await truthSystem.updateConductivity(sessionId, newConductivity, result.conductivityMeditationsGained);
+      await TruthSystem.updateConductivity(sessionId, newConductivity, result.conductivityMeditationsGained);
       
       // Обновляем усталость
-      truthSystem.updateFatigue(sessionId, 0, result.fatigueGained.mental);
+      TruthSystem.updateFatigue(sessionId, 0, result.fatigueGained.mental);
       
       // Продвигаем время в памяти
-      truthSystem.advanceTime(sessionId, actualDurationMinutes);
+      TruthSystem.advanceTime(sessionId, actualDurationMinutes);
       
       // Получаем финальное состояние
-      const finalState = truthSystem.getSessionState(sessionId);
-      const finalWorldTime = truthSystem.getWorldTime(sessionId);
+      const finalState = TruthSystem.getSessionState(sessionId);
+      const finalWorldTime = TruthSystem.getWorldTime(sessionId);
       
       const progress = getConductivityMeditationProgress(
         character.coreCapacity, 
@@ -640,9 +640,9 @@ export async function POST(request: NextRequest) {
           `${event.canHide ? '💡 Можно попытаться скрыться.' : ''}`;
         
         // Добавляем Ци через TruthSystem
-        truthSystem.addQi(sessionId, result.qiGained);
-        truthSystem.updateFatigue(sessionId, 0, result.fatigueGained.mental);
-        truthSystem.advanceTime(sessionId, actualDurationMinutes);
+        TruthSystem.addQi(sessionId, result.qiGained);
+        TruthSystem.updateFatigue(sessionId, 0, result.fatigueGained.mental);
+        TruthSystem.advanceTime(sessionId, actualDurationMinutes);
         
         return NextResponse.json({
           success: true,
@@ -673,13 +673,13 @@ export async function POST(request: NextRequest) {
       await advanceWorldTime(sessionId, actualDurationMinutes);
       
       // Добавляем Ци через TruthSystem
-      truthSystem.addQi(sessionId, result.qiGained);
+      TruthSystem.addQi(sessionId, result.qiGained);
       
       // Обновляем усталость
-      truthSystem.updateFatigue(sessionId, 0, result.fatigueGained.mental);
+      TruthSystem.updateFatigue(sessionId, 0, result.fatigueGained.mental);
       
       // Продвигаем время в памяти
-      truthSystem.advanceTime(sessionId, actualDurationMinutes);
+      TruthSystem.advanceTime(sessionId, actualDurationMinutes);
       
       // Increase technique mastery (КРИТИЧЕСКАЯ ОПЕРАЦИЯ - в БД)
       let masteryGain = 0;
@@ -695,8 +695,8 @@ export async function POST(request: NextRequest) {
       }
       
       // Получаем финальное состояние
-      const finalState = truthSystem.getSessionState(sessionId);
-      const finalWorldTime = truthSystem.getWorldTime(sessionId);
+      const finalState = TruthSystem.getSessionState(sessionId);
+      const finalWorldTime = TruthSystem.getWorldTime(sessionId);
       
       // Generate message
       const qiPercent = getCoreFillPercent(finalState?.character.currentQi || 0, finalState?.character.coreCapacity || 1);

@@ -65,8 +65,8 @@ export async function POST(request: NextRequest) {
     }
 
     // === ПРОВЕРКА TRUTHSYSTEM (ПАМЯТЬ ПЕРВИЧНА!) ===
-    const truthSystem = TruthSystem.getInstance();
-    const memoryState = truthSystem.getSessionByCharacter(characterId);
+    // TruthSystem is already a singleton instance
+    const memoryState = TruthSystem.getSessionByCharacter(characterId);
     
     let sessionId: string;
     let source: 'memory' | 'database' = 'database';
@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
       sessionId = session.id;
       
       // Загружаем сессию в TruthSystem для будущих запросов
-      await truthSystem.loadSession(sessionId);
+      await TruthSystem.loadSession(sessionId);
     }
 
     // === ИСПОЛЬЗУЕМ ЕДИНЫЙ СЕРВИС ОБРАБОТКИ ТИКОВ ===
@@ -129,9 +129,9 @@ export async function POST(request: NextRequest) {
     // === СИНХРОНИЗАЦИЯ С TRUTHSYSTEM ===
     // Обновляем память через TruthSystem для консистентности
     if (tickResult.fatigueEffects) {
-      const currentMemory = truthSystem.getSessionState(sessionId);
+      const currentMemory = TruthSystem.getSessionState(sessionId);
       if (currentMemory) {
-        truthSystem.updateCharacter(sessionId, {
+        TruthSystem.updateCharacter(sessionId, {
           fatigue: tickResult.fatigueEffects.finalPhysical,
           mentalFatigue: tickResult.fatigueEffects.finalMental,
           currentQi: tickResult.qiEffects.finalQi,
@@ -140,11 +140,11 @@ export async function POST(request: NextRequest) {
     }
     
     // Продвигаем время в памяти
-    truthSystem.advanceTime(sessionId, durationMinutes);
+    TruthSystem.advanceTime(sessionId, durationMinutes);
 
     // Получаем данные из памяти (ПЕРВИЧНЫЙ ИСТОЧНИК)
-    const finalState = truthSystem.getSessionState(sessionId);
-    const worldTimeFromMemory = truthSystem.getWorldTime(sessionId);
+    const finalState = TruthSystem.getSessionState(sessionId);
+    const worldTimeFromMemory = TruthSystem.getWorldTime(sessionId);
 
     if (!finalState || !worldTimeFromMemory) {
       return NextResponse.json(

@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { PhaserGame } from "@/components/game/PhaserGame";
 import { ActionButtons } from "@/components/game/ActionButtons";
+import { EventBusTest } from "@/components/game/EventBusTest";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ErrorBoundary } from "@/components/game/ErrorBoundary";
@@ -19,6 +20,7 @@ const SESSION_STORAGE_KEY = "cultivation_session_id";
 export default function Home() {
   const [isInitializing, setIsInitializing] = useState(true);
   const [initError, setInitError] = useState<string | null>(null);
+  const [showEventBusTest, setShowEventBusTest] = useState(false);
 
   // Get state from store
   const sessionId = useGameSessionId();
@@ -181,15 +183,31 @@ export default function Home() {
             >
               🎮 Игра
             </Button>
+            
+            <Button
+              variant="outline"
+              size="sm"
+              className="border-purple-600/50 text-purple-400 hover:bg-purple-900/30 h-9"
+              onClick={() => setShowEventBusTest(!showEventBusTest)}
+            >
+              🧪 Event Bus
+            </Button>
           </div>
         </div>
       </header>
 
       {/* Main content: FULLSCREEN Phaser Game Canvas with integrated chat */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-hidden relative">
         <ErrorBoundary onReset={handleNewGame}>
           <PhaserGame />
         </ErrorBoundary>
+        
+        {/* Event Bus Test Panel (overlay) */}
+        {showEventBusTest && (
+          <div className="absolute top-4 right-4 z-50">
+            <EventBusTest />
+          </div>
+        )}
       </div>
 
       {/* Footer */}

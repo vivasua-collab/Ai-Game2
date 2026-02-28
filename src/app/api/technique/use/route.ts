@@ -38,8 +38,8 @@ export async function POST(request: NextRequest) {
     }
 
     // === ПРОВЕРКА TRUTHSYSTEM (ПАМЯТЬ ПЕРВИЧНА!) ===
-    const truthSystem = TruthSystem.getInstance();
-    const memoryState = truthSystem.getSessionByCharacter(characterId);
+    // TruthSystem is already a singleton instance
+    const memoryState = TruthSystem.getSessionByCharacter(characterId);
     
     let sessionId: string | null = null;
     let source: 'memory' | 'database' = 'database';
@@ -160,7 +160,7 @@ export async function POST(request: NextRequest) {
     // === ОБНОВЛЕНИЕ ЧЕРЕЗ TRUTHSYSTEM (ПАМЯТЬ ПЕРВИЧНА!) ===
     if (memoryState && sessionId) {
       // Списываем Ци через TruthSystem
-      const qiResult = truthSystem.spendQi(sessionId, qiSpent);
+      const qiResult = TruthSystem.spendQi(sessionId, qiSpent);
       if (!qiResult.success) {
         return NextResponse.json({
           success: false,
@@ -169,12 +169,12 @@ export async function POST(request: NextRequest) {
       }
 
       // Обновляем усталость через TruthSystem
-      truthSystem.updateFatigue(sessionId, fatigueGained.physical, fatigueGained.mental);
+      TruthSystem.updateFatigue(sessionId, fatigueGained.physical, fatigueGained.mental);
 
       // Обновляем здоровье если есть лечение
       if (result.effects.healing) {
         const currentHealth = memoryState.character.health;
-        truthSystem.updateCharacter(sessionId, {
+        TruthSystem.updateCharacter(sessionId, {
           health: Math.min(100, currentHealth + result.effects.healing),
         });
       }
@@ -211,7 +211,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Получаем финальное состояние из памяти
-    const finalState = sessionId ? truthSystem.getSessionState(sessionId) : null;
+    const finalState = sessionId ? TruthSystem.getSessionState(sessionId) : null;
     const finalChar = finalState?.character || {
       currentQi: character.currentQi - qiSpent,
       fatigue: Math.min(100, character.fatigue + fatigueGained.physical),

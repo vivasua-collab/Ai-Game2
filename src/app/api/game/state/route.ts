@@ -23,8 +23,8 @@ export async function GET(request: NextRequest) {
 
     // === ПРОВЕРЯЕМ TRUTH SYSTEM СНАЧАЛА ===
     // ПАМЯТЬ ПЕРВИЧНА - если сессия загружена, берём из памяти
-    const truthSystem = TruthSystem.getInstance();
-    const memoryState = truthSystem.getSessionState(validation.data.sessionId);
+    // TruthSystem is already a singleton instance
+    const memoryState = TruthSystem.getSessionState(validation.data.sessionId);
 
     if (memoryState) {
       // Возвращаем данные из памяти (истина!)
@@ -125,7 +125,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Загружаем в TruthSystem для будущих запросов
-    await truthSystem.loadSession(validation.data.sessionId);
+    await TruthSystem.loadSession(validation.data.sessionId);
 
     // Форматируем время
     const worldTime = {

@@ -171,8 +171,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const truthSystem = TruthSystem.getInstance();
-    const sessionState = truthSystem.getSessionState(sessionId);
+    // TruthSystem is already a singleton instance
+    const sessionState = TruthSystem.getSessionState(sessionId);
 
     if (!sessionState) {
       // Сессия не в памяти - просто обновляем timestamp в БД
@@ -191,9 +191,9 @@ export async function POST(request: NextRequest) {
     // Сессия в памяти - сохраняем через TruthSystem
     let result;
     if (saveType === 'quick') {
-      result = await truthSystem.quickSave(sessionId);
+      result = await TruthSystem.quickSave(sessionId);
     } else {
-      result = await truthSystem.saveToDatabase(sessionId);
+      result = await TruthSystem.saveToDatabase(sessionId);
     }
 
     if (!result.success) {
@@ -208,7 +208,7 @@ export async function POST(request: NextRequest) {
       source: "memory",
       saveType,
       savedAt: sessionState.lastSavedAt,
-      stats: truthSystem.getStats(),
+      stats: TruthSystem.getStats(),
     });
   } catch (error) {
     console.error("Force save API error:", error);

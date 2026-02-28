@@ -620,9 +620,50 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
                        result.interruptionEvent.type === 'spirit' ? '👻 Дух' : '✨ Редкое'}
                     </Badge>
                   </div>
-                  <p className="text-sm text-slate-300 mb-2">
+                  <p className="text-sm text-slate-300 mb-3">
                     {result.interruptionEvent.description}
                   </p>
+                  
+                  {/* Actions for interruption */}
+                  <div className="flex flex-wrap gap-2">
+                    {result.interruptionEvent.canIgnore && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border-green-600/50 text-green-400 hover:bg-green-900/30"
+                        onClick={() => {
+                          // Continue meditation - just close dialog
+                          setResult({ message: 'Вы игнорируете событие и продолжаете медитацию...' });
+                        }}
+                      >
+                        🚶 Игнорировать
+                      </Button>
+                    )}
+                    {result.interruptionEvent.canHide && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border-blue-600/50 text-blue-400 hover:bg-blue-900/30"
+                        onClick={() => {
+                          // Try to hide - close dialog
+                          setResult({ message: 'Вы пытаетесь скрыться...' });
+                        }}
+                      >
+                        🌿 Скрыться
+                      </Button>
+                    )}
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="border-amber-600/50 text-amber-400 hover:bg-amber-900/30"
+                      onClick={() => {
+                        // Stop meditation
+                        handleClose();
+                      }}
+                    >
+                      ⏹️ Завершить
+                    </Button>
+                  </div>
                 </div>
               )}
             </div>

@@ -36,8 +36,8 @@ export async function POST(request: NextRequest) {
     }
 
     // === ПРОВЕРКА TRUTHSYSTEM (ПАМЯТЬ ПЕРВИЧНА!) ===
-    const truthSystem = TruthSystem.getInstance();
-    const memoryState = truthSystem.getSessionState(sessionId);
+    // TruthSystem is already a singleton instance
+    const memoryState = TruthSystem.getSessionState(sessionId);
     
     let source: 'memory' | 'database' = 'database';
     let characterId: string;
@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
       characterId = session.characterId;
       
       // Загружаем сессию в память для будущих запросов
-      await truthSystem.loadSession(sessionId);
+      await TruthSystem.loadSession(sessionId);
     }
 
     // Calculate ticks (1 tile = 1 tick per ACTION_TICK_COSTS.move_tile)
@@ -91,17 +91,17 @@ export async function POST(request: NextRequest) {
 
     // === СИНХРОНИЗАЦИЯ С TRUTHSYSTEM ===
     // Продвигаем время в памяти
-    truthSystem.advanceTime(sessionId, totalTicks);
+    TruthSystem.advanceTime(sessionId, totalTicks);
     
     // Обновляем Ци в памяти если было изменение
     if (tickResult.qiEffects.passiveGain > 0 || tickResult.qiEffects.dissipation > 0) {
-      truthSystem.updateCharacter(sessionId, {
+      TruthSystem.updateCharacter(sessionId, {
         currentQi: tickResult.qiEffects.finalQi,
       });
     }
 
     // Получаем время из памяти (ПЕРВИЧНЫЙ ИСТОЧНИК)
-    const worldTimeFromMemory = truthSystem.getWorldTime(sessionId);
+    const worldTimeFromMemory = TruthSystem.getWorldTime(sessionId);
 
     return NextResponse.json({
       success: true,

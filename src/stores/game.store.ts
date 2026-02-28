@@ -289,7 +289,19 @@ export const useGameStore = create<GameStoreState>()(
 
       clearError: () => set({ error: null }),
 
-      resetGame: () => set(initialState as GameStoreState),
+      resetGame: () => {
+        // Unload session from TruthSystem before reset
+        const sessionId = get().sessionId;
+        if (sessionId) {
+          // Fire and forget - don't wait for response
+          fetch('/api/game/end', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ sessionId, reason: 'reset' }),
+          }).catch(e => console.error('Failed to end session on reset:', e));
+        }
+        set(initialState as GameStoreState);
+      },
 
       saveAndExit: async () => {
         const sessionId = get().sessionId;

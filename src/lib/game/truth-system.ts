@@ -1018,4 +1018,8 @@ class TruthSystemImpl {
 
 // ==================== EXPORTS ====================
 
-export const TruthSystem = TruthSystemImpl;
+// Экспортируем singleton instance
+export const TruthSystem = TruthSystemImpl.getInstance();
+
+// Также экспортируем класс для тестирования
+export { TruthSystemImpl };

@@ -362,10 +362,11 @@ export async function POST(request: NextRequest) {
       
       if (techniquesToCreate.length > 0) {
         // Пакетное создание техник (вместо цикла upsert)
-        await tx.technique.createMany({
-          data: techniquesToCreate.map(preset => {
-            const isFormation = 'formationType' in preset;
-            return {
+        // SQLite doesn't support skipDuplicates, so we filter manually
+        for (const preset of techniquesToCreate) {
+          const isFormation = 'formationType' in preset;
+          await tx.technique.create({
+            data: {
               name: preset.name,
               nameId: preset.id,
               description: preset.description,
@@ -382,7 +383,7 @@ export async function POST(request: NextRequest) {
               mentalFatigueCost: (preset as any).fatigueCost?.mental || (isFormation ? 5 : 0),
               statRequirements: (preset as any).statRequirements ? JSON.stringify((preset as any).statRequirements) : null,
               statScaling: (preset as any).scaling ? JSON.stringify((preset as any).scaling) : null,
-              effects: preset.effects ? JSON.stringify(preset.effects) : 
+              effects: preset.effects ? JSON.stringify(preset.effects) :
                        isFormation ? JSON.stringify({
                          formationType: (preset as any).formationType,
                          formationEffects: (preset as any).formationEffects,
@@ -391,10 +392,9 @@ export async function POST(request: NextRequest) {
                          difficulty: (preset as any).difficulty,
                        }) : null,
               source: "preset",
-            };
-          }),
-          skipDuplicates: true,
-        });
+            }
+          });
+        }
         
         // Получаем ID созданных техник
         const newTechniques = await tx.technique.findMany({
@@ -425,10 +425,20 @@ export async function POST(request: NextRequest) {
         learningSource: string;
       }>;
       
-      await tx.characterTechnique.createMany({
-        data: characterTechniquesData,
-        skipDuplicates: true,
-      });
+      // Пакетное создание связей персонаж-техника
+      // SQLite doesn't support skipDuplicates, so we create one by one
+      for (const data of characterTechniquesData) {
+        // Check if already exists
+        const existing = await tx.characterTechnique.findFirst({
+          where: {
+            characterId: data.characterId,
+            techniqueId: data.techniqueId,
+          }
+        });
+        if (!existing) {
+          await tx.characterTechnique.create({ data });
+        }
+      }
 
       return { character, session, location, sect };
     });
@@ -473,8 +483,8 @@ export async function POST(request: NextRequest) {
 
     // === ЗАГРУЗКА В TRUTH SYSTEM ===
     // Загружаем созданную сессию в память (ПАМЯТЬ ПЕРВИЧНА!)
-    const truthSystem = TruthSystem.getInstance();
-    await truthSystem.loadSession(dbResult.session.id);
+    // TruthSystem is already a singleton instance, no need to call getInstance()
+    await TruthSystem.loadSession(dbResult.session.id);
     await logDebug("SYSTEM", "Session loaded into TruthSystem", { sessionId: dbResult.session.id });
 
     await timer.end("INFO", { sessionId: dbResult.session.id, variant, success: true });

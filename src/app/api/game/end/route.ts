@@ -35,8 +35,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const truthSystem = TruthSystem.getInstance();
-    const memoryState = truthSystem.getSessionState(sessionId);
+    // TruthSystem is already a singleton instance
+    const memoryState = TruthSystem.getSessionState(sessionId);
 
     // Собираем статистику ПЕРЕД выгрузкой
     const stats = {
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     };
 
     // Выполняем выгрузку (сохранит в БД если isDirty)
-    const result = await truthSystem.unloadSession(sessionId);
+    const result = await TruthSystem.unloadSession(sessionId);
 
     if (!result.success) {
       console.error(`[GameEnd] Failed to unload session: ${result.error}`);
@@ -115,10 +115,10 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const truthSystem = TruthSystem.getInstance();
+    // TruthSystem is already a singleton instance
 
     // Выгружаем из памяти
-    await truthSystem.unloadSession(sessionId);
+    await TruthSystem.unloadSession(sessionId);
 
     // Опционально удаляем из БД
     if (deleteFromDb) {
