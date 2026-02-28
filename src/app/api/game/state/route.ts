@@ -80,6 +80,10 @@ export async function GET(request: NextRequest) {
             sectRole: memoryState.character.sectRole,
             contributionPoints: memoryState.character.contributionPoints,
             spiritStones: memoryState.character.spiritStones,
+            // ВАЖНО: добавляем недостающие поля!
+            conductivityMeditations: memoryState.character.conductivityMeditations,
+            qiUnderstanding: memoryState.character.qiUnderstanding,
+            qiUnderstandingCap: memoryState.character.qiUnderstandingCap,
             cultivationInfo,
             currentLocation: memoryState.currentLocation,
           },
