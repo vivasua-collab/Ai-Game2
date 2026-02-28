@@ -1,11 +1,12 @@
 // Prisma schema for Cultivation World Simulator
-// Version: 6
+// Version: 7
 // v1: Базовая схема
 // v2: Добавлена система логирования (SystemLog)
 // v3: Добавлены поля worldId, worldName, startType в GameSession; name в Character
 // v4: Добавлены навыки культивации, система обучения техникам, 3D координаты, система усталости
 // v5: Расширена модель InventoryItem (isConsumable, durability, qiCharge, effects, icon)
 // v6: Добавлены модели Building и WorldObject для системы карты
+// v7: Добавлена система тела (bodyState) для Kenshi-style повреждений
 
 generator client {
   provider = "prisma-client-js"
@@ -120,6 +121,10 @@ model Character {
   
   // === Множитель восстановления усталости ===
   fatigueRecoveryMultiplier Float @default(1.0)
+  
+  // === Система тела (Kenshi-style) ===
+  // JSON: { parts: {...}, heart: {...}, activeBleeds: [...], activeAttachments: [...], isDead: bool }
+  bodyState String @default("{}")
   
   // Связи
   sessions   GameSession[]

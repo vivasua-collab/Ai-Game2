@@ -1,22 +1,38 @@
 /**
  * ============================================================================
- * СЕРВИС ХРАНЕНИЯ ПРЕСЕТОВ
+ * СЕРВИС ХРАНЕНИЯ ПРЕСЕТОВ v2.0
  * ============================================================================
  * 
  * Сохраняет сгенерированные объекты в JSON-файлы.
  * 
- * Особенности:
- * - Система ID с префиксом и счётчиком
- * - Добавочная генерация (append mode)
- * - Контроль счётчиков при удалении
- * - Анализ размера файлов
+ * Особенности v2.0:
+ * - Разделение файлов по типам и подтипам
+ * - Избирательная очистка по типу/подтипу
+ * - Новые префиксы ID (MS, MW, RG для combat)
+ * - Категории оружия вместо конкретных типов
+ * 
+ * Структура:
+ * presets/techniques/
+ *   combat/
+ *     melee-strike/level-{n}.json   (MS_ prefix)
+ *     melee-weapon/level-{n}.json   (MW_ prefix)
+ *     ranged/level-{n}.json         (RG_ prefix)
+ *   defense/level-{n}.json          (DF_ prefix)
+ *   healing/level-{n}.json          (HL_ prefix)
+ *   ...
  */
 
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import type { GeneratedTechnique } from './technique-generator';
+import type { GeneratedTechnique, TechniqueType, CombatSubtype } from './technique-generator';
+import { 
+  IdPrefix, 
+  getPrefixForTechniqueType, 
+  getIdPrefixConfig,
+  COMBAT_SUBTYPE_PREFIX 
+} from './id-config';
 
-// Каталог для хранения сгенерированных данных (отдельно от кода)
+// Каталог для хранения сгенерированных данных
 const DATA_DIR = path.join(process.cwd(), 'presets');
 
 // ==================== ТИПЫ ====================
@@ -29,6 +45,7 @@ export interface PresetManifest {
     total: number;
     byLevel: Record<number, number>;
     byType: Record<string, number>;
+    bySubtype: Record<string, number>;  // NEW: статистика по подтипам
     byElement: Record<string, number>;
   };
   formations: {
@@ -51,7 +68,7 @@ export interface PresetManifest {
 export interface IdCounters {
   version: string;
   updatedAt: string;
-  counters: Record<string, number>;
+  counters: Record<IdPrefix, number>;
 }
 
 export interface FileAnalysis {
@@ -59,7 +76,7 @@ export interface FileAnalysis {
   sizeBytes: number;
   objectCount: number;
   avgObjectSize: number;
-  canAppend: boolean;  // true if < recommended max size
+  canAppend: boolean;
 }
 
 export interface StorageStats {
@@ -67,14 +84,82 @@ export interface StorageStats {
   totalSizeBytes: number;
   totalObjects: number;
   largestFile: FileAnalysis;
-  recommendedMaxFileSize: number;  // 5 MB
+  recommendedMaxFileSize: number;
   filesNeedingSplit: string[];
+}
+
+export interface ClearResult {
+  deletedFiles: number;
+  deletedObjects: number;
+  countersPreserved: boolean;
+  clearedType?: TechniqueType;
+  clearedSubtype?: CombatSubtype;
 }
 
 // Константы
 const RECOMMENDED_MAX_FILE_SIZE = 5 * 1024 * 1024; // 5 MB
-const MAX_FILE_SIZE_HARD_LIMIT = 10 * 1024 * 1024; // 10 MB hard limit
-const MAX_OBJECTS_PER_FILE = 10000; // Рекомендуемый лимит объектов в файле
+const MAX_OBJECTS_PER_FILE = 10000;
+
+// ==================== МАППИНГИ ====================
+
+/**
+ * Маппинг типа техники к пути директории
+ */
+const TYPE_DIR_MAP: Record<TechniqueType, string> = {
+  combat: 'combat',      // Специальная обработка по подтипам
+  defense: 'defense',
+  cultivation: 'cultivation',
+  support: 'support',
+  movement: 'movement',
+  sensory: 'sensory',
+  healing: 'healing',
+  curse: 'curse',
+  poison: 'poison',
+};
+
+/**
+ * Маппинг подтипа combat к поддиректории
+ */
+const COMBAT_SUBTYPE_DIR_MAP: Record<CombatSubtype, string> = {
+  melee_strike: 'melee-strike',
+  melee_weapon: 'melee-weapon',
+  ranged_projectile: 'ranged',
+  ranged_beam: 'ranged',
+  ranged_aoe: 'ranged',
+};
+
+/**
+ * Получить путь к файлу для техники
+ */
+function getTechniqueFilePath(
+  type: TechniqueType,
+  level: number,
+  combatSubtype?: CombatSubtype
+): string {
+  if (type === 'combat' && combatSubtype) {
+    const subDir = COMBAT_SUBTYPE_DIR_MAP[combatSubtype];
+    return path.join(DATA_DIR, 'techniques', 'combat', subDir, `level-${level}.json`);
+  }
+  
+  const typeDir = TYPE_DIR_MAP[type];
+  return path.join(DATA_DIR, 'techniques', typeDir, `level-${level}.json`);
+}
+
+/**
+ * Получить путь к директории типа
+ */
+function getTypeDirPath(
+  type: TechniqueType,
+  combatSubtype?: CombatSubtype
+): string {
+  if (type === 'combat' && combatSubtype) {
+    const subDir = COMBAT_SUBTYPE_DIR_MAP[combatSubtype];
+    return path.join(DATA_DIR, 'techniques', 'combat', subDir);
+  }
+  
+  const typeDir = TYPE_DIR_MAP[type];
+  return path.join(DATA_DIR, 'techniques', typeDir);
+}
 
 // ==================== СЕРВИС ID ====================
 
@@ -101,68 +186,66 @@ class IdService {
     this.initialized = true;
   }
   
-  /**
-   * Генерация нового ID с инкрементом счётчика
-   */
-  generateId(prefix: string): string {
+  generateId(prefix: IdPrefix): string {
     const counter = (this.counters[prefix] || 0) + 1;
     this.counters[prefix] = counter;
     return `${prefix}_${counter.toString().padStart(6, '0')}`;
   }
   
-  /**
-   * Получить текущее значение счётчика
-   */
-  getCounter(prefix: string): number {
+  getCounter(prefix: IdPrefix): number {
     return this.counters[prefix] || 0;
   }
   
-  /**
-   * Установить значение счётчика (для миграции)
-   */
-  setCounter(prefix: string, value: number): void {
+  setCounter(prefix: IdPrefix, value: number): void {
     this.counters[prefix] = value;
   }
   
-  /**
-   * Сохранить счётчики в файл
-   */
   async save(): Promise<void> {
     const data: IdCounters = {
-      version: '1.0',
+      version: '2.0',
       updatedAt: new Date().toISOString(),
-      counters: this.counters,
+      counters: this.counters as Record<IdPrefix, number>,
     };
     await fs.writeFile(this.countersPath, JSON.stringify(data, null, 2), 'utf-8');
   }
   
-  /**
-   * Сбросить все счётчики в 0
-   */
   resetAll(): void {
     this.counters = {};
   }
   
-  /**
-   * Сбросить конкретный счётчик
-   */
-  reset(prefix: string): void {
+  reset(prefix: IdPrefix): void {
     delete this.counters[prefix];
   }
   
-  /**
-   * Сохранить счётчики при очистке данных
-   * (чтобы избежать дублирования ID при следующей генерации)
-   */
   preserveCounters(): Record<string, number> {
     return { ...this.counters };
   }
   
-  /**
-   * Восстановить счётчики
-   */
   restoreCounters(counters: Record<string, number>): void {
     this.counters = { ...counters };
+  }
+  
+  /**
+   * Сбросить счётчики для конкретного типа/подтипа
+   */
+  resetTypeCounters(type: TechniqueType, combatSubtype?: CombatSubtype): void {
+    if (type === 'combat') {
+      if (combatSubtype) {
+        // Сбросить конкретный подтип
+        const prefix = COMBAT_SUBTYPE_PREFIX[combatSubtype];
+        this.reset(prefix);
+      } else {
+        // Сбросить все combat префиксы
+        this.reset('MS');
+        this.reset('MW');
+        this.reset('RG');
+        this.reset('TC'); // Легаси
+      }
+    } else {
+      // Сбросить префикс типа
+      const prefix = getPrefixForTechniqueType(type);
+      this.reset(prefix);
+    }
   }
 }
 
@@ -180,11 +263,14 @@ export class PresetStorageService {
   
   async initialize(): Promise<void> {
     try {
+      // Создаём базовые директории
       await fs.mkdir(DATA_DIR, { recursive: true });
-      await fs.mkdir(path.join(DATA_DIR, 'techniques'), { recursive: true });
       await fs.mkdir(path.join(DATA_DIR, 'formations'), { recursive: true });
       await fs.mkdir(path.join(DATA_DIR, 'items'), { recursive: true });
       await fs.mkdir(path.join(DATA_DIR, 'npcs'), { recursive: true });
+      
+      // Создаём структуру для техник
+      await this.createTechniqueDirectories();
       
       await this.idService.initialize();
     } catch (error) {
@@ -192,9 +278,26 @@ export class PresetStorageService {
     }
   }
   
+  /**
+   * Создать структуру директорий для техник
+   */
+  private async createTechniqueDirectories(): Promise<void> {
+    // Combat подтипы
+    const combatSubdirs = ['melee-strike', 'melee-weapon', 'ranged'];
+    for (const subDir of combatSubdirs) {
+      await fs.mkdir(path.join(DATA_DIR, 'techniques', 'combat', subDir), { recursive: true });
+    }
+    
+    // Остальные типы
+    const otherTypes: TechniqueType[] = ['defense', 'cultivation', 'support', 'movement', 'sensory', 'healing', 'curse', 'poison'];
+    for (const type of otherTypes) {
+      await fs.mkdir(path.join(DATA_DIR, 'techniques', type), { recursive: true });
+    }
+  }
+  
   // ==================== ID SERVICE ====================
   
-  generateId(prefix: string): string {
+  generateId(prefix: IdPrefix): string {
     return this.idService.generateId(prefix);
   }
   
@@ -202,108 +305,101 @@ export class PresetStorageService {
     await this.idService.save();
   }
   
-  // ==================== ТЕХНИКИ ====================
+  // ==================== ТЕХНИКИ: СОХРАНЕНИЕ ====================
   
   /**
    * Сохранить техники (с перезаписью или добавлением)
    */
-  async saveTechniques(techniques: GeneratedTechnique[], mode: 'replace' | 'append' = 'replace'): Promise<{
+  async saveTechniques(
+    techniques: GeneratedTechnique[],
+    mode: 'replace' | 'append' = 'replace'
+  ): Promise<{
     saved: number;
     appended: number;
     total: number;
   }> {
-    let existing: GeneratedTechnique[] = [];
+    // Группируем по типу/подтипу и уровню
+    const grouped = this.groupTechniques(techniques);
+    
+    let saved = 0;
     let appended = 0;
     
-    if (mode === 'append') {
-      existing = await this.loadTechniques();
-      appended = techniques.length;
-    }
-    
-    const allTechniques = mode === 'append' 
-      ? [...existing, ...techniques]
-      : techniques;
-    
-    // Группируем по уровню
-    const byLevel: Record<number, GeneratedTechnique[]> = {};
-    
-    for (const tech of allTechniques) {
-      if (!byLevel[tech.level]) byLevel[tech.level] = [];
-      byLevel[tech.level].push(tech);
-    }
-    
-    // Проверяем размер файлов и при необходимости разбиваем
-    for (const [level, techs] of Object.entries(byLevel)) {
-      const levelNum = parseInt(level);
+    for (const [key, techs] of Object.entries(grouped)) {
+      const [type, subtypeStr, levelStr] = key.split('|');
+      const level = parseInt(levelStr);
+      const combatSubtype = subtypeStr !== 'null' ? subtypeStr as CombatSubtype : undefined;
       
-      // Если объектов слишком много для одного файла - разбиваем
-      if (techs.length > MAX_OBJECTS_PER_FILE) {
-        await this.saveTechniquesInChunks(levelNum, techs);
-      } else {
-        await this.saveTechniquesForLevel(levelNum, techs);
+      let existing: GeneratedTechnique[] = [];
+      
+      if (mode === 'append') {
+        existing = await this.loadTechniquesFromPath(type as TechniqueType, level, combatSubtype);
+        appended += techs.length;
       }
       
+      const allTechniques = mode === 'append' 
+        ? [...existing, ...techs]
+        : techs;
+      
+      await this.saveTechniquesToFile(type as TechniqueType, level, allTechniques, combatSubtype);
+      saved += techs.length;
+      
       // Кэшируем
-      for (const tech of techs) {
+      for (const tech of allTechniques) {
         this.techniqueCache.set(tech.id, tech);
       }
     }
     
-    // Сохраняем счётчики
     await this.idService.save();
+    await this.updateManifest();
     
-    // Обновляем манифест
-    await this.updateManifest(allTechniques);
-    
-    return {
-      saved: techniques.length,
-      appended,
-      total: allTechniques.length,
-    };
+    return { saved, appended, total: this.techniqueCache.size };
   }
   
   /**
-   * Сохранить техники для уровня в один файл
+   * Группировка техник для сохранения
    */
-  private async saveTechniquesForLevel(level: number, techniques: GeneratedTechnique[]): Promise<void> {
-    const filePath = path.join(DATA_DIR, 'techniques', `level-${level}.json`);
+  private groupTechniques(techniques: GeneratedTechnique[]): Record<string, GeneratedTechnique[]> {
+    const grouped: Record<string, GeneratedTechnique[]> = {};
+    
+    for (const tech of techniques) {
+      const key = `${tech.type}|${tech.subtype || 'null'}|${tech.level}`;
+      if (!grouped[key]) grouped[key] = [];
+      grouped[key].push(tech);
+    }
+    
+    return grouped;
+  }
+  
+  /**
+   * Сохранить техники в файл
+   */
+  private async saveTechniquesToFile(
+    type: TechniqueType,
+    level: number,
+    techniques: GeneratedTechnique[],
+    combatSubtype?: CombatSubtype
+  ): Promise<void> {
+    const filePath = getTechniqueFilePath(type, level, combatSubtype);
+    const dirPath = path.dirname(filePath);
+    
+    await fs.mkdir(dirPath, { recursive: true });
+    
+    const prefix = getPrefixForTechniqueType(type, combatSubtype);
+    const prefixConfig = getIdPrefixConfig(prefix);
+    
     await fs.writeFile(filePath, JSON.stringify({
-      version: '1.0',
+      version: '2.0',
+      type,
+      subtype: combatSubtype || null,
+      prefix,
+      prefixName: prefixConfig?.name || prefix,
       level,
       count: techniques.length,
       techniques,
     }, null, 2), 'utf-8');
   }
   
-  /**
-   * Сохранить техники в несколько файлов (для больших объёмов)
-   */
-  private async saveTechniquesInChunks(level: number, techniques: GeneratedTechnique[]): Promise<void> {
-    const chunkCount = Math.ceil(techniques.length / MAX_OBJECTS_PER_FILE);
-    
-    for (let chunk = 0; chunk < chunkCount; chunk++) {
-      const start = chunk * MAX_OBJECTS_PER_FILE;
-      const end = Math.min(start + MAX_OBJECTS_PER_FILE, techniques.length);
-      const chunkTechniques = techniques.slice(start, end);
-      
-      const filePath = path.join(DATA_DIR, 'techniques', `level-${level}_part${chunk + 1}.json`);
-      await fs.writeFile(filePath, JSON.stringify({
-        version: '1.0',
-        level,
-        part: chunk + 1,
-        totalParts: chunkCount,
-        count: chunkTechniques.length,
-        techniques: chunkTechniques,
-      }, null, 2), 'utf-8');
-    }
-    
-    // Удаляем старый неразбитый файл если есть
-    try {
-      await fs.unlink(path.join(DATA_DIR, 'techniques', `level-${level}.json`));
-    } catch {
-      // Игнорируем ошибку если файла нет
-    }
-  }
+  // ==================== ТЕХНИКИ: ЗАГРУЗКА ====================
   
   /**
    * Загрузить все техники
@@ -317,23 +413,7 @@ export class PresetStorageService {
     
     try {
       const techniquesDir = path.join(DATA_DIR, 'techniques');
-      const files = await fs.readdir(techniquesDir);
-      
-      for (const file of files) {
-        if (!file.endsWith('.json') || file === 'index.json') continue;
-        
-        const filePath = path.join(techniquesDir, file);
-        const content = await fs.readFile(filePath, 'utf-8');
-        const data = JSON.parse(content);
-        
-        if (data.techniques) {
-          techniques.push(...data.techniques);
-          for (const tech of data.techniques) {
-            this.techniqueCache.set(tech.id, tech);
-          }
-        }
-      }
-      
+      await this.loadTechniquesRecursive(techniquesDir, techniques);
       this.loaded = true;
     } catch (error) {
       console.error('[PresetStorage] Load error:', error);
@@ -342,11 +422,83 @@ export class PresetStorageService {
     return techniques;
   }
   
-  async getTechniquesByLevel(level: number): Promise<GeneratedTechnique[]> {
-    const all = await this.loadTechniques();
-    return all.filter(t => t.level === level);
+  /**
+   * Рекурсивная загрузка техник
+   */
+  private async loadTechniquesRecursive(dirPath: string, techniques: GeneratedTechnique[]): Promise<void> {
+    try {
+      const entries = await fs.readdir(dirPath, { withFileTypes: true });
+      
+      for (const entry of entries) {
+        const fullPath = path.join(dirPath, entry.name);
+        
+        if (entry.isDirectory()) {
+          await this.loadTechniquesRecursive(fullPath, techniques);
+        } else if (entry.isFile() && entry.name.endsWith('.json')) {
+          const content = await fs.readFile(fullPath, 'utf-8');
+          const data = JSON.parse(content);
+          
+          if (data.techniques && Array.isArray(data.techniques)) {
+            techniques.push(...data.techniques);
+            for (const tech of data.techniques) {
+              this.techniqueCache.set(tech.id, tech);
+            }
+          }
+        }
+      }
+    } catch {
+      // Игнорируем ошибки чтения директорий
+    }
   }
   
+  /**
+   * Загрузить техники по типу
+   */
+  async loadTechniquesByType(type: TechniqueType): Promise<GeneratedTechnique[]> {
+    await this.loadTechniques();
+    return Array.from(this.techniqueCache.values()).filter(t => t.type === type);
+  }
+  
+  /**
+   * Загрузить техники по подтипу combat
+   */
+  async loadTechniquesBySubtype(subtype: CombatSubtype): Promise<GeneratedTechnique[]> {
+    await this.loadTechniques();
+    return Array.from(this.techniqueCache.values()).filter(
+      t => t.type === 'combat' && t.subtype === subtype
+    );
+  }
+  
+  /**
+   * Загрузить техники из конкретного пути
+   */
+  private async loadTechniquesFromPath(
+    type: TechniqueType,
+    level: number,
+    combatSubtype?: CombatSubtype
+  ): Promise<GeneratedTechnique[]> {
+    const filePath = getTechniqueFilePath(type, level, combatSubtype);
+    
+    try {
+      const content = await fs.readFile(filePath, 'utf-8');
+      const data = JSON.parse(content);
+      return data.techniques || [];
+    } catch {
+      return [];
+    }
+  }
+  
+  /**
+   * Загрузить техники по уровню
+   */
+  async getTechniquesByLevel(level: number): Promise<GeneratedTechnique[]> {
+    await this.loadTechniques();
+    return Array.from(this.techniqueCache.values()).filter(t => t.level === level);
+  }
+  
+  /**
+   * Получить технику по ID
+   */
   async getTechniqueById(id: string): Promise<GeneratedTechnique | undefined> {
     if (this.techniqueCache.has(id)) {
       return this.techniqueCache.get(id);
@@ -356,71 +508,27 @@ export class PresetStorageService {
     return this.techniqueCache.get(id);
   }
   
-  // ==================== ФОРМАЦИИ ====================
-  
-  async saveFormations(formations: unknown[], mode: 'replace' | 'append' = 'replace'): Promise<number> {
-    const filePath = path.join(DATA_DIR, 'formations', 'all.json');
-    let allFormations = formations;
-    
-    if (mode === 'append') {
-      try {
-        const content = await fs.readFile(filePath, 'utf-8');
-        const existing = JSON.parse(content);
-        allFormations = [...existing.formations, ...formations];
-      } catch {
-        // Файл не существует
-      }
-    }
-    
-    await fs.writeFile(filePath, JSON.stringify({
-      version: '1.0',
-      count: allFormations.length,
-      formations: allFormations,
-    }, null, 2), 'utf-8');
-    
-    return allFormations.length;
-  }
-  
-  // ==================== УДАЛЕНИЕ ====================
+  // ==================== ОЧИСТКА ====================
   
   /**
    * Полное удаление всех данных
-   * @param preserveCounters - сохранить счётчики ID (рекомендуется)
    */
-  async clearAll(preserveCounters: boolean = true): Promise<{
-    deletedFiles: number;
-    countersPreserved: boolean;
-  }> {
+  async clearAll(preserveCounters: boolean = true): Promise<ClearResult> {
     const preservedCounters = this.idService.preserveCounters();
     let deletedFiles = 0;
+    let deletedObjects = 0;
     
-    // Удаляем файлы техник
-    try {
-      const techniquesDir = path.join(DATA_DIR, 'techniques');
-      const files = await fs.readdir(techniquesDir);
-      for (const file of files) {
-        if (file.endsWith('.json')) {
-          await fs.unlink(path.join(techniquesDir, file));
-          deletedFiles++;
-        }
-      }
-    } catch {
-      // Игнорируем
-    }
+    // Удаляем все техники
+    const techniquesDir = path.join(DATA_DIR, 'techniques');
+    const result = await this.deleteDirectoryRecursive(techniquesDir);
+    deletedFiles += result.files;
+    deletedObjects += result.objects;
     
-    // Удаляем файлы формаций
-    try {
-      const formationsDir = path.join(DATA_DIR, 'formations');
-      const files = await fs.readdir(formationsDir);
-      for (const file of files) {
-        if (file.endsWith('.json')) {
-          await fs.unlink(path.join(formationsDir, file));
-          deletedFiles++;
-        }
-      }
-    } catch {
-      // Игнорируем
-    }
+    // Удаляем формации
+    const formationsDir = path.join(DATA_DIR, 'formations');
+    const formationsResult = await this.deleteDirectoryRecursive(formationsDir);
+    deletedFiles += formationsResult.files;
+    deletedObjects += formationsResult.objects;
     
     // Удаляем манифест
     try {
@@ -443,53 +551,180 @@ export class PresetStorageService {
     }
     
     await this.idService.save();
+    await this.createTechniqueDirectories();
     
     return {
       deletedFiles,
+      deletedObjects,
       countersPreserved: preserveCounters,
     };
   }
   
-  // ==================== АНАЛИЗ ====================
+  /**
+   * Очистка по типу техник
+   */
+  async clearByType(type: TechniqueType, preserveCounters: boolean = true): Promise<ClearResult> {
+    const preservedCounters = this.idService.preserveCounters();
+    let deletedFiles = 0;
+    let deletedObjects = 0;
+    
+    if (type === 'combat') {
+      // Для combat удаляем все подтипы
+      const combatSubdirs = ['melee-strike', 'melee-weapon', 'ranged'];
+      for (const subDir of combatSubdirs) {
+        const dirPath = path.join(DATA_DIR, 'techniques', 'combat', subDir);
+        const result = await this.deleteDirectoryRecursive(dirPath);
+        deletedFiles += result.files;
+        deletedObjects += result.objects;
+      }
+    } else {
+      // Для других типов
+      const dirPath = getTypeDirPath(type);
+      const result = await this.deleteDirectoryRecursive(dirPath);
+      deletedFiles += result.files;
+      deletedObjects += result.objects;
+    }
+    
+    // Удаляем из кэша
+    for (const [id, tech] of this.techniqueCache.entries()) {
+      if (tech.type === type) {
+        this.techniqueCache.delete(id);
+      }
+    }
+    
+    // Управление счётчиками
+    if (preserveCounters) {
+      this.idService.restoreCounters(preservedCounters);
+    } else {
+      this.idService.resetTypeCounters(type);
+    }
+    
+    await this.idService.save();
+    await this.createTechniqueDirectories();
+    await this.updateManifest();
+    
+    return {
+      deletedFiles,
+      deletedObjects,
+      countersPreserved: preserveCounters,
+      clearedType: type,
+    };
+  }
   
   /**
-   * Анализ размера файлов
+   * Очистка по подтипу combat
    */
-  async analyzeStorage(): Promise<StorageStats> {
-    const files: FileAnalysis[] = [];
-    let totalSize = 0;
-    let totalObjects = 0;
+  async clearBySubtype(
+    subtype: CombatSubtype,
+    preserveCounters: boolean = true
+  ): Promise<ClearResult> {
+    const preservedCounters = this.idService.preserveCounters();
     
-    // Анализируем техники
+    const dirPath = getTypeDirPath('combat', subtype);
+    const result = await this.deleteDirectoryRecursive(dirPath);
+    
+    // Удаляем из кэша
+    for (const [id, tech] of this.techniqueCache.entries()) {
+      if (tech.type === 'combat' && tech.subtype === subtype) {
+        this.techniqueCache.delete(id);
+      }
+    }
+    
+    // Управление счётчиками
+    if (preserveCounters) {
+      this.idService.restoreCounters(preservedCounters);
+    } else {
+      this.idService.resetTypeCounters('combat', subtype);
+    }
+    
+    await this.idService.save();
+    await fs.mkdir(dirPath, { recursive: true });
+    await this.updateManifest();
+    
+    return {
+      deletedFiles: result.files,
+      deletedObjects: result.objects,
+      countersPreserved: preserveCounters,
+      clearedSubtype: subtype,
+    };
+  }
+  
+  /**
+   * Рекурсивное удаление директории
+   */
+  private async deleteDirectoryRecursive(dirPath: string): Promise<{ files: number; objects: number }> {
+    let files = 0;
+    let objects = 0;
+    
     try {
-      const techniquesDir = path.join(DATA_DIR, 'techniques');
-      const fileList = await fs.readdir(techniquesDir);
+      const entries = await fs.readdir(dirPath, { withFileTypes: true });
       
-      for (const file of fileList) {
-        if (!file.endsWith('.json')) continue;
+      for (const entry of entries) {
+        const fullPath = path.join(dirPath, entry.name);
         
-        const filePath = path.join(techniquesDir, file);
-        const stats = await fs.stat(filePath);
-        const content = await fs.readFile(filePath, 'utf-8');
-        const data = JSON.parse(content);
-        const objectCount = data.techniques?.length || 0;
-        
-        files.push({
-          path: filePath,
-          sizeBytes: stats.size,
-          objectCount,
-          avgObjectSize: objectCount > 0 ? Math.round(stats.size / objectCount) : 0,
-          canAppend: stats.size < RECOMMENDED_MAX_FILE_SIZE && objectCount < MAX_OBJECTS_PER_FILE,
-        });
-        
-        totalSize += stats.size;
-        totalObjects += objectCount;
+        if (entry.isDirectory()) {
+          const result = await this.deleteDirectoryRecursive(fullPath);
+          files += result.files;
+          objects += result.objects;
+        } else if (entry.isFile() && entry.name.endsWith('.json')) {
+          try {
+            const content = await fs.readFile(fullPath, 'utf-8');
+            const data = JSON.parse(content);
+            objects += data.techniques?.length || data.formations?.length || 0;
+          } catch {
+            // Игнорируем
+          }
+          
+          await fs.unlink(fullPath);
+          files++;
+        }
       }
     } catch {
       // Игнорируем
     }
     
-    // Находим самый большой файл
+    return { files, objects };
+  }
+  
+  // ==================== ФОРМАЦИИ ====================
+  
+  async saveFormations(formations: unknown[], mode: 'replace' | 'append' = 'replace'): Promise<number> {
+    const filePath = path.join(DATA_DIR, 'formations', 'all.json');
+    let allFormations = formations;
+    
+    if (mode === 'append') {
+      try {
+        const content = await fs.readFile(filePath, 'utf-8');
+        const existing = JSON.parse(content);
+        allFormations = [...existing.formations, ...formations];
+      } catch {
+        // Файл не существует
+      }
+    }
+    
+    await fs.writeFile(filePath, JSON.stringify({
+      version: '2.0',
+      count: allFormations.length,
+      formations: allFormations,
+    }, null, 2), 'utf-8');
+    
+    return allFormations.length;
+  }
+  
+  // ==================== АНАЛИЗ ====================
+  
+  async analyzeStorage(): Promise<StorageStats> {
+    const files: FileAnalysis[] = [];
+    let totalSize = 0;
+    let totalObjects = 0;
+    
+    await this.analyzeDirectoryRecursive(path.join(DATA_DIR, 'techniques'), files);
+    
+    for (const f of files) {
+      totalSize += f.sizeBytes;
+      totalObjects += f.objectCount;
+    }
+    
     const largest = files.reduce((max, f) => f.sizeBytes > max.sizeBytes ? f : max, files[0] || {
       path: '',
       sizeBytes: 0,
@@ -498,7 +733,6 @@ export class PresetStorageService {
       canAppend: true,
     });
     
-    // Файлы, требующие разбиения
     const needsSplit = files
       .filter(f => f.sizeBytes > RECOMMENDED_MAX_FILE_SIZE || f.objectCount > MAX_OBJECTS_PER_FILE)
       .map(f => f.path);
@@ -513,57 +747,70 @@ export class PresetStorageService {
     };
   }
   
-  /**
-   * Анализ конкретного файла
-   */
-  async analyzeFile(filePath: string): Promise<FileAnalysis | null> {
+  private async analyzeDirectoryRecursive(dirPath: string, files: FileAnalysis[]): Promise<void> {
     try {
-      const stats = await fs.stat(filePath);
-      const content = await fs.readFile(filePath, 'utf-8');
-      const data = JSON.parse(content);
-      const objectCount = data.techniques?.length || data.formations?.length || 0;
+      const entries = await fs.readdir(dirPath, { withFileTypes: true });
       
-      return {
-        path: filePath,
-        sizeBytes: stats.size,
-        objectCount,
-        avgObjectSize: objectCount > 0 ? Math.round(stats.size / objectCount) : 0,
-        canAppend: stats.size < RECOMMENDED_MAX_FILE_SIZE && objectCount < MAX_OBJECTS_PER_FILE,
-      };
+      for (const entry of entries) {
+        const fullPath = path.join(dirPath, entry.name);
+        
+        if (entry.isDirectory()) {
+          await this.analyzeDirectoryRecursive(fullPath, files);
+        } else if (entry.isFile() && entry.name.endsWith('.json')) {
+          const stats = await fs.stat(fullPath);
+          const content = await fs.readFile(fullPath, 'utf-8');
+          const data = JSON.parse(content);
+          const objectCount = data.techniques?.length || data.formations?.length || 0;
+          
+          files.push({
+            path: fullPath,
+            sizeBytes: stats.size,
+            objectCount,
+            avgObjectSize: objectCount > 0 ? Math.round(stats.size / objectCount) : 0,
+            canAppend: stats.size < RECOMMENDED_MAX_FILE_SIZE && objectCount < MAX_OBJECTS_PER_FILE,
+          });
+        }
+      }
     } catch {
-      return null;
+      // Игнорируем
     }
   }
   
   // ==================== МАНИФЕСТ ====================
   
-  private async updateManifest(techniques: GeneratedTechnique[]): Promise<void> {
+  private async updateManifest(): Promise<void> {
+    const techniques = await this.loadTechniques();
+    
     const byLevel: Record<number, number> = {};
     const byType: Record<string, number> = {};
+    const bySubtype: Record<string, number> = {};
     const byElement: Record<string, number> = {};
     
     for (const tech of techniques) {
       byLevel[tech.level] = (byLevel[tech.level] || 0) + 1;
       byType[tech.type] = (byType[tech.type] || 0) + 1;
+      
+      if (tech.subtype) {
+        bySubtype[tech.subtype] = (bySubtype[tech.subtype] || 0) + 1;
+      }
+      
       byElement[tech.element] = (byElement[tech.element] || 0) + 1;
     }
     
     const storageStats = await this.analyzeStorage();
     
     const manifest: PresetManifest = {
-      version: '1.0',
+      version: '2.0',
       generatedAt: new Date().toISOString(),
       lastModifiedAt: new Date().toISOString(),
       techniques: {
         total: techniques.length,
         byLevel,
         byType,
+        bySubtype,
         byElement,
       },
-      formations: {
-        total: 0,
-        byLevel: {},
-      },
+      formations: { total: 0, byLevel: {} },
       items: { total: 0 },
       npcs: { total: 0 },
       fileSizeStats: {
@@ -603,4 +850,5 @@ export class PresetStorageService {
   }
 }
 
+// Экспорт синглтона
 export const presetStorage = new PresetStorageService();

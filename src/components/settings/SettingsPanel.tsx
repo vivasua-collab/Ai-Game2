@@ -33,10 +33,12 @@ import {
   Wrench,
   Shirt,
   Users,
+  User,
 } from 'lucide-react';
 import { CheatMenuContent } from '@/components/game/CheatMenuContent';
 import { TechniqueGeneratorPanel } from './TechniqueGeneratorPanel';
-import { Rarity } from '@/lib/generator/technique-generator';
+import { Rarity, TechniqueType, CombatSubtype } from '@/lib/generator/technique-generator';
+import { BodyDollEditor } from '@/components/game/BodyDollEditor';
 
 interface SettingsPanelProps {
   open: boolean;
@@ -151,6 +153,9 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
     damageVariance: { min: number; max: number };
     mode: 'replace' | 'append';
     typeSpecificParams?: Record<string, number>;
+    combatSubtype?: CombatSubtype;
+    weaponCategory?: string;
+    weaponType?: string;
   }) => {
     setLoading(true);
     setMessage(null);
@@ -173,6 +178,19 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
       
       if (params.typeSpecificParams) {
         options.typeSpecificParams = params.typeSpecificParams;
+      }
+      
+      // Новые параметры для combat техник
+      if (params.combatSubtype) {
+        options.combatSubtype = params.combatSubtype;
+      }
+      
+      if (params.weaponCategory) {
+        options.weaponCategory = params.weaponCategory;
+      }
+      
+      if (params.weaponType) {
+        options.weaponType = params.weaponType;
       }
       
       const res = await fetch('/api/generator/techniques', {
@@ -238,11 +256,11 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
     }
   };
 
-  const handleClearAll = async () => {
-    if (!confirm('Вы уверены? Все сгенерированные данные будут удалены.')) {
-      return;
-    }
-    
+  const handleClearAll = async (params: {
+    scope: 'all' | 'type' | 'subtype';
+    targetType?: TechniqueType;
+    targetSubtype?: CombatSubtype;
+  }) => {
     setLoading(true);
     setMessage(null);
     
@@ -252,6 +270,9 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           action: 'clear',
+          scope: params.scope,
+          targetType: params.targetType,
+          targetSubtype: params.targetSubtype,
           preserveCounters,
         }),
       });
@@ -260,8 +281,10 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
       
       if (data.success) {
         setMessage({ type: 'success', text: data.message });
-        setManifest(null);
-        setHasPresets(false);
+        if (params.scope === 'all') {
+          setManifest(null);
+          setHasPresets(false);
+        }
         await loadStats();
         await loadStorageStats();
       } else {
@@ -297,7 +320,7 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-4xl max-h-[90vh]">
+      <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-6xl max-h-[95vh]">
         <DialogHeader>
           <DialogTitle className="text-amber-400 flex items-center gap-2">
             <Settings className="w-5 h-5" />
@@ -306,7 +329,7 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
         </DialogHeader>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-6 bg-slate-800">
+          <TabsList className="grid w-full grid-cols-7 bg-slate-800">
             <TabsTrigger value="generator" className="data-[state=active]:bg-amber-600">
               <Sparkles className="w-4 h-4 mr-1" />
               Техники
@@ -318,6 +341,10 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
             <TabsTrigger value="npc" className="data-[state=active]:bg-amber-600">
               <Users className="w-4 h-4 mr-1" />
               NPC
+            </TabsTrigger>
+            <TabsTrigger value="body" className="data-[state=active]:bg-amber-600">
+              <User className="w-4 h-4 mr-1" />
+              Тело
             </TabsTrigger>
             <TabsTrigger value="formations" className="data-[state=active]:bg-amber-600">
               <Shield className="w-4 h-4 mr-1" />
@@ -356,20 +383,9 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
 
             <TechniqueGeneratorPanel 
               onGenerate={handleGenerateTechniques}
+              onClear={handleClearAll}
               loading={loading}
             />
-
-            <div className="flex justify-end">
-              <Button
-                onClick={handleClearAll}
-                disabled={loading}
-                variant="destructive"
-                size="sm"
-              >
-                <Trash2 className="w-4 h-4 mr-2" />
-                Очистить базу
-              </Button>
-            </div>
 
             {message && activeTab === 'generator' && (
               <div className={`p-3 rounded flex items-center gap-2 text-sm ${
@@ -415,6 +431,25 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
               <div className="bg-slate-700/30 rounded-lg p-4 text-center">
                 <p className="text-slate-400">🚧 В разработке</p>
                 <p className="text-sm text-slate-500 mt-2">Будет реализовано в следующем обновлении</p>
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* РЕДАКТОР ТЕЛА */}
+          <TabsContent value="body" className="mt-4 overflow-hidden" style={{ maxHeight: '70vh' }}>
+            <div className="bg-slate-800/50 rounded-lg p-4 h-full">
+              <h3 className="text-lg font-medium text-amber-400 mb-3 flex items-center gap-2">
+                <User className="w-5 h-5" />
+                Редактор куклы тела
+              </h3>
+              <p className="text-sm text-slate-400 mb-4">
+                Создание и настройка визуальных кукол для персонажей и монстров.
+                Загружайте изображения частей тела, размещайте их и экспортируйте конфигурацию.
+              </p>
+              <div className="h-[calc(70vh-180px)] overflow-auto">
+                <BodyDollEditor 
+                  entityName="Человек"
+                />
               </div>
             </div>
           </TabsContent>

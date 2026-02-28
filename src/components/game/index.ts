@@ -4,3 +4,7 @@ export { ActionButtons } from './ActionButtons';
 export { RestDialog } from './RestDialog';
 export { StatusDialog } from './StatusDialog';
 export { TechniquesDialog } from './TechniquesDialog';
+export { BodyDoll } from './BodyDoll';
+export { InventoryPanel } from './InventoryPanel';
+export { InventoryDialog } from './InventoryDialog';
+export { BodyStatusPanel } from './BodyStatusPanel';

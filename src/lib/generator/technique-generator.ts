@@ -12,11 +12,27 @@
  * - Система ID с префиксами
  * 
  * Типы техник:
- * - combat (TC) - атакующие
- * - defense (DF) - защитные (вынесено из combat)
- * - curse (CR) - проклятия (новое)
- * - poison (PN) - отравления (новое)
+ * - combat (MS/MW/RG) - атакующие
+ * - defense (DF) - защитные
+ * - curse (CR) - проклятия
+ * - poison (PN) - отравления
  */
+
+import { 
+  WEAPON_CATEGORIES, 
+  getWeaponCategory, 
+  getRandomWeaponFromCategory,
+  type WeaponCategory,
+  type WeaponBonus,
+} from './weapon-categories';
+import {
+  WEAPON_TYPE_CONFIGS,
+  type WeaponType,
+} from './weapon-config';
+import {
+  getPrefixForTechniqueType,
+  type IdPrefix,
+} from './id-config';
 
 // ==================== ТИПЫ ====================
 
@@ -123,6 +139,7 @@ export interface GenerationOptions {
   };
   // Новые параметры для combat техник
   combatSubtype?: CombatSubtype;
+  weaponCategory?: string;  // Категория оружия
   weaponType?: string;
 }
 
@@ -232,8 +249,9 @@ export interface BaseTechnique {
     intelligence?: number;
     conductivity?: number;
   };
-  // Новые поля для combat-техник
-  weaponType?: string;           // Тип оружия (для melee_weapon)
+  // Поля для combat-техник
+  weaponCategory?: string;        // Категория оружия (для melee_weapon)
+  weaponType?: string;            // Конкретный тип оружия (выбранный из категории)
   damageFalloff?: DamageFalloffRange; // Затухание урона (для ranged)
   isRangedQi?: boolean;          // Дальний удар Ци (для легендарных weapon)
 }
@@ -360,17 +378,19 @@ const NAME_PARTS = {
   },
 };
 
-// Маппинг типов для ID
+// Маппинг типов для ID (базовые префиксы)
+// Для combat используется MS по умолчанию, но при наличии подтипа
+// используется getPrefixForTechniqueType для получения MS/MW/RG
 const TYPE_ID_PREFIX: Record<TechniqueType, string> = {
-  combat: 'TC',
-  defense: 'DF',   // НОВОЕ
+  combat: 'MS',    // Базовый для combat (переопределяется по подтипу)
+  defense: 'DF',
   cultivation: 'CU',
   support: 'SP',
   movement: 'MV',
   sensory: 'SN',
   healing: 'HL',
-  curse: 'CR',     // НОВОЕ
-  poison: 'PN',    // НОВОЕ
+  curse: 'CR',
+  poison: 'PN',
 };
 
 interface ModifierRule {
@@ -578,7 +598,8 @@ interface TechniqueGenParams {
   paramBounds?: GenerationOptions['paramBounds'];
   // Новые параметры для combat техник
   combatSubtype?: CombatSubtype;
-  weaponType?: string;
+  weaponCategory?: string;  // Категория оружия
+  weaponType?: string;      // Конкретный тип (для override)
 }
 
 function selectRarity(rng: () => number, forcedRarity?: Rarity): Rarity {
@@ -686,6 +707,7 @@ function generateMeleeStrikeTechnique(
 
 /**
  * Генерация техники ближнего боя с оружием
+ * Использует категории оружия вместо конкретных типов
  * Дальность = длина оружия + бонус редкости (+10% за уровень)
  * Легендарные могут иметь дальний удар Ци
  */
@@ -704,32 +726,67 @@ function generateMeleeWeaponTechnique(
   const rarityMult = RARITY_MULTIPLIERS[rarity];
   const rarityIndex = ['common', 'uncommon', 'rare', 'legendary'].indexOf(rarity);
   
-  // Выбор типа оружия (если не указан)
-  const weaponTypes = ['sword', 'spear', 'staff', 'dagger', 'axe', 'hammer', 'whip', 'fist', 'claw', 'blade', 'halberd', 'fan'];
-  const weaponType = params?.weaponType || weaponTypes[Math.floor(rng() * weaponTypes.length)];
+  // ========== ВЫБОР КАТЕГОРИИ И ТИПА ОРУЖИЯ ==========
   
-  // Базовая дальность оружия (по типам)
-  const weaponRanges: Record<string, { base: number; variance: number }> = {
-    sword: { base: 1.2, variance: 0.3 },
-    blade: { base: 1.0, variance: 0.2 },
-    spear: { base: 2.5, variance: 0.5 },
-    halberd: { base: 2.8, variance: 0.4 },
-    staff: { base: 1.8, variance: 0.3 },
-    dagger: { base: 0.4, variance: 0.1 },
-    claw: { base: 0.35, variance: 0.1 },
-    axe: { base: 1.0, variance: 0.2 },
-    hammer: { base: 1.2, variance: 0.2 },
-    whip: { base: 3.5, variance: 0.8 },
-    fist: { base: 0.5, variance: 0.1 },
-    fan: { base: 0.8, variance: 0.2 },
+  let weaponCategory: WeaponCategory;
+  let weaponType: WeaponType;
+  let weaponBonus: WeaponBonus;
+  
+  // Если указана конкретная категория
+  if (params?.weaponCategory && WEAPON_CATEGORIES[params.weaponCategory as WeaponCategory]) {
+    weaponCategory = params.weaponCategory as WeaponCategory;
+    
+    // Если также указан конкретный тип оружия - используем его
+    if (params?.weaponType) {
+      weaponType = params.weaponType as WeaponType;
+      // Проверяем совместимость
+      const catConfig = WEAPON_CATEGORIES[weaponCategory];
+      if (!catConfig.weapons.includes(weaponType)) {
+        // Если несовместим - выбираем случайный из категории
+        weaponType = getRandomWeaponFromCategory(weaponCategory, rng);
+      }
+    } else {
+      // Выбираем случайное оружие из категории
+      weaponType = getRandomWeaponFromCategory(weaponCategory, rng);
+    }
+  } 
+  // Если указан только тип оружия
+  else if (params?.weaponType) {
+    weaponType = params.weaponType as WeaponType;
+    // Определяем категорию по типу
+    const foundCategory = getWeaponCategory(weaponType);
+    weaponCategory = foundCategory || 'one_handed_blade';
+  }
+  // Случайный выбор
+  else {
+    // Выбираем случайную категорию
+    const categories = Object.keys(WEAPON_CATEGORIES) as WeaponCategory[];
+    weaponCategory = categories[Math.floor(rng() * categories.length)];
+    weaponType = getRandomWeaponFromCategory(weaponCategory, rng);
+  }
+  
+  // Получаем конфигурацию категории и бонус оружия
+  const categoryConfig = WEAPON_CATEGORIES[weaponCategory];
+  const weaponConfig = WEAPON_TYPE_CONFIGS[weaponType];
+  
+  // Получаем бонус для конкретного оружия
+  weaponBonus = categoryConfig.weaponBonuses[weaponType] || {
+    damageMod: 1.0,
+    speedMod: 1.0,
+    rangeMod: 1.0,
   };
   
-  const weaponConfig = weaponRanges[weaponType] || weaponRanges.sword;
-  const weaponBaseRange = weaponConfig.base + (rng() - 0.5) * weaponConfig.variance;
+  // ========== РАСЧЁТ БАЗОВЫХ ПАРАМЕТРОВ ==========
+  
+  // Базовая дальность из конфигурации оружия
+  const weaponBaseRange = weaponConfig.baseRange + (rng() - 0.5) * weaponConfig.rangeVariance;
+  
+  // Применяем бонус дальности от оружия
+  let baseRange = weaponBaseRange * weaponBonus.rangeMod;
   
   // Бонус дальности от редкости (+10% за уровень)
   const rarityRangeBonus = 1 + (rarityIndex * 0.1);
-  let baseRange = Math.round(weaponBaseRange * rarityRangeBonus * 100) / 100;
+  baseRange = Math.round(baseRange * rarityRangeBonus * 100) / 100;
   
   // Урон с модификаторами
   let baseDamage = applyDamageVariance(
@@ -739,28 +796,40 @@ function generateMeleeWeaponTechnique(
   );
   baseDamage = Math.floor(baseDamage * rarityMult.damageMult);
   
+  // Применяем бонус урона от оружия
+  baseDamage = Math.floor(baseDamage * weaponBonus.damageMod);
+  
+  // ========== ОСОБЫЕ СПОСОБНОСТИ ==========
+  
   // Проверка на дальний удар Ци для легендарных
   const canRangedQi = rarity === 'legendary' && 
-    ['sword', 'blade', 'spear', 'staff', 'axe', 'hammer', 'whip', 'fan', 'halberd'].includes(weaponType) &&
+    categoryConfig.weaponBonuses[weaponType] && 
+    weaponConfig.canRangedQi &&
     rng() > 0.4;
   
   let damageFalloff: DamageFalloffRange | undefined;
   let isRangedQi = false;
+  let specialEffect: string | undefined;
   
   if (canRangedQi) {
     isRangedQi = true;
-    // Волна Ци имеет затухание урона
     const rangedRange = RANGED_RANGE_BY_LEVEL[level] || RANGED_RANGE_BY_LEVEL[1];
     damageFalloff = {
-      fullDamage: baseRange + 5, // Ближняя зона - полный урон
+      fullDamage: baseRange + 5,
       halfDamage: rangedRange.base * 0.7,
       max: rangedRange.base,
     };
-    baseRange = damageFalloff.max; // Максимальная дальность техники
-    baseDamage = Math.floor(baseDamage * 0.8); // Волна Ци слабее прямого удара
+    baseRange = damageFalloff.max;
+    baseDamage = Math.floor(baseDamage * 0.8);
   }
   
-  // Применение границ параметров
+  // Особый эффект оружия
+  if (weaponBonus.specialEffect) {
+    specialEffect = weaponBonus.specialEffect;
+  }
+  
+  // ========== ПРИМЕНЕНИЕ ГРАНИЦ ==========
+  
   if (params?.paramBounds) {
     const bounds = params.paramBounds;
     if (bounds.damageMin !== undefined) baseDamage = Math.max(baseDamage, bounds.damageMin);
@@ -769,6 +838,8 @@ function generateMeleeWeaponTechnique(
   
   const baseQiCost = Math.floor(baseValues.qiCost * elementMult.qiCost * rarityMult.qiCostMult);
   
+  // ========== ФОРМИРОВАНИЕ БАЗОВОЙ ТЕХНИКИ ==========
+  
   const base: BaseTechnique = {
     id, name: '', nameEn: '', type: 'combat', subtype: 'melee_weapon', element, level,
     baseDamage,
@@ -776,29 +847,97 @@ function generateMeleeWeaponTechnique(
     baseRange,
     baseDuration: baseValues.duration,
     minCultivationLevel: Math.max(1, level - 1),
+    weaponCategory,
     weaponType,
     damageFalloff,
     isRangedQi,
     statRequirements: {
-      agility: Math.floor(level * 2.5 + (rarityIndex * 2)),
-      strength: Math.floor(level * 2),
+      // Используем primary/secondary stat из конфигурации оружия
+      strength: weaponConfig.scalingStats.primary === 'strength' 
+        ? Math.floor(level * 3 + (rarityIndex * 2))
+        : Math.floor(level * 2),
+      agility: weaponConfig.scalingStats.primary === 'agility'
+        ? Math.floor(level * 3 + (rarityIndex * 2))
+        : Math.floor(level * 2),
+      intelligence: weaponConfig.scalingStats.primary === 'intelligence'
+        ? Math.floor(level * 3 + (rarityIndex * 2))
+        : Math.floor(level * 1.5),
     },
   };
   
   const modifiers = generateModifiers(base, rng, rarity);
+  
+  // Добавляем особый эффект в модификаторы
+  if (specialEffect) {
+    // В зависимости от эффекта добавляем соответствующий бонус
+    switch (specialEffect) {
+      case 'backstab':
+        modifiers.bonuses.critChance = (modifiers.bonuses.critChance || 0) + (weaponBonus.critBonus || 15);
+        break;
+      case 'stun':
+        modifiers.effects.stun = true;
+        modifiers.effectValues.stunDuration = 1;
+        break;
+      case 'cleave':
+      case 'sweep':
+        modifiers.effects.aoe = true;
+        modifiers.effectValues.aoeRadius = 1.5;
+        break;
+      case 'bleed':
+        modifiers.effects.poison = true;
+        modifiers.effectValues.poisonDamage = Math.floor(baseDamage * 0.1);
+        modifiers.effectValues.poisonDuration = 5;
+        break;
+      case 'pierce':
+        modifiers.effects.pierce = true;
+        modifiers.effectValues.piercePercent = 30;
+        break;
+    }
+  }
+  
+  // Добавляем бонус крита если есть
+  if (weaponBonus.critBonus) {
+    modifiers.bonuses.critChance = (modifiers.bonuses.critChance || 0) + weaponBonus.critBonus;
+  }
+  
   const computed = computeFinalValues(base, modifiers);
   const { name, nameEn } = generateName('combat', element, level, rng);
   
-  let description = `${name} — техника владения ${weaponType} ${element === 'neutral' ? '' : `элемента ${element} `}уровня ${level}. ` +
+  // ========== ФОРМИРОВАНИЕ ОПИСАНИЯ ==========
+  
+  let description = `${name} — техника владения ${weaponConfig.name.toLowerCase()} ` +
+    `(${categoryConfig.name.toLowerCase()}) ${element === 'neutral' ? '' : `элемента ${element} `}уровня ${level}. ` +
     `Редкость: ${rarity}. Урон: ${baseDamage}. Дальность: ${baseRange.toFixed(1)}м.`;
   
   if (isRangedQi) {
-    description += ` ⚡ Легендарная способность: волна Ци до ${damageFalloff?.max}м.`;
+    description += ` ⚡ Волна Ци до ${damageFalloff?.max}м.`;
+  }
+  
+  if (specialEffect) {
+    const effectNames: Record<string, string> = {
+      backstab: 'Удар в спину',
+      stun: 'Оглушение',
+      cleave: 'Рассечение',
+      sweep: 'Размах',
+      bleed: 'Кровотечение',
+      crush: 'Сокрушение',
+      pierce: 'Пробитие',
+      qi_channel: 'Канал Ци',
+      combo: 'Комбо',
+      bind: 'Связывание',
+      deflection: 'Отражение',
+    };
+    description += ` ✦ ${effectNames[specialEffect] || specialEffect}.`;
   }
   
   return {
     ...base, name, nameEn, description, rarity, modifiers, computed,
-    meta: { seed, template: `combat_melee_weapon_${weaponType}_${element}`, generatedAt: new Date().toISOString(), generatorVersion: '3.0.0' },
+    meta: { 
+      seed, 
+      template: `combat_melee_weapon_${weaponCategory}_${weaponType}_${element}`, 
+      generatedAt: new Date().toISOString(), 
+      generatorVersion: '3.1.0' 
+    },
   };
 }
 

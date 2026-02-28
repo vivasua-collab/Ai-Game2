@@ -124,28 +124,45 @@ export function calculateTechniqueEffectiveness(
   character: Character,
   mastery: number = 0
 ): number {
+  // Защита от null/undefined
+  if (!technique || !character) {
+    return 1.0;
+  }
+  
   let multiplier = 1.0;
   
   // Физические техники масштабируются от силы и ловкости
-  if (technique.statScaling?.strength) {
-    multiplier += (character.strength - 10) * technique.statScaling.strength;
+  const strScaling = technique.statScaling?.strength;
+  if (strScaling && typeof strScaling === 'number' && character.strength != null) {
+    multiplier += (character.strength - 10) * strScaling;
   }
-  if (technique.statScaling?.agility) {
-    multiplier += (character.agility - 10) * technique.statScaling.agility;
+  
+  const agiScaling = technique.statScaling?.agility;
+  if (agiScaling && typeof agiScaling === 'number' && character.agility != null) {
+    multiplier += (character.agility - 10) * agiScaling;
   }
   
   // Техники Ци масштабируются от интеллекта и проводимости
-  if (technique.statScaling?.intelligence) {
-    multiplier += (character.intelligence - 10) * technique.statScaling.intelligence;
+  const intScaling = technique.statScaling?.intelligence;
+  if (intScaling && typeof intScaling === 'number' && character.intelligence != null) {
+    multiplier += (character.intelligence - 10) * intScaling;
   }
-  if (technique.statScaling?.conductivity) {
-    multiplier += character.conductivity * technique.statScaling.conductivity;
+  
+  const conScaling = technique.statScaling?.conductivity;
+  if (conScaling && typeof conScaling === 'number' && character.conductivity != null) {
+    multiplier += character.conductivity * conScaling;
   }
   
   // Бонус от мастерства (базовый бонус = 0.5 при 100% мастерства)
+  const safeMastery = typeof mastery === 'number' && !isNaN(mastery) ? mastery : 0;
   const masteryBonus = 0.5; // Фиксированный бонус мастерства
-  const masteryMultiplier = 1 + (mastery / 100) * masteryBonus;
+  const masteryMultiplier = 1 + (safeMastery / 100) * masteryBonus;
   multiplier *= masteryMultiplier;
+  
+  // Защита от NaN
+  if (isNaN(multiplier) || !isFinite(multiplier)) {
+    return 1.0;
+  }
   
   return Math.max(0.1, multiplier); // Минимум 10% эффективности
 }

@@ -29,6 +29,7 @@ import {
   Skull,
   Droplet,
   Zap,
+  Trash2,
 } from 'lucide-react';
 import { Rarity, TechniqueType, CombatSubtype } from '@/lib/generator/technique-generator';
 import {
@@ -41,6 +42,7 @@ import {
   type CombatSubtypeConfig,
 } from '@/lib/generator/technique-config';
 import { getWeaponTypeList, type WeaponTypeConfig } from '@/lib/generator/weapon-config';
+import { getWeaponCategoryList, type WeaponCategoryConfig } from '@/lib/generator/weapon-categories';
 
 interface TechniqueGeneratorPanelProps {
   onGenerate: (params: {
@@ -52,7 +54,13 @@ interface TechniqueGeneratorPanelProps {
     mode: 'replace' | 'append';
     typeSpecificParams?: Record<string, number>;
     combatSubtype?: CombatSubtype;
+    weaponCategory?: string;
     weaponType?: string;
+  }) => Promise<void>;
+  onClear?: (params: {
+    scope: 'all' | 'type' | 'subtype';
+    targetType?: TechniqueType;
+    targetSubtype?: CombatSubtype;
   }) => Promise<void>;
   loading: boolean;
 }
@@ -69,7 +77,7 @@ const TYPE_ICONS: Record<TechniqueType, React.ReactNode> = {
   support: <Zap className="w-5 h-5" />,
 };
 
-export function TechniqueGeneratorPanel({ onGenerate, loading }: TechniqueGeneratorPanelProps) {
+export function TechniqueGeneratorPanel({ onGenerate, onClear, loading }: TechniqueGeneratorPanelProps) {
   // Выбор типа - только один за раз
   const [selectedType, setSelectedType] = useState<TechniqueType>('combat');
   
@@ -81,6 +89,7 @@ export function TechniqueGeneratorPanel({ onGenerate, loading }: TechniqueGenera
   
   // Параметры для combat техник
   const [combatSubtype, setCombatSubtype] = useState<string>('random');
+  const [weaponCategory, setWeaponCategory] = useState<string>('random');
   const [weaponType, setWeaponType] = useState<string>('random');
   
   // Специфичные параметры типа (сохраняем для каждого типа)
@@ -105,6 +114,7 @@ export function TechniqueGeneratorPanel({ onGenerate, loading }: TechniqueGenera
   
   const typeList = getTechniqueTypeList();
   const combatSubtypeList = getCombatSubtypeList();
+  const weaponCategoryList = getWeaponCategoryList();
   const weaponList = getWeaponTypeList();
   
   // Получаем текущие параметры для выбранного типа
@@ -136,8 +146,37 @@ export function TechniqueGeneratorPanel({ onGenerate, loading }: TechniqueGenera
       mode: genMode,
       typeSpecificParams: currentParams,
       combatSubtype: combatSubtype === 'random' ? undefined : combatSubtype as CombatSubtype,
+      weaponCategory: weaponCategory === 'random' ? undefined : weaponCategory,
       weaponType: weaponType === 'random' ? undefined : weaponType,
     });
+  };
+  
+  const handleClear = async () => {
+    if (!onClear) return;
+    
+    // Определяем что очищаем
+    let scope: 'all' | 'type' | 'subtype' = 'all';
+    let targetType: TechniqueType | undefined;
+    let targetSubtype: CombatSubtype | undefined;
+    
+    if (selectedType === 'combat' && combatSubtype !== 'random') {
+      scope = 'subtype';
+      targetSubtype = combatSubtype as CombatSubtype;
+    } else if (selectedType !== 'combat') {
+      scope = 'type';
+      targetType = selectedType;
+    }
+    
+    // Подтверждение
+    const confirmMessage = scope === 'subtype' 
+      ? `Очистить техники подтипа "${combatSubtypeList.find(s => s.id === combatSubtype)?.name}"?`
+      : scope === 'type'
+      ? `Очистить все техники типа "${typeConfig.name}"?`
+      : 'Очистить ВСЕ техники?';
+    
+    if (!confirm(confirmMessage)) return;
+    
+    await onClear({ scope, targetType, targetSubtype });
   };
   
   // Рендер слайдера параметра
@@ -225,29 +264,59 @@ export function TechniqueGeneratorPanel({ onGenerate, loading }: TechniqueGenera
             </Select>
           </div>
           
-          {/* Выбор типа оружия - только для melee_weapon */}
+          {/* Выбор категории и типа оружия - только для melee_weapon */}
           {(combatSubtype === 'melee_weapon' || combatSubtype === 'random') && (
-            <div>
-              <Label className="text-xs text-slate-400">
-                Тип оружия {combatSubtype === 'random' && '(если melee_weapon)'}
-              </Label>
-              <Select value={weaponType} onValueChange={setWeaponType}>
-                <SelectTrigger className="bg-slate-700 border-slate-600 text-white mt-1">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-slate-700">
-                  <SelectItem value="random">🎲 Случайный</SelectItem>
-                  {weaponList.map(w => (
-                    <SelectItem key={w.id} value={w.id}>
-                      <span className="flex items-center gap-2">
-                        <span>{w.icon}</span>
-                        {w.name}
-                        <span className="text-xs text-slate-400">({w.baseRange}м)</span>
-                      </span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Категория оружия */}
+              <div>
+                <Label className="text-xs text-slate-400">
+                  Категория оружия {combatSubtype === 'random' && '(если melee_weapon)'}
+                </Label>
+                <Select value={weaponCategory} onValueChange={(v) => { setWeaponCategory(v); setWeaponType('random'); }}>
+                  <SelectTrigger className="bg-slate-700 border-slate-600 text-white mt-1">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-slate-700">
+                    <SelectItem value="random">🎲 Случайная</SelectItem>
+                    {weaponCategoryList.map(cat => (
+                      <SelectItem key={cat.id} value={cat.id}>
+                        <span className="flex items-center gap-2">
+                          <span>{cat.icon}</span>
+                          {cat.name}
+                        </span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              {/* Конкретный тип оружия (опционально) */}
+              {weaponCategory !== 'random' && (
+                <div>
+                  <Label className="text-xs text-slate-400">Тип оружия (опционально)</Label>
+                  <Select value={weaponType} onValueChange={setWeaponType}>
+                    <SelectTrigger className="bg-slate-700 border-slate-600 text-white mt-1">
+                      <SelectValue placeholder="Любой из категории" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-700">
+                      <SelectItem value="random">🎲 Любой из категории</SelectItem>
+                      {weaponCategoryList
+                        .find(c => c.id === weaponCategory)?.weapons
+                        .map(wId => weaponList.find(w => w.id === wId))
+                        .filter(Boolean)
+                        .map(w => (
+                          <SelectItem key={w!.id} value={w!.id}>
+                            <span className="flex items-center gap-2">
+                              <span>{w!.icon}</span>
+                              {w!.name}
+                              <span className="text-xs text-slate-400">({w!.baseRange}м)</span>
+                            </span>
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -302,11 +371,65 @@ export function TechniqueGeneratorPanel({ onGenerate, loading }: TechniqueGenera
           </div>
         )}
         
-        {/* Информация о выбранном оружии */}
-        {combatSubtype === 'melee_weapon' && weaponType !== 'random' && (
+        {/* Информация о выбранной категории */}
+        {combatSubtype === 'melee_weapon' && weaponCategory !== 'random' && (
           <div className="bg-slate-700/30 rounded-lg p-3">
             {(() => {
+              const category = weaponCategoryList.find(c => c.id === weaponCategory);
+              if (!category) return null;
+              
+              return (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-2xl">{category.icon}</span>
+                    <div>
+                      <div className="font-medium text-slate-200">{category.name}</div>
+                      <div className="text-sm text-slate-400">{category.description}</div>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {category.weapons.map(wId => {
+                      const w = weaponList.find(weapon => weapon.id === wId);
+                      return w ? (
+                        <Badge key={wId} variant="outline" className="border-slate-500 text-slate-300">
+                          {w.icon} {w.name}
+                        </Badge>
+                      ) : null;
+                    })}
+                  </div>
+                  <div className="grid grid-cols-3 gap-2 text-sm mt-2">
+                    <div className="bg-slate-600/30 rounded p-2 text-center">
+                      <div className="text-slate-400">Сред. урон</div>
+                      <div className="text-red-400 font-medium">
+                        ×{category.baseStats.avgDamage.toFixed(2)}
+                      </div>
+                    </div>
+                    <div className="bg-slate-600/30 rounded p-2 text-center">
+                      <div className="text-slate-400">Сред. скорость</div>
+                      <div className="text-green-400 font-medium">
+                        ×{category.baseStats.avgSpeed.toFixed(2)}
+                      </div>
+                    </div>
+                    <div className="bg-slate-600/30 rounded p-2 text-center">
+                      <div className="text-slate-400">Сред. дальность</div>
+                      <div className="text-amber-400 font-medium">
+                        {category.baseStats.avgRange.toFixed(1)}м
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        )}
+        
+        {/* Информация о выбранном оружии (если указано) */}
+        {combatSubtype === 'melee_weapon' && weaponCategory !== 'random' && weaponType !== 'random' && (
+          <div className="bg-slate-700/30 rounded-lg p-3 border border-amber-500/30">
+            {(() => {
               const weapon = weaponList.find(w => w.id === weaponType);
+              const category = weaponCategoryList.find(c => c.id === weaponCategory);
+              const bonus = category?.weaponBonuses[weaponType as keyof typeof category.weaponBonuses];
               if (!weapon) return null;
               
               return (
@@ -318,20 +441,29 @@ export function TechniqueGeneratorPanel({ onGenerate, loading }: TechniqueGenera
                       <div className="text-sm text-slate-400">{weapon.description}</div>
                     </div>
                   </div>
-                  <div className="grid grid-cols-3 gap-2 text-sm">
+                  <div className="grid grid-cols-4 gap-2 text-sm">
                     <div className="bg-slate-600/30 rounded p-2 text-center">
                       <div className="text-slate-400">Дальность</div>
                       <div className="text-amber-400 font-medium">{weapon.baseRange}м</div>
                     </div>
                     <div className="bg-slate-600/30 rounded p-2 text-center">
-                      <div className="text-slate-400">Урон</div>
-                      <div className="text-red-400 font-medium">×{weapon.damageMultiplier}</div>
+                      <div className="text-slate-400">Множ. урона</div>
+                      <div className="text-red-400 font-medium">×{bonus?.damageMod?.toFixed(2) || '1.00'}</div>
                     </div>
                     <div className="bg-slate-600/30 rounded p-2 text-center">
                       <div className="text-slate-400">Скорость</div>
-                      <div className="text-green-400 font-medium">×{weapon.speedMultiplier}</div>
+                      <div className="text-green-400 font-medium">×{bonus?.speedMod?.toFixed(2) || '1.00'}</div>
+                    </div>
+                    <div className="bg-slate-600/30 rounded p-2 text-center">
+                      <div className="text-slate-400">Крит</div>
+                      <div className="text-purple-400 font-medium">+{bonus?.critBonus || 0}%</div>
                     </div>
                   </div>
+                  {bonus?.specialEffect && (
+                    <div className="text-xs text-cyan-400 mt-1">
+                      ✦ Особый эффект: {bonus.specialEffect}
+                    </div>
+                  )}
                 </div>
               );
             })()}
@@ -571,6 +703,26 @@ export function TechniqueGeneratorPanel({ onGenerate, loading }: TechniqueGenera
         Сгенерировать {genCount} техник &quot;{typeConfig.name}&quot;
       </Button>
       
+      {/* Кнопка очистки */}
+      {onClear && (
+        <div className="flex justify-end">
+          <Button
+            onClick={handleClear}
+            disabled={loading}
+            variant="destructive"
+            size="sm"
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            {selectedType === 'combat' && combatSubtype !== 'random' 
+              ? `Очистить "${combatSubtypeList.find(s => s.id === combatSubtype)?.name}"`
+              : selectedType !== 'combat'
+              ? `Очистить "${typeConfig.name}"`
+              : 'Очистить все техники'
+            }
+          </Button>
+        </div>
+      )}
+      
       {/* Краткая сводка */}
       <div className="bg-slate-700/30 rounded-lg p-3 text-center">
         <p className="text-sm text-slate-400">
@@ -580,8 +732,13 @@ export function TechniqueGeneratorPanel({ onGenerate, loading }: TechniqueGenera
               {combatSubtypeList.find(s => s.id === combatSubtype)?.name}
             </span></>
           )}
-          {selectedType === 'combat' && combatSubtype === 'melee_weapon' && weaponType !== 'random' && (
-            <> (<span className="text-cyan-400">
+          {selectedType === 'combat' && combatSubtype === 'melee_weapon' && weaponCategory !== 'random' && (
+            <> → <span className="text-cyan-400">
+              {weaponCategoryList.find(c => c.id === weaponCategory)?.name}
+            </span></>
+          )}
+          {selectedType === 'combat' && combatSubtype === 'melee_weapon' && weaponCategory !== 'random' && weaponType !== 'random' && (
+            <> (<span className="text-green-400">
               {weaponList.find(w => w.id === weaponType)?.name}
             </span>)</>
           )}

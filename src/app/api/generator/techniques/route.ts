@@ -4,26 +4,20 @@ import {
   generateTechniquesForLevel,
   generateTechniquesWithOptions,
   getGenerationStats,
+  type TechniqueType,
+  type CombatSubtype,
 } from '@/lib/generator/technique-generator';
 import { 
   generateAllFormations,
   generateFormationsForLevel,
   getFormationStats,
 } from '@/lib/generator/formation-generator';
-import { presetStorage } from '@/lib/generator/preset-storage';
-
-// Маппинг типов для ID
-const TYPE_ID_PREFIX: Record<string, string> = {
-  combat: 'TC',
-  defense: 'DF',
-  cultivation: 'CU',
-  support: 'SP',
-  movement: 'MV',
-  sensory: 'SN',
-  healing: 'HL',
-  curse: 'CR',
-  poison: 'PN',
-};
+import { presetStorage, type ClearResult } from '@/lib/generator/preset-storage';
+import { 
+  getPrefixForTechniqueType, 
+  type IdPrefix,
+  type TechniqueType as IdTechniqueType,
+} from '@/lib/generator/id-config';
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -47,23 +41,35 @@ export async function GET(request: NextRequest) {
       case 'list':
         const level = parseInt(searchParams.get('level') || '0');
         const type = searchParams.get('type') as 'technique' | 'formation' | null;
+        const techniqueType = searchParams.get('techniqueType') as TechniqueType | null;
+        const combatSubtype = searchParams.get('combatSubtype') as CombatSubtype | null;
         
         if (type === 'formation') {
-          // Загрузка формаций
           return NextResponse.json({ 
             success: true, 
-            formations: [], // TODO: реализовать загрузку формаций
+            formations: [],
             count: 0 
           });
+        }
+        
+        // Загрузка по типу/подтипу
+        if (techniqueType === 'combat' && combatSubtype) {
+          const techniques = await presetStorage.loadTechniquesBySubtype(combatSubtype);
+          return NextResponse.json({ success: true, techniques, count: techniques.length });
+        }
+        
+        if (techniqueType) {
+          const techniques = await presetStorage.loadTechniquesByType(techniqueType);
+          return NextResponse.json({ success: true, techniques, count: techniques.length });
         }
         
         if (level > 0) {
           const techniques = await presetStorage.getTechniquesByLevel(level);
           return NextResponse.json({ success: true, techniques, count: techniques.length });
-        } else {
-          const techniques = await presetStorage.loadTechniques();
-          return NextResponse.json({ success: true, techniques, count: techniques.length });
         }
+        
+        const techniques = await presetStorage.loadTechniques();
+        return NextResponse.json({ success: true, techniques, count: techniques.length });
         
       case 'get':
         const id = searchParams.get('id');
@@ -108,6 +114,10 @@ export async function POST(request: NextRequest) {
       mode = 'replace',
       options,
       preserveCounters = true,
+      // Новые параметры для очистки
+      scope,           // 'all' | 'type' | 'subtype'
+      targetType,      // Тип техники для очистки
+      targetSubtype,   // Подтип combat для очистки
     } = body;
     
     await presetStorage.initialize();
@@ -116,13 +126,12 @@ export async function POST(request: NextRequest) {
       case 'generate': {
         // Генерация техник с опциями
         if (options) {
-          // Расширенная генерация с фильтрами
           const result = generateTechniquesWithOptions(
             {
               ...options,
               mode: mode || 'replace',
             },
-            (prefix) => presetStorage.generateId(prefix)
+            (prefix) => presetStorage.generateId(prefix as IdPrefix)
           );
           
           if (result.success && result.techniques.length > 0) {
@@ -145,9 +154,12 @@ export async function POST(request: NextRequest) {
           ? generateTechniquesForLevel(level)
           : generateAllTechniques();
         
-        // Перегенерация ID с использованием сервиса
+        // Перегенерация ID с использованием новой системы
         const techniquesWithNewIds = techniques.map(t => {
-          const prefix = TYPE_ID_PREFIX[t.type] || 'TC';
+          const prefix = getPrefixForTechniqueType(
+            t.type as TechniqueType, 
+            t.subtype as CombatSubtype | undefined
+          );
           return {
             ...t,
             id: presetStorage.generateId(prefix),
@@ -187,14 +199,13 @@ export async function POST(request: NextRequest) {
       }
       
       case 'append': {
-        // Добавочная генерация
         const appendOptions = options || {};
         const result = generateTechniquesWithOptions(
           {
             ...appendOptions,
             mode: 'append',
           },
-          (prefix) => presetStorage.generateId(prefix)
+          (prefix) => presetStorage.generateId(prefix as IdPrefix)
         );
         
         if (result.success && result.techniques.length > 0) {
@@ -210,16 +221,52 @@ export async function POST(request: NextRequest) {
         });
       }
         
-      case 'clear':
-        const clearResult = await presetStorage.clearAll(preserveCounters);
+      case 'clear': {
+        let clearResult: ClearResult;
+        
+        // Определяем область очистки
+        if (scope === 'type' && targetType) {
+          // Очистка по типу
+          clearResult = await presetStorage.clearByType(
+            targetType as TechniqueType,
+            preserveCounters
+          );
+        } else if (scope === 'subtype' && targetSubtype) {
+          // Очистка по подтипу combat
+          clearResult = await presetStorage.clearBySubtype(
+            targetSubtype as CombatSubtype,
+            preserveCounters
+          );
+        } else {
+          // Полная очистка (по умолчанию)
+          clearResult = await presetStorage.clearAll(preserveCounters);
+        }
+        
+        // Формируем сообщение
+        let message = '';
+        if (clearResult.clearedSubtype) {
+          message = `Очищен подтип "${clearResult.clearedSubtype}". `;
+        } else if (clearResult.clearedType) {
+          message = `Очищен тип "${clearResult.clearedType}". `;
+        }
+        message += `Удалено ${clearResult.deletedFiles} файлов, ${clearResult.deletedObjects} объектов.`;
+        
+        if (preserveCounters) {
+          message += ' Счётчики ID сохранены.';
+        } else {
+          message += ' Счётчики сброшены.';
+        }
+        
         return NextResponse.json({
           success: true,
           deletedFiles: clearResult.deletedFiles,
+          deletedObjects: clearResult.deletedObjects,
           countersPreserved: clearResult.countersPreserved,
-          message: preserveCounters 
-            ? `Удалено ${clearResult.deletedFiles} файлов. Счётчики ID сохранены.`
-            : `Удалено ${clearResult.deletedFiles} файлов. Счётчики сброшены.`,
+          clearedType: clearResult.clearedType,
+          clearedSubtype: clearResult.clearedSubtype,
+          message,
         });
+      }
         
       case 'clear_cache':
         presetStorage.clearCache();

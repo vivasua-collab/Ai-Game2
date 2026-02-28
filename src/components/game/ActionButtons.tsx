@@ -12,9 +12,10 @@ import { RestDialog } from './RestDialog';
 import { StatusDialog } from './StatusDialog';
 import { TechniquesDialog } from './TechniquesDialog';
 import { GameMenuDialog } from './GameMenuDialog';
+import { InventoryDialog } from './InventoryDialog';
 import { SettingsPanel } from '@/components/settings/SettingsPanel';
 import { GeneratedObjectsViewer } from '@/components/settings/GeneratedObjectsViewer';
-import { Settings, Package } from 'lucide-react';
+import { Settings } from 'lucide-react';
 
 interface ActionButtonsProps {
   className?: string;
@@ -24,6 +25,7 @@ export function ActionButtons({ className = '' }: ActionButtonsProps) {
   const [restOpen, setRestOpen] = useState(false);
   const [statusOpen, setStatusOpen] = useState(false);
   const [techniquesOpen, setTechniquesOpen] = useState(false);
+  const [inventoryOpen, setInventoryOpen] = useState(false);
   const [gameMenuOpen, setGameMenuOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [generatedObjectsOpen, setGeneratedObjectsOpen] = useState(false);
@@ -66,8 +68,7 @@ export function ActionButtons({ className = '' }: ActionButtonsProps) {
           variant="outline"
           size="sm"
           className="border-blue-600/50 text-blue-400 hover:bg-blue-900/30 h-9"
-          disabled
-          title="В разработке"
+          onClick={() => setInventoryOpen(true)}
         >
           🎒 Инвентарь
         </Button>
@@ -104,6 +105,11 @@ export function ActionButtons({ className = '' }: ActionButtonsProps) {
       <TechniquesDialog
         open={techniquesOpen}
         onOpenChange={setTechniquesOpen}
+      />
+
+      <InventoryDialog
+        open={inventoryOpen}
+        onOpenChange={setInventoryOpen}
       />
 
       <GameMenuDialog
