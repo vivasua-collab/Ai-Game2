@@ -51,6 +51,7 @@ import type { WorldTime } from '@/lib/game/time-system';
 import {
   getConductivityMeditationProgress,
   calculateTransferTime,
+  calculateTotalConductivity,
 } from '@/lib/game/conductivity-system';
 
 type RestActivityType = 'meditation' | 'light' | 'sleep';
@@ -244,6 +245,16 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
       conductivity: canMeditate(character.currentQi, character.coreCapacity, 'conductivity').canMeditate,
     };
   }, [character]);
+
+  // === ПРОВОДИМОСТЬ (вычисленная динамически) ===
+  const totalConductivity = useMemo(() => {
+    if (!character) return 0;
+    return calculateTotalConductivity(
+      character.coreCapacity,
+      character.cultivationLevel,
+      character.conductivityMeditations || 0
+    );
+  }, [character]);
   
   // Calculate fixed duration for breakthrough/conductivity
   const fixedDurationInfo = useMemo(() => {
@@ -275,8 +286,8 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
     }
     
     if (meditationType === 'conductivity') {
-      // Используем единую функцию из conductivity-system.ts
-      const secondsPerTransfer = calculateTransferTime(maxQi, character.conductivity);
+      // Используем единую функцию из conductivity-system.ts и динамическую проводимость
+      const secondsPerTransfer = calculateTransferTime(maxQi, totalConductivity);
       
       if (isFull) {
         return {
@@ -298,7 +309,7 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
     }
     
     return null;
-  }, [activityType, meditationType, character, qiRates]);
+  }, [activityType, meditationType, character, qiRates, totalConductivity]);
 
   // === РЕАЛЬНАЯ ДЛИТЕЛЬНОСТЬ ДЛЯ ОТОБРАЖЕНИЯ ===
   // Для прорыва/проводимости используем расчётную длительность
@@ -321,6 +332,7 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
   const conductivityProgress = useMemo(() => {
     if (!character || meditationType !== 'conductivity') return null;
     return getConductivityMeditationProgress(
+      character.coreCapacity,
       character.cultivationLevel,
       character.conductivityMeditations || 0
     );
@@ -535,7 +547,7 @@ export function RestDialog({ open, onOpenChange }: RestDialogProps) {
                   </div>
                   <div className="flex justify-between text-xs">
                     <span className="text-slate-500">Проводимость:</span>
-                    <span className="text-cyan-400">{character.conductivity.toFixed(2)}</span>
+                    <span className="text-cyan-400">{totalConductivity.toFixed(2)}</span>
                   </div>
                 </div>
                 

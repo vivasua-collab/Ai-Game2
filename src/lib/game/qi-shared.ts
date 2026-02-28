@@ -9,6 +9,7 @@
  */
 
 import { QI_CONSTANTS, BREAKTHROUGH_CONSTANTS, MEDITATION_CONSTANTS, CULTIVATION_LEVEL_NAMES, QI_COSTS, MEDITATION_TYPE_CONSTANTS } from './constants';
+import { calculateTotalConductivity } from './conductivity-system';
 import type { Character, BreakthroughRequirements, BreakthroughResult, QiRates } from '@/types/game';
 import type { LocationData } from '@/types/game-shared';
 
@@ -148,14 +149,15 @@ export function getCultivationLevelName(level: number): string {
  * ВНИМАНИЕ: Эта функция только ВЫЧИСЛЯЕТ результат, НЕ изменяет состояние!
  * 
  * При прорыве:
- * - Проводимость умножается на conductivityMultiplier нового уровня
+ * - Проводимость пересчитывается ПОЛНОСТЬЮ с новой ёмкостью ядра
  */
 export function calculateBreakthroughResult(
   cultivationLevel: number,
   cultivationSubLevel: number,
   coreCapacity: number,
   accumulatedQi: number,
-  currentConductivity: number = 0
+  currentConductivity: number = 0,
+  conductivityMeditations: number = 0
 ): BreakthroughResult & { newCoreCapacity: number; newConductivity: number } {
   const requirements = calculateBreakthroughRequirements(
     cultivationLevel,
@@ -205,12 +207,9 @@ export function calculateBreakthroughResult(
   };
   
   // === ПРОВОДИМОСТЬ ===
-  // При прорыве проводимость умножается на множитель нового уровня
-  const newConductivityMultiplier = QI_CONSTANTS.CONDUCTIVITY_MULTIPLIERS[newLevel] || 1.0;
-  const oldConductivityMultiplier = QI_CONSTANTS.CONDUCTIVITY_MULTIPLIERS[cultivationLevel] || 1.0;
-  
-  // Новая проводимость = текущая * (новый множитель / старый множитель)
-  const newConductivity = currentConductivity * (newConductivityMultiplier / oldConductivityMultiplier);
+  // При прорыве проводимость пересчитывается ПОЛНОСТЬЮ
+  // Формула: (новая_ёмкость / 360) * множитель_уровня + бонус_от_медитаций
+  const newConductivity = calculateTotalConductivity(newCoreCapacity, newLevel, conductivityMeditations);
   
   const levelName = getCultivationLevelName(newLevel);
   let message = isMajorBreakthrough

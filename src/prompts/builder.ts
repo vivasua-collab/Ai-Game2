@@ -6,6 +6,7 @@
  */
 
 import { getTemplateContent, type PromptCategory } from './loader';
+import { getCultivationLevelName } from '@/lib/game/qi-shared';
 
 // Типы для контекста подстановки
 export interface PromptContext {
@@ -252,20 +253,4 @@ export function buildCharacterContextPrompt(character: PromptContext): string {
   );
 }
 
-/**
- * Получить название уровня культивации
- */
-function getCultivationLevelName(level: number): string {
-  const names: Record<number, string> = {
-    1: 'Закалка тела',
-    2: 'Конденсация Ци',
-    3: 'Основание',
-    4: 'Золотое ядро',
-    5: 'Душа',
-    6: 'Дух',
-    7: 'Разъединение',
-    8: 'Бессмертие',
-    9: 'Великий мудрец',
-  };
-  return names[level] || 'Неизвестно';
-}
+

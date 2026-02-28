@@ -14,6 +14,7 @@
 import type { Character, WorldTime } from "@/types/game";
 import type { LocationData } from "@/types/game-shared";
 import type { Technique } from "./techniques";
+import { getCultivationLevelName } from "./qi-shared";
 
 // ==================== СТАТУС ПЕРСОНАЖА ====================
 
@@ -170,21 +171,4 @@ export function buildInventoryResponse(items: Array<{
 }
 
 // ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
-
-/**
- * Получение названия уровня культивации
- */
-function getCultivationLevelName(level: number): string {
-  const names: Record<number, string> = {
-    1: "Закалка тела",
-    2: "Конденсация Ци",
-    3: "Золотое ядро",
-    4: "Душа Наби",
-    5: "Духовное перерождение",
-    6: "Разделение духа",
-    7: "Бессмертное перерождение",
-    8: "Великое бессмертие",
-    9: "Истинное бессмертие",
-  };
-  return names[level] || `Уровень ${level}`;
-}
+// getCultivationLevelName импортируется из qi-shared.ts

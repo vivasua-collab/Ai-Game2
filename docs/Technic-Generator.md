@@ -1,7 +1,7 @@
 # ⚔️ Оффлайн Генератор Техник
 
 **Версия:** 1.0  
-**Создано:** 2026-02-27  
+**Создано:** 2026-02-28  
 **Статус:** Черновик
 
 ---
@@ -1268,7 +1268,7 @@ export class TechniqueGenerator {
     seed: 12345,
     template: 'melee_aggressive',
     components: ['whirlwind', 'palm', 'air'],
-    generatedAt: '2026-02-27T...',
+    generatedAt: '2026-02-28T...',
     generatorVersion: '1.0',
   },
 }
@@ -1335,7 +1335,7 @@ export class TechniqueGenerator {
     seed: 67890,
     template: 'defensive_elemental',
     components: ['frozen', 'barrier', 'water'],
-    generatedAt: '2026-02-27T...',
+    generatedAt: '2026-02-28T...',
     generatorVersion: '1.0',
   },
 }
@@ -1381,5 +1381,5 @@ export class TechniqueGenerator {
 
 ---
 
-*Документ создан: 2026-02-27*  
+*Документ создан: 2026-02-28*  
 *Версия: 1.0*
