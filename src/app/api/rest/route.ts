@@ -6,12 +6,18 @@
  * - Сон: полное восстановление (быстро, но требует больше времени)
  * 
  * Использует ЕДИНЫЙ сервис обработки тиков времени (time-tick.service.ts)
+ * 
+ * ИНТЕГРАЦИЯ TRUTHSYSTEM:
+ * - Проверяет наличие сессии в памяти (ПАМЯТЬ ПЕРВИЧНА!)
+ * - Обновляет данные в памяти через TruthSystem
+ * - Возвращает данные из памяти
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { processTimeTickEffects } from '@/services/time-tick.service';
 import { formatWorldTimeForResponse } from '@/lib/game/time-db';
+import { TruthSystem } from '@/lib/game/truth-system';
 
 interface RestRequest {
   characterId: string;
@@ -58,36 +64,55 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Получаем персонажа с сессией
-    const character = await db.character.findUnique({
-      where: { id: characterId },
-      include: {
-        sessions: {
-          take: 1,
-          orderBy: { createdAt: 'desc' },
+    // === ПРОВЕРКА TRUTHSYSTEM (ПАМЯТЬ ПЕРВИЧНА!) ===
+    const truthSystem = TruthSystem.getInstance();
+    const memoryState = truthSystem.getSessionByCharacter(characterId);
+    
+    let sessionId: string;
+    let source: 'memory' | 'database' = 'database';
+    
+    if (memoryState) {
+      // Сессия в памяти - используем данные из памяти
+      sessionId = memoryState.sessionId;
+      source = 'memory';
+    } else {
+      // Сессия не в памяти - загружаем из БД
+      const character = await db.character.findUnique({
+        where: { id: characterId },
+        include: {
+          sessions: {
+            take: 1,
+            orderBy: { createdAt: 'desc' },
+          },
         },
-      },
-    });
+      });
 
-    if (!character) {
-      return NextResponse.json(
-        { success: false, error: 'Character not found' },
-        { status: 404 }
-      );
-    }
+      if (!character) {
+        return NextResponse.json(
+          { success: false, error: 'Character not found' },
+          { status: 404 }
+        );
+      }
 
-    const session = character.sessions[0];
-    if (!session) {
-      return NextResponse.json(
-        { success: false, error: 'No active session' },
-        { status: 404 }
-      );
+      const session = character.sessions[0];
+      if (!session) {
+        return NextResponse.json(
+          { success: false, error: 'No active session' },
+          { status: 404 }
+        );
+      }
+      
+      sessionId = session.id;
+      
+      // Загружаем сессию в TruthSystem для будущих запросов
+      await truthSystem.loadSession(sessionId);
     }
 
     // === ИСПОЛЬЗУЕМ ЕДИНЫЙ СЕРВИС ОБРАБОТКИ ТИКОВ ===
+    // Note: processTimeTickEffects обновляет и БД, и память через TruthSystem
     const tickResult = await processTimeTickEffects({
       characterId,
-      sessionId: session.id,
+      sessionId,
       ticks: durationMinutes,
       restType,
       applyPassiveQi: true,
@@ -101,20 +126,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Получаем обновлённого персонажа
-    const updatedCharacter = await db.character.findUnique({
-      where: { id: characterId },
-      select: {
-        currentQi: true,
-        coreCapacity: true,
-        fatigue: true,
-        mentalFatigue: true,
-      },
-    });
+    // === СИНХРОНИЗАЦИЯ С TRUTHSYSTEM ===
+    // Обновляем память через TruthSystem для консистентности
+    if (tickResult.fatigueEffects) {
+      const currentMemory = truthSystem.getSessionState(sessionId);
+      if (currentMemory) {
+        truthSystem.updateCharacter(sessionId, {
+          fatigue: tickResult.fatigueEffects.finalPhysical,
+          mentalFatigue: tickResult.fatigueEffects.finalMental,
+          currentQi: tickResult.qiEffects.finalQi,
+        });
+      }
+    }
+    
+    // Продвигаем время в памяти
+    truthSystem.advanceTime(sessionId, durationMinutes);
 
-    if (!updatedCharacter) {
+    // Получаем данные из памяти (ПЕРВИЧНЫЙ ИСТОЧНИК)
+    const finalState = truthSystem.getSessionState(sessionId);
+    const worldTimeFromMemory = truthSystem.getWorldTime(sessionId);
+
+    if (!finalState || !worldTimeFromMemory) {
       return NextResponse.json(
-        { success: false, error: 'Character not found after update' },
+        { success: false, error: 'Failed to get state from memory' },
         { status: 500 }
       );
     }
@@ -132,13 +166,13 @@ export async function POST(request: NextRequest) {
     
     // Эффекты усталости
     if (tickResult.fatigueEffects) {
-      message += `\n💚 Физ. усталость: ${tickResult.fatigueEffects.finalPhysical.toFixed(0)}% (-${tickResult.fatigueEffects.physicalRecovery.toFixed(1)}%)\n`;
-      message += `💜 Мент. усталость: ${tickResult.fatigueEffects.finalMental.toFixed(0)}% (-${tickResult.fatigueEffects.mentalRecovery.toFixed(1)}%)\n`;
+      message += `\n💚 Физ. усталость: ${finalState.character.fatigue.toFixed(0)}% (-${tickResult.fatigueEffects.physicalRecovery.toFixed(1)}%)\n`;
+      message += `💜 Мент. усталость: ${finalState.character.mentalFatigue.toFixed(0)}% (-${tickResult.fatigueEffects.mentalRecovery.toFixed(1)}%)\n`;
     }
     
     // Эффекты Ци
     if (tickResult.qiEffects.passiveGain > 0) {
-      message += `💫 Ци: ${updatedCharacter.currentQi}/${updatedCharacter.coreCapacity} (+${tickResult.qiEffects.passiveGain} от ядра)\n`;
+      message += `💫 Ци: ${finalState.character.currentQi}/${finalState.character.coreCapacity} (+${tickResult.qiEffects.passiveGain} от ядра)\n`;
     }
     
     // Рассеивание избыточной Ци
@@ -150,14 +184,9 @@ export async function POST(request: NextRequest) {
       message += `\n🌅 Наступил новый день!`;
     }
 
-    // Информация о проводимости
-    const worldTime = await db.gameSession.findUnique({
-      where: { id: session.id },
-      select: { worldYear: true, worldMonth: true, worldDay: true, worldHour: true, worldMinute: true },
-    });
-
     return NextResponse.json({
       success: true,
+      source, // Указываем источник данных
       message,
       result: {
         duration: durationMinutes,
@@ -169,19 +198,21 @@ export async function POST(request: NextRequest) {
       },
       character: {
         id: characterId,
-        fatigue: updatedCharacter.fatigue,
-        mentalFatigue: updatedCharacter.mentalFatigue,
-        currentQi: updatedCharacter.currentQi,
-        coreCapacity: updatedCharacter.coreCapacity,
+        fatigue: finalState.character.fatigue,
+        mentalFatigue: finalState.character.mentalFatigue,
+        currentQi: finalState.character.currentQi,
+        coreCapacity: finalState.character.coreCapacity,
       },
-      worldTime: worldTime ? formatWorldTimeForResponse({
-        year: worldTime.worldYear,
-        month: worldTime.worldMonth,
-        day: worldTime.worldDay,
-        hour: worldTime.worldHour,
-        minute: worldTime.worldMinute,
-        totalMinutes: worldTime.worldHour * 60 + worldTime.worldMinute,
-      }) : null,
+      worldTime: {
+        year: worldTimeFromMemory.year,
+        month: worldTimeFromMemory.month,
+        day: worldTimeFromMemory.day,
+        hour: worldTimeFromMemory.hour,
+        minute: worldTimeFromMemory.minute,
+        formatted: worldTimeFromMemory.formatted,
+        season: worldTimeFromMemory.season,
+        daysSinceStart: worldTimeFromMemory.daysSinceStart,
+      },
       timeAdvanced: {
         ticks: tickResult.ticksAdvanced,
         dayChanged: tickResult.dayChanged,
