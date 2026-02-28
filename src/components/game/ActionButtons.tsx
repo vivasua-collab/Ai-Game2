@@ -8,6 +8,12 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { RestDialog } from './RestDialog';
 import { StatusDialog } from './StatusDialog';
 import { TechniquesDialog } from './TechniquesDialog';
@@ -16,7 +22,7 @@ import { InventoryDialog } from './InventoryDialog';
 import { SettingsPanel } from '@/components/settings/SettingsPanel';
 import { GeneratedObjectsViewer } from '@/components/settings/GeneratedObjectsViewer';
 import { EventBusTest } from './EventBusTest';
-import { Settings, Activity, Menu } from 'lucide-react';
+import { Activity } from 'lucide-react';
 
 interface ActionButtonsProps {
   className?: string;
@@ -95,20 +101,11 @@ export function ActionButtons({ className = '' }: ActionButtonsProps) {
         <Button
           variant="outline"
           size="sm"
-          className="border-orange-600/50 text-orange-400 hover:bg-orange-900/30 h-9"
-          onClick={() => setGameMenuOpen(true)}
-          title="Меню игры (Сохранить, Читы, Редактор тела)"
-        >
-          <Menu className="w-4 h-4" />
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          className="border-slate-600/50 text-slate-400 hover:bg-slate-900/30 h-9"
+          className="border-purple-600/50 text-purple-400 hover:bg-purple-900/30 h-9"
           onClick={() => setSettingsOpen(true)}
-          title="Настройки"
+          title="Создание техник и предметов"
         >
-          <Settings className="w-4 h-4" />
+          ✨ Создание
         </Button>
       </div>
 
@@ -137,10 +134,14 @@ export function ActionButtons({ className = '' }: ActionButtonsProps) {
         onOpenChange={setGameMenuOpen}
       />
 
-      <EventBusTest
-        open={eventBusOpen}
-        onOpenChange={setEventBusOpen}
-      />
+      <Dialog open={eventBusOpen} onOpenChange={setEventBusOpen}>
+        <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-md p-0">
+          <DialogHeader className="sr-only">
+            <DialogTitle>Event Bus Test</DialogTitle>
+          </DialogHeader>
+          <EventBusTest />
+        </DialogContent>
+      </Dialog>
 
       <SettingsPanel
         open={settingsOpen}

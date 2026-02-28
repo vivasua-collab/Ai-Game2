@@ -22,7 +22,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import {
-  Settings,
   Sparkles,
   Package,
   Loader2,
@@ -318,8 +317,8 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
       <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-6xl max-h-[95vh]">
         <DialogHeader>
           <DialogTitle className="text-amber-400 flex items-center gap-2">
-            <Settings className="w-5 h-5" />
-            Настройки
+            <Sparkles className="w-5 h-5" />
+            Создание
           </DialogTitle>
         </DialogHeader>
 

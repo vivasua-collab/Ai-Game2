@@ -173,13 +173,14 @@ export default function Home() {
             <Button
               variant="outline"
               size="sm"
-              className="border-amber-600/50 text-amber-400 hover:bg-amber-900/30 h-9"
+              className="border-orange-600/50 text-orange-400 hover:bg-orange-900/30 h-9"
               onClick={() => {
                 const event = new CustomEvent('openGameMenu');
                 window.dispatchEvent(event);
               }}
+              title="Меню игры (Сохранить, Читы, Редактор тела)"
             >
-              🎮 Игра
+              🎮 Меню игры
             </Button>
           </div>
         </div>

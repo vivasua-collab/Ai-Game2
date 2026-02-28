@@ -1,7 +1,7 @@
 # Checkpoint 28: Шина событий (Event Bus)
 
 **Дата начала:** 2025-02-28
-**Статус:** В разработке
+**Статус:** ✅ Восстановлен
 
 ---
 
@@ -22,7 +22,7 @@
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                          │
 │   ┌─────────────┐    HTTP POST     ┌─────────────┐                      │
-│   │   REACT     │ ───────────────► │   EXPRESS   │                      │
+│   │   REACT     │ ───────────────► │   NEXT.JS   │                      │
 │   │   (Client)  │                  │   (Server)  │                      │
 │   │             │ ◄─────────────── │             │                      │
 │   └─────────────┘    HTTP Response └─────────────┘                      │
@@ -49,82 +49,77 @@
 - [x] 1.2 Создать `src/lib/game/event-bus/validator.ts`
 - [x] 1.3 Создать `src/lib/game/event-bus/client.ts`
 - [x] 1.4 Создать `src/lib/game/event-bus/index.ts`
+- [x] 1.5 Создать `src/lib/game/event-bus/logger.ts`
+- [x] 1.6 Создать `src/lib/game/event-bus/processor.ts`
 
-**Отчёт:**
+**Файлы:**
 ```
-[2025-02-28] Этап 1 завершён
-
-Созданные файлы:
-- src/lib/game/event-bus/types.ts (100+ строк)
-- src/lib/game/event-bus/validator.ts (80+ строк)
-- src/lib/game/event-bus/client.ts (150+ строк)
-- src/lib/game/event-bus/index.ts (20+ строк)
+src/lib/game/event-bus/
+├── types.ts        - типы EventResult, EventContext, EventHandler
+├── validator.ts    - валидация событий
+├── client.ts       - sendEvent() для отправки событий
+├── processor.ts    - маршрутизация и обработка
+├── logger.ts       - логирование событий
+├── index.ts        - экспорты
+└── handlers/
+    ├── combat.ts      - боевые события
+    ├── inventory.ts   - инвентарь
+    ├── movement.ts    - перемещение
+    └── environment.ts - окружение
 ```
 
 ---
 
-### Этап 2: Обработчики событий
+### Этап 2: Типы событий
 **Статус:** ✅ Завершён
-**Оценка:** 1 день
 
-- [x] 2.1 Создать `src/lib/game/event-bus/handlers/combat.ts`
-- [x] 2.2 Создать `src/lib/game/event-bus/handlers/inventory.ts`
-- [x] 2.3 Создать `src/lib/game/event-bus/handlers/movement.ts`
-- [x] 2.4 Создать `src/lib/game/event-bus/handlers/environment.ts`
-- [x] 2.5 Создать `src/lib/game/event-bus/processor.ts`
+- [x] 2.1 Создать `src/lib/game/events/game-events.ts`
+- [x] 2.2 Создать `src/lib/game/events/visual-commands.ts`
 
-**Отчёт:**
-```
-[2025-02-28] Этап 2 завершён
-
-Обработчики:
-- combat.ts - боевые события
-- inventory.ts - инвентарь
-- movement.ts - перемещение
-- environment.ts - окружение
-- processor.ts - маршрутизация событий
-```
+**Типы событий (EVENT_TYPES):**
+- DAMAGE_DEALT, DAMAGE_TAKEN
+- TECHNIQUE_USE, TECHNIQUE_LEARN
+- USE_ITEM, PICKUP_ITEM, DROP_ITEM
+- ENTER, EXIT, MOVE, TELEPORT
+- MEDITATION_START, MEDITATION_END
 
 ---
 
 ### Этап 3: API маршруты
 **Статус:** ✅ Завершён
-**Оценка:** 0.5 дня
 
 - [x] 3.1 Создать `/api/game/event` маршрут
 - [x] 3.2 Добавить валидацию запросов
-- [x] 3.3 Добавить логирование событий
+- [x] 3.3 Интеграция с TruthSystem
 
 ---
 
-### Этап 4: Интеграция с инвентарём
+### Этап 4: Skeleton процессоры
+**Статус:** ✅ Завершён
+
+- [x] 4.1 Создать `src/lib/game/skeleton/combat-processor.ts`
+- [x] 4.2 Создать `src/lib/game/skeleton/event-processor.ts`
+- [x] 4.3 Создать `src/lib/game/skeleton/index.ts`
+
+---
+
+### Этап 5: Тестовый интерфейс
+**Статус:** ✅ Завершён
+
+- [x] 5.1 Создать `EventBusTest.tsx` компонент
+- [x] 5.2 Измерение latency
+- [x] 5.3 Multi-test режим (x5, x10)
+
+---
+
+### Этап 6: Интеграция с инвентарём
 **Статус:** 🔄 В работе
-**Оценка:** 1 день
 
-- [x] 4.1 Создать `src/services/inventory-sync.service.ts`
-- [x] 4.2 Создать `src/hooks/useInventorySync.ts`
-- [x] 4.3 Создать `/api/inventory/sync` маршрут
-- [ ] 4.4 Тестирование синхронизации React ↔ Phaser
-- [ ] 4.5 Обработка конфликтов
-
-**Проблемы:**
-```
-[2025-02-28] Обнаружена ошибка "Failed to fetch inventory state"
-Причина: NULL значения в обязательных полях InventoryItem
-Решение: bun run db:push --force-reset
-```
-
----
-
-### Этап 5: Прозрачная синхронизация
-**Статус:** 📅 Запланирован
-**Оценка:** 2 дня
-
-- [ ] 5.1 Двусторонняя связь ячеек React ↔ Phaser
-- [ ] 5.2 Маркирование ячеек для multi-slot предметов
-- [ ] 5.3 Синхронизация позиции при перемещении
-- [ ] 5.4 Синхронизация экипировки на кукле
-- [ ] 5.5 Обработка конфликтов (drag в обоих интерфейсах)
+- [x] 6.1 Создать `src/services/inventory-sync.service.ts`
+- [x] 6.2 Создать `src/hooks/useInventorySync.ts`
+- [x] 6.3 Создать `/api/inventory/sync` маршрут
+- [ ] 6.4 Тестирование синхронизации React ↔ Phaser
+- [ ] 6.5 Обработка конфликтов
 
 ---
 
@@ -133,21 +128,49 @@
 | Этап | Статус | Прогресс |
 |------|--------|----------|
 | 1. Базовая инфраструктура | ✅ Завершён | 100% |
-| 2. Обработчики событий | ✅ Завершён | 100% |
+| 2. Типы событий | ✅ Завершён | 100% |
 | 3. API маршруты | ✅ Завершён | 100% |
-| 4. Интеграция с инвентарём | 🔄 В работе | 60% |
-| 5. Прозрачная синхронизация | 📅 Запланирован | 0% |
+| 4. Skeleton процессоры | ✅ Завершён | 100% |
+| 5. Тестовый интерфейс | ✅ Завершён | 100% |
+| 6. Интеграция с инвентарём | 🔄 В работе | 60% |
 
-**Общий прогресс:** 72%
+**Общий прогресс:** 93%
 
 ---
 
-## 📝 Примечания
+## 📁 Структура файлов
 
-- **Event Bus**: HTTP-based, не WebSocket (проще для демо)
-- **Логирование**: Все события логируются в memory buffer
-- **Валидация**: Zod схемы для всех входящих данных
-- **Обновление инвентаря**: Каждые 10 секунд через API
+```
+src/lib/game/
+├── event-bus/
+│   ├── types.ts
+│   ├── validator.ts
+│   ├── client.ts
+│   ├── processor.ts
+│   ├── logger.ts
+│   ├── index.ts
+│   └── handlers/
+│       ├── combat.ts
+│       ├── inventory.ts
+│       ├── movement.ts
+│       └── environment.ts
+├── events/
+│   ├── game-events.ts
+│   └── visual-commands.ts
+└── skeleton/
+    ├── combat-processor.ts
+    ├── event-processor.ts
+    └── index.ts
+
+src/app/api/game/
+└── event/
+    └── route.ts
+
+src/components/game/
+├── EventBusTest.tsx
+└── phaser/
+    └── event-emitter.ts
+```
 
 ---
 
@@ -155,8 +178,8 @@
 
 | Проблема | Решение | Статус |
 |----------|---------|--------|
+| Файлы потеряны при merge | Восстановлены из mani2d3 | ✅ Исправлено |
 | NULL в обязательных полях | Force reset DB | ✅ Исправлено |
-| "Failed to fetch inventory state" | Проверить characterId | 🔄 В работе |
 
 ---
 
@@ -165,6 +188,15 @@
 | Дата | Изменение |
 |------|-----------|
 | 2025-02-28 | Создан план Event Bus |
-| 2025-02-28 | Этапы 1-3 завершены |
-| 2025-02-28 | Добавлена интеграция с инвентарём |
-| 2025-02-28 | Обнаружена и исправлена проблема с NULL в БД |
+| 2025-02-28 | Этапы 1-5 завершены |
+| 2025-02-28 | Файлы потеряны при merge в main2d2 |
+| 2025-03-01 | **Восстановлены все файлы из ветки mani2d3** |
+| 2025-03-01 | EventBusTest обновлён до v2.0.0 |
+| 2025-03-01 | Добавлен API маршрут /api/game/event |
+
+---
+
+## 📚 Связанная документация
+
+- [checkpoint28-inventar.md](./checkpoint28-inventar.md) - Система инвентаря
+- [docs/inventory-system.md](./docs/inventory-system.md) - Документация инвентаря
