@@ -124,8 +124,20 @@ START SESSION                    ACTIVE SESSION                   END SESSION
 | Получение новой техники | `db.characterTechnique.create()` + memory |
 | Получение нового предмета | `db.inventoryItem.create()` + memory |
 | Смена локации | Сохранение текущего состояния → загрузка новой |
-| Прорыв уровня | Полное сохранение персонажа |
+| Прорыв уровня | `applyBreakthrough()` - полное сохранение персонажа |
+| Медитация на проводимость | `updateConductivity()` - сохранение в БД |
 | Завершение боя | Сохранение состояния персонажа |
+
+### Интеграция с API routes (выполнено 2026-02-28)
+
+| API Route | Статус | Методы TruthSystem |
+|-----------|--------|-------------------|
+| `/api/game/start` | ✅ | `loadSession()` после создания |
+| `/api/game/state` | ✅ | `getSessionState()` → fallback БД |
+| `/api/game/save` | ✅ | POST: `saveToDatabase()`, `quickSave()` |
+| `/api/rest` | ✅ | `updateCharacter()`, `advanceTime()` |
+| `/api/meditation` | ✅ | `addQi()`, `applyBreakthrough()`, `updateConductivity()` |
+| `/api/technique/use` | ✅ | `spendQi()`, `updateFatigue()` |
 
 ### API TruthSystem
 
