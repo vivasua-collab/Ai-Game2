@@ -192,25 +192,27 @@ type EquipmentSlot =
 
 ---
 
-### Задача 4: Интеграция в UI
+### Задача 4: Интеграция в UI (ЧАСТИЧНО)
 
 #### 4.1 Обновить `src/components/settings/SettingsPanel.tsx`
 
 ```typescript
-// Добавить вкладки для новых генераторов
+// Добавить вкладки для своих генераторов
 
 // В меню "Создание" добавить:
 // - Оружие (WeaponGeneratorPanel)
 // - Экипировка (ArmorGeneratorPanel)
 
-// Структура вкладок:
+// Структура вкладок ПОСЛЕ твоей работы:
 // 1. Техники (существует)
 // 2. Оружие (новое)
 // 3. Экипировка (новое)
-// 4. Аксессуары (пока заглушка — Агент 2)
-// 5. Расходники (пока заглушка — Агент 2)
-// 6. Камни Ци (пока заглушка — Агент 2)
-// 7. Зарядники (пока заглушка — Агент 2)
+// 4. Аксессуары (заглушка — Агент 2)
+// 5. Расходники (заглушка — Агент 2)
+// 6. Камни Ци (заглушка — Агент 2)
+// 7. Зарядники (заглушка — Агент 2)
+
+// ⚠️ ФИНАЛЬНУЮ интеграцию ВСЕХ генераторов сделать ПОСЛЕ слияния с Агентом 2!
 ```
 
 ---
@@ -218,26 +220,79 @@ type EquipmentSlot =
 ## 🔧 GIT КОМАНДЫ
 
 ### Начало работы:
+
 ```bash
+# 1. Перейти в директорию проекта
 cd /home/z/my-project
+
+# 2. Получить актуальный код
+git fetch origin
+git checkout main2d3
+git pull origin main2d3
+
+# 3. Создать свою ветку от main2d3
 git checkout -b feature/item-generators-agent1
 ```
 
 ### В процессе работы:
+
 ```bash
-# После каждого завершённого файла
+# После каждого завершённого файла делай коммит:
+
 git add src/lib/generator/base-item-generator.ts
 git commit -m "feat: add base-item-generator with common utilities"
 
 git add src/lib/generator/item-config.ts
 git commit -m "feat: add item-config with types and configurations"
 
-# ... и так далее
+git add src/lib/generator/name-generator.ts
+git commit -m "feat: add name-generator with gender support"
+
+git add src/lib/generator/weapon-generator.ts
+git commit -m "feat: add weapon-generator"
+
+git add src/components/settings/WeaponGeneratorPanel.tsx
+git commit -m "feat: add WeaponGeneratorPanel UI"
+
+git add src/lib/generator/armor-generator.ts
+git commit -m "feat: add armor-generator"
+
+git add src/components/settings/ArmorGeneratorPanel.tsx
+git commit -m "feat: add ArmorGeneratorPanel UI"
+
+git add src/components/settings/SettingsPanel.tsx
+git commit -m "feat: integrate weapon and armor generators in settings"
 ```
 
-### Завершение:
+### Завершение работы (PUSH):
+
 ```bash
-git push -u origin feature/item-generators-agent1
+# ВАЖНО: Использовать токен для авторизации!
+
+# Вариант A: Push с токеном в URL
+git push https://ghp_ВАШ_ТОКЕН@github.com/vivasua-collab/Ai-Game2.git feature/item-generators-agent1
+
+# После успешного push удалить токен из remote:
+git remote set-url origin https://github.com/vivasua-collab/Ai-Game2.git
+```
+
+### ⚠️ После push СООБЩИ ПОЛЬЗОВАТЕЛЮ:
+
+```
+✅ АГЕНТ 1 ЗАВЕРШИЛ РАБОТУ
+
+Ветка: feature/item-generators-agent1
+Файлы:
+- base-item-generator.ts
+- item-config.ts
+- name-generator.ts
+- weapon-generator.ts
+- WeaponGeneratorPanel.tsx
+- armor-generator.ts
+- ArmorGeneratorPanel.tsx
+- SettingsPanel.tsx (частично)
+
+Ожидаю завершения Агента 2 и команды на слияние.
 ```
 
 ---
@@ -262,13 +317,14 @@ git push -u origin feature/item-generators-agent1
 
 ### Интеграция:
 - [ ] Обновлён `SettingsPanel.tsx`
-- [ ] Добавлены вкладки в меню "Создание"
+- [ ] Добавлены вкладки Оружие и Экипировка
 - [ ] Добавлены заглушки для Агента 2
 
 ### Git:
-- [ ] Создана ветка `feature/item-generators-agent1`
+- [ ] Ветка создана от `main2d3`
 - [ ] Все файлы закоммичены
 - [ ] Push на GitHub выполнен
+- [ ] Пользователь уведомлён
 
 ---
 
@@ -301,17 +357,72 @@ src/components/settings/
 
 ---
 
-## 🔄 ПОСЛЕ СЛИЯНИЯ (ЭТАП 3)
+## 🔄 ЭТАП 3: СЛИЯНИЕ И ВНЕДРЕНИЕ
 
-После того как ветка Агента 2 будет слита в твою ветку:
+### ⚠️ ВАЖНО: Этот этап выполняется ПОСЛЕ команды пользователя!
 
-1. Выполнить `git pull` для получения кода Агента 2
-2. Разрешить конфликты (если есть)
-3. Интегрировать ВСЕ генераторы в меню "Создание"
-4. Проверить импорты и зависимости
-5. Протестировать UI
-6. Push финальной версии
-7. Создать Pull Request в main
+**Сигнал для выполнения:** Пользователь скажет:
+> "Ветки слиты, выполняй внедрение"
+
+### Порядок действий ПОСЛЕ сигнала:
+
+```bash
+# 1. Получить слитый код
+git fetch origin
+git checkout feature/item-generators-agent1
+git pull origin feature/item-generators-agent1
+
+# 2. Проверить наличие файлов Агента 2
+ls src/lib/generator/accessory-generator.ts
+ls src/lib/generator/consumable-generator.ts
+ls src/lib/generator/qi-stone-generator.ts
+ls src/lib/generator/charger-generator.ts
+```
+
+### Финальная интеграция:
+
+```typescript
+// Обновить src/components/settings/SettingsPanel.tsx
+
+// Импортировать ВСЕ панели:
+import { WeaponGeneratorPanel } from './WeaponGeneratorPanel';
+import { ArmorGeneratorPanel } from './ArmorGeneratorPanel';
+import { AccessoryGeneratorPanel } from './AccessoryGeneratorPanel';  // Агент 2
+import { ConsumableGeneratorPanel } from './ConsumableGeneratorPanel'; // Агент 2
+import { QiStoneGeneratorPanel } from './QiStoneGeneratorPanel';       // Агент 2
+import { ChargerGeneratorPanel } from './ChargerGeneratorPanel';       // Агент 2
+
+// Полная структура вкладок:
+// 1. Техники
+// 2. Оружие
+// 3. Экипировка
+// 4. Аксессуары
+// 5. Расходники
+// 6. Камни Ци
+// 7. Зарядники
+```
+
+### Финальный push:
+
+```bash
+git add .
+git commit -m "feat: integrate all item generators"
+
+git push https://ghp_ВАШ_ТОКЕН@github.com/vivasua-collab/Ai-Game2.git feature/item-generators-agent1
+
+git remote set-url origin https://github.com/vivasua-collab/Ai-Game2.git
+```
+
+### После внедрения СООБЩИ:
+
+```
+✅ АГЕНТ 1: ВНЕДРЕНИЕ ЗАВЕРШЕНО
+
+Все генераторы интегрированы в меню "Создание".
+Ветка feature/item-generators-agent1 обновлена.
+
+Готово к созданию PR в main2d3.
+```
 
 ---
 
@@ -324,3 +435,4 @@ src/components/settings/
 ---
 
 *Документ создан: 2026-03-01*
+*Обновлён: 2026-03-01*

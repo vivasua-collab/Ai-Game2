@@ -320,26 +320,79 @@ interface Charger {
 ## 🔧 GIT КОМАНДЫ
 
 ### Начало работы:
+
 ```bash
+# 1. Перейти в директорию проекта
 cd /home/z/my-project
+
+# 2. Получить актуальный код
+git fetch origin
+git checkout main2d3
+git pull origin main2d3
+
+# 3. Создать свою ветку от main2d3
 git checkout -b feature/item-generators-agent2
 ```
 
 ### В процессе работы:
+
 ```bash
-# После каждого завершённого файла
+# После каждого завершённого файла делай коммит:
+
 git add src/lib/generator/accessory-generator.ts
 git commit -m "feat: add accessory-generator with talisman support"
+
+git add src/components/settings/AccessoryGeneratorPanel.tsx
+git commit -m "feat: add AccessoryGeneratorPanel UI"
 
 git add src/lib/generator/consumable-generator.ts
 git commit -m "feat: add consumable-generator"
 
-# ... и так далее
+git add src/components/settings/ConsumableGeneratorPanel.tsx
+git commit -m "feat: add ConsumableGeneratorPanel UI"
+
+git add src/lib/generator/qi-stone-generator.ts
+git commit -m "feat: add qi-stone-generator (no quality, volume+type only)"
+
+git add src/components/settings/QiStoneGeneratorPanel.tsx
+git commit -m "feat: add QiStoneGeneratorPanel UI"
+
+git add src/lib/generator/charger-generator.ts
+git commit -m "feat: add charger-generator (efficiency <= 100%)"
+
+git add src/components/settings/ChargerGeneratorPanel.tsx
+git commit -m "feat: add ChargerGeneratorPanel UI"
 ```
 
-### Завершение:
+### Завершение работы (PUSH):
+
 ```bash
-git push -u origin feature/item-generators-agent2
+# ВАЖНО: Использовать токен для авторизации!
+
+# Push с токеном в URL
+git push https://ghp_ВАШ_ТОКЕН@github.com/vivasua-collab/Ai-Game2.git feature/item-generators-agent2
+
+# После успешного push удалить токен из remote:
+git remote set-url origin https://github.com/vivasua-collab/Ai-Game2.git
+```
+
+### ⚠️ После push СООБЩИ ПОЛЬЗОВАТЕЛЮ:
+
+```
+✅ АГЕНТ 2 ЗАВЕРШИЛ РАБОТУ
+
+Ветка: feature/item-generators-agent2
+Файлы:
+- accessory-generator.ts
+- AccessoryGeneratorPanel.tsx
+- consumable-generator.ts
+- ConsumableGeneratorPanel.tsx
+- qi-stone-generator.ts
+- QiStoneGeneratorPanel.tsx
+- charger-generator.ts
+- ChargerGeneratorPanel.tsx
+
+Ветка готова для слияния с веткой Агента 1.
 ```
 
 ---
@@ -371,9 +424,10 @@ git push -u origin feature/item-generators-agent2
 - [ ] Добавлено предупреждение о сохранении Ци
 
 ### Git:
-- [ ] Создана ветка `feature/item-generators-agent2`
+- [ ] Ветка создана от `main2d3`
 - [ ] Все файлы закоммичены
 - [ ] Push на GitHub выполнен
+- [ ] Пользователь уведомлён
 
 ---
 
@@ -403,8 +457,17 @@ src/components/settings/
 ├── ConsumableGeneratorPanel.tsx ← Создать
 ├── QiStoneGeneratorPanel.tsx    ← Создать
 ├── ChargerGeneratorPanel.tsx    ← Создать
-└── SettingsPanel.tsx            ← НЕ трогать (Агент 1 интегрирует)
+└── SettingsPanel.tsx            ← НЕ ТРОГАТЬ! (Агент 1 интегрирует)
 ```
+
+---
+
+## 🚫 ЧТО НЕ ДЕЛАТЬ
+
+1. **НЕ изменять SettingsPanel.tsx** — это задача Агента 1
+2. **НЕ создавать базовые утилиты** — это задача Агента 1
+3. **НЕ интегрировать в меню** — это задача Агента 1
+4. **НЕ добавлять качество камней** — это противоречит Лору!
 
 ---
 
@@ -418,3 +481,4 @@ src/components/settings/
 ---
 
 *Документ создан: 2026-03-01*
+*Обновлён: 2026-03-01*
