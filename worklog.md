@@ -475,3 +475,44 @@ Stage Summary:
 - Optimizations: lazy loading, parallel API, memoization
 - API requests: 5 последовательных → 5 параллельных (Promise.all)
 - Components: 8 синхронных импортов → 8 lazy loading с Suspense
+
+---
+Task ID: agent-0-npc-viewer-width
+Agent: Agent-0
+Task: Расширение NPC Viewer и добавление ID
+
+Work Log:
+- Проверен DialogContent компонент
+- Выявлена проблема: `max-w-[calc(100%-2rem)] sm:max-w-lg` ограничивает ширину
+- Добавлены `!max-w-6xl !w-[95vw] overflow-hidden` для переопределения
+- Увеличена min-width списка NPC: 280px → 300px
+- Добавлено отображение ID NPC под именем в заголовке
+
+Stage Summary:
+- Results: Диалог расширен, ID отображается
+- Files: NPCViewerDialog.tsx
+- Fixes: Dialog width, ID display, list min-width
+
+---
+Task ID: agent-0-npc-balance
+Agent: Agent-0
+Task: Баланс NPC - характеристики и Ци по уровням
+
+Work Log:
+- Проанализирована текущая генерация NPC
+- Выявлены проблемы:
+  - generateStats() не учитывает уровень культивации
+  - coreCapacity растёт только на +10% за уровень
+  - equipment всегда пустой
+- Создана таблица множителей:
+  - Stats: x1.0 (ур.1) до x5.0 (ур.9)
+  - Qi: x1.0 (ур.1) до x30.0 (ур.9)
+- Изменён порядок генерации: cultivation ПЕРЕД stats
+- Добавлена функция generateEquipment()
+- Создан checkpoint30.md с полным анализом
+
+Stage Summary:
+- Results: Баланс NPC исправлен
+- Files: npc-generator.ts, checkpoint30.md
+- Level 7 stats: 11 → ~39-52 strength, 1266 → ~22500 Qi
+- Equipment: {} → слоты из role.equipment
