@@ -172,6 +172,23 @@ export const ID_PREFIX_CONFIG: Record<IdPrefix, IdPrefixConfig> = {
   },
 };
 
+// ==================== КОНСТАНТЫ ПРЕФИКСОВ ====================
+
+/**
+ * Префикс для NPC ID
+ */
+export const NPC_PREFIX: IdPrefix = 'NP';
+
+/**
+ * Префикс для формаций
+ */
+export const FORMATION_PREFIX: IdPrefix = 'FM';
+
+/**
+ * Префикс для предметов
+ */
+export const ITEM_PREFIX: IdPrefix = 'IT';
+
 // ==================== УТИЛИТЫ ====================
 
 /**

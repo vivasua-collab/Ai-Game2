@@ -290,3 +290,29 @@ Stage Summary:
 - Roles: 30 ролей с требованиями, техниками, снаряжением, инвентарём
 - Personalities: 15 личностей с чертами, эмоциями, мотивациями, стилями общения
 - Issues: none
+
+---
+Task ID: agent-0-verification
+Agent: Agent-0
+Task: Проверка кода, интеграции и перезапуск DEV окружения
+
+Work Log:
+- Pull кода с GitHub main2d3 (Already up to date)
+- Проверена работа Agent-1: species-presets.ts, role-presets.ts, personality-presets.ts созданы
+- Проверена работа Agent-2: npc-generator.ts v2.0 интегрирован с пресетами
+- Обнаружен merge conflict в next.config.ts (остатки в кэше)
+- Очищён кэш Next.js (.next, node_modules/.cache)
+- Перезаписан next.config.ts для устранения конфликта
+- Добавлен экспорт NPC_PREFIX в id-config.ts (ранее отсутствовал)
+- Протестирован NPC API:
+  - GET ?action=stats: {"success":true,"stats":{"availableSpecies":28,"availableRoles":30}}
+  - POST generate: успешно генерирует NPC с ID "NP_000001"
+- Dev сервер перезапущен и работает на порту 3000
+
+Stage Summary:
+- Results: NPC Generator v2.0 полностью функционален
+- Fixes: next.config.ts (merge conflict), id-config.ts (NPC_PREFIX export)
+- Tests: NPC API работает, генерирует NPC с правильными ID
+- Species available: 28 (включая гуманоидов, зверей, духов, гибридов, аберраций)
+- Roles available: 30 (секта, профессии, социальные, боевые)
+- Dev server: running on port 3000
