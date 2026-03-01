@@ -1,0 +1,75 @@
+{
+  "version": "2.0",
+  "type": "cthonian",
+  "count": 1,
+  "npcs": [
+    {
+      "id": "NP_000010",
+      "name": "Фэй",
+      "age": 94,
+      "gender": "female",
+      "speciesId": "cthonian",
+      "roleId": "traveler",
+      "stats": {
+        "strength": 58,
+        "agility": 26,
+        "intelligence": 11,
+        "vitality": 44
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 2,
+        "coreCapacity": 4213,
+        "currentQi": 3470,
+        "coreQuality": 81
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 150,
+            "maxFunctionalHP": 150,
+            "structuralHP": 300,
+            "maxStructuralHP": 300,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "essence": {
+            "functionalHP": 300,
+            "maxFunctionalHP": 300,
+            "structuralHP": 600,
+            "maxStructuralHP": 600,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Дружелюбие",
+          "Любопытство",
+          "Авантюризм"
+        ],
+        "motivation": "приключения",
+        "dominantEmotion": "открытость",
+        "disposition": 70
+      },
+      "techniques": [
+        "breath_of_qi"
+      ],
+      "equipment": {},
+      "inventory": [],
+      "resources": {
+        "spiritStones": 19,
+        "contributionPoints": 9
+      },
+      "generationMeta": {
+        "seed": 1772373926814,
+        "generatedAt": "2026-03-01T14:05:26.806Z",
+        "version": "2.0.0"
+      }
+    }
+  ]
+}

@@ -1,0 +1,210 @@
+{
+  "version": "2.0",
+  "type": "snake",
+  "count": 2,
+  "npcs": [
+    {
+      "id": "NP_000001",
+      "name": "Змея Тенекрад",
+      "age": 31,
+      "gender": "male",
+      "speciesId": "snake",
+      "roleId": "assassin",
+      "stats": {
+        "strength": 8,
+        "agility": 25,
+        "intelligence": 9,
+        "vitality": 21
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 4,
+        "coreCapacity": 279,
+        "currentQi": 230,
+        "coreQuality": 18
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 37,
+            "maxFunctionalHP": 37,
+            "structuralHP": 74,
+            "maxStructuralHP": 74,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 75,
+            "maxFunctionalHP": 75,
+            "structuralHP": 150,
+            "maxStructuralHP": 150,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 60,
+            "maxFunctionalHP": 60,
+            "structuralHP": 120,
+            "maxStructuralHP": 120,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "body_segment_1": {
+            "functionalHP": 22,
+            "maxFunctionalHP": 22,
+            "structuralHP": 44,
+            "maxStructuralHP": 44,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "body_segment_2": {
+            "functionalHP": 22,
+            "maxFunctionalHP": 22,
+            "structuralHP": 44,
+            "maxStructuralHP": 44,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 22,
+            "maxFunctionalHP": 22,
+            "structuralHP": 44,
+            "maxStructuralHP": 44,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Хладнокровие",
+          "Скрытность",
+          "Профессионализм"
+        ],
+        "motivation": "совершенствование навыков",
+        "dominantEmotion": "решимость",
+        "disposition": 30
+      },
+      "techniques": [
+        "ghost_shadow",
+        "qi_bullet",
+        "lightning_flash"
+      ],
+      "equipment": {},
+      "inventory": [],
+      "resources": {
+        "spiritStones": 137,
+        "contributionPoints": 1
+      },
+      "generationMeta": {
+        "seed": 1772373926805,
+        "generatedAt": "2026-03-01T14:05:26.805Z",
+        "version": "2.0.0"
+      }
+    },
+    {
+      "id": "NP_000003",
+      "name": "Змея Тенекрад",
+      "age": 27,
+      "gender": "male",
+      "speciesId": "snake",
+      "roleId": "healer",
+      "stats": {
+        "strength": 10,
+        "agility": 10,
+        "intelligence": 10,
+        "vitality": 17
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 4,
+        "coreCapacity": 59,
+        "currentQi": 29,
+        "coreQuality": 8
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 45,
+            "maxFunctionalHP": 45,
+            "structuralHP": 90,
+            "maxStructuralHP": 90,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 72,
+            "maxFunctionalHP": 72,
+            "structuralHP": 144,
+            "maxStructuralHP": 144,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "body_segment_1": {
+            "functionalHP": 27,
+            "maxFunctionalHP": 27,
+            "structuralHP": 54,
+            "maxStructuralHP": 54,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "body_segment_2": {
+            "functionalHP": 27,
+            "maxFunctionalHP": 27,
+            "structuralHP": 54,
+            "maxStructuralHP": 54,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 27,
+            "maxFunctionalHP": 27,
+            "structuralHP": 54,
+            "maxStructuralHP": 54,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Сострадание",
+          "Терпение",
+          "Знание"
+        ],
+        "motivation": "медицинские знания",
+        "dominantEmotion": "тепло",
+        "disposition": 70
+      },
+      "techniques": [
+        "breath_of_qi",
+        "qi_healing"
+      ],
+      "equipment": {},
+      "inventory": [],
+      "resources": {
+        "spiritStones": 71,
+        "contributionPoints": 0
+      },
+      "generationMeta": {
+        "seed": 1772373926807,
+        "generatedAt": "2026-03-01T14:05:26.806Z",
+        "version": "2.0.0"
+      }
+    }
+  ]
+}

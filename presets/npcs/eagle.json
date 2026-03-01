@@ -1,0 +1,115 @@
+{
+  "version": "2.0",
+  "type": "eagle",
+  "count": 1,
+  "npcs": [
+    {
+      "id": "NP_000007",
+      "name": "Орёл Смертоносец",
+      "age": 25,
+      "gender": "male",
+      "speciesId": "eagle",
+      "roleId": "farmer",
+      "stats": {
+        "strength": 18,
+        "agility": 21,
+        "intelligence": 11,
+        "vitality": 6
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 9,
+        "coreCapacity": 228,
+        "currentQi": 173,
+        "coreQuality": 47
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 37,
+            "maxFunctionalHP": 37,
+            "structuralHP": 74,
+            "maxStructuralHP": 74,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 75,
+            "maxFunctionalHP": 75,
+            "structuralHP": 150,
+            "maxStructuralHP": 150,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 60,
+            "maxFunctionalHP": 60,
+            "structuralHP": 120,
+            "maxStructuralHP": 120,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_wing": {
+            "functionalHP": 30,
+            "maxFunctionalHP": 30,
+            "structuralHP": 60,
+            "maxStructuralHP": 60,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_wing": {
+            "functionalHP": 30,
+            "maxFunctionalHP": 30,
+            "structuralHP": 60,
+            "maxStructuralHP": 60,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_leg": {
+            "functionalHP": 37,
+            "maxFunctionalHP": 37,
+            "structuralHP": 74,
+            "maxStructuralHP": 74,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_leg": {
+            "functionalHP": 37,
+            "maxFunctionalHP": 37,
+            "structuralHP": 74,
+            "maxStructuralHP": 74,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Лень",
+          "Покорность",
+          "Хитрость"
+        ],
+        "motivation": "спокойствие",
+        "dominantEmotion": "желание отдыха",
+        "disposition": 55
+      },
+      "techniques": [
+        "breath_of_qi"
+      ],
+      "equipment": {},
+      "inventory": [],
+      "resources": {
+        "spiritStones": 23,
+        "contributionPoints": 12
+      },
+      "generationMeta": {
+        "seed": 1772373926811,
+        "generatedAt": "2026-03-01T14:05:26.806Z",
+        "version": "2.0.0"
+      }
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+{
+  "version": "2.0",
+  "type": "chaos_spawn",
+  "count": 2,
+  "npcs": [
+    {
+      "id": "NP_000006",
+      "name": "Юй",
+      "age": 57,
+      "gender": "female",
+      "speciesId": "chaos_spawn",
+      "roleId": "noble",
+      "stats": {
+        "strength": 41,
+        "agility": 56,
+        "intelligence": 61,
+        "vitality": 26
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 7,
+        "coreCapacity": 3210,
+        "currentQi": 1994,
+        "coreQuality": 82
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 110,
+            "maxFunctionalHP": 110,
+            "structuralHP": 220,
+            "maxStructuralHP": 220,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "essence": {
+            "functionalHP": 220,
+            "maxFunctionalHP": 220,
+            "structuralHP": 440,
+            "maxStructuralHP": 440,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Жадность",
+          "Хитрость",
+          "Обаяние"
+        ],
+        "motivation": "накопление богатства",
+        "dominantEmotion": "расчётливость",
+        "disposition": 50
+      },
+      "techniques": [
+        "breath_of_qi",
+        "wind_speed"
+      ],
+      "equipment": {},
+      "inventory": [],
+      "resources": {
+        "spiritStones": 761,
+        "contributionPoints": 16
+      },
+      "generationMeta": {
+        "seed": 1772373926810,
+        "generatedAt": "2026-03-01T14:05:26.806Z",
+        "version": "2.0.0"
+      }
+    },
+    {
+      "id": "NP_000008",
+      "name": "Лань",
+      "age": 57,
+      "gender": "female",
+      "speciesId": "chaos_spawn",
+      "roleId": "guard_combat",
+      "stats": {
+        "strength": 79,
+        "agility": 20,
+        "intelligence": 96,
+        "vitality": 60
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 6,
+        "coreCapacity": 5505,
+        "currentQi": 3302,
+        "coreQuality": 46
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 120,
+            "maxFunctionalHP": 120,
+            "structuralHP": 240,
+            "maxStructuralHP": 240,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "essence": {
+            "functionalHP": 240,
+            "maxFunctionalHP": 240,
+            "structuralHP": 480,
+            "maxStructuralHP": 480,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Безжалостность",
+          "Дисциплина",
+          "Сила"
+        ],
+        "motivation": "победа",
+        "dominantEmotion": "уверенность",
+        "disposition": 35
+      },
+      "techniques": [
+        "reinforced_strike",
+        "turtle_stance"
+      ],
+      "equipment": {},
+      "inventory": [],
+      "resources": {
+        "spiritStones": 58,
+        "contributionPoints": 11
+      },
+      "generationMeta": {
+        "seed": 1772373926812,
+        "generatedAt": "2026-03-01T14:05:26.806Z",
+        "version": "2.0.0"
+      }
+    }
+  ]
+}

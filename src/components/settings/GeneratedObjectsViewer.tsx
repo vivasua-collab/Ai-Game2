@@ -36,7 +36,9 @@ import {
   Shirt,
   Gem,
   Pill,
+  User,
 } from 'lucide-react';
+import { NPCViewerPanel } from './NPCViewerPanel';
 
 interface GeneratedObjectsViewerProps {
   open: boolean;
@@ -146,6 +148,49 @@ interface EquipmentItem {
   currency: string;
 }
 
+// ==================== NPC ====================
+
+interface GeneratedNPC {
+  id: string;
+  name: string;
+  title?: string;
+  age: number;
+  gender: 'male' | 'female' | 'none';
+  speciesId: string;
+  roleId: string;
+  stats: {
+    strength: number;
+    agility: number;
+    intelligence: number;
+    vitality: number;
+  };
+  cultivation: {
+    level: number;
+    subLevel: number;
+    coreCapacity: number;
+    currentQi: number;
+    coreQuality: number;
+  };
+  personality: {
+    traits: string[];
+    motivation: string;
+    dominantEmotion: string;
+    disposition: number;
+  };
+  techniques: string[];
+  equipment: Record<string, string | null>;
+  inventory: Array<{ id: string; quantity: number }>;
+  resources: {
+    spiritStones: number;
+    contributionPoints: number;
+  };
+  generationMeta?: {
+    seed: number;
+    generatedAt: string;
+    version: string;
+  };
+}
+
 const ITEM_TYPE_NAMES: Record<string, string> = {
   weapon: '⚔️ Оружие',
   armor: '🛡️ Броня',
@@ -227,10 +272,13 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
   const [filteredItems, setFilteredItems] = useState<EquipmentItem[]>([]);
   const [selectedItem, setSelectedItem] = useState<EquipmentItem | null>(null);
   
+  // NPC
+  const [npcs, setNpcs] = useState<GeneratedNPC[]>([]);
+  
   // Общее
   const [loading, setLoading] = useState(false);
-  const [loaded, setLoaded] = useState<'none' | 'techniques' | 'formations' | 'items' | 'both'>('none');
-  const [activeTab, setActiveTab] = useState<'techniques' | 'formations' | 'items'>('techniques');
+  const [loaded, setLoaded] = useState<'none' | 'techniques' | 'formations' | 'items' | 'npcs' | 'both'>('none');
+  const [activeTab, setActiveTab] = useState<'techniques' | 'formations' | 'items' | 'npcs'>('techniques');
   
   // Фильтры техник
   const [techSearch, setTechSearch] = useState('');
@@ -368,7 +416,7 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
       const data = await res.json();
       if (data.success) {
         setItems(data.items);
-        setLoaded(prev => prev === 'techniques' || prev === 'formations' || prev === 'both' ? 'both' : 'items');
+        setLoaded(prev => prev === 'techniques' || prev === 'formations' || prev === 'both' || prev === 'npcs' ? 'both' : 'items');
       }
     } catch (error) {
       console.error('Failed to load items:', error);
@@ -377,22 +425,41 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
     }
   };
 
+  const loadNPCs = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/generator/npc?action=list');
+      const data = await res.json();
+      if (data.success) {
+        setNpcs(data.npcs);
+        setLoaded(prev => prev === 'techniques' || prev === 'formations' || prev === 'items' || prev === 'both' ? 'both' : 'npcs');
+      }
+    } catch (error) {
+      console.error('Failed to load NPCs:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const loadAll = async () => {
     setLoading(true);
     try {
-      const [techRes, formRes, itemsRes] = await Promise.all([
+      const [techRes, formRes, itemsRes, npcRes] = await Promise.all([
         fetch('/api/generator/techniques?action=list'),
         fetch('/api/generator/formations?action=list'),
         fetch('/api/generator/items?action=list'),
+        fetch('/api/generator/npc?action=list'),
       ]);
       
       const techData = await techRes.json();
       const formData = await formRes.json();
       const itemsData = await itemsRes.json();
+      const npcData = await npcRes.json();
       
       if (techData.success) setTechniques(techData.techniques);
       if (formData.success) setFormations(formData.formations);
       if (itemsData.success) setItems(itemsData.items);
+      if (npcData.success) setNpcs(npcData.npcs);
       
       setLoaded('both');
     } catch (error) {
@@ -411,7 +478,7 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
           </DialogTitle>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'techniques' | 'formations' | 'items')} className="w-full">
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'techniques' | 'formations' | 'items' | 'npcs')} className="w-full">
           <div className="flex items-center justify-between mb-3">
             <TabsList className="bg-slate-800">
               <TabsTrigger value="techniques" className="text-xs">
@@ -419,6 +486,9 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
               </TabsTrigger>
               <TabsTrigger value="items" className="text-xs">
                 🎒 Экипировка ({loaded !== 'none' ? items.length : '-'})
+              </TabsTrigger>
+              <TabsTrigger value="npcs" className="text-xs">
+                👥 NPC ({loaded !== 'none' ? npcs.length : '-'})
               </TabsTrigger>
               <TabsTrigger value="formations" className="text-xs">
                 🛡️ Формации ({loaded !== 'none' ? formations.length : '-'})
@@ -932,6 +1002,15 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
                 )}
               </div>
             </div>
+          </TabsContent>
+
+          {/* ==================== NPC ==================== */}
+          <TabsContent value="npcs" className="mt-0">
+            <NPCViewerPanel
+              npcs={npcs}
+              loading={loading}
+              onLoad={loadNPCs}
+            />
           </TabsContent>
 
           {/* ==================== ФОРМАЦИИ ==================== */}
