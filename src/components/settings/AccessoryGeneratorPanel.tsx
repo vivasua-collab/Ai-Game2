@@ -19,6 +19,7 @@ import {
   Gem,
   Scroll,
   AlertTriangle,
+  Trash2,
 } from 'lucide-react';
 import {
   generateAccessories,
@@ -34,6 +35,7 @@ import {
 
 interface AccessoryGeneratorPanelProps {
   onGenerate: (accessories: GeneratedAccessory[]) => void;
+  onClear?: () => Promise<void>;
   loading?: boolean;
 }
 
@@ -51,7 +53,7 @@ const RARITY_OPTIONS = [
   { value: 'legendary', label: 'Легендарная' },
 ];
 
-export function AccessoryGeneratorPanel({ onGenerate, loading = false }: AccessoryGeneratorPanelProps) {
+export function AccessoryGeneratorPanel({ onGenerate, onClear, loading = false }: AccessoryGeneratorPanelProps) {
   const [selectedType, setSelectedType] = useState<string>('random');
   const [selectedRarity, setSelectedRarity] = useState<string>('random');
   const [selectedLevel, setSelectedLevel] = useState<string>('all');
@@ -263,6 +265,21 @@ export function AccessoryGeneratorPanel({ onGenerate, loading = false }: Accesso
         )}
         Сгенерировать {genCount} аксессуаров
       </Button>
+
+      {/* Кнопка очистки */}
+      {onClear && (
+        <div className="flex justify-end">
+          <Button
+            onClick={onClear}
+            disabled={loading || isGenerating}
+            variant="destructive"
+            size="sm"
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            Очистить аксессуары
+          </Button>
+        </div>
+      )}
 
       {/* Краткая сводка */}
       <div className="bg-slate-700/30 rounded-lg p-3 text-center">

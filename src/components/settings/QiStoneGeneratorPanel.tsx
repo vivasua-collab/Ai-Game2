@@ -18,6 +18,7 @@ import {
   Info,
   Diamond,
   AlertTriangle,
+  Trash2,
 } from 'lucide-react';
 import {
   generateQiStones,
@@ -33,10 +34,11 @@ import {
 
 interface QiStoneGeneratorPanelProps {
   onGenerate: (stones: QiStone[]) => void;
+  onClear?: () => Promise<void>;
   loading?: boolean;
 }
 
-export function QiStoneGeneratorPanel({ onGenerate, loading = false }: QiStoneGeneratorPanelProps) {
+export function QiStoneGeneratorPanel({ onGenerate, onClear, loading = false }: QiStoneGeneratorPanelProps) {
   const [selectedSize, setSelectedSize] = useState<string>('random');
   const [selectedType, setSelectedType] = useState<string>('random');
   const [genCount, setGenCount] = useState(20);
@@ -266,6 +268,21 @@ export function QiStoneGeneratorPanel({ onGenerate, loading = false }: QiStoneGe
         )}
         Сгенерировать {genCount} камней Ци
       </Button>
+
+      {/* Кнопка очистки */}
+      {onClear && (
+        <div className="flex justify-end">
+          <Button
+            onClick={onClear}
+            disabled={loading || isGenerating}
+            variant="destructive"
+            size="sm"
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            Очистить камни Ци
+          </Button>
+        </div>
+      )}
 
       {/* Краткая сводка */}
       <div className="bg-slate-700/30 rounded-lg p-3 text-center">

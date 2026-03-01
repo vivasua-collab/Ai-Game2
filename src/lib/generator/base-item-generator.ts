@@ -338,3 +338,164 @@ export function generateUpgradeFlags(rarity: Rarity, rng: () => number): number 
   
   return flags;
 }
+
+// ==================== УДАЛЕНИЕ ДУБЛИКАТОВ ====================
+
+/**
+ * Результат удаления дубликатов
+ */
+export interface DedupResult<T> {
+  unique: T[];
+  duplicates: number;
+  removedIds: string[];
+  duplicateGroups: Array<{
+    signature: string;
+    count: number;
+    keptId: string;
+    removedIds: string[];
+  }>;
+}
+
+/**
+ * Универсальная функция создания сигнатуры предмета
+ * Создаёт строковый ключ на основе значимых полей
+ */
+export function createItemSignature(
+  item: Record<string, unknown>,
+  fields: string[]
+): string {
+  const parts: string[] = [];
+  
+  for (const field of fields) {
+    const value = item[field];
+    
+    if (value === undefined || value === null) {
+      parts.push('null');
+    } else if (typeof value === 'object') {
+      // Для объектов (defense, stats и т.д.) - сортируем ключи
+      const sorted = Object.entries(value as Record<string, unknown>)
+        .filter(([_, v]) => v !== undefined && v !== null)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([k, v]) => `${k}:${roundTo(Number(v) || 0, 1)}`);
+      parts.push(sorted.join(','));
+    } else if (typeof value === 'number') {
+      // Округляем числа до 1 знака
+      parts.push(String(roundTo(value, 1)));
+    } else {
+      parts.push(String(value));
+    }
+  }
+  
+  return parts.join('|');
+}
+
+/**
+ * Универсальная функция удаления дубликатов
+ * @param items - массив предметов
+ * @param signatureFields - поля для создания сигнатуры
+ * @returns результат с уникальными предметами и статистикой
+ */
+export function removeDuplicateItems<T extends { id: string }>(
+  items: T[],
+  signatureFields: string[]
+): DedupResult<T> {
+  const signatureMap = new Map<string, T[]>();
+  
+  // Группируем по сигнатуре
+  for (const item of items) {
+    const signature = createItemSignature(item as Record<string, unknown>, signatureFields);
+    if (!signatureMap.has(signature)) {
+      signatureMap.set(signature, []);
+    }
+    signatureMap.get(signature)!.push(item);
+  }
+  
+  const unique: T[] = [];
+  const removedIds: string[] = [];
+  const duplicateGroups: DedupResult<T>['duplicateGroups'] = [];
+  
+  for (const [signature, group] of signatureMap) {
+    // Сортируем по ID для детерминированности
+    group.sort((a, b) => a.id.localeCompare(b.id));
+    
+    // Оставляем первый предмет
+    const [kept, ...duplicates] = group;
+    unique.push(kept);
+    
+    if (duplicates.length > 0) {
+      removedIds.push(...duplicates.map(d => d.id));
+      duplicateGroups.push({
+        signature,
+        count: group.length,
+        keptId: kept.id,
+        removedIds: duplicates.map(d => d.id),
+      });
+    }
+  }
+  
+  return {
+    unique,
+    duplicates: items.length - unique.length,
+    removedIds,
+    duplicateGroups,
+  };
+}
+
+/**
+ * Сигнатуры для разных типов предметов
+ */
+export const ITEM_SIGNATURE_FIELDS = {
+  weapon: [
+    'category', 'weaponType', 'rarity',
+    'baseDamage', 'baseRange', 'attackSpeed',
+    'upgradeFlags'
+  ],
+  armor: [
+    'slot', 'rarity',
+    'defense.physical', 'defense.qi',
+    'upgradeFlags'
+  ],
+  accessory: [
+    'slot', 'accessoryType', 'rarity',
+    'bonuses.stats.strength', 'bonuses.stats.agility',
+    'bonuses.stats.intelligence', 'bonuses.stats.conductivity',
+    'upgradeFlags'
+  ],
+  consumable: [
+    'type', 'rarity',
+    'effect.type', 'effect.value', 'effect.duration'
+  ],
+  qi_stone: [
+    'sizeClass', 'type', 'totalQi'
+  ],
+  charger: [
+    'capacity', 'efficiency', 'chargeRate', 'rarity'
+  ],
+} as const;
+
+/**
+ * Специализированные функции dedup для каждого типа
+ */
+export function removeDuplicateWeapons(weapons: Array<{ id: string } & Record<string, unknown>>): DedupResult<{ id: string } & Record<string, unknown>> {
+  return removeDuplicateItems(weapons, [...ITEM_SIGNATURE_FIELDS.weapon]);
+}
+
+export function removeDuplicateArmors(armors: Array<{ id: string } & Record<string, unknown>>): DedupResult<{ id: string } & Record<string, unknown>> {
+  return removeDuplicateItems(armors, [...ITEM_SIGNATURE_FIELDS.armor]);
+}
+
+export function removeDuplicateAccessories(accessories: Array<{ id: string } & Record<string, unknown>>): DedupResult<{ id: string } & Record<string, unknown>> {
+  return removeDuplicateItems(accessories, [...ITEM_SIGNATURE_FIELDS.accessory]);
+}
+
+export function removeDuplicateConsumables(consumables: Array<{ id: string } & Record<string, unknown>>): DedupResult<{ id: string } & Record<string, unknown>> {
+  return removeDuplicateItems(consumables, [...ITEM_SIGNATURE_FIELDS.consumable]);
+}
+
+export function removeDuplicateQiStones(stones: Array<{ id: string } & Record<string, unknown>>): DedupResult<{ id: string } & Record<string, unknown>> {
+  return removeDuplicateItems(stones, [...ITEM_SIGNATURE_FIELDS.qi_stone]);
+}
+
+export function removeDuplicateChargers(chargers: Array<{ id: string } & Record<string, unknown>>): DedupResult<{ id: string } & Record<string, unknown>> {
+  return removeDuplicateItems(chargers, [...ITEM_SIGNATURE_FIELDS.charger]);
+}

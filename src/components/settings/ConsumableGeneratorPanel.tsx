@@ -22,6 +22,7 @@ import {
   ScrollText,
   AlertTriangle,
   Briefcase,
+  Trash2,
 } from 'lucide-react';
 import {
   generateConsumables,
@@ -38,6 +39,7 @@ import {
 
 interface ConsumableGeneratorPanelProps {
   onGenerate: (consumables: Consumable[]) => void;
+  onClear?: () => Promise<void>;
   loading?: boolean;
 }
 
@@ -56,7 +58,7 @@ const RARITY_OPTIONS = [
   { value: 'legendary', label: 'Легендарная' },
 ];
 
-export function ConsumableGeneratorPanel({ onGenerate, loading = false }: ConsumableGeneratorPanelProps) {
+export function ConsumableGeneratorPanel({ onGenerate, onClear, loading = false }: ConsumableGeneratorPanelProps) {
   const [selectedType, setSelectedType] = useState<string>('random');
   const [selectedEffect, setSelectedEffect] = useState<string>('random');
   const [selectedRarity, setSelectedRarity] = useState<string>('random');
@@ -282,6 +284,21 @@ export function ConsumableGeneratorPanel({ onGenerate, loading = false }: Consum
         )}
         Сгенерировать {genCount} расходников
       </Button>
+
+      {/* Кнопка очистки */}
+      {onClear && (
+        <div className="flex justify-end">
+          <Button
+            onClick={onClear}
+            disabled={loading || isGenerating}
+            variant="destructive"
+            size="sm"
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            Очистить расходники
+          </Button>
+        </div>
+      )}
 
       {/* Краткая сводка */}
       <div className="bg-slate-700/30 rounded-lg p-3 text-center">

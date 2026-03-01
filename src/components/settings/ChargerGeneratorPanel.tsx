@@ -17,6 +17,7 @@ import {
   Loader2,
   Battery,
   AlertTriangle,
+  Trash2,
 } from 'lucide-react';
 import {
   generateChargers,
@@ -30,6 +31,7 @@ import {
 
 interface ChargerGeneratorPanelProps {
   onGenerate: (chargers: Charger[]) => void;
+  onClear?: () => Promise<void>;
   loading?: boolean;
 }
 
@@ -41,7 +43,7 @@ const RARITY_OPTIONS = [
   { value: 'legendary', label: 'Легендарная' },
 ];
 
-export function ChargerGeneratorPanel({ onGenerate, loading = false }: ChargerGeneratorPanelProps) {
+export function ChargerGeneratorPanel({ onGenerate, onClear, loading = false }: ChargerGeneratorPanelProps) {
   const [selectedRarity, setSelectedRarity] = useState<string>('random');
   const [selectedLevel, setSelectedLevel] = useState<string>('all');
   const [genCount, setGenCount] = useState(10);
@@ -306,6 +308,21 @@ export function ChargerGeneratorPanel({ onGenerate, loading = false }: ChargerGe
         )}
         Сгенерировать {genCount} зарядников
       </Button>
+
+      {/* Кнопка очистки */}
+      {onClear && (
+        <div className="flex justify-end">
+          <Button
+            onClick={onClear}
+            disabled={loading || isGenerating}
+            variant="destructive"
+            size="sm"
+          >
+            <Trash2 className="w-4 h-4 mr-2" />
+            Очистить зарядники
+          </Button>
+        </div>
+      )}
 
       {/* Краткая сводка */}
       <div className="bg-slate-700/30 rounded-lg p-3 text-center">

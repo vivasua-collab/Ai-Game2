@@ -715,9 +715,9 @@ export function TechniqueGeneratorPanel({ onGenerate, onClear, loading }: Techni
             <Trash2 className="w-4 h-4 mr-2" />
             {selectedType === 'combat' && combatSubtype !== 'random' 
               ? `Очистить "${combatSubtypeList.find(s => s.id === combatSubtype)?.name}"`
-              : selectedType !== 'combat'
-              ? `Очистить "${typeConfig.name}"`
-              : 'Очистить все техники'
+              : selectedType === 'combat'
+              ? 'Очистить атакующие техники'
+              : `Очистить "${typeConfig.name}"`
             }
           </Button>
         </div>
