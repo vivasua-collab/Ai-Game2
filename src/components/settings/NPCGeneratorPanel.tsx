@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Slider } from '@/components/ui/slider';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Select,
@@ -28,12 +27,18 @@ import {
   Shield,
   Briefcase,
   Heart,
+  Check,
+  AlertCircle,
 } from 'lucide-react';
-import type { NPCGenerationContext } from '@/lib/generator/npc-generator';
 
 interface NPCGeneratorPanelProps {
   onGenerate: (params: {
-    context: NPCGenerationContext;
+    context: {
+      speciesType?: string;
+      roleType?: string;
+      cultivationLevel?: { min: number; max: number };
+      difficulty?: string;
+    };
     count: number;
     save: boolean;
     mode: 'replace' | 'append';
@@ -50,21 +55,21 @@ interface NPCGeneratorPanelProps {
 
 // Типы видов
 const SPECIES_TYPES = [
-  { id: 'all', name: 'Все виды', icon: <Users className="w-4 h-4" /> },
-  { id: 'humanoid', name: 'Гуманоиды', icon: <User className="w-4 h-4" /> },
-  { id: 'beast', name: 'Звери', icon: <Wolf className="w-4 h-4" /> },
-  { id: 'spirit', name: 'Духи', icon: <Ghost className="w-4 h-4" /> },
-  { id: 'hybrid', name: 'Гибриды', icon: <Sparkle className="w-4 h-4" /> },
-  { id: 'aberration', name: 'Аберрации', icon: <Flame className="w-4 h-4" /> },
+  { id: 'all', name: 'Все виды', icon: Users },
+  { id: 'humanoid', name: 'Гуманоиды', icon: User },
+  { id: 'beast', name: 'Звери', icon: Wolf },
+  { id: 'spirit', name: 'Духи', icon: Ghost },
+  { id: 'hybrid', name: 'Гибриды', icon: Sparkle },
+  { id: 'aberration', name: 'Аберрации', icon: Flame },
 ];
 
 // Типы ролей
 const ROLE_TYPES = [
-  { id: 'all', name: 'Все роли', icon: <Users className="w-4 h-4" /> },
-  { id: 'sect', name: 'Секта', icon: <Shield className="w-4 h-4" /> },
-  { id: 'profession', name: 'Профессии', icon: <Briefcase className="w-4 h-4" /> },
-  { id: 'social', name: 'Социальные', icon: <Heart className="w-4 h-4" /> },
-  { id: 'combat', name: 'Боевые', icon: <Sword className="w-4 h-4" /> },
+  { id: 'all', name: 'Все роли', icon: Users },
+  { id: 'sect', name: 'Секта', icon: Shield },
+  { id: 'profession', name: 'Профессии', icon: Briefcase },
+  { id: 'social', name: 'Социальные', icon: Heart },
+  { id: 'combat', name: 'Боевые', icon: Sword },
 ];
 
 // Сложность
@@ -103,11 +108,11 @@ export function NPCGeneratorPanel({ onGenerate, onClear, loading, npcStats }: NP
   }, [speciesType, roleType, levelMin, levelMax, difficulty, count]);
 
   const handleGenerate = async () => {
-    const context: NPCGenerationContext = {
-      speciesType: speciesType === 'all' ? undefined : speciesType as 'humanoid' | 'beast' | 'spirit' | 'hybrid' | 'aberration',
+    const context = {
+      speciesType: speciesType === 'all' ? undefined : speciesType,
       roleType: roleType === 'all' ? undefined : roleType,
       cultivationLevel: { min: levelMin, max: levelMax },
-      difficulty: difficulty === 'any' ? undefined : difficulty as 'easy' | 'medium' | 'hard' | 'boss',
+      difficulty: difficulty === 'any' ? undefined : difficulty,
     };
 
     await onGenerate({ context, count, save, mode });
@@ -116,11 +121,11 @@ export function NPCGeneratorPanel({ onGenerate, onClear, loading, npcStats }: NP
   const handlePreview = async () => {
     setLoadingPreview(true);
     try {
-      const context: NPCGenerationContext = {
-        speciesType: speciesType === 'all' ? undefined : speciesType as 'humanoid' | 'beast' | 'spirit' | 'hybrid' | 'aberration',
+      const context = {
+        speciesType: speciesType === 'all' ? undefined : speciesType,
         roleType: roleType === 'all' ? undefined : roleType,
         cultivationLevel: { min: levelMin, max: levelMax },
-        difficulty: difficulty === 'any' ? undefined : difficulty as 'easy' | 'medium' | 'hard' | 'boss',
+        difficulty: difficulty === 'any' ? undefined : difficulty,
       };
 
       const res = await fetch('/api/generator/npc', {
@@ -135,7 +140,7 @@ export function NPCGeneratorPanel({ onGenerate, onClear, loading, npcStats }: NP
       });
 
       const data = await res.json();
-      if (data.success) {
+      if (data.success && data.npcs) {
         setPreviewNPCs(data.npcs.map((npc: { id: string; name: string; speciesId: string; roleId: string; cultivation: { level: number } }) => ({
           id: npc.id,
           name: npc.name,
@@ -150,6 +155,10 @@ export function NPCGeneratorPanel({ onGenerate, onClear, loading, npcStats }: NP
       setLoadingPreview(false);
     }
   };
+
+  const IconComponent = ({ icon: Icon }: { icon: React.ComponentType<{ className?: string }> }) => (
+    <Icon className="w-4 h-4" />
+  );
 
   return (
     <div className="space-y-6">
@@ -185,7 +194,7 @@ export function NPCGeneratorPanel({ onGenerate, onClear, loading, npcStats }: NP
                   : 'bg-slate-700/50 border-slate-600 text-slate-400 hover:bg-slate-700 hover:border-slate-500'}
               `}
             >
-              {type.icon}
+              <IconComponent icon={type.icon} />
               <span className="text-xs font-medium text-center mt-1">{type.name}</span>
             </button>
           ))}
@@ -214,7 +223,7 @@ export function NPCGeneratorPanel({ onGenerate, onClear, loading, npcStats }: NP
                   : 'bg-slate-700/50 border-slate-600 text-slate-400 hover:bg-slate-700 hover:border-slate-500'}
               `}
             >
-              {type.icon}
+              <IconComponent icon={type.icon} />
               <span className="text-xs font-medium text-center mt-1">{type.name}</span>
             </button>
           ))}
@@ -226,22 +235,37 @@ export function NPCGeneratorPanel({ onGenerate, onClear, loading, npcStats }: NP
         <h3 className="text-lg font-medium text-slate-200">Уровень культивации</h3>
         
         <div className="space-y-4">
-          <div>
-            <div className="flex justify-between items-center mb-2">
-              <Label className="text-sm text-slate-300">Мин. уровень: {levelMin}</Label>
-              <Label className="text-sm text-slate-300">Макс. уровень: {levelMax}</Label>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <Label className="text-sm text-slate-300">Мин. уровень</Label>
+              <Select value={String(levelMin)} onValueChange={(v) => setLevelMin(parseInt(v))}>
+                <SelectTrigger className="bg-slate-700 border-slate-600 text-white mt-1">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-700">
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(lvl => (
+                    <SelectItem key={lvl} value={String(lvl)}>
+                      Уровень {lvl}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-            <Slider
-              value={[levelMin, levelMax]}
-              onValueChange={([min, max]) => {
-                setLevelMin(min);
-                setLevelMax(max);
-              }}
-              min={1}
-              max={9}
-              step={1}
-              className="w-full"
-            />
+            <div>
+              <Label className="text-sm text-slate-300">Макс. уровень</Label>
+              <Select value={String(levelMax)} onValueChange={(v) => setLevelMax(parseInt(v))}>
+                <SelectTrigger className="bg-slate-700 border-slate-600 text-white mt-1">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-700">
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(lvl => (
+                    <SelectItem key={lvl} value={String(lvl)}>
+                      Уровень {lvl}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           
           <div className="text-xs text-slate-500 text-center">
@@ -393,7 +417,7 @@ export function NPCGeneratorPanel({ onGenerate, onClear, loading, npcStats }: NP
       {/* Информация */}
       <div className="bg-slate-700/30 rounded-lg p-3 text-xs text-slate-400">
         <p>
-          💡 NPC генерируются с полным набором характеристик: тело, культивация, 
+          NPC генерируются с полным набором характеристик: тело, культивация, 
           техники, личность и инвентарь из пула расходников.
         </p>
       </div>
