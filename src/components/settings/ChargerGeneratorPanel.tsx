@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Slider } from '@/components/ui/slider';
@@ -16,7 +15,6 @@ import {
 import {
   Sparkles,
   Loader2,
-  Info,
   Battery,
   AlertTriangle,
 } from 'lucide-react';

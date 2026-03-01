@@ -212,13 +212,6 @@ function generateQiStoneId(): string {
 }
 
 /**
- * Вычислить объём куба по стороне
- */
-function cubeVolume(side: number): number {
-  return Math.pow(side, 3);
-}
-
-/**
  * Вычислить площадь поверхности куба
  */
 function cubeSurface(side: number): number {

@@ -93,7 +93,7 @@ export interface Talisman extends Omit<Accessory, 'bonuses'> {
   isConsumable: true;
   maxUses: 1;
   currentUses: number;
-  bonuses: never; // Талисманы не имеют бонусов к статам
+  // bonuses наследуется от Omit<Accessory, 'bonuses'> и не существует в Talisman
 }
 
 export type GeneratedAccessory = Accessory | Talisman;
@@ -263,27 +263,6 @@ function seededRandom(seed: number): () => number {
     seed = (seed * 1103515245 + 12345) & 0x7fffffff;
     return seed / 0x7fffffff;
   };
-}
-
-function hashString(str: string): number {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
-    hash = hash & hash;
-  }
-  return Math.abs(hash);
-}
-
-function weightedSelect<T extends { weight: number }>(items: T[], rng: () => number): T | null {
-  if (items.length === 0) return null;
-  const totalWeight = items.reduce((sum, item) => sum + item.weight, 0);
-  let random = rng() * totalWeight;
-  for (const item of items) {
-    random -= item.weight;
-    if (random <= 0) return item;
-  }
-  return items[items.length - 1];
 }
 
 function generateAccessoryId(): string {
