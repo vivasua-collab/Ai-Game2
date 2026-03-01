@@ -30,9 +30,16 @@ import {
   Shield,
   Shirt,
   Users,
+  Sword,
+  Gem,
+  Pill,
+  Zap,
 } from 'lucide-react';
 import { TechniqueGeneratorPanel } from './TechniqueGeneratorPanel';
+import { WeaponGeneratorPanel } from './WeaponGeneratorPanel';
+import { ArmorGeneratorPanel } from './ArmorGeneratorPanel';
 import { Rarity, TechniqueType, CombatSubtype } from '@/lib/generator/technique-generator';
+import type { WeaponCategory, WeaponType, EquipmentSlot } from '@/lib/generator/item-config';
 
 interface SettingsPanelProps {
   open: boolean;
@@ -387,21 +394,133 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
             )}
           </TabsContent>
 
-          {/* ЭКИПИРОВКА */}
+          {/* ЭКИПИРОВКА - Подвкладки */}
           <TabsContent value="equipment" className="mt-4 space-y-4 overflow-y-auto max-h-[60vh]">
-            <div className="bg-slate-800/50 rounded-lg p-4">
-              <h3 className="text-lg font-medium text-amber-400 mb-3 flex items-center gap-2">
-                <Shirt className="w-5 h-5" />
-                Генератор экипировки
-              </h3>
-              <p className="text-sm text-slate-400 mb-4">
-                Генерация оружия, брони, аксессуаров и других предметов экипировки.
-              </p>
-              <div className="bg-slate-700/30 rounded-lg p-4 text-center">
-                <p className="text-slate-400">🚧 В разработке</p>
-                <p className="text-sm text-slate-500 mt-2">Будет реализовано в следующем обновлении</p>
+            <Tabs defaultValue="weapon" className="w-full">
+              <TabsList className="grid w-full grid-cols-6 bg-slate-800 mb-4">
+                <TabsTrigger value="weapon" className="data-[state=active]:bg-amber-600 text-xs">
+                  <Sword className="w-4 h-4 mr-1" />
+                  Оружие
+                </TabsTrigger>
+                <TabsTrigger value="armor" className="data-[state=active]:bg-amber-600 text-xs">
+                  <Shield className="w-4 h-4 mr-1" />
+                  Броня
+                </TabsTrigger>
+                <TabsTrigger value="accessory" className="data-[state=active]:bg-amber-600 text-xs">
+                  <Gem className="w-4 h-4 mr-1" />
+                  Аксессуары
+                </TabsTrigger>
+                <TabsTrigger value="consumable" className="data-[state=active]:bg-amber-600 text-xs">
+                  <Pill className="w-4 h-4 mr-1" />
+                  Расходники
+                </TabsTrigger>
+                <TabsTrigger value="qi_stone" className="data-[state=active]:bg-amber-600 text-xs">
+                  <Sparkles className="w-4 h-4 mr-1" />
+                  Камни Ци
+                </TabsTrigger>
+                <TabsTrigger value="charger" className="data-[state=active]:bg-amber-600 text-xs">
+                  <Zap className="w-4 h-4 mr-1" />
+                  Зарядники
+                </TabsTrigger>
+              </TabsList>
+
+              {/* Оружие */}
+              <TabsContent value="weapon">
+                <WeaponGeneratorPanel
+                  onGenerate={async (params) => {
+                    console.log('Generate weapons:', params);
+                    setMessage({ type: 'success', text: `Генерация ${params.count} единиц оружия... (API в разработке)` });
+                  }}
+                  onClear={async () => {
+                    setMessage({ type: 'success', text: 'Очистка оружия... (API в разработке)' });
+                  }}
+                  loading={loading}
+                />
+              </TabsContent>
+
+              {/* Броня */}
+              <TabsContent value="armor">
+                <ArmorGeneratorPanel
+                  onGenerate={async (params) => {
+                    console.log('Generate armor:', params);
+                    setMessage({ type: 'success', text: `Генерация ${params.count} единиц экипировки... (API в разработке)` });
+                  }}
+                  onClear={async () => {
+                    setMessage({ type: 'success', text: 'Очистка экипировки... (API в разработке)' });
+                  }}
+                  loading={loading}
+                />
+              </TabsContent>
+
+              {/* Аксессуары - заглушка */}
+              <TabsContent value="accessory">
+                <div className="bg-slate-800/50 rounded-lg p-4">
+                  <h3 className="text-lg font-medium text-amber-400 mb-3 flex items-center gap-2">
+                    <Gem className="w-5 h-5" />
+                    Генератор аксессуаров
+                  </h3>
+                  <div className="bg-slate-700/30 rounded-lg p-4 text-center">
+                    <p className="text-slate-400">🚧 В разработке (Агент 2)</p>
+                    <p className="text-sm text-slate-500 mt-2">Кольца, амулеты, талисманы</p>
+                  </div>
+                </div>
+              </TabsContent>
+
+              {/* Расходники - заглушка */}
+              <TabsContent value="consumable">
+                <div className="bg-slate-800/50 rounded-lg p-4">
+                  <h3 className="text-lg font-medium text-amber-400 mb-3 flex items-center gap-2">
+                    <Pill className="w-5 h-5" />
+                    Генератор расходников
+                  </h3>
+                  <div className="bg-slate-700/30 rounded-lg p-4 text-center">
+                    <p className="text-slate-400">🚧 В разработке (Агент 2)</p>
+                    <p className="text-sm text-slate-500 mt-2">Таблетки, эликсиры, еда, свитки</p>
+                  </div>
+                </div>
+              </TabsContent>
+
+              {/* Камни Ци - заглушка */}
+              <TabsContent value="qi_stone">
+                <div className="bg-slate-800/50 rounded-lg p-4">
+                  <h3 className="text-lg font-medium text-amber-400 mb-3 flex items-center gap-2">
+                    <Sparkles className="w-5 h-5" />
+                    Генератор камней Ци
+                  </h3>
+                  <div className="bg-slate-700/30 rounded-lg p-4 text-center">
+                    <p className="text-slate-400">🚧 В разработке (Агент 2)</p>
+                    <p className="text-sm text-slate-500 mt-2">Камни с запасом Ци</p>
+                  </div>
+                </div>
+              </TabsContent>
+
+              {/* Зарядники - заглушка */}
+              <TabsContent value="charger">
+                <div className="bg-slate-800/50 rounded-lg p-4">
+                  <h3 className="text-lg font-medium text-amber-400 mb-3 flex items-center gap-2">
+                    <Zap className="w-5 h-5" />
+                    Генератор зарядников
+                  </h3>
+                  <div className="bg-slate-700/30 rounded-lg p-4 text-center">
+                    <p className="text-slate-400">🚧 В разработке (Агент 2)</p>
+                    <p className="text-sm text-slate-500 mt-2">Устройства для хранения Ци</p>
+                  </div>
+                </div>
+              </TabsContent>
+            </Tabs>
+
+            {message && activeTab === 'equipment' && (
+              <div className={`p-3 rounded flex items-center gap-2 text-sm ${
+                message.type === 'success' 
+                  ? 'bg-green-900/30 text-green-400' 
+                  : message.type === 'warning'
+                  ? 'bg-yellow-900/30 text-yellow-400'
+                  : 'bg-red-900/30 text-red-400'
+              }`}>
+                {message.type === 'success' ? <Check className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+                {message.text}
               </div>
-            </div>
+            )}
           </TabsContent>
 
           {/* NPC И МОБЫ */}
