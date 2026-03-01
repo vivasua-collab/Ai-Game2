@@ -932,6 +932,161 @@ export class PresetStorageService {
     return items;
   }
   
+  // ==================== NPC ====================
+  
+  /**
+   * Кэш NPC
+   */
+  private npcCache = new Map<string, unknown>();
+  
+  /**
+   * Сохранить NPC по типу
+   */
+  async saveNPCs(
+    npcs: Array<{ id: string; speciesId?: string; roleId?: string; [key: string]: unknown }>,
+    mode: 'replace' | 'append' = 'replace'
+  ): Promise<{ saved: number; total: number }> {
+    // Группируем по speciesType
+    const grouped = this.groupNPCs(npcs);
+    
+    let saved = 0;
+    
+    for (const [type, typeNpcs] of Object.entries(grouped)) {
+      const filePath = path.join(DATA_DIR, 'npcs', `${type}.json`);
+      let allNpcs = typeNpcs;
+      
+      if (mode === 'append') {
+        try {
+          const content = await fs.readFile(filePath, 'utf-8');
+          const existing = JSON.parse(content);
+          allNpcs = [...existing.npcs, ...typeNpcs];
+        } catch {
+          // Файл не существует
+        }
+      }
+      
+      await fs.writeFile(filePath, JSON.stringify({
+        version: '2.0',
+        type,
+        count: allNpcs.length,
+        npcs: allNpcs,
+      }, null, 2), 'utf-8');
+      
+      saved += typeNpcs.length;
+      
+      // Кэшируем
+      for (const npc of allNpcs) {
+        this.npcCache.set((npc as { id: string }).id, npc);
+      }
+    }
+    
+    await this.idService.save();
+    await this.updateManifest();
+    
+    return { saved, total: this.npcCache.size };
+  }
+  
+  /**
+   * Группировка NPC по speciesType
+   */
+  private groupNPCs(npcs: Array<{ id: string; speciesId?: string; [key: string]: unknown }>): Record<string, Array<{ id: string; speciesId?: string; [key: string]: unknown }>> {
+    const grouped: Record<string, Array<{ id: string; speciesId?: string; [key: string]: unknown }>> = {};
+    
+    for (const npc of npcs) {
+      const type = npc.speciesId || 'unknown';
+      if (!grouped[type]) grouped[type] = [];
+      grouped[type].push(npc);
+    }
+    
+    return grouped;
+  }
+  
+  /**
+   * Загрузить всех NPC
+   */
+  async loadNPCs(): Promise<Array<{ id: string; type?: string; [key: string]: unknown }>> {
+    if (this.npcCache.size > 0) {
+      return Array.from(this.npcCache.values()) as Array<{ id: string; type?: string; [key: string]: unknown }>;
+    }
+    
+    const npcs: Array<{ id: string; type?: string; [key: string]: unknown }> = [];
+    
+    try {
+      const npcsDir = path.join(DATA_DIR, 'npcs');
+      const entries = await fs.readdir(npcsDir, { withFileTypes: true });
+      
+      for (const entry of entries) {
+        if (entry.isFile() && entry.name.endsWith('.json')) {
+          const filePath = path.join(npcsDir, entry.name);
+          const content = await fs.readFile(filePath, 'utf-8');
+          const data = JSON.parse(content);
+          
+          if (data.npcs && Array.isArray(data.npcs)) {
+            npcs.push(...data.npcs);
+            for (const npc of data.npcs) {
+              this.npcCache.set(npc.id, npc);
+            }
+          }
+        }
+      }
+    } catch {
+      // Игнорируем ошибки
+    }
+    
+    return npcs;
+  }
+  
+  /**
+   * Загрузить NPC по типу (speciesType)
+   */
+  async loadNPCsByType(type: string): Promise<Array<{ id: string; [key: string]: unknown }>> {
+    const filePath = path.join(DATA_DIR, 'npcs', `${type}.json`);
+    
+    try {
+      const content = await fs.readFile(filePath, 'utf-8');
+      const data = JSON.parse(content);
+      return data.npcs || [];
+    } catch {
+      return [];
+    }
+  }
+  
+  /**
+   * Очистить NPC (все или по типу)
+   */
+  async clearNPCs(type?: string): Promise<{ deletedFiles: number; deletedObjects: number }> {
+    let deletedFiles = 0;
+    let deletedObjects = 0;
+    
+    if (type) {
+      // Удаляем конкретный тип
+      const filePath = path.join(DATA_DIR, 'npcs', `${type}.json`);
+      try {
+        const content = await fs.readFile(filePath, 'utf-8');
+        const data = JSON.parse(content);
+        deletedObjects = data.npcs?.length || 0;
+        await fs.rm(filePath);
+        deletedFiles = 1;
+      } catch {
+        // Файл не существует
+      }
+    } else {
+      // Удаляем всех NPC
+      const npcsDir = path.join(DATA_DIR, 'npcs');
+      const result = await this.deleteDirectoryRecursive(npcsDir);
+      deletedFiles = result.files;
+      deletedObjects = result.objects;
+      
+      // Пересоздаём пустую директорию
+      await fs.mkdir(npcsDir, { recursive: true });
+    }
+    
+    // Очищаем кэш
+    this.npcCache.clear();
+    
+    return { deletedFiles, deletedObjects };
+  }
+  
   // ==================== АНАЛИЗ ====================
   
   async analyzeStorage(): Promise<StorageStats> {
@@ -1067,6 +1222,8 @@ export class PresetStorageService {
   clearCache(): void {
     this.techniqueCache.clear();
     this.formationCache.clear();
+    this.itemCache.clear();
+    this.npcCache.clear();
     this.loaded = false;
   }
 }

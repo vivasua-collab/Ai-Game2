@@ -1,6 +1,33 @@
 # Work Log - Cultivation World Simulator
 
 ---
+Task ID: agent-0-integration
+Agent: Agent-0
+Task: Интеграция NPC генератора - координация Agent-1, выполнение Agent-2 задач
+
+Work Log:
+- Проверена работа Agent-1: созданы species-presets.ts (27 видов), role-presets.ts (30 ролей), personality-presets.ts (15 личностей)
+- Добавлены экспорты пресетов Agent-1 в index.ts (species, role, personality)
+- Добавлена функция getAllSpecies() в species-presets.ts
+- Добавлены NPC методы в preset-storage.ts (saveNPCs, loadNPCs, clearNPCs, loadNPCsByType)
+- Создана директория presets/npcs/ для хранения сгенерированных NPC
+- Обновлён npc-generator.ts v2.0 для использования полноценных пресетов Agent-1
+- Создан NPC API Route: /api/generator/npc
+- Добавлена функция createBodyForSpecies() в npc-generator.ts
+- Исправлен повреждённый next.config.ts (merge conflict markers)
+
+Stage Summary:
+- Results: NPC генератор интегрирован с пресетами Agent-1
+- Files: 
+  - src/lib/generator/preset-storage.ts (добавлены NPC методы)
+  - src/lib/generator/npc-generator.ts (v2.0 с интеграцией пресетов)
+  - src/app/api/generator/npc/route.ts (новый API)
+  - src/data/presets/index.ts (экспорты species/role/personality)
+  - src/data/presets/species-presets.ts (добавлена getAllSpecies)
+  - next.config.ts (исправлен)
+- Issues: Исправлен merge conflict в next.config.ts
+
+---
 Task ID: 1
 Agent: Main Agent
 Task: Очистка лишней информации из меню "Создание"

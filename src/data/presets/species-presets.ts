@@ -1416,6 +1416,13 @@ export function getSpeciesByType(type: SpeciesType): SpeciesPreset[] {
 }
 
 /**
+ * Получить все виды
+ */
+export function getAllSpecies(): SpeciesPreset[] {
+  return SPECIES_PRESETS;
+}
+
+/**
  * Получить виды по подтипу
  */
 export function getSpeciesBySubtype(subtype: string): SpeciesPreset[] {

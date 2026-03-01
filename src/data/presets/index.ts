@@ -10,6 +10,9 @@
  * - Формации (объекты мира)
  * - Предметы (инвентарь)
  * - Персонажи (стартовые наборы)
+ * - Виды (для NPC генератора)
+ * - Роли (для NPC генератора)
+ * - Личности (для NPC генератора)
  * 
  * Все пресеты следуют единому формату BasePreset с общими полями:
  * - id, name, nameEn, description
@@ -184,6 +187,95 @@ export {
   getDefaultRandomPreset,
   getAllCharacterPresets,
 } from "./character-presets";
+
+// ============================================
+// ВИДЫ (SPECIES) - NPC Generator
+// ============================================
+
+export {
+  // Типы
+  type SpeciesType,
+  type HumanoidSubtype,
+  type BeastSubtype,
+  type SpiritSubtype,
+  type HybridSubtype,
+  type AberrationSubtype,
+  type BodyTemplate,
+  type SizeClass,
+  type Range,
+  type SpeciesBaseStats,
+  type SpeciesCapabilities,
+  type SpeciesCultivation,
+  type InnateTechnique,
+  type SpeciesPreset,
+  
+  // Константы
+  SPECIES_PRESETS,
+  
+  // Функции
+  getSpeciesById,
+  getSpeciesByType,
+  getAllSpecies,
+} from "./species-presets";
+
+// ============================================
+// РОЛИ (ROLES) - NPC Generator
+// ============================================
+
+export {
+  // Типы
+  type RoleType,
+  type RoleRequirements,
+  type StatModifiers,
+  type RoleTechniques,
+  type RoleEquipment,
+  type InventoryConsumable,
+  type InventoryQiStone,
+  type RoleInventory,
+  type RoleResources,
+  type RolePreset,
+  
+  // Константы
+  ROLE_PRESETS,
+  
+  // Функции
+  getRoleById,
+  getRolesByType,
+  getAllRoles,
+  getSectRoles,
+  getProfessionRoles,
+  getSocialRoles,
+  getCombatRoles,
+} from "./role-presets";
+
+// ============================================
+// ЛИЧНОСТИ (PERSONALITIES) - NPC Generator
+// ============================================
+
+export {
+  // Типы
+  type CombatStyle,
+  type CommunicationStyle,
+  type TraitEffect,
+  type PersonalityTrait,
+  type PersonalityPreset,
+  
+  // Константы
+  PERSONALITY_PRESETS,
+  
+  // Функции
+  getPersonalityById,
+  getAllPersonalities,
+  getCompatiblePersonalities,
+  getPersonalitiesByCommunicationStyle,
+  getPersonalitiesByCombatStyle,
+  getFriendlyPersonalities,
+  getHostilePersonalities,
+  getRandomPersonality,
+  getRandomCompatiblePersonality,
+  getPersonalityTraitEffects,
+  getPersonalityStats,
+} from "./personality-presets";
 
 // ============================================
 // УТИЛИТЫ

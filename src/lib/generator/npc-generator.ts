@@ -1,12 +1,12 @@
 /**
  * ============================================================================
- * ОФФЛАЙН ГЕНЕРАТОР NPC
+ * ОФФЛАЙН ГЕНЕРАТОР NPC v2.0
  * ============================================================================
  * 
  * Процедурная генерация неигровых персонажей без использования LLM.
  * 
  * Принципы:
- * - Detеrministic generation via seed
+ * - Deterministic generation via seed
  * - Species + Role = Stats, Techniques, Equipment
  * - Inventory from existing consumables pool (CRITICAL!)
  * 
@@ -16,37 +16,46 @@
  * 4. Stats Generation -> 5. Cultivation -> 6. Body Creation
  *      ↓                    ↓                      ↓
  * 7. Personality -> 8. Techniques -> 9. Equipment -> 10. Inventory (FROM POOL)
+ * 
+ * v2.0: Интеграция с полноценными пресетами от Agent-1
  */
+
+import {
+  SPECIES_PRESETS,
+  ROLE_PRESETS,
+  PERSONALITY_PRESETS,
+  type SpeciesPreset,
+  type RolePreset,
+  type PersonalityPreset,
+  type SpeciesType,
+  type BodyTemplate,
+  type SizeClass,
+  type Range,
+} from '@/data/presets';
+import {
+  getSpeciesById,
+  getSpeciesByType,
+  getAllSpecies,
+} from '@/data/presets/species-presets';
+import {
+  getRoleById,
+  getRolesByType,
+  getAllRoles,
+} from '@/data/presets/role-presets';
+import {
+  getPersonalityById,
+  getCompatiblePersonalities,
+  getRandomCompatiblePersonality,
+} from '@/data/presets/personality-presets';
+import { generatedObjectsLoader } from './generated-objects-loader';
+import { NPC_PREFIX } from './id-config';
 
 // ==================== ТИПЫ ====================
 
 /**
- * Типы видов
- */
-export type SpeciesType = 'humanoid' | 'beast' | 'spirit' | 'hybrid' | 'aberration';
-
-/**
- * Шаблоны тела
- */
-export type BodyTemplate = 'humanoid' | 'beast_quadruped' | 'beast_bird' | 'beast_serpentine' | 'spirit';
-
-/**
- * Класс размера
- */
-export type SizeClass = 'tiny' | 'small' | 'medium' | 'large' | 'huge';
-
-/**
- * Типы ролей
+ * Типы ролей (совместимость)
  */
 export type RoleType = 'sect' | 'profession' | 'social' | 'combat';
-
-/**
- * Диапазон значений
- */
-export interface Range {
-  min: number;
-  max: number;
-}
 
 /**
  * Контекст генерации NPC
@@ -141,14 +150,9 @@ export interface BodyPartState {
 // ==================== КОНСТАНТЫ ====================
 
 /**
- * Префикс ID для NPC
- */
-export const NPC_PREFIX = 'NP';
-
-/**
  * Версия генератора
  */
-const GENERATOR_VERSION = '1.0.0';
+const GENERATOR_VERSION = '2.0.0';
 
 /**
  * Множители размера для HP
@@ -194,131 +198,21 @@ function generateNPCId(counter: number): string {
   return `${NPC_PREFIX}_${counter.toString().padStart(6, '0')}`;
 }
 
-// ==================== ЗАГЛУШКИ ДЛЯ ПРЕСЕТОВ (Agent-1) ====================
-
-/**
- * Временные пресеты видов (пока Agent-1 не создаст полноценные)
- */
-const TEMP_SPECIES_PRESETS: Record<string, {
-  id: string;
-  name: string;
-  type: SpeciesType;
-  bodyTemplate: BodyTemplate;
-  sizeClass: SizeClass;
-  baseStats: { strength: Range; agility: Range; intelligence: Range; vitality: Range };
-}> = {
-  human: {
-    id: 'human',
-    name: 'Человек',
-    type: 'humanoid',
-    bodyTemplate: 'humanoid',
-    sizeClass: 'medium',
-    baseStats: {
-      strength: { min: 5, max: 20 },
-      agility: { min: 5, max: 20 },
-      intelligence: { min: 5, max: 25 },
-      vitality: { min: 5, max: 18 },
-    },
-  },
-  wolf: {
-    id: 'wolf',
-    name: 'Волк',
-    type: 'beast',
-    bodyTemplate: 'beast_quadruped',
-    sizeClass: 'medium',
-    baseStats: {
-      strength: { min: 10, max: 30 },
-      agility: { min: 15, max: 35 },
-      intelligence: { min: 3, max: 10 },
-      vitality: { min: 10, max: 25 },
-    },
-  },
-  fire_spirit: {
-    id: 'fire_spirit',
-    name: 'Огненный дух',
-    type: 'spirit',
-    bodyTemplate: 'spirit',
-    sizeClass: 'medium',
-    baseStats: {
-      strength: { min: 10, max: 50 },
-      agility: { min: 20, max: 60 },
-      intelligence: { min: 10, max: 40 },
-      vitality: { min: 30, max: 100 },
-    },
-  },
-};
-
-/**
- * Временные пресеты ролей
- */
-const TEMP_ROLE_PRESETS: Record<string, {
-  id: string;
-  name: string;
-  type: RoleType;
-  statModifiers?: { strength?: number; agility?: number; intelligence?: number; vitality?: number };
-  techniques?: string[];
-}> = {
-  elder: {
-    id: 'elder',
-    name: 'Старейшина',
-    type: 'sect',
-    statModifiers: { intelligence: 5, vitality: 3 },
-  },
-  inner_disciple: {
-    id: 'inner_disciple',
-    name: 'Внутренний ученик',
-    type: 'sect',
-    statModifiers: { strength: 2, agility: 2 },
-  },
-  outer_disciple: {
-    id: 'outer_disciple',
-    name: 'Внешний ученик',
-    type: 'sect',
-  },
-  merchant: {
-    id: 'merchant',
-    name: 'Торговец',
-    type: 'profession',
-    statModifiers: { intelligence: 3, agility: 1 },
-  },
-  bandit: {
-    id: 'bandit',
-    name: 'Бандит',
-    type: 'combat',
-    statModifiers: { strength: 4, agility: 2 },
-  },
-  wild_beast: {
-    id: 'wild_beast',
-    name: 'Дикий зверь',
-    type: 'combat',
-    statModifiers: { strength: 5, agility: 3 },
-  },
-};
-
-/**
- * Временные пресеты личностей
- */
-const TEMP_PERSONALITY_PRESETS = [
-  { traits: ['храбрый', 'честный'], motivations: ['защита слабых'], emotions: ['решимость'] },
-  { traits: ['хитрый', 'осторожный'], motivations: ['накопление силы'], emotions: ['любопытство'] },
-  { traits: ['спокойный', 'мудрый'], motivations: ['постижение истины'], emotions: ['спокойствие'] },
-  { traits: ['агрессивный', 'нетерпеливый'], motivations: ['доминирование'], emotions: ['гнев'] },
-  { traits: ['добрый', 'отзывчивый'], motivations: ['помощь другим'], emotions: ['радость'] },
-];
-
-// ==================== ОСНОВНЫЕ ФУНКЦИИ ====================
+// ==================== ОСНОВНЫЕ ФУНКЦИИ ВЫБОРА ====================
 
 /**
  * Выбор вида по контексту
  */
-function selectSpecies(context: NPCGenerationContext, rng: () => number): typeof TEMP_SPECIES_PRESETS[string] {
-  const candidates = Object.values(TEMP_SPECIES_PRESETS);
+function selectSpecies(context: NPCGenerationContext, rng: () => number): SpeciesPreset {
+  let candidates: SpeciesPreset[];
   
   if (context.speciesType) {
-    const filtered = candidates.filter(s => s.type === context.speciesType);
-    if (filtered.length > 0) {
-      return randomElement(filtered, rng);
+    candidates = getSpeciesByType(context.speciesType);
+    if (candidates.length === 0) {
+      candidates = getAllSpecies();
     }
+  } else {
+    candidates = getAllSpecies();
   }
   
   return randomElement(candidates, rng);
@@ -329,28 +223,73 @@ function selectSpecies(context: NPCGenerationContext, rng: () => number): typeof
  */
 function selectRole(
   context: NPCGenerationContext,
-  species: typeof TEMP_SPECIES_PRESETS[string],
+  species: SpeciesPreset,
   rng: () => number
-): typeof TEMP_ROLE_PRESETS[string] {
-  if (context.roleType && TEMP_ROLE_PRESETS[context.roleType]) {
-    return TEMP_ROLE_PRESETS[context.roleType];
+): RolePreset {
+  // Если указана конкретная роль
+  if (context.roleType) {
+    const role = getRoleById(context.roleType);
+    if (role) return role;
   }
+  
+  // Фильтруем роли по совместимости с видом
+  let candidates = getAllRoles();
   
   // Для зверей выбираем только боевые роли
   if (species.type === 'beast') {
-    return TEMP_ROLE_PRESETS['wild_beast'];
+    const beastRoles = candidates.filter(r => 
+      r.type === 'combat' || 
+      !r.requirements?.speciesType ||
+      r.requirements.speciesType.includes(species.type)
+    );
+    if (beastRoles.length > 0) {
+      candidates = beastRoles;
+    }
+  } else {
+    // Для остальных видов фильтруем по требованиям
+    candidates = candidates.filter(r => 
+      !r.requirements?.speciesType ||
+      r.requirements.speciesType.includes(species.type)
+    );
   }
   
-  const candidates = Object.values(TEMP_ROLE_PRESETS);
+  if (candidates.length === 0) {
+    candidates = getAllRoles();
+  }
+  
   return randomElement(candidates, rng);
+}
+
+/**
+ * Выбор личности по роли
+ */
+function selectPersonality(role: RolePreset, rng: () => number): GeneratedNPC['personality'] {
+  const personality = getRandomCompatiblePersonality(role.id);
+  
+  // Извлекаем эффекты черт для disposition
+  let disposition = 50; // Нейтральное значение
+  const traitEffects = personality.traits.reduce((acc, trait) => {
+    return {
+      dispositionModifier: acc.dispositionModifier + (trait.effects.dispositionModifier || 0),
+    };
+  }, { dispositionModifier: 0 });
+  
+  disposition = Math.max(0, Math.min(100, 50 + traitEffects.dispositionModifier));
+  
+  return {
+    traits: personality.traits.map(t => t.name),
+    motivation: randomElement(personality.motivations, rng),
+    dominantEmotion: randomElement(personality.dominantEmotions, rng),
+    disposition,
+  };
 }
 
 /**
  * Генерация характеристик
  */
 function generateStats(
-  species: typeof TEMP_SPECIES_PRESETS[string],
-  role: typeof TEMP_ROLE_PRESETS[string],
+  species: SpeciesPreset,
+  role: RolePreset,
   rng: () => number
 ): GeneratedNPC['stats'] {
   const baseStats = species.baseStats;
@@ -369,6 +308,7 @@ function generateStats(
  */
 function generateCultivation(
   context: NPCGenerationContext,
+  species: SpeciesPreset,
   rng: () => number
 ): GeneratedNPC['cultivation'] {
   let level: number;
@@ -384,48 +324,71 @@ function generateCultivation(
     level = 1 + Math.floor(rng() * 3);
   }
   
+  // Ограничиваем уровнем вида
+  level = Math.min(level, species.cultivation.maxCultivationLevel);
+  
   const subLevel = Math.floor(rng() * 10);
-  const baseCapacity = 100 + level * 50;
-  const coreCapacity = baseCapacity + Math.floor(rng() * baseCapacity * 0.5);
+  const baseCapacity = randomInRange(species.cultivation.coreCapacityBase, rng);
+  const coreCapacity = Math.floor(baseCapacity * (1 + level * 0.1));
+  const coreQuality = randomInRange(species.cultivation.coreQualityRange, rng);
   
   return {
     level,
     subLevel,
     coreCapacity,
     currentQi: Math.floor(coreCapacity * (0.5 + rng() * 0.5)),
-    coreQuality: 1 + Math.floor(rng() * 5),
-  };
-}
-
-/**
- * Выбор личности
- */
-function selectPersonality(rng: () => number): GeneratedNPC['personality'] {
-  const personality = randomElement(TEMP_PERSONALITY_PRESETS, rng);
-  
-  return {
-    traits: personality.traits,
-    motivation: randomElement(personality.motivations, rng),
-    dominantEmotion: randomElement(personality.emotions, rng),
-    disposition: Math.floor(rng() * 100),
+    coreQuality,
   };
 }
 
 /**
  * Генерация ресурсов
  */
-function generateResources(rng: () => number): GeneratedNPC['resources'] {
+function generateResources(role: RolePreset, rng: () => number): GeneratedNPC['resources'] {
+  const resources = role.resources || {};
+  
   return {
-    spiritStones: Math.floor(rng() * 100),
-    contributionPoints: Math.floor(rng() * 50),
+    spiritStones: resources.spiritStones 
+      ? randomInRange(resources.spiritStones, rng) 
+      : Math.floor(rng() * 50),
+    contributionPoints: resources.contributionPoints 
+      ? randomInRange(resources.contributionPoints, rng) 
+      : Math.floor(rng() * 25),
   };
 }
 
 /**
- * Генерация имени NPC (заглушка - полная реализация в name-generator.ts)
+ * Выбор техник
  */
-function generateTempName(
-  species: typeof TEMP_SPECIES_PRESETS[string],
+function selectTechniques(
+  role: RolePreset,
+  cultivationLevel: number,
+  rng: () => number
+): string[] {
+  const techniques: string[] = [];
+  
+  // Гарантированные техники
+  if (role.techniques?.guaranteed) {
+    techniques.push(...role.techniques.guaranteed);
+  }
+  
+  // Возможные техники (случайный выбор)
+  if (role.techniques?.possible && role.techniques.count) {
+    const remaining = Math.max(0, role.techniques.count - techniques.length);
+    if (remaining > 0) {
+      const shuffled = [...role.techniques.possible].sort(() => rng() - 0.5);
+      techniques.push(...shuffled.slice(0, remaining));
+    }
+  }
+  
+  return techniques;
+}
+
+/**
+ * Генерация имени NPC
+ */
+function generateNPCName(
+  species: SpeciesPreset,
   gender: 'male' | 'female' | 'none',
   rng: () => number
 ): string {
@@ -471,7 +434,7 @@ export function getNPCCounter(): number {
 }
 
 /**
- * Основная функция генерации NPC
+ * Основная функция генерации NPC (синхронная версия)
  */
 export function generateNPC(context: NPCGenerationContext): GeneratedNPC {
   const seed = context.seed ?? Date.now();
@@ -487,22 +450,25 @@ export function generateNPC(context: NPCGenerationContext): GeneratedNPC {
   const stats = generateStats(species, role, rng);
   
   // 4. Генерация культивации
-  const cultivation = generateCultivation(context, rng);
+  const cultivation = generateCultivation(context, species, rng);
   
-  // 5. Создание тела (упрощённое)
+  // 5. Создание тела
   const bodyState = createBodyForSpecies(species, cultivation.level);
   
   // 6. Выбор личности
-  const personality = selectPersonality(rng);
+  const personality = selectPersonality(role, rng);
   
-  // 7. Ресурсы
-  const resources = generateResources(rng);
+  // 7. Техники
+  const techniques = selectTechniques(role, cultivation.level, rng);
   
-  // 8. Имя
+  // 8. Ресурсы
+  const resources = generateResources(role, rng);
+  
+  // 9. Имя и пол
   const gender = rng() > 0.5 ? 'male' : 'female';
-  const name = generateTempName(species, gender, rng);
+  const name = generateNPCName(species, gender, rng);
   
-  // 9. ID
+  // 10. ID
   const id = generateNPCId(npcCounter++);
   
   return {
@@ -516,9 +482,9 @@ export function generateNPC(context: NPCGenerationContext): GeneratedNPC {
     cultivation,
     bodyState,
     personality,
-    techniques: role.techniques || [],
+    techniques,
     equipment: {},
-    inventory: [], // Будет заполнено из пула (CRITICAL!)
+    inventory: [], // Будет заполнено из пула через generateNPCAsync
     resources,
     generationMeta: {
       seed,
@@ -529,18 +495,88 @@ export function generateNPC(context: NPCGenerationContext): GeneratedNPC {
 }
 
 /**
+ * Асинхронная генерация NPC с инвентарём из пула
+ */
+export async function generateNPCAsync(
+  context: NPCGenerationContext
+): Promise<GeneratedNPC> {
+  const npc = generateNPC(context);
+  npc.inventory = await generateInventoryFromPool(npc);
+  return npc;
+}
+
+/**
+ * Генерация инвентаря из пула расходников (CRITICAL!)
+ */
+async function generateInventoryFromPool(npc: GeneratedNPC): Promise<Array<{ id: string; quantity: number }>> {
+  const inventory: Array<{ id: string; quantity: number }> = [];
+  
+  try {
+    // Загружаем расходники из сгенерированного пула
+    const consumables = await generatedObjectsLoader.loadObjects('consumables');
+    
+    if (consumables.length === 0) {
+      return inventory;
+    }
+    
+    // Фильтруем по уровню
+    const suitable = consumables.filter(c => {
+      const consumableLevel = (c as { level?: number }).level || 1;
+      const requiredLevel = (c as { requirements?: { cultivationLevel?: number } }).requirements?.cultivationLevel || 1;
+      return consumableLevel <= npc.cultivation.level && requiredLevel <= npc.cultivation.level;
+    });
+    
+    // Выбираем 1-3 случайных предмета
+    const count = 1 + Math.floor(Math.random() * 3);
+    const selected = suitable
+      .sort(() => Math.random() - 0.5)
+      .slice(0, count);
+    
+    for (const item of selected) {
+      inventory.push({
+        id: (item as { id: string }).id,
+        quantity: 1 + Math.floor(Math.random() * 3),
+      });
+    }
+  } catch (error) {
+    console.error('[NPCGenerator] Error loading inventory from pool:', error);
+  }
+  
+  return inventory;
+}
+
+/**
  * Генерация нескольких NPC
  */
 export function generateNPCs(context: NPCGenerationContext, count: number): GeneratedNPC[] {
   const npcs: GeneratedNPC[] = [];
   
   for (let i = 0; i < count; i++) {
-    // Увеличиваем seed для каждого NPC
     const npcContext = {
       ...context,
       seed: (context.seed ?? Date.now()) + i,
     };
     npcs.push(generateNPC(npcContext));
+  }
+  
+  return npcs;
+}
+
+/**
+ * Асинхронная генерация нескольких NPC
+ */
+export async function generateNPCsAsync(
+  context: NPCGenerationContext,
+  count: number
+): Promise<GeneratedNPC[]> {
+  const npcs: GeneratedNPC[] = [];
+  
+  for (let i = 0; i < count; i++) {
+    const npcContext = {
+      ...context,
+      seed: (context.seed ?? Date.now()) + i,
+    };
+    npcs.push(await generateNPCAsync(npcContext));
   }
   
   return npcs;
@@ -578,25 +614,23 @@ export function generateEnemy(
   return generateNPC({
     difficulty,
     cultivationLevel: levelMap[difficulty],
-    roleType: 'bandit', // или 'wild_beast' для зверей
+    speciesType: Math.random() > 0.5 ? 'beast' : 'humanoid',
   });
 }
 
-// ==================== СИСТЕМА ТЕЛА (упрощённая) ====================
+// ==================== СИСТЕМА ТЕЛА ====================
 
 /**
- * Создание тела для вида (полная реализация в npc-body-system.ts)
+ * Создание тела для вида
  */
-function createBodyForSpecies(
-  species: typeof TEMP_SPECIES_PRESETS[string],
+export function createBodyForSpecies(
+  species: SpeciesPreset,
   cultivationLevel: number
 ): BodyState {
   const sizeMultiplier = SIZE_MULTIPLIERS[species.sizeClass] || 1;
   const cultivationBonus = 1 + (cultivationLevel - 1) * 0.1;
   
   const parts: Record<string, BodyPartState> = {};
-  
-  // Определяем части тела по шаблону
   const templateParts = getTemplateParts(species.bodyTemplate);
   
   for (const partId of templateParts) {
@@ -609,7 +643,7 @@ function createBodyForSpecies(
       structuralHP: maxHP * 2,
       maxStructuralHP: maxHP * 2,
       status: 'healthy',
-      regenerationRate: 0.1,
+      regenerationRate: species.capabilities.canCultivate ? 0.1 : 0.05,
     };
   }
   
@@ -654,7 +688,6 @@ function getBaseHP(partId: string, template: BodyTemplate): number {
     essence: 200,
   };
   
-  // Определяем тип части
   if (partId.includes('arm') || partId.includes('wing')) return baseHP.arm;
   if (partId.includes('hand') || partId.includes('foot')) return baseHP.hand;
   if (partId.includes('leg')) return baseHP.leg;
@@ -665,5 +698,5 @@ function getBaseHP(partId: string, template: BodyTemplate): number {
   return baseHP[partId] || baseHP.torso;
 }
 
-// Экспорт для расширения name-generator.ts
-export { TEMP_SPECIES_PRESETS, TEMP_ROLE_PRESETS };
+// Экспорт типов для внешнего использования
+export { SpeciesType, BodyTemplate, SizeClass, Range };
