@@ -21,7 +21,7 @@ import {
   UtensilsCrossed,
   ScrollText,
   AlertTriangle,
-  Belt,
+  Briefcase,
 } from 'lucide-react';
 import {
   generateConsumables,
@@ -184,7 +184,7 @@ export function ConsumableGeneratorPanel({ onGenerate, loading = false }: Consum
       {/* Информация о поясе */}
       <div className="bg-slate-800/50 rounded-lg p-4 space-y-3">
         <h3 className="text-lg font-medium text-slate-200 flex items-center gap-2">
-          <Belt className="w-5 h-5 text-amber-400" />
+          <Briefcase className="w-5 h-5 text-amber-400" />
           Система пояса
         </h3>
         

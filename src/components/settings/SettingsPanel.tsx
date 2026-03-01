@@ -38,6 +38,10 @@ import {
 import { TechniqueGeneratorPanel } from './TechniqueGeneratorPanel';
 import { WeaponGeneratorPanel } from './WeaponGeneratorPanel';
 import { ArmorGeneratorPanel } from './ArmorGeneratorPanel';
+import { AccessoryGeneratorPanel } from './AccessoryGeneratorPanel';
+import { ConsumableGeneratorPanel } from './ConsumableGeneratorPanel';
+import { QiStoneGeneratorPanel } from './QiStoneGeneratorPanel';
+import { ChargerGeneratorPanel } from './ChargerGeneratorPanel';
 import { Rarity, TechniqueType, CombatSubtype } from '@/lib/generator/technique-generator';
 import type { WeaponCategory, WeaponType, EquipmentSlot } from '@/lib/generator/item-config';
 
@@ -452,60 +456,48 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
                 />
               </TabsContent>
 
-              {/* Аксессуары - заглушка */}
+              {/* Аксессуары */}
               <TabsContent value="accessory">
-                <div className="bg-slate-800/50 rounded-lg p-4">
-                  <h3 className="text-lg font-medium text-amber-400 mb-3 flex items-center gap-2">
-                    <Gem className="w-5 h-5" />
-                    Генератор аксессуаров
-                  </h3>
-                  <div className="bg-slate-700/30 rounded-lg p-4 text-center">
-                    <p className="text-slate-400">🚧 В разработке (Агент 2)</p>
-                    <p className="text-sm text-slate-500 mt-2">Кольца, амулеты, талисманы</p>
-                  </div>
-                </div>
+                <AccessoryGeneratorPanel
+                  onGenerate={(accessories) => {
+                    console.log('Generated accessories:', accessories);
+                    setMessage({ type: 'success', text: `Сгенерировано ${accessories.length} аксессуаров` });
+                  }}
+                  loading={loading}
+                />
               </TabsContent>
 
-              {/* Расходники - заглушка */}
+              {/* Расходники */}
               <TabsContent value="consumable">
-                <div className="bg-slate-800/50 rounded-lg p-4">
-                  <h3 className="text-lg font-medium text-amber-400 mb-3 flex items-center gap-2">
-                    <Pill className="w-5 h-5" />
-                    Генератор расходников
-                  </h3>
-                  <div className="bg-slate-700/30 rounded-lg p-4 text-center">
-                    <p className="text-slate-400">🚧 В разработке (Агент 2)</p>
-                    <p className="text-sm text-slate-500 mt-2">Таблетки, эликсиры, еда, свитки</p>
-                  </div>
-                </div>
+                <ConsumableGeneratorPanel
+                  onGenerate={(consumables) => {
+                    console.log('Generated consumables:', consumables);
+                    setMessage({ type: 'success', text: `Сгенерировано ${consumables.length} расходников` });
+                  }}
+                  loading={loading}
+                />
               </TabsContent>
 
-              {/* Камни Ци - заглушка */}
+              {/* Камни Ци */}
               <TabsContent value="qi_stone">
-                <div className="bg-slate-800/50 rounded-lg p-4">
-                  <h3 className="text-lg font-medium text-amber-400 mb-3 flex items-center gap-2">
-                    <Sparkles className="w-5 h-5" />
-                    Генератор камней Ци
-                  </h3>
-                  <div className="bg-slate-700/30 rounded-lg p-4 text-center">
-                    <p className="text-slate-400">🚧 В разработке (Агент 2)</p>
-                    <p className="text-sm text-slate-500 mt-2">Камни с запасом Ци</p>
-                  </div>
-                </div>
+                <QiStoneGeneratorPanel
+                  onGenerate={(stones) => {
+                    console.log('Generated Qi stones:', stones);
+                    setMessage({ type: 'success', text: `Сгенерировано ${stones.length} камней Ци` });
+                  }}
+                  loading={loading}
+                />
               </TabsContent>
 
-              {/* Зарядники - заглушка */}
+              {/* Зарядники */}
               <TabsContent value="charger">
-                <div className="bg-slate-800/50 rounded-lg p-4">
-                  <h3 className="text-lg font-medium text-amber-400 mb-3 flex items-center gap-2">
-                    <Zap className="w-5 h-5" />
-                    Генератор зарядников
-                  </h3>
-                  <div className="bg-slate-700/30 rounded-lg p-4 text-center">
-                    <p className="text-slate-400">🚧 В разработке (Агент 2)</p>
-                    <p className="text-sm text-slate-500 mt-2">Устройства для хранения Ци</p>
-                  </div>
-                </div>
+                <ChargerGeneratorPanel
+                  onGenerate={(chargers) => {
+                    console.log('Generated chargers:', chargers);
+                    setMessage({ type: 'success', text: `Сгенерировано ${chargers.length} зарядников` });
+                  }}
+                  loading={loading}
+                />
               </TabsContent>
             </Tabs>
 

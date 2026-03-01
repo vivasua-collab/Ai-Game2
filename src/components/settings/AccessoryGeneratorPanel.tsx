@@ -15,7 +15,7 @@ import {
   Sparkles,
   Loader2,
   Info,
-  Ring,
+  Circle,
   Gem,
   Scroll,
   AlertTriangle,
@@ -38,7 +38,7 @@ interface AccessoryGeneratorPanelProps {
 }
 
 const TYPE_ICONS: Record<AccessoryType, React.ReactNode> = {
-  ring: <Ring className="w-5 h-5" />,
+  ring: <Circle className="w-5 h-5" />,
   amulet: <Gem className="w-5 h-5" />,
   talisman: <Scroll className="w-5 h-5" />,
 };
