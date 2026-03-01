@@ -15,13 +15,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
   Sparkles,
   Package,
   Loader2,
@@ -30,8 +23,18 @@ import {
   Shield,
   Shirt,
   Users,
+  Sword,
+  Gem,
+  Pill,
+  Zap,
 } from 'lucide-react';
 import { TechniqueGeneratorPanel } from './TechniqueGeneratorPanel';
+import { WeaponGeneratorPanel } from './WeaponGeneratorPanel';
+import { ArmorGeneratorPanel } from './ArmorGeneratorPanel';
+import { AccessoryGeneratorPanel } from './AccessoryGeneratorPanel';
+import { ConsumableGeneratorPanel } from './ConsumableGeneratorPanel';
+import { QiStoneGeneratorPanel } from './QiStoneGeneratorPanel';
+import { ChargerGeneratorPanel } from './ChargerGeneratorPanel';
 import { Rarity, TechniqueType, CombatSubtype } from '@/lib/generator/technique-generator';
 
 interface SettingsPanelProps {
@@ -387,21 +390,121 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
             )}
           </TabsContent>
 
-          {/* ЭКИПИРОВКА */}
+          {/* ЭКИПИРОВКА - Подвкладки */}
           <TabsContent value="equipment" className="mt-4 space-y-4 overflow-y-auto max-h-[60vh]">
-            <div className="bg-slate-800/50 rounded-lg p-4">
-              <h3 className="text-lg font-medium text-amber-400 mb-3 flex items-center gap-2">
-                <Shirt className="w-5 h-5" />
-                Генератор экипировки
-              </h3>
-              <p className="text-sm text-slate-400 mb-4">
-                Генерация оружия, брони, аксессуаров и других предметов экипировки.
-              </p>
-              <div className="bg-slate-700/30 rounded-lg p-4 text-center">
-                <p className="text-slate-400">🚧 В разработке</p>
-                <p className="text-sm text-slate-500 mt-2">Будет реализовано в следующем обновлении</p>
+            <Tabs defaultValue="weapon" className="w-full">
+              <TabsList className="grid w-full grid-cols-6 bg-slate-800 mb-4">
+                <TabsTrigger value="weapon" className="data-[state=active]:bg-amber-600 text-xs">
+                  <Sword className="w-4 h-4 mr-1" />
+                  Оружие
+                </TabsTrigger>
+                <TabsTrigger value="armor" className="data-[state=active]:bg-amber-600 text-xs">
+                  <Shield className="w-4 h-4 mr-1" />
+                  Броня
+                </TabsTrigger>
+                <TabsTrigger value="accessory" className="data-[state=active]:bg-amber-600 text-xs">
+                  <Gem className="w-4 h-4 mr-1" />
+                  Аксессуары
+                </TabsTrigger>
+                <TabsTrigger value="consumable" className="data-[state=active]:bg-amber-600 text-xs">
+                  <Pill className="w-4 h-4 mr-1" />
+                  Расходники
+                </TabsTrigger>
+                <TabsTrigger value="qi_stone" className="data-[state=active]:bg-amber-600 text-xs">
+                  <Sparkles className="w-4 h-4 mr-1" />
+                  Камни Ци
+                </TabsTrigger>
+                <TabsTrigger value="charger" className="data-[state=active]:bg-amber-600 text-xs">
+                  <Zap className="w-4 h-4 mr-1" />
+                  Зарядники
+                </TabsTrigger>
+              </TabsList>
+
+              {/* Оружие */}
+              <TabsContent value="weapon">
+                <WeaponGeneratorPanel
+                  onGenerate={async (params) => {
+                    console.log('Generate weapons:', params);
+                    setMessage({ type: 'success', text: `Генерация ${params.count} единиц оружия... (API в разработке)` });
+                  }}
+                  onClear={async () => {
+                    setMessage({ type: 'success', text: 'Очистка оружия... (API в разработке)' });
+                  }}
+                  loading={loading}
+                />
+              </TabsContent>
+
+              {/* Броня */}
+              <TabsContent value="armor">
+                <ArmorGeneratorPanel
+                  onGenerate={async (params) => {
+                    console.log('Generate armor:', params);
+                    setMessage({ type: 'success', text: `Генерация ${params.count} единиц экипировки... (API в разработке)` });
+                  }}
+                  onClear={async () => {
+                    setMessage({ type: 'success', text: 'Очистка экипировки... (API в разработке)' });
+                  }}
+                  loading={loading}
+                />
+              </TabsContent>
+
+              {/* Аксессуары */}
+              <TabsContent value="accessory">
+                <AccessoryGeneratorPanel
+                  onGenerate={(accessories) => {
+                    console.log('Generated accessories:', accessories);
+                    setMessage({ type: 'success', text: `Сгенерировано ${accessories.length} аксессуаров` });
+                  }}
+                  loading={loading}
+                />
+              </TabsContent>
+
+              {/* Расходники */}
+              <TabsContent value="consumable">
+                <ConsumableGeneratorPanel
+                  onGenerate={(consumables) => {
+                    console.log('Generated consumables:', consumables);
+                    setMessage({ type: 'success', text: `Сгенерировано ${consumables.length} расходников` });
+                  }}
+                  loading={loading}
+                />
+              </TabsContent>
+
+              {/* Камни Ци */}
+              <TabsContent value="qi_stone">
+                <QiStoneGeneratorPanel
+                  onGenerate={(stones) => {
+                    console.log('Generated Qi stones:', stones);
+                    setMessage({ type: 'success', text: `Сгенерировано ${stones.length} камней Ци` });
+                  }}
+                  loading={loading}
+                />
+              </TabsContent>
+
+              {/* Зарядники */}
+              <TabsContent value="charger">
+                <ChargerGeneratorPanel
+                  onGenerate={(chargers) => {
+                    console.log('Generated chargers:', chargers);
+                    setMessage({ type: 'success', text: `Сгенерировано ${chargers.length} зарядников` });
+                  }}
+                  loading={loading}
+                />
+              </TabsContent>
+            </Tabs>
+
+            {message && activeTab === 'equipment' && (
+              <div className={`p-3 rounded flex items-center gap-2 text-sm ${
+                message.type === 'success' 
+                  ? 'bg-green-900/30 text-green-400' 
+                  : message.type === 'warning'
+                  ? 'bg-yellow-900/30 text-yellow-400'
+                  : 'bg-red-900/30 text-red-400'
+              }`}>
+                {message.type === 'success' ? <Check className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+                {message.text}
               </div>
-            </div>
+            )}
           </TabsContent>
 
           {/* NPC И МОБЫ */}
