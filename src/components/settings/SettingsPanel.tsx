@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense, useMemo, useCallback } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -29,15 +29,24 @@ import {
   Zap,
   Trash2,
 } from 'lucide-react';
-import { TechniqueGeneratorPanel } from './TechniqueGeneratorPanel';
-import { WeaponGeneratorPanel } from './WeaponGeneratorPanel';
-import { ArmorGeneratorPanel } from './ArmorGeneratorPanel';
-import { AccessoryGeneratorPanel } from './AccessoryGeneratorPanel';
-import { ConsumableGeneratorPanel } from './ConsumableGeneratorPanel';
-import { QiStoneGeneratorPanel } from './QiStoneGeneratorPanel';
-import { ChargerGeneratorPanel } from './ChargerGeneratorPanel';
-import { NPCGeneratorPanel } from './NPCGeneratorPanel';
 import { Rarity, TechniqueType, CombatSubtype } from '@/lib/generator/technique-generator';
+
+// Lazy load heavy generator panels
+const TechniqueGeneratorPanel = lazy(() => import('./TechniqueGeneratorPanel').then(m => ({ default: m.TechniqueGeneratorPanel })));
+const WeaponGeneratorPanel = lazy(() => import('./WeaponGeneratorPanel').then(m => ({ default: m.WeaponGeneratorPanel })));
+const ArmorGeneratorPanel = lazy(() => import('./ArmorGeneratorPanel').then(m => ({ default: m.ArmorGeneratorPanel })));
+const AccessoryGeneratorPanel = lazy(() => import('./AccessoryGeneratorPanel').then(m => ({ default: m.AccessoryGeneratorPanel })));
+const ConsumableGeneratorPanel = lazy(() => import('./ConsumableGeneratorPanel').then(m => ({ default: m.ConsumableGeneratorPanel })));
+const QiStoneGeneratorPanel = lazy(() => import('./QiStoneGeneratorPanel').then(m => ({ default: m.QiStoneGeneratorPanel })));
+const ChargerGeneratorPanel = lazy(() => import('./ChargerGeneratorPanel').then(m => ({ default: m.ChargerGeneratorPanel })));
+const NPCGeneratorPanel = lazy(() => import('./NPCGeneratorPanel').then(m => ({ default: m.NPCGeneratorPanel })));
+
+// Loading fallback
+const PanelLoader = () => (
+  <div className="flex items-center justify-center p-8">
+    <Loader2 className="w-6 h-6 animate-spin text-amber-400" />
+  </div>
+);
 
 interface SettingsPanelProps {
   open: boolean;
@@ -102,79 +111,57 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
   const [formationManifest, setFormationManifest] = useState<{ total: number; byLevel: Record<number, number> } | null>(null);
   const [npcStats, setNpcStats] = useState<{ total: number; bySpeciesType: Record<string, number>; byRoleType: Record<string, number>; byLevel: Record<number, number> } | null>(null);
 
-  useEffect(() => {
-    if (open) {
-      loadStats();
-      checkPresets();
-      loadStorageStats();
-      loadFormationManifest();
-      loadNPCStats();
-    }
-  }, [open]);
-
-  const loadStats = async () => {
+  // Load all stats in parallel
+  const loadAllStats = useCallback(async () => {
     try {
-      const res = await fetch('/api/generator/techniques?action=stats');
-      const data = await res.json();
-      if (data.success) {
-        setStats(data.stats);
-      }
+      const [techniquesRes, checkRes, storageRes, formationsRes, npcRes] = await Promise.all([
+        fetch('/api/generator/techniques?action=stats'),
+        fetch('/api/generator/techniques?action=check'),
+        fetch('/api/generator/techniques?action=storage'),
+        fetch('/api/generator/formations?action=stats'),
+        fetch('/api/generator/npc?action=stats'),
+      ]);
+
+      const [techniques, check, storage, formations, npc] = await Promise.all([
+        techniquesRes.json(),
+        checkRes.json(),
+        storageRes.json(),
+        formationsRes.json(),
+        npcRes.json(),
+      ]);
+
+      // Batch state updates
+      const updates = () => {
+        if (techniques.success) setStats(techniques.stats);
+        setHasPresets(check.hasPresets);
+        if (check.hasPresets && techniques.success) {
+          // Load manifest only if needed
+          fetch('/api/generator/techniques?action=manifest')
+            .then(r => r.json())
+            .then(d => d.manifest && setManifest(d.manifest));
+        }
+        if (storage.success) setStorageStats(storage.storage);
+        if (formations.success) setFormationManifest(formations.stats);
+        if (npc.success) setNpcStats(npc.stats);
+      };
+
+      // Single re-render with all updates
+      updates();
     } catch (error) {
       console.error('Failed to load stats:', error);
     }
-  };
+  }, []);
 
-  const checkPresets = async () => {
-    try {
-      const res = await fetch('/api/generator/techniques?action=check');
-      const data = await res.json();
-      setHasPresets(data.hasPresets);
-      
-      if (data.hasPresets) {
-        const manifestRes = await fetch('/api/generator/techniques?action=manifest');
-        const manifestData = await manifestRes.json();
-        setManifest(manifestData.manifest);
-      }
-    } catch (error) {
-      console.error('Failed to check presets:', error);
+  useEffect(() => {
+    if (open) {
+      loadAllStats();
     }
-  };
+  }, [open, loadAllStats]);
 
-  const loadFormationManifest = async () => {
-    try {
-      const res = await fetch('/api/generator/formations?action=stats');
-      const data = await res.json();
-      if (data.success) {
-        setFormationManifest(data.stats);
-      }
-    } catch (error) {
-      console.error('Failed to load formation stats:', error);
-    }
-  };
-
-  const loadNPCStats = async () => {
-    try {
-      const res = await fetch('/api/generator/npc?action=stats');
-      const data = await res.json();
-      if (data.success) {
-        setNpcStats(data.stats);
-      }
-    } catch (error) {
-      console.error('Failed to load NPC stats:', error);
-    }
-  };
-
-  const loadStorageStats = async () => {
-    try {
-      const res = await fetch('/api/generator/techniques?action=storage');
-      const data = await res.json();
-      if (data.success) {
-        setStorageStats(data.storage);
-      }
-    } catch (error) {
-      console.error('Failed to load storage stats:', error);
-    }
-  };
+  // Reload stats after generation
+  const reloadStats = useCallback(async () => {
+    await loadAllStats();
+  }, [loadAllStats]);
 
   // Функция для сохранения экипировки через API
   const saveItemsToServer = async (
@@ -265,9 +252,7 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
           type: data.warnings?.length > 0 ? 'warning' : 'success', 
           text: data.message 
         });
-        await checkPresets();
-        await loadStats();
-        await loadStorageStats();
+        await reloadStats();
       } else {
         setMessage({ type: 'error', text: data.error || data.message });
       }
@@ -300,8 +285,7 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
       
       if (data.success) {
         setMessage({ type: 'success', text: data.message });
-        await checkPresets();
-        await loadFormationManifest();
+        await reloadStats();
       } else {
         setMessage({ type: 'error', text: data.error });
       }
@@ -369,8 +353,7 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
           setManifest(null);
           setHasPresets(false);
         }
-        await loadStats();
-        await loadStorageStats();
+        await reloadStats();
       } else {
         setMessage({ type: 'error', text: data.error });
       }
@@ -457,11 +440,13 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
               </div>
             )}
 
-            <TechniqueGeneratorPanel 
-              onGenerate={handleGenerateTechniques}
-              onClear={handleClearAll}
-              loading={loading}
-            />
+            <Suspense fallback={<PanelLoader />}>
+              <TechniqueGeneratorPanel 
+                onGenerate={handleGenerateTechniques}
+                onClear={handleClearAll}
+                loading={loading}
+              />
+            </Suspense>
 
             {message && activeTab === 'generator' && (
               <div className={`p-3 rounded flex items-center gap-2 text-sm ${
@@ -509,7 +494,8 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
 
               {/* Оружие */}
               <TabsContent value="weapon">
-                <WeaponGeneratorPanel
+                <Suspense fallback={<PanelLoader />}>
+                  <WeaponGeneratorPanel
                   onGenerate={async (params) => {
                     setLoading(true);
                     setMessage(null);
@@ -557,12 +543,14 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
                     }
                   }}
                   loading={loading}
-                />
+                  />
+                </Suspense>
               </TabsContent>
 
               {/* Броня */}
               <TabsContent value="armor">
-                <ArmorGeneratorPanel
+                <Suspense fallback={<PanelLoader />}>
+                  <ArmorGeneratorPanel
                   onGenerate={async (params) => {
                     setLoading(true);
                     setMessage(null);
@@ -608,12 +596,14 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
                     }
                   }}
                   loading={loading}
-                />
+                  />
+                </Suspense>
               </TabsContent>
 
               {/* Аксессуары */}
               <TabsContent value="accessory">
-                <AccessoryGeneratorPanel
+                <Suspense fallback={<PanelLoader />}>
+                  <AccessoryGeneratorPanel
                   onGenerate={async (accessories) => {
                     setLoading(true);
                     const success = await saveItemsToServer(accessories, 'append');
@@ -625,12 +615,14 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
                     setLoading(false);
                   }}
                   loading={loading}
-                />
+                  />
+                </Suspense>
               </TabsContent>
 
               {/* Расходники */}
               <TabsContent value="consumable">
-                <ConsumableGeneratorPanel
+                <Suspense fallback={<PanelLoader />}>
+                  <ConsumableGeneratorPanel
                   onGenerate={async (consumables) => {
                     setLoading(true);
                     const success = await saveItemsToServer(consumables, 'append');
@@ -642,12 +634,14 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
                     setLoading(false);
                   }}
                   loading={loading}
-                />
+                  />
+                </Suspense>
               </TabsContent>
 
               {/* Камни Ци */}
               <TabsContent value="qi_stone">
-                <QiStoneGeneratorPanel
+                <Suspense fallback={<PanelLoader />}>
+                  <QiStoneGeneratorPanel
                   onGenerate={async (stones) => {
                     setLoading(true);
                     const success = await saveItemsToServer(stones, 'append');
@@ -659,12 +653,14 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
                     setLoading(false);
                   }}
                   loading={loading}
-                />
+                  />
+                </Suspense>
               </TabsContent>
 
               {/* Зарядники */}
               <TabsContent value="charger">
-                <ChargerGeneratorPanel
+                <Suspense fallback={<PanelLoader />}>
+                  <ChargerGeneratorPanel
                   onGenerate={async (chargers) => {
                     setLoading(true);
                     const success = await saveItemsToServer(chargers, 'append');
@@ -676,7 +672,8 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
                     setLoading(false);
                   }}
                   loading={loading}
-                />
+                  />
+                </Suspense>
               </TabsContent>
             </Tabs>
 
@@ -696,61 +693,63 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
 
           {/* NPC И МОБЫ */}
           <TabsContent value="npc" className="mt-4 space-y-4 overflow-y-auto max-h-[60vh]">
-            <NPCGeneratorPanel
-              onGenerate={async (params) => {
-                setLoading(true);
-                setMessage(null);
-                try {
-                  const res = await fetch('/api/generator/npc', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      action: 'generate',
-                      context: params.context,
-                      count: params.count,
-                      save: params.save,
-                      mode: params.mode,
-                    }),
-                  });
-                  const data = await res.json();
-                  if (data.success) {
-                    setMessage({ type: 'success', text: data.message });
-                    await loadNPCStats();
-                  } else {
-                    setMessage({ type: 'error', text: data.error || 'Ошибка генерации NPC' });
+            <Suspense fallback={<PanelLoader />}>
+              <NPCGeneratorPanel
+                onGenerate={async (params) => {
+                  setLoading(true);
+                  setMessage(null);
+                  try {
+                    const res = await fetch('/api/generator/npc', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        action: 'generate',
+                        context: params.context,
+                        count: params.count,
+                        save: params.save,
+                        mode: params.mode,
+                      }),
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                      setMessage({ type: 'success', text: data.message });
+                      await reloadStats();
+                    } else {
+                      setMessage({ type: 'error', text: data.error || 'Ошибка генерации NPC' });
+                    }
+                  } catch (error) {
+                    setMessage({ type: 'error', text: 'Ошибка генерации NPC' });
+                  } finally {
+                    setLoading(false);
                   }
-                } catch (error) {
-                  setMessage({ type: 'error', text: 'Ошибка генерации NPC' });
-                } finally {
-                  setLoading(false);
-                }
-              }}
-              onClear={async () => {
-                if (!confirm('Удалить всех NPC?')) return;
-                setLoading(true);
-                setMessage(null);
-                try {
-                  const res = await fetch('/api/generator/npc', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action: 'clear' }),
-                  });
-                  const data = await res.json();
-                  if (data.success) {
-                    setMessage({ type: 'success', text: data.message });
-                    setNpcStats(null);
-                  } else {
-                    setMessage({ type: 'error', text: data.error || 'Ошибка очистки' });
+                }}
+                onClear={async () => {
+                  if (!confirm('Удалить всех NPC?')) return;
+                  setLoading(true);
+                  setMessage(null);
+                  try {
+                    const res = await fetch('/api/generator/npc', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({ action: 'clear' }),
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                      setMessage({ type: 'success', text: data.message });
+                      setNpcStats(null);
+                    } else {
+                      setMessage({ type: 'error', text: data.error || 'Ошибка очистки' });
+                    }
+                  } catch (error) {
+                    setMessage({ type: 'error', text: 'Ошибка очистки NPC' });
+                  } finally {
+                    setLoading(false);
                   }
-                } catch (error) {
-                  setMessage({ type: 'error', text: 'Ошибка очистки NPC' });
-                } finally {
-                  setLoading(false);
-                }
-              }}
-              loading={loading}
-              npcStats={npcStats || undefined}
-            />
+                }}
+                loading={loading}
+                npcStats={npcStats || undefined}
+              />
+            </Suspense>
 
             {message && activeTab === 'npc' && (
               <div className={`p-3 rounded flex items-center gap-2 text-sm ${
