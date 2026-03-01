@@ -15,13 +15,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
   Sparkles,
   Package,
   Loader2,
@@ -43,7 +36,6 @@ import { ConsumableGeneratorPanel } from './ConsumableGeneratorPanel';
 import { QiStoneGeneratorPanel } from './QiStoneGeneratorPanel';
 import { ChargerGeneratorPanel } from './ChargerGeneratorPanel';
 import { Rarity, TechniqueType, CombatSubtype } from '@/lib/generator/technique-generator';
-import type { WeaponCategory, WeaponType, EquipmentSlot } from '@/lib/generator/item-config';
 
 interface SettingsPanelProps {
   open: boolean;
