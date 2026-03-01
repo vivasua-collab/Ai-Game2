@@ -22,7 +22,8 @@ import { InventoryDialog } from './InventoryDialog';
 import { SettingsPanel } from '@/components/settings/SettingsPanel';
 import { GeneratedObjectsViewer } from '@/components/settings/GeneratedObjectsViewer';
 import { EventBusTest } from './EventBusTest';
-import { Activity } from 'lucide-react';
+import { NPCViewerDialog } from './NPCViewerDialog';
+import { Activity, Users } from 'lucide-react';
 
 interface ActionButtonsProps {
   className?: string;
@@ -37,6 +38,7 @@ export function ActionButtons({ className = '' }: ActionButtonsProps) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [generatedObjectsOpen, setGeneratedObjectsOpen] = useState(false);
   const [eventBusOpen, setEventBusOpen] = useState(false);
+  const [npcViewerOpen, setNPCViewerOpen] = useState(false);
 
   // Слушатель события открытия меню игры
   useEffect(() => {
@@ -101,6 +103,15 @@ export function ActionButtons({ className = '' }: ActionButtonsProps) {
         <Button
           variant="outline"
           size="sm"
+          className="border-amber-600/50 text-amber-400 hover:bg-amber-900/30 h-9"
+          onClick={() => setNPCViewerOpen(true)}
+          title="Просмотр NPC"
+        >
+          <Users className="w-4 h-4" />
+        </Button>
+        <Button
+          variant="outline"
+          size="sm"
           className="border-purple-600/50 text-purple-400 hover:bg-purple-900/30 h-9"
           onClick={() => setSettingsOpen(true)}
           title="Создание техник и предметов"
@@ -155,6 +166,11 @@ export function ActionButtons({ className = '' }: ActionButtonsProps) {
       <GeneratedObjectsViewer
         open={generatedObjectsOpen}
         onOpenChange={setGeneratedObjectsOpen}
+      />
+
+      <NPCViewerDialog
+        open={npcViewerOpen}
+        onOpenChange={setNPCViewerOpen}
       />
     </>
   );
