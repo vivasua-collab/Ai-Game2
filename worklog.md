@@ -316,3 +316,32 @@ Stage Summary:
 - Species available: 28 (включая гуманоидов, зверей, духов, гибридов, аберраций)
 - Roles available: 30 (секта, профессии, социальные, боевые)
 - Dev server: running on port 3000
+
+---
+Task ID: agent-0-ui-integration
+Agent: Agent-0
+Task: Интеграция NPC Generator в меню создания (SettingsPanel)
+
+Work Log:
+- Создан компонент NPCGeneratorPanel.tsx с полным UI:
+  - Выбор типа существа (humanoid, beast, spirit, hybrid, aberration)
+  - Выбор типа роли (sect, profession, social, combat)
+  - Настройка уровня культивации (min/max)
+  - Выбор сложности (easy, medium, hard, boss)
+  - Параметры генерации (количество, режим, сохранение)
+  - Предпросмотр до 5 NPC
+- Обновлён SettingsPanel.tsx:
+  - Добавлен импорт NPCGeneratorPanel
+  - Добавлен state npcStats для статистики NPC
+  - Добавлена функция loadNPCStats() для загрузки статистики
+  - Заменена заглушка "В разработке" на рабочий компонент
+  - Добавлены обработчики onGenerate и onClear
+- Протестирована генерация:
+  - POST /api/generator/npc - генерация 5 NPC с сохранением
+  - GET ?action=stats - статистика: 5 NPC (beastkin, centaur, wolf, tiger)
+
+Stage Summary:
+- Results: NPC Generator полностью интегрирован в UI
+- Files: NPCGeneratorPanel.tsx (новый), SettingsPanel.tsx (обновлён)
+- Features: выбор вида/роли, уровень культивации, предпросмотр, сохранение
+- UI: вкладка NPC в меню создания с полным функционалом

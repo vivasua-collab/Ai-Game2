@@ -36,6 +36,7 @@ import { AccessoryGeneratorPanel } from './AccessoryGeneratorPanel';
 import { ConsumableGeneratorPanel } from './ConsumableGeneratorPanel';
 import { QiStoneGeneratorPanel } from './QiStoneGeneratorPanel';
 import { ChargerGeneratorPanel } from './ChargerGeneratorPanel';
+import { NPCGeneratorPanel } from './NPCGeneratorPanel';
 import { Rarity, TechniqueType, CombatSubtype } from '@/lib/generator/technique-generator';
 
 interface SettingsPanelProps {
@@ -99,6 +100,7 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
   const [formationTypes, setFormationTypes] = useState<string[]>([]);
   const [formationCount, setFormationCount] = useState<string>('50');
   const [formationManifest, setFormationManifest] = useState<{ total: number; byLevel: Record<number, number> } | null>(null);
+  const [npcStats, setNpcStats] = useState<{ total: number; bySpeciesType: Record<string, number>; byRoleType: Record<string, number>; byLevel: Record<number, number> } | null>(null);
 
   useEffect(() => {
     if (open) {
@@ -106,6 +108,7 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
       checkPresets();
       loadStorageStats();
       loadFormationManifest();
+      loadNPCStats();
     }
   }, [open]);
 
@@ -146,6 +149,18 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
       }
     } catch (error) {
       console.error('Failed to load formation stats:', error);
+    }
+  };
+
+  const loadNPCStats = async () => {
+    try {
+      const res = await fetch('/api/generator/npc?action=stats');
+      const data = await res.json();
+      if (data.success) {
+        setNpcStats(data.stats);
+      }
+    } catch (error) {
+      console.error('Failed to load NPC stats:', error);
     }
   };
 
@@ -681,19 +696,74 @@ export function SettingsPanel({ open, onOpenChange, onOpenGeneratedObjects }: Se
 
           {/* NPC И МОБЫ */}
           <TabsContent value="npc" className="mt-4 space-y-4 overflow-y-auto max-h-[60vh]">
-            <div className="bg-slate-800/50 rounded-lg p-4">
-              <h3 className="text-lg font-medium text-amber-400 mb-3 flex items-center gap-2">
-                <Users className="w-5 h-5" />
-                Генератор NPC и монстров
-              </h3>
-              <p className="text-sm text-slate-400 mb-4">
-                Создание NPC, врагов, боссов и других существ для мира игры.
-              </p>
-              <div className="bg-slate-700/30 rounded-lg p-4 text-center">
-                <p className="text-slate-400">🚧 В разработке</p>
-                <p className="text-sm text-slate-500 mt-2">Будет реализовано в следующем обновлении</p>
+            <NPCGeneratorPanel
+              onGenerate={async (params) => {
+                setLoading(true);
+                setMessage(null);
+                try {
+                  const res = await fetch('/api/generator/npc', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      action: 'generate',
+                      context: params.context,
+                      count: params.count,
+                      save: params.save,
+                      mode: params.mode,
+                    }),
+                  });
+                  const data = await res.json();
+                  if (data.success) {
+                    setMessage({ type: 'success', text: data.message });
+                    await loadNPCStats();
+                  } else {
+                    setMessage({ type: 'error', text: data.error || 'Ошибка генерации NPC' });
+                  }
+                } catch (error) {
+                  setMessage({ type: 'error', text: 'Ошибка генерации NPC' });
+                } finally {
+                  setLoading(false);
+                }
+              }}
+              onClear={async () => {
+                if (!confirm('Удалить всех NPC?')) return;
+                setLoading(true);
+                setMessage(null);
+                try {
+                  const res = await fetch('/api/generator/npc', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'clear' }),
+                  });
+                  const data = await res.json();
+                  if (data.success) {
+                    setMessage({ type: 'success', text: data.message });
+                    setNpcStats(null);
+                  } else {
+                    setMessage({ type: 'error', text: data.error || 'Ошибка очистки' });
+                  }
+                } catch (error) {
+                  setMessage({ type: 'error', text: 'Ошибка очистки NPC' });
+                } finally {
+                  setLoading(false);
+                }
+              }}
+              loading={loading}
+              npcStats={npcStats || undefined}
+            />
+
+            {message && activeTab === 'npc' && (
+              <div className={`p-3 rounded flex items-center gap-2 text-sm ${
+                message.type === 'success' 
+                  ? 'bg-green-900/30 text-green-400' 
+                  : message.type === 'warning'
+                  ? 'bg-yellow-900/30 text-yellow-400'
+                  : 'bg-red-900/30 text-red-400'
+              }`}>
+                {message.type === 'success' ? <Check className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+                {message.text}
               </div>
-            </div>
+            )}
           </TabsContent>
 
           <TabsContent value="formations" className="mt-4 space-y-4 overflow-y-auto max-h-[60vh]">

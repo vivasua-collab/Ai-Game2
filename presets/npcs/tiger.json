@@ -1,0 +1,124 @@
+{
+  "version": "2.0",
+  "type": "tiger",
+  "count": 1,
+  "npcs": [
+    {
+      "id": "NP_000005",
+      "name": "Тигр Смертоносец",
+      "age": 97,
+      "gender": "male",
+      "speciesId": "tiger",
+      "roleId": "guard_combat",
+      "stats": {
+        "strength": 32,
+        "agility": 14,
+        "intelligence": 10,
+        "vitality": 30
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 2,
+        "coreCapacity": 280,
+        "currentQi": 143,
+        "coreQuality": 40
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 165,
+            "maxFunctionalHP": 165,
+            "structuralHP": 330,
+            "maxStructuralHP": 330,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 132,
+            "maxFunctionalHP": 132,
+            "structuralHP": 264,
+            "maxStructuralHP": 264,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_left_leg": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_right_leg": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_left_leg": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_right_leg": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 49,
+            "maxFunctionalHP": 49,
+            "structuralHP": 98,
+            "maxStructuralHP": 98,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Верность",
+          "Храбрость",
+          "Дисциплина"
+        ],
+        "motivation": "поддержание порядка",
+        "dominantEmotion": "обязанность",
+        "disposition": 65
+      },
+      "techniques": [
+        "reinforced_strike",
+        "turtle_stance"
+      ],
+      "equipment": {},
+      "inventory": [],
+      "resources": {
+        "spiritStones": 41,
+        "contributionPoints": 4
+      },
+      "generationMeta": {
+        "seed": 1772371725107,
+        "generatedAt": "2026-03-01T13:28:45.104Z",
+        "version": "2.0.0"
+      }
+    }
+  ]
+}
