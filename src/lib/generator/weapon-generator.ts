@@ -297,8 +297,3 @@ export function generateWeapons(
     warnings,
   };
 }
-
-/**
- * Экспорт типов
- */
-export type { Weapon, WeaponGenerationOptions };

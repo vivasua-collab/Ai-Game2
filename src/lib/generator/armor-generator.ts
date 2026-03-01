@@ -175,16 +175,16 @@ export function generateArmor(
   options: ArmorGenerationOptions,
   counter: number
 ): Armor {
+  // Создаём seed для детерминированной генерации
+  const seed = createSeed('armor', counter, options.seed || Date.now());
+  const rng = seededRandom(seed);
+  
   // Определяем уровень
   const level = options.level ?? randomInt(
     options.minLevel ?? 1,
     options.maxLevel ?? 9,
-    seededRandom(options.seed || Date.now())
+    rng
   );
-  
-  // Создаём seed для детерминированной генерации
-  const seed = createSeed('armor', level, counter, options.seed || Date.now());
-  const rng = seededRandom(seed);
   
   // Выбираем слот
   let slot: EquipmentSlot;
@@ -318,8 +318,3 @@ export function generateArmors(
     warnings,
   };
 }
-
-/**
- * Экспорт типов
- */
-export type { Armor, ArmorGenerationOptions };
