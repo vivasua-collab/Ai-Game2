@@ -350,6 +350,48 @@ class GeneratedObjectsLoader {
     return items.find(i => i.id === id);
   }
 
+  // ==================== УНИВЕРСАЛЬНЫЙ ЗАГРУЗЧИК ====================
+
+  /**
+   * Загрузить объекты по типу (для NPC генератора)
+   * @param type - тип объектов: 'techniques', 'formations', 'items', 'consumables', 'weapons', 'armor', 'accessories'
+   */
+  async loadObjects(type: string): Promise<GeneratedItem[]> {
+    // Если запрашивают расходники, загружаем из items/consumable.json
+    if (type === 'consumables') {
+      const { objects: items } = await this.loadItems();
+      return items.filter(i => i.type === 'consumable');
+    }
+
+    // Если запрашивают оружие
+    if (type === 'weapons') {
+      const { objects: items } = await this.loadItems();
+      return items.filter(i => i.type === 'weapon');
+    }
+
+    // Если запрашивают броню
+    if (type === 'armor') {
+      const { objects: items } = await this.loadItems();
+      return items.filter(i => i.type === 'armor');
+    }
+
+    // Если запрашивают аксессуары
+    if (type === 'accessories') {
+      const { objects: items } = await this.loadItems();
+      return items.filter(i => i.type === 'accessory');
+    }
+
+    // По умолчанию загружаем все предметы
+    if (type === 'items') {
+      const { objects: items } = await this.loadItems();
+      return items;
+    }
+
+    // Если запрашивают техники или формации - возвращаем пустой массив
+    // (они имеют другую структуру)
+    return [];
+  }
+
   // ==================== СТАТИСТИКА ====================
 
   /**

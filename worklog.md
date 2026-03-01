@@ -345,3 +345,24 @@ Stage Summary:
 - Files: NPCGeneratorPanel.tsx (новый), SettingsPanel.tsx (обновлён)
 - Features: выбор вида/роли, уровень культивации, предпросмотр, сохранение
 - UI: вкладка NPC в меню создания с полным функционалом
+
+---
+Task ID: agent-0-fix-loadobjects
+Agent: Agent-0
+Task: Исправление ошибки client-side exception при открытии меню создания NPC
+
+Work Log:
+- Выявлена проблема: в generated-objects-loader.ts отсутствовал метод loadObjects()
+- NPC Generator вызывал generatedObjectsLoader.loadObjects('consumables'), но метод не существовал
+- Добавлен универсальный метод loadObjects(type) в generated-objects-loader.ts:
+  - Поддержка типов: consumables, weapons, armor, accessories, items
+  - Фильтрация предметов по type при загрузке
+  - Интеграция с существующим методом loadItems()
+- Проверена работа API:
+  - GET ?action=stats: {"success":true,"stats":{"total":5,...}}
+  - POST generate: успешно генерирует NPC с полными данными (id, name, species, role, cultivation, bodyState, personality, techniques)
+
+Stage Summary:
+- Results: Метод loadObjects() добавлен, ошибка исправлена
+- Files: generated-objects-loader.ts (добавлен метод loadObjects)
+- API работает: NPC генерируются с ID NP_XXXXXX, всеми характеристиками
