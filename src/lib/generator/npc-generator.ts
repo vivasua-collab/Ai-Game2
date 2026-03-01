@@ -286,25 +286,51 @@ function selectPersonality(role: RolePreset, rng: () => number): GeneratedNPC['p
 
 /**
  * Генерация характеристик
+ * Масштабируется по уровню культивации
  */
 function generateStats(
   species: SpeciesPreset,
   role: RolePreset,
+  cultivationLevel: number,
   rng: () => number
 ): GeneratedNPC['stats'] {
   const baseStats = species.baseStats;
   const modifiers = role.statModifiers || {};
   
+  // Множитель характеристик по уровню культивации
+  // Уровень 1 = x1.0, Уровень 9 = x5.0
+  const levelMultipliers: Record<number, number> = {
+    1: 1.0,
+    2: 1.3,
+    3: 1.6,
+    4: 2.0,
+    5: 2.5,
+    6: 3.0,
+    7: 3.5,
+    8: 4.0,
+    9: 5.0,
+  };
+  
+  const multiplier = levelMultipliers[cultivationLevel] || 1.0;
+  
+  // Базовые значения из вида
+  const baseStrength = randomInRange(baseStats.strength, rng);
+  const baseAgility = randomInRange(baseStats.agility, rng);
+  const baseIntelligence = randomInRange(baseStats.intelligence, rng);
+  const baseVitality = randomInRange(baseStats.vitality, rng);
+  
+  // Применяем множитель уровня и модификаторы роли
   return {
-    strength: randomInRange(baseStats.strength, rng) + (modifiers.strength || 0),
-    agility: randomInRange(baseStats.agility, rng) + (modifiers.agility || 0),
-    intelligence: randomInRange(baseStats.intelligence, rng) + (modifiers.intelligence || 0),
-    vitality: randomInRange(baseStats.vitality, rng) + (modifiers.vitality || 0),
+    strength: Math.floor(baseStrength * multiplier) + (modifiers.strength || 0),
+    agility: Math.floor(baseAgility * multiplier) + (modifiers.agility || 0),
+    intelligence: Math.floor(baseIntelligence * multiplier) + (modifiers.intelligence || 0),
+    vitality: Math.floor(baseVitality * multiplier) + (modifiers.vitality || 0),
   };
 }
 
 /**
  * Генерация культивации
+ * coreCapacity масштабируется по уровню
  */
 function generateCultivation(
   context: NPCGenerationContext,
@@ -328,8 +354,24 @@ function generateCultivation(
   level = Math.min(level, species.cultivation.maxCultivationLevel);
   
   const subLevel = Math.floor(rng() * 10);
+  
+  // Множители coreCapacity по уровню культивации
+  // Уровень 1 = x1.0, Уровень 9 = x30.0
+  const coreCapacityMultipliers: Record<number, number> = {
+    1: 1.0,
+    2: 2.0,
+    3: 3.5,
+    4: 5.0,
+    5: 7.5,
+    6: 10.0,
+    7: 15.0,
+    8: 20.0,
+    9: 30.0,
+  };
+  
+  const multiplier = coreCapacityMultipliers[level] || 1.0;
   const baseCapacity = randomInRange(species.cultivation.coreCapacityBase, rng);
-  const coreCapacity = Math.floor(baseCapacity * (1 + level * 0.1));
+  const coreCapacity = Math.floor(baseCapacity * multiplier);
   const coreQuality = randomInRange(species.cultivation.coreQualityRange, rng);
   
   return {
@@ -339,6 +381,41 @@ function generateCultivation(
     currentQi: Math.floor(coreCapacity * (0.5 + rng() * 0.5)),
     coreQuality,
   };
+}
+
+/**
+ * Генерация экипировки
+ */
+function generateEquipment(
+  role: RolePreset,
+  cultivationLevel: number,
+  rng: () => number
+): Record<string, string | null> {
+  const equipment: Record<string, string | null> = {};
+  const roleEquipment = role.equipment;
+  
+  if (!roleEquipment) {
+    return equipment;
+  }
+  
+  // Слоты экипировки
+  const slots = ['weapon', 'armor', 'helmet', 'boots', 'gloves', 'accessory1', 'accessory2'];
+  
+  for (const slot of slots) {
+    const slotEquipment = roleEquipment[slot];
+    if (slotEquipment) {
+      // Если это категория (начинается с category_), оставляем null
+      // Реальный ID будет присвоен при загрузке из пула
+      if (slotEquipment.startsWith('category_')) {
+        equipment[slot] = null; // Будет заполнено из пула
+      } else {
+        // Это конкретный ID предмета
+        equipment[slot] = slotEquipment;
+      }
+    }
+  }
+  
+  return equipment;
 }
 
 /**
@@ -446,11 +523,11 @@ export function generateNPC(context: NPCGenerationContext): GeneratedNPC {
   // 2. Выбор роли
   const role = selectRole(context, species, rng);
   
-  // 3. Генерация характеристик
-  const stats = generateStats(species, role, rng);
-  
-  // 4. Генерация культивации
+  // 3. Генерация культивации (ПЕРЕД статами!)
   const cultivation = generateCultivation(context, species, rng);
+  
+  // 4. Генерация характеристик (с учётом уровня культивации)
+  const stats = generateStats(species, role, cultivation.level, rng);
   
   // 5. Создание тела
   const bodyState = createBodyForSpecies(species, cultivation.level);
@@ -464,11 +541,14 @@ export function generateNPC(context: NPCGenerationContext): GeneratedNPC {
   // 8. Ресурсы
   const resources = generateResources(role, rng);
   
-  // 9. Имя и пол
+  // 9. Экипировка
+  const equipment = generateEquipment(role, cultivation.level, rng);
+  
+  // 10. Имя и пол
   const gender = rng() > 0.5 ? 'male' : 'female';
   const name = generateNPCName(species, gender, rng);
   
-  // 10. ID
+  // 11. ID
   const id = generateNPCId(npcCounter++);
   
   return {
@@ -483,7 +563,7 @@ export function generateNPC(context: NPCGenerationContext): GeneratedNPC {
     bodyState,
     personality,
     techniques,
-    equipment: {},
+    equipment,
     inventory: [], // Будет заполнено из пула через generateNPCAsync
     resources,
     generationMeta: {

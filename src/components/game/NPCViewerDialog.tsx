@@ -283,14 +283,14 @@ export function NPCViewerDialog({ open, onOpenChange }: NPCViewerDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-slate-900 border-slate-700 text-white max-w-6xl w-[95vw] max-h-[90vh] p-0">
+      <DialogContent className="bg-slate-900 border-slate-700 text-white !max-w-6xl !w-[95vw] max-h-[90vh] p-0 overflow-hidden">
         <DialogHeader className="sr-only">
           <DialogTitle>Просмотр NPC</DialogTitle>
         </DialogHeader>
         
         <div className="flex h-[85vh]">
           {/* Left: NPC List */}
-          <div className="w-1/4 min-w-[280px] border-r border-slate-700 flex flex-col">
+          <div className="w-1/4 min-w-[300px] border-r border-slate-700 flex flex-col">
             {/* Header */}
             <div className="p-3 border-b border-slate-700">
               <div className="flex items-center gap-2 mb-2">
@@ -389,6 +389,7 @@ export function NPCViewerDialog({ open, onOpenChange }: NPCViewerDialogProps) {
                     {SPECIES_ICONS[getSpeciesType(selectedNPC.speciesId)]}
                     <div>
                       <h3 className="text-2xl font-bold text-white">{selectedNPC.name}</h3>
+                      <div className="text-xs text-slate-500 font-mono mt-1">ID: {selectedNPC.id}</div>
                       <div className="flex gap-2 mt-2">
                         <Badge variant="outline" className="border-slate-500 text-sm px-3">
                           {SPECIES_TYPE_NAMES[getSpeciesType(selectedNPC.speciesId)]}
