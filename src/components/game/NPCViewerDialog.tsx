@@ -57,9 +57,13 @@ interface GeneratedNPC {
   cultivation: {
     level: number;
     subLevel: number;
-    coreCapacity: number;
-    currentQi: number;
-    coreQuality: number;
+    coreCapacity: number;       // Полная ёмкость ядра в единицах Ци
+    currentQi: number;           // Текущее количество Ци
+    coreQuality: number;         // Качество ядра (влияет на скорость развития)
+    baseVolume?: number;         // Базовый объём ядра (100-2000 для человека)
+    qiDensity?: number;          // Плотность Ци = 2^(level-1)
+    meridianConductivity?: number; // Проводимость меридиан = объём/360
+    meridianBuffer?: number;      // Буфер меридиан = проводимость × 5
   };
   
   bodyState?: {
@@ -470,12 +474,38 @@ export function NPCViewerDialog({ open, onOpenChange }: NPCViewerDialogProps) {
                                 style={{ width: `${(selectedNPC.cultivation.currentQi / selectedNPC.cultivation.coreCapacity) * 100}%` }}
                               />
                             </div>
-                            <span className="text-sm text-cyan-400">{selectedNPC.cultivation.currentQi}/{selectedNPC.cultivation.coreCapacity}</span>
+                            <span className="text-sm text-cyan-400">{selectedNPC.cultivation.currentQi.toLocaleString()}/{selectedNPC.cultivation.coreCapacity.toLocaleString()}</span>
                           </div>
-                          <div className="flex justify-between text-base">
-                            <span className="text-slate-400">Качество ядра:</span>
-                            <span className="text-purple-400 font-medium">{selectedNPC.cultivation.coreQuality}</span>
+                          <div className="grid grid-cols-2 gap-4 text-base">
+                            <div className="flex justify-between">
+                              <span className="text-slate-400">Качество ядра:</span>
+                              <span className="text-purple-400 font-medium">{selectedNPC.cultivation.coreQuality}</span>
+                            </div>
+                            {selectedNPC.cultivation.baseVolume !== undefined && (
+                              <div className="flex justify-between">
+                                <span className="text-slate-400">Баз. объём:</span>
+                                <span className="text-green-400 font-medium">{selectedNPC.cultivation.baseVolume}</span>
+                              </div>
+                            )}
                           </div>
+                          {selectedNPC.cultivation.qiDensity !== undefined && (
+                            <div className="grid grid-cols-2 gap-4 text-base">
+                              <div className="flex justify-between">
+                                <span className="text-slate-400">Плотность Ци:</span>
+                                <span className="text-cyan-400 font-medium">{selectedNPC.cultivation.qiDensity} ед/см³</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-slate-400">Проводимость:</span>
+                                <span className="text-blue-400 font-medium">{selectedNPC.cultivation.meridianConductivity?.toFixed(2) ?? '-'} ед/с</span>
+                              </div>
+                            </div>
+                          )}
+                          {selectedNPC.cultivation.meridianBuffer !== undefined && (
+                            <div className="flex justify-between text-base">
+                              <span className="text-slate-400">Буфер меридиан:</span>
+                              <span className="text-amber-400 font-medium">{selectedNPC.cultivation.meridianBuffer} Ци</span>
+                            </div>
+                          )}
                         </div>
                       </div>
                       

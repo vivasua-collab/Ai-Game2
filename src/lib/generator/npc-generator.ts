@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * ОФФЛАЙН ГЕНЕРАТОР NPC v2.0
+ * ОФФЛАЙН ГЕНЕРАТОР NPC v2.1 - ФОРМУЛЫ LORE
  * ============================================================================
  * 
  * Процедурная генерация неигровых персонажей без использования LLM.
@@ -9,6 +9,7 @@
  * - Deterministic generation via seed
  * - Species + Role = Stats, Techniques, Equipment
  * - Inventory from existing consumables pool (CRITICAL!)
+ * - Формулы из Lore: плотность Ци, рост ядра, характеристики
  * 
  * Архитектура:
  * 1. Context Input -> 2. Species Selection -> 3. Role Selection
@@ -17,7 +18,10 @@
  *      ↓                    ↓                      ↓
  * 7. Personality -> 8. Techniques -> 9. Equipment -> 10. Inventory (FROM POOL)
  * 
- * v2.0: Интеграция с полноценными пресетами от Agent-1
+ * v2.1: Интеграция формул из Lore (start_lore.md)
+ * - Плотность Ци = 2^(уровень-1)
+ * - Ёмкость ядра = объём × множители × плотность
+ * - Проводимость = объём ядра / 360 сек
  */
 
 import {
@@ -32,6 +36,21 @@ import {
   type SizeClass,
   type Range,
 } from '@/data/presets';
+import {
+  getQiDensity,
+  calculateCoreCapacity,
+  calculateMeridianConductivity,
+  calculateMeridianBuffer,
+  calculateStats as loreCalculateStats,
+  calculateSubLevelGrowth,
+  calculateMainLevelMultiplier,
+  QI_DENSITY_TABLE,
+  STAT_MULTIPLIERS_BY_LEVEL,
+  CORE_VOLUME_RANGES,
+  STAT_RANGES,
+  getStatBoundsByLevel,
+  randomInRange as loreRandomInRange,
+} from './lore-formulas';
 import {
   getSpeciesById,
   getSpeciesByType,
@@ -95,9 +114,13 @@ export interface GeneratedNPC {
   cultivation: {
     level: number;
     subLevel: number;
-    coreCapacity: number;
-    currentQi: number;
-    coreQuality: number;
+    coreCapacity: number;       // Полная ёмкость ядра в единицах Ци
+    currentQi: number;           // Текущее количество Ци
+    coreQuality: number;         // Качество ядра (влияет на скорость развития)
+    baseVolume: number;          // Базовый объём ядра (100-2000 для человека)
+    qiDensity: number;           // Плотность Ци = 2^(level-1)
+    meridianConductivity: number; // Проводимость меридиан = объём/360
+    meridianBuffer: number;      // Буфер меридиан = проводимость × 5
   };
   
   bodyState: BodyState;
@@ -152,7 +175,7 @@ export interface BodyPartState {
 /**
  * Версия генератора
  */
-const GENERATOR_VERSION = '2.0.0';
+const GENERATOR_VERSION = '2.1.0-lore';
 
 /**
  * Множители размера для HP
@@ -285,8 +308,13 @@ function selectPersonality(role: RolePreset, rng: () => number): GeneratedNPC['p
 }
 
 /**
- * Генерация характеристик
- * Масштабируется по уровню культивации
+ * Генерация характеристик по формулам Lore
+ * 
+ * Из Lore:
+ * - Обычный взрослый: 10-15
+ * - Профессионал: 10-20
+ * - Гений: до 25
+ * - Множители по уровню культивации (STAT_MULTIPLIERS_BY_LEVEL)
  */
 function generateStats(
   species: SpeciesPreset,
@@ -297,21 +325,8 @@ function generateStats(
   const baseStats = species.baseStats;
   const modifiers = role.statModifiers || {};
   
-  // Множитель характеристик по уровню культивации
-  // Уровень 1 = x1.0, Уровень 9 = x5.0
-  const levelMultipliers: Record<number, number> = {
-    1: 1.0,
-    2: 1.3,
-    3: 1.6,
-    4: 2.0,
-    5: 2.5,
-    6: 3.0,
-    7: 3.5,
-    8: 4.0,
-    9: 5.0,
-  };
-  
-  const multiplier = levelMultipliers[cultivationLevel] || 1.0;
+  // Множитель из Lore (STAT_MULTIPLIERS_BY_LEVEL)
+  const multiplier = STAT_MULTIPLIERS_BY_LEVEL[cultivationLevel] || 1.0;
   
   // Базовые значения из вида
   const baseStrength = randomInRange(baseStats.strength, rng);
@@ -320,17 +335,32 @@ function generateStats(
   const baseVitality = randomInRange(baseStats.vitality, rng);
   
   // Применяем множитель уровня и модификаторы роли
-  return {
+  const result = {
     strength: Math.floor(baseStrength * multiplier) + (modifiers.strength || 0),
     agility: Math.floor(baseAgility * multiplier) + (modifiers.agility || 0),
     intelligence: Math.floor(baseIntelligence * multiplier) + (modifiers.intelligence || 0),
     vitality: Math.floor(baseVitality * multiplier) + (modifiers.vitality || 0),
   };
+  
+  // Валидация по границам из Lore
+  const bounds = getStatBoundsByLevel(cultivationLevel);
+  
+  return {
+    strength: Math.max(bounds.strength.min, Math.min(bounds.strength.max, result.strength)),
+    agility: Math.max(bounds.agility.min, Math.min(bounds.agility.max, result.agility)),
+    intelligence: Math.max(bounds.intelligence.min, Math.min(bounds.intelligence.max, result.intelligence)),
+    vitality: Math.max(bounds.vitality.min, Math.min(bounds.vitality.max, result.vitality)),
+  };
 }
 
 /**
- * Генерация культивации
- * coreCapacity масштабируется по уровню
+ * Генерация культивации по формулам Lore
+ * 
+ * Формулы из Lore:
+ * - Плотность Ци = 2^(уровень-1)
+ * - Ёмкость ядра = объём × рост_ступеней × рост_уровня × плотность
+ * - Проводимость = объём / 360 сек
+ * - Буфер меридиан = проводимость × 5 сек
  */
 function generateCultivation(
   context: NPCGenerationContext,
@@ -353,33 +383,51 @@ function generateCultivation(
   // Ограничиваем уровнем вида
   level = Math.min(level, species.cultivation.maxCultivationLevel);
   
+  // Ступень (0-9)
   const subLevel = Math.floor(rng() * 10);
   
-  // Множители coreCapacity по уровню культивации
-  // Уровень 1 = x1.0, Уровень 9 = x30.0
-  const coreCapacityMultipliers: Record<number, number> = {
-    1: 1.0,
-    2: 2.0,
-    3: 3.5,
-    4: 5.0,
-    5: 7.5,
-    6: 10.0,
-    7: 15.0,
-    8: 20.0,
-    9: 30.0,
-  };
+  // ===== ФОРМУЛЫ LORE =====
   
-  const multiplier = coreCapacityMultipliers[level] || 1.0;
-  const baseCapacity = randomInRange(species.cultivation.coreCapacityBase, rng);
-  const coreCapacity = Math.floor(baseCapacity * multiplier);
+  // 1. Базовый объём ядра (из вида или по умолчанию для расы)
+  let baseVolume: number;
+  if (species.cultivation.coreCapacityBase) {
+    baseVolume = randomInRange(species.cultivation.coreCapacityBase, rng);
+  } else {
+    // Используем диапазон по типу расы
+    const raceType = species.type === 'humanoid' ? 'human' : species.type === 'beast' ? 'beast' : 'spirit';
+    const range = CORE_VOLUME_RANGES[raceType] || CORE_VOLUME_RANGES.human;
+    baseVolume = Math.floor(range.min + rng() * (range.max - range.min));
+  }
+  
+  // 2. Плотность Ци по уровню: 2^(level-1)
+  const qiDensity = getQiDensity(level);
+  
+  // 3. Полная ёмкость ядра по формулам Lore
+  // ёмкость = (базовый объём × рост от ступеней) × множитель уровня × плотность
+  const coreCapacity = calculateCoreCapacity(baseVolume, level, subLevel);
+  
+  // 4. Проводимость меридиан = объём ядра / 360 сек
+  const meridianConductivity = calculateMeridianConductivity(baseVolume);
+  
+  // 5. Буфер меридиан = проводимость × 5 сек
+  const meridianBuffer = calculateMeridianBuffer(meridianConductivity);
+  
+  // 6. Качество ядра (влияет на скорость развития)
   const coreQuality = randomInRange(species.cultivation.coreQualityRange, rng);
+  
+  // 7. Текущее Ци (50-100% от ёмкости)
+  const currentQi = Math.floor(coreCapacity * (0.5 + rng() * 0.5));
   
   return {
     level,
     subLevel,
     coreCapacity,
-    currentQi: Math.floor(coreCapacity * (0.5 + rng() * 0.5)),
+    currentQi,
     coreQuality,
+    baseVolume,
+    qiDensity,
+    meridianConductivity,
+    meridianBuffer,
   };
 }
 
@@ -398,21 +446,30 @@ function generateEquipment(
     return equipment;
   }
   
-  // Слоты экипировки
-  const slots = ['weapon', 'armor', 'helmet', 'boots', 'gloves', 'accessory1', 'accessory2'];
-  
-  for (const slot of slots) {
-    const slotEquipment = roleEquipment[slot];
-    if (slotEquipment) {
-      // Если это категория (начинается с category_), оставляем null
-      // Реальный ID будет присвоен при загрузке из пула
-      if (slotEquipment.startsWith('category_')) {
-        equipment[slot] = null; // Будет заполнено из пула
-      } else {
-        // Это конкретный ID предмета
-        equipment[slot] = slotEquipment;
-      }
+  // Обработка weapon (может быть string или string[])
+  if (roleEquipment.weapon) {
+    if (Array.isArray(roleEquipment.weapon)) {
+      const selected = roleEquipment.weapon[Math.floor(rng() * roleEquipment.weapon.length)];
+      equipment.weapon = typeof selected === 'string' && selected.startsWith('category_') ? null : selected || null;
+    } else if (typeof roleEquipment.weapon === 'string') {
+      equipment.weapon = roleEquipment.weapon.startsWith('category_') ? null : roleEquipment.weapon;
     }
+  }
+  
+  // Обработка armor (может быть string или string[])
+  if (roleEquipment.armor) {
+    if (Array.isArray(roleEquipment.armor)) {
+      const selected = roleEquipment.armor[Math.floor(rng() * roleEquipment.armor.length)];
+      equipment.armor = typeof selected === 'string' && selected.startsWith('category_') ? null : selected || null;
+    } else if (typeof roleEquipment.armor === 'string') {
+      equipment.armor = roleEquipment.armor.startsWith('category_') ? null : roleEquipment.armor;
+    }
+  }
+  
+  // Accessories
+  if (roleEquipment.accessories && roleEquipment.accessories.length > 0) {
+    const selected = roleEquipment.accessories[Math.floor(rng() * roleEquipment.accessories.length)];
+    equipment.accessory1 = typeof selected === 'string' && selected.startsWith('category_') ? null : selected;
   }
   
   return equipment;

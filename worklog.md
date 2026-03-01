@@ -516,3 +516,76 @@ Stage Summary:
 - Files: npc-generator.ts, checkpoint30.md
 - Level 7 stats: 11 → ~39-52 strength, 1266 → ~22500 Qi
 - Equipment: {} → слоты из role.equipment
+
+---
+Task ID: agent-0-lore-formulas
+Agent: Agent-0
+Task: Интеграция формул Lore в NPC Generator
+
+Work Log:
+- Прочитан docs/start_lore.md с формулами мира культивации
+- Создан модуль lore-formulas.ts с ключевыми формулами:
+  - getQiDensity(level): плотность Ци = 2^(уровень-1)
+  - calculateCoreCapacity(baseVolume, level, subLevel): ёмкость ядра
+  - calculateMeridianConductivity(volume): проводимость = объём/360
+  - calculateMeridianBuffer(conductivity): буфер = проводимость × 5
+  - calculateStats(baseStats, level, roleBonus): характеристики
+  - getStatBoundsByLevel(level): мин/макс границы
+- Обновлён npc-generator.ts до v2.1.0-lore:
+  - Импорт формул из lore-formulas.ts
+  - generateCultivation() переписан по формулам Lore
+  - generateStats() использует STAT_MULTIPLIERS_BY_LEVEL
+  - Добавлены новые поля в GeneratedNPC.cultivation:
+    - baseVolume, qiDensity, meridianConductivity, meridianBuffer
+- Обновлён NPCViewerDialog.tsx:
+  - Отображение новых полей культивации
+  - Форматирование чисел с toLocaleString()
+- Создан checkpoint30.md с примерами расчётов
+
+Stage Summary:
+- Results: NPC Generator теперь использует формулы из Lore
+- Files: lore-formulas.ts (новый), npc-generator.ts (v2.1.0), NPCViewerDialog.tsx
+- Level 7 NPC example:
+  - Qi density: 64 ед/см³
+  - Stats: базовые 12 × 5.0 = 60
+  - Core capacity: ~150,000+ Ци (vs 1266 ранее)
+  - Meridian conductivity: volume/360 ед/с
+
+---
+Task ID: agent-0-temp-npc
+Agent: Agent-0
+Task: Система временных NPC ("Статисты")
+
+Work Log:
+- Создан документ docs/random_npc.md с архитектурой системы
+- Создан checkpoint30_Npc_Rnd.md с планом разработки
+- Создан src/types/temp-npc.ts:
+  - TempNPC интерфейс (временный NPC)
+  - TempItem интерфейс (временный предмет)
+  - TempNPCClaintView (клиентское представление)
+  - LocationNPCConfig (конфигурация локации)
+  - LOCATION_NPC_PRESETS (6 пресетов: village, city, sect, wilderness, dungeon, market)
+  - Утилиты: generateTempNPCId, isTempNPCId, tempNPCToClient
+- Создан src/lib/game/session-npc-manager.ts:
+  - Singleton класс SessionNPCManager
+  - Хранение NPC в памяти: Map<sessionId, Map<locationId, TempNPC[]>>
+  - Методы: initializeLocation, getNPC, removeNPC, clearLocation, clearSession
+  - Генерация: generateTempNPC, generateEquipment, generateQuickSlots
+  - Система лута: generateLoot, calculateXP
+- Создан API endpoint /api/temp-npc/route.ts:
+  - GET actions: list, get, stats, presets
+  - POST actions: init, remove, update, clear
+- Исправлена функция generateEquipment в npc-generator.ts:
+  - Поддержка string | string[] для weapon и armor
+- Протестировано:
+  - Инициализация локации: 10-14 NPC для village, 5-10 для wilderness
+  - Удаление NPC с лутом: духовные камни, экипировка, расходники
+  - Статистика менеджера: sessions, totalNPCs, byLocation
+
+Stage Summary:
+- Results: Полная система временных NPC реализована
+- Files: temp-npc.ts (типы), session-npc-manager.ts (менеджер), temp-npc/route.ts (API)
+- Presets: village, city, sect, wilderness, dungeon, market
+- API: инициализация локации, удаление NPC, очистка
+- Loot: духовные камни, экипировка, расходники
+- XP: 10*level + subLevel*2 + coreQuality/20
