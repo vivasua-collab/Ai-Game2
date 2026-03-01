@@ -201,9 +201,16 @@ export function NPCViewerDialog({ open, onOpenChange }: NPCViewerDialogProps) {
       const res = await fetch('/api/generator/npc?action=list');
       const data = await res.json();
       if (data.success) {
-        setNpcs(data.npcs);
-        if (data.npcs.length > 0 && !selectedNPC) {
-          setSelectedNPC(data.npcs[0]);
+        // Deduplicate NPCs by ID
+        const uniqueNPCs = data.npcs.reduce((acc: GeneratedNPC[], npc: GeneratedNPC) => {
+          if (!acc.find(n => n.id === npc.id)) {
+            acc.push(npc);
+          }
+          return acc;
+        }, []);
+        setNpcs(uniqueNPCs);
+        if (uniqueNPCs.length > 0 && !selectedNPC) {
+          setSelectedNPC(uniqueNPCs[0]);
         }
       }
     } catch (error) {

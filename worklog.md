@@ -397,3 +397,54 @@ Stage Summary:
 - Features: поиск, фильтры, детальный просмотр всех данных NPC
 - UI: вкладка NPC в диалоге "Сгенерированные объекты"
 - API: GET /api/generator/npc?action=list работает
+
+---
+Task ID: agent-0-npc-viewer-standalone
+Agent: Agent-0
+Task: Создание отдельного модуля просмотра NPC
+
+Work Log:
+- Создан компонент NPCViewerDialog.tsx:
+  - Отдельный диалог, не привязанный к GeneratedObjectsViewer
+  - Разделённый вид: список NPC слева, детали справа
+  - Поиск и фильтры (уровень, тип вида)
+  - Вкладки: Характеристики, Экипировка, Техники
+  - Popup просмотра деталей предметов экипировки
+  - Отображение личности, культивации, ресурсов
+- Добавлена кнопка в ActionButtons:
+  - Иконка: Users (👥)
+  - Цвет: amber
+  - Расположение: рядом с тестером Event Bus
+- Калькулятор бонусов: отложен (сначала для персонажа игрока)
+
+Stage Summary:
+- Results: NPC Viewer работает как отдельный модуль
+- Files: NPCViewerDialog.tsx (новый), ActionButtons.tsx (обновлён)
+- UI: кнопка с иконкой человечков, отдельный диалог просмотра
+
+---
+Task ID: agent-0-fix-duplicate-npc-ids
+Agent: Agent-0
+Task: Исправление дублирующихся ID NPC (React key error)
+
+Work Log:
+- Выявлена проблема: React ошибка "two children with the same key NP_000002"
+- Причина 1: Глобальный счётчик npcCounter в npc-generator.ts не сохранялся и сбрасывался при рестарте
+- Причина 2: NPC сохранялись в разные файлы по speciesId, но ID не были уникальными
+- Исправлено в NPCViewerDialog.tsx:
+  - Добавлена дедупликация при загрузке NPCs через reduce
+  - Уникальные NPC определяются по id
+- Исправлено в npc API route.ts:
+  - Добавлена дедупликация NPCs по ID при возврате списка
+- Исправлено в preset-storage.ts:
+  - При append режиме существующие NPC с дублирующимися ID фильтруются
+- Исправлена генерация ID:
+  - Теперь ID генерируются через presetStorage.generateId('NP')
+  - Счётчик NP сохраняется в counters.json
+  - ID будут уникальными между запусками сервера
+
+Stage Summary:
+- Results: Дубликаты NPC устранены на всех уровнях
+- Files: NPCViewerDialog.tsx, npc/route.ts, preset-storage.ts
+- Fixes: дедупликация при загрузке, при сохранении, уникальные ID
+- Счётчик NP теперь сохраняется в counters.json

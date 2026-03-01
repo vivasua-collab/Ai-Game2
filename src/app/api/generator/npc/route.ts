@@ -30,13 +30,22 @@ export async function GET(request: NextRequest) {
       const type = searchParams.get('type') || undefined;
       const limit = parseInt(searchParams.get('limit') || '100');
       const offset = parseInt(searchParams.get('offset') || '0');
-      
+
       let npcs = await presetStorage.loadNPCs();
-      
+
+      // Deduplicate by ID
+      const seenIds = new Set<string>();
+      npcs = npcs.filter(npc => {
+        const id = (npc as GeneratedNPC).id;
+        if (seenIds.has(id)) return false;
+        seenIds.add(id);
+        return true;
+      });
+
       if (type) {
         npcs = npcs.filter(npc => (npc as GeneratedNPC).speciesId === type);
       }
-      
+
       const paginated = npcs.slice(offset, offset + limit);
 
       return NextResponse.json({
@@ -137,10 +146,17 @@ export async function POST(request: NextRequest) {
         generationContext.seed = Date.now();
       }
 
+      // Generate NPCs
       const npcs = generateNPCs(generationContext, count);
+      
+      // Assign unique IDs from storage
+      for (const npc of npcs) {
+        npc.id = presetStorage.generateId('NP');
+      }
 
       if (save) {
         await presetStorage.saveNPCs(npcs, mode);
+        await presetStorage.saveCounters();
       }
 
       return NextResponse.json({

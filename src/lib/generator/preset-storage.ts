@@ -959,7 +959,12 @@ export class PresetStorageService {
         try {
           const content = await fs.readFile(filePath, 'utf-8');
           const existing = JSON.parse(content);
-          allNpcs = [...existing.npcs, ...typeNpcs];
+          // Deduplicate: remove NPCs with same ID from existing before appending
+          const existingIds = new Set(typeNpcs.map(n => n.id));
+          const filteredExisting = (existing.npcs || []).filter(
+            (n: { id: string }) => !existingIds.has(n.id)
+          );
+          allNpcs = [...filteredExisting, ...typeNpcs];
         } catch {
           // Файл не существует
         }
