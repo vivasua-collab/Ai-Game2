@@ -448,3 +448,30 @@ Stage Summary:
 - Files: NPCViewerDialog.tsx, npc/route.ts, preset-storage.ts
 - Fixes: дедупликация при загрузке, при сохранении, уникальные ID
 - Счётчик NP теперь сохраняется в counters.json
+
+---
+Task ID: agent-0-perf-settings
+Agent: Agent-0
+Task: Оптимизация производительности SettingsPanel
+
+Work Log:
+- Выявлены проблемы производительности при открытии меню создания:
+  - 5 последовательных API запросов (каскадная загрузка)
+  - 7 синхронно импортированных тяжёлых компонентов
+  - Множественные setState вызовы в useEffect
+- Реализованы оптимизации:
+  - Lazy loading для всех 8 генераторов через React.lazy()
+  - Suspense с fallback (PanelLoader) для каждой вкладки
+  - Promise.all для параллельной загрузки всех API
+  - useCallback для мемоизации loadAllStats
+  - Единый reloadStats вместо множества функций
+- Удалены 5 отдельных функций загрузки:
+  - loadStats, checkPresets, loadStorageStats, loadFormationManifest, loadNPCStats
+  - Заменены на единую loadAllStats с Promise.all
+
+Stage Summary:
+- Results: Значительное ускорение открытия меню создания
+- Files: SettingsPanel.tsx
+- Optimizations: lazy loading, parallel API, memoization
+- API requests: 5 последовательных → 5 параллельных (Promise.all)
+- Components: 8 синхронных импортов → 8 lazy loading с Suspense
