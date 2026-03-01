@@ -19,7 +19,7 @@ import {
   Sparkles,
   Trash2,
   User,
-  Wolf,
+  Dog,
   Ghost,
   Sparkle,
   Flame,
@@ -57,7 +57,7 @@ interface NPCGeneratorPanelProps {
 const SPECIES_TYPES = [
   { id: 'all', name: 'Все виды', icon: Users },
   { id: 'humanoid', name: 'Гуманоиды', icon: User },
-  { id: 'beast', name: 'Звери', icon: Wolf },
+  { id: 'beast', name: 'Звери', icon: Dog },
   { id: 'spirit', name: 'Духи', icon: Ghost },
   { id: 'hybrid', name: 'Гибриды', icon: Sparkle },
   { id: 'aberration', name: 'Аберрации', icon: Flame },
@@ -175,7 +175,7 @@ export function NPCGeneratorPanel({ onGenerate, onClear, loading, npcStats }: NP
       {/* Выбор вида */}
       <div className="bg-slate-800/50 rounded-lg p-4 space-y-4">
         <h3 className="text-lg font-medium text-slate-200 flex items-center gap-2">
-          <Wolf className="w-5 h-5 text-amber-400" />
+          <Dog className="w-5 h-5 text-amber-400" />
           Тип существа
         </h3>
         <p className="text-sm text-slate-400">
