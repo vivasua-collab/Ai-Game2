@@ -1,0 +1,412 @@
+{
+  "version": "2.0",
+  "type": "pill",
+  "count": 20,
+  "items": [
+    {
+      "id": "CS_000001",
+      "name": "Малая Шарик Восстановление здоровья",
+      "nameEn": "Малая Шарик of Heal HP",
+      "description": "Восстанавливает здоровье",
+      "type": "pill",
+      "effect": {
+        "type": "heal_hp",
+        "value": 10
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 21
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 20,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000002",
+      "name": "Малая Пилюля Восстановление здоровья",
+      "nameEn": "Малая Пилюля of Heal HP",
+      "description": "Восстанавливает здоровье",
+      "type": "pill",
+      "effect": {
+        "type": "heal_hp",
+        "value": 10
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 22
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 20,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000003",
+      "name": "Мощная Капсула Усиление характеристики",
+      "nameEn": "Мощная Капсула of Buff Stat",
+      "description": "Временно усиливает характеристику (agility). Длительность: 79 сек.",
+      "type": "pill",
+      "effect": {
+        "type": "buff_stat",
+        "value": 2,
+        "duration": 79,
+        "stat": "agility"
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 58
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 20,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000004",
+      "name": "Мощная Таблетка Восстановление здоровья",
+      "nameEn": "Мощная Таблетка of Heal HP",
+      "description": "Восстанавливает здоровье",
+      "type": "pill",
+      "effect": {
+        "type": "heal_hp",
+        "value": 10
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 20
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 20,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000005",
+      "name": "Малая Капсула Усиление характеристики",
+      "nameEn": "Малая Капсула of Buff Stat",
+      "description": "Временно усиливает характеристику (intelligence). Длительность: 66 сек.",
+      "type": "pill",
+      "effect": {
+        "type": "buff_stat",
+        "value": 2,
+        "duration": 66,
+        "stat": "intelligence"
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 35
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 20,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000006",
+      "name": "Большая Таблетка Усиление сопротивления",
+      "nameEn": "Большая Таблетка of Buff Resistance",
+      "description": "Временно увеличивает сопротивление эффектам. Длительность: 132 сек.",
+      "type": "pill",
+      "effect": {
+        "type": "buff_resistance",
+        "value": 5,
+        "duration": 132
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 47
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 20,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000007",
+      "name": "Малая Пилюля Усиление характеристики",
+      "nameEn": "Малая Пилюля of Buff Stat",
+      "description": "Временно усиливает характеристику (intelligence). Длительность: 79 сек.",
+      "type": "pill",
+      "effect": {
+        "type": "buff_stat",
+        "value": 2,
+        "duration": 79,
+        "stat": "intelligence"
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 44
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 20,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000008",
+      "name": "Древняя Таблетка Усиление характеристики",
+      "nameEn": "Древняя Таблетка of Buff Stat",
+      "description": "Временно усиливает характеристику (agility). Длительность: 79 сек.",
+      "type": "pill",
+      "effect": {
+        "type": "buff_stat",
+        "value": 2,
+        "duration": 79,
+        "stat": "agility"
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 47
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 20,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000009",
+      "name": "Большая Шарик Восстановление здоровья",
+      "nameEn": "Большая Шарик of Heal HP",
+      "description": "Восстанавливает здоровье",
+      "type": "pill",
+      "effect": {
+        "type": "heal_hp",
+        "value": 10
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 16
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 20,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000010",
+      "name": "Мощная Пилюля Усиление характеристики",
+      "nameEn": "Мощная Пилюля of Buff Stat",
+      "description": "Временно усиливает характеристику (conductivity). Длительность: 66 сек.",
+      "type": "pill",
+      "effect": {
+        "type": "buff_stat",
+        "value": 2,
+        "duration": 66,
+        "stat": "conductivity"
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 59
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 20,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000011",
+      "name": "Древняя Капсула Усиление характеристики",
+      "nameEn": "Древняя Капсула of Buff Stat",
+      "description": "Временно усиливает характеристику (strength). Длительность: 99 сек.",
+      "type": "pill",
+      "effect": {
+        "type": "buff_stat",
+        "value": 3,
+        "duration": 99,
+        "stat": "strength"
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 57
+      },
+      "rarity": "rare",
+      "level": 1,
+      "stackSize": 20,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000012",
+      "name": "Большая Капсула Усиление характеристики",
+      "nameEn": "Большая Капсула of Buff Stat",
+      "description": "Временно усиливает характеристику (intelligence). Длительность: 132 сек.",
+      "type": "pill",
+      "effect": {
+        "type": "buff_stat",
+        "value": 5,
+        "duration": 132,
+        "stat": "intelligence"
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 51
+      },
+      "rarity": "legendary",
+      "level": 1,
+      "stackSize": 20,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000013",
+      "name": "Малая Капсула Усиление характеристики",
+      "nameEn": "Малая Капсула of Buff Stat",
+      "description": "Временно усиливает характеристику (strength). Длительность: 79 сек.",
+      "type": "pill",
+      "effect": {
+        "type": "buff_stat",
+        "value": 2,
+        "duration": 79,
+        "stat": "strength"
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 48
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 20,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000014",
+      "name": "Малая Таблетка Усиление сопротивления",
+      "nameEn": "Малая Таблетка of Buff Resistance",
+      "description": "Временно увеличивает сопротивление эффектам. Длительность: 132 сек.",
+      "type": "pill",
+      "effect": {
+        "type": "buff_resistance",
+        "value": 5,
+        "duration": 132
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 40
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 20,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000015",
+      "name": "Древняя Таблетка Усиление характеристики",
+      "nameEn": "Древняя Таблетка of Buff Stat",
+      "description": "Временно усиливает характеристику (strength). Длительность: 66 сек.",
+      "type": "pill",
+      "effect": {
+        "type": "buff_stat",
+        "value": 2,
+        "duration": 66,
+        "stat": "strength"
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 53
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 20,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000016",
+      "name": "Мощная Шарик Усиление характеристики",
+      "nameEn": "Мощная Шарик of Buff Stat",
+      "description": "Временно усиливает характеристику (strength). Длительность: 79 сек.",
+      "type": "pill",
+      "effect": {
+        "type": "buff_stat",
+        "value": 2,
+        "duration": 79,
+        "stat": "strength"
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 58
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 20,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000017",
+      "name": "Мощная Шарик Усиление характеристики",
+      "nameEn": "Мощная Шарик of Buff Stat",
+      "description": "Временно усиливает характеристику (agility). Длительность: 66 сек.",
+      "type": "pill",
+      "effect": {
+        "type": "buff_stat",
+        "value": 2,
+        "duration": 66,
+        "stat": "agility"
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 45
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 20,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000018",
+      "name": "Древняя Шарик Усиление сопротивления",
+      "nameEn": "Древняя Шарик of Buff Resistance",
+      "description": "Временно увеличивает сопротивление эффектам. Длительность: 132 сек.",
+      "type": "pill",
+      "effect": {
+        "type": "buff_resistance",
+        "value": 5,
+        "duration": 132
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 49
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 20,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000019",
+      "name": "Средняя Таблетка Восстановление здоровья",
+      "nameEn": "Средняя Таблетка of Heal HP",
+      "description": "Восстанавливает здоровье",
+      "type": "pill",
+      "effect": {
+        "type": "heal_hp",
+        "value": 13
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 11
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 20,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000020",
+      "name": "Древняя Пилюля Восстановление здоровья",
+      "nameEn": "Древняя Пилюля of Heal HP",
+      "description": "Восстанавливает здоровье",
+      "type": "pill",
+      "effect": {
+        "type": "heal_hp",
+        "value": 10
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 21
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 20,
+      "quantity": 1
+    }
+  ]
+}

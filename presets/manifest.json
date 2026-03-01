@@ -1,0 +1,62 @@
+{
+  "version": "2.0",
+  "generatedAt": "2026-03-01T11:20:30.649Z",
+  "lastModifiedAt": "2026-03-01T11:20:30.649Z",
+  "techniques": {
+    "total": 450,
+    "byLevel": {
+      "1": 450
+    },
+    "byType": {
+      "combat": 50,
+      "defense": 50,
+      "healing": 50,
+      "movement": 50,
+      "sensory": 50,
+      "cultivation": 50,
+      "support": 50,
+      "curse": 50,
+      "poison": 50
+    },
+    "bySubtype": {
+      "melee_strike": 10,
+      "ranged_projectile": 12,
+      "ranged_beam": 4,
+      "ranged_aoe": 14,
+      "melee_weapon": 10,
+      "block": 11,
+      "reflect": 11,
+      "absorb": 7,
+      "barrier": 6,
+      "dodge": 8,
+      "shield": 7,
+      "combat": 50,
+      "body": 47,
+      "qi": 3
+    },
+    "byElement": {
+      "water": 72,
+      "air": 63,
+      "void": 63,
+      "fire": 63,
+      "earth": 63,
+      "lightning": 63,
+      "neutral": 63
+    }
+  },
+  "formations": {
+    "total": 0,
+    "byLevel": {}
+  },
+  "items": {
+    "total": 0
+  },
+  "npcs": {
+    "total": 0
+  },
+  "fileSizeStats": {
+    "techniquesBytes": 549828,
+    "largestFileBytes": 63213,
+    "largestFileName": "/home/z/my-project/presets/techniques/support/level-1.json"
+  }
+}

@@ -1,0 +1,2012 @@
+{
+  "version": "2.0",
+  "type": "sensory",
+  "subtype": null,
+  "prefix": "SN",
+  "prefixName": "Восприятие",
+  "level": 1,
+  "count": 50,
+  "techniques": [
+    {
+      "id": "SN_000162",
+      "name": "Восприятие морской",
+      "nameEn": "Восприятие Морской",
+      "type": "sensory",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 30,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Восприятие морской — техника восприятия уровня 1. Редкость: uncommon. Радиус: 30м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "burning": true
+        },
+        "effectValues": {
+          "burningDamage": 6.5,
+          "burningDuration": 3
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 30,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 6.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361101599,
+        "template": "sensory_water",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000163",
+      "name": "Титанический Чутьё",
+      "nameEn": "Титанический Чутьё",
+      "type": "sensory",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Титанический Чутьё — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361101598,
+        "template": "sensory_earth",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000164",
+      "name": "Анализ стремительный",
+      "nameEn": "Анализ Стремительный",
+      "type": "sensory",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 30,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Анализ стремительный — техника восприятия уровня 1. Редкость: uncommon. Радиус: 30м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "freezing": true
+        },
+        "effectValues": {
+          "freezingDuration": 1.2
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 30,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "freezing",
+            "value": 1.2
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361101597,
+        "template": "sensory_air",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000165",
+      "name": "Восприятие молниеносный",
+      "nameEn": "Восприятие Молниеносный",
+      "type": "sensory",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Восприятие молниеносный — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361101596,
+        "template": "sensory_lightning",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000166",
+      "name": "Обнаружение пустотный",
+      "nameEn": "Обнаружение Пустотный",
+      "type": "sensory",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 30,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Обнаружение пустотный — техника восприятия уровня 1. Редкость: uncommon. Радиус: 30м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "slow": true
+        },
+        "effectValues": {
+          "slowPercent": 29,
+          "slowDuration": 3
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 30,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "slow",
+            "value": 29
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361101595,
+        "template": "sensory_void",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000167",
+      "name": "Чистый Обнаружение",
+      "nameEn": "Чистый Обнаружение",
+      "type": "sensory",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Чистый Обнаружение — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361101594,
+        "template": "sensory_neutral",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000168",
+      "name": "Взгляд вулканический",
+      "nameEn": "Взгляд Вулканический",
+      "type": "sensory",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 30,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Взгляд вулканический — техника восприятия уровня 1. Редкость: uncommon. Радиус: 30м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "burning": true
+        },
+        "effectValues": {
+          "burningDamage": 15.5,
+          "burningDuration": 2
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 30,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 15.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361101593,
+        "template": "sensory_fire",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000169",
+      "name": "Струящийся Взгляд",
+      "nameEn": "Струящийся Взгляд",
+      "type": "sensory",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Струящийся Взгляд — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361101592,
+        "template": "sensory_water",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000170",
+      "name": "Анализ неизбежный",
+      "nameEn": "Анализ Неизбежный",
+      "type": "sensory",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 30,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Анализ неизбежный — техника восприятия уровня 1. Редкость: uncommon. Радиус: 30м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "freezing": true
+        },
+        "effectValues": {
+          "freezingDuration": 1.7
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 30,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "freezing",
+            "value": 1.7
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361101570,
+        "template": "sensory_earth",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000171",
+      "name": "Порывистый Обнаружение",
+      "nameEn": "Порывистый Обнаружение",
+      "type": "sensory",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Порывистый Обнаружение — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361101569,
+        "template": "sensory_air",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000172",
+      "name": "Анализ громовой",
+      "nameEn": "Анализ Громовой",
+      "type": "sensory",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 30,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Анализ громовой — техника восприятия уровня 1. Редкость: uncommon. Радиус: 30м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "slow": true
+        },
+        "effectValues": {
+          "slowPercent": 34,
+          "slowDuration": 3
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 30,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "slow",
+            "value": 34
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361101568,
+        "template": "sensory_lightning",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000173",
+      "name": "Анализ теневой",
+      "nameEn": "Анализ Теневой",
+      "type": "sensory",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Анализ теневой — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361101567,
+        "template": "sensory_void",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000174",
+      "name": "Базовый Чутьё",
+      "nameEn": "Базовый Чутьё",
+      "type": "sensory",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 30,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Базовый Чутьё — техника восприятия уровня 1. Редкость: uncommon. Радиус: 30м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 7.2
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 30,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 7.2
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361101566,
+        "template": "sensory_neutral",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000175",
+      "name": "Раскалённый Анализ",
+      "nameEn": "Раскалённый Анализ",
+      "type": "sensory",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Раскалённый Анализ — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361101565,
+        "template": "sensory_fire",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000176",
+      "name": "Восприятие штормовой",
+      "nameEn": "Восприятие Штормовой",
+      "type": "sensory",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 30,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Восприятие штормовой — техника восприятия уровня 1. Редкость: uncommon. Радиус: 30м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "burning": true
+        },
+        "effectValues": {
+          "burningDamage": 13.4,
+          "burningDuration": 1
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 30,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 13.4
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361101564,
+        "template": "sensory_water",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000177",
+      "name": "Неизбежный Взгляд",
+      "nameEn": "Неизбежный Взгляд",
+      "type": "sensory",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Неизбежный Взгляд — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361101563,
+        "template": "sensory_earth",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000178",
+      "name": "Взгляд вихревой",
+      "nameEn": "Взгляд Вихревой",
+      "type": "sensory",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 30,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Взгляд вихревой — техника восприятия уровня 1. Редкость: uncommon. Радиус: 30м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "burning": true
+        },
+        "effectValues": {
+          "burningDamage": 7.7,
+          "burningDuration": 1
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 30,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 7.7
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361101562,
+        "template": "sensory_air",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000179",
+      "name": "Статический Чутьё",
+      "nameEn": "Статический Чутьё",
+      "type": "sensory",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Статический Чутьё — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361101561,
+        "template": "sensory_lightning",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000180",
+      "name": "Теневой Восприятие",
+      "nameEn": "Теневой Восприятие",
+      "type": "sensory",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 30,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Теневой Восприятие — техника восприятия уровня 1. Редкость: uncommon. Радиус: 30м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 13.2,
+          "buffStat": "agility",
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 30,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 13.2
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361101539,
+        "template": "sensory_void",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000181",
+      "name": "Чистый Анализ",
+      "nameEn": "Чистый Анализ",
+      "type": "sensory",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Чистый Анализ — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361101538,
+        "template": "sensory_neutral",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000182",
+      "name": "Чутьё пожирающий",
+      "nameEn": "Чутьё Пожирающий",
+      "type": "sensory",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 30,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Чутьё пожирающий — техника восприятия уровня 1. Редкость: uncommon. Радиус: 30м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "burning": true
+        },
+        "effectValues": {
+          "burningDamage": 8.3,
+          "burningDuration": 1
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 30,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 8.3
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361101537,
+        "template": "sensory_fire",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000183",
+      "name": "Холодный Анализ",
+      "nameEn": "Холодный Анализ",
+      "type": "sensory",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Холодный Анализ — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361101536,
+        "template": "sensory_water",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000184",
+      "name": "Обнаружение титанический",
+      "nameEn": "Обнаружение Титанический",
+      "type": "sensory",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 30,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Обнаружение титанический — техника восприятия уровня 1. Редкость: uncommon. Радиус: 30м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "burning": true
+        },
+        "effectValues": {
+          "burningDamage": 12.8,
+          "burningDuration": 3
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 30,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 12.8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361101535,
+        "template": "sensory_earth",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000185",
+      "name": "Штормовой Чутьё",
+      "nameEn": "Штормовой Чутьё",
+      "type": "sensory",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Штормовой Чутьё — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361101534,
+        "template": "sensory_air",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000186",
+      "name": "Ослепляющий Взгляд",
+      "nameEn": "Ослепляющий Взгляд",
+      "type": "sensory",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 30,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Ослепляющий Взгляд — техника восприятия уровня 1. Редкость: uncommon. Радиус: 30м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "slow": true
+        },
+        "effectValues": {
+          "slowPercent": 28.6,
+          "slowDuration": 3
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 30,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "slow",
+            "value": 28.6
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361101533,
+        "template": "sensory_lightning",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000187",
+      "name": "Бесплотный Обнаружение",
+      "nameEn": "Бесплотный Обнаружение",
+      "type": "sensory",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Бесплотный Обнаружение — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361101532,
+        "template": "sensory_void",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000188",
+      "name": "Восприятие истинный",
+      "nameEn": "Восприятие Истинный",
+      "type": "sensory",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 30,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Восприятие истинный — техника восприятия уровня 1. Редкость: uncommon. Радиус: 30м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 44
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 30,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 44
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361101531,
+        "template": "sensory_neutral",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000189",
+      "name": "Анализ пылающий",
+      "nameEn": "Анализ Пылающий",
+      "type": "sensory",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Анализ пылающий — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361101530,
+        "template": "sensory_fire",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000190",
+      "name": "Обнаружение струящийся",
+      "nameEn": "Обнаружение Струящийся",
+      "type": "sensory",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 37,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Обнаружение струящийся — техника восприятия уровня 1. Редкость: rare. Радиус: 37м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 19,
+          "buffStat": "strength",
+          "buffDuration": 4
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 37,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 19
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361101508,
+        "template": "sensory_water",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000191",
+      "name": "Восприятие неизбежный",
+      "nameEn": "Восприятие Неизбежный",
+      "type": "sensory",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Восприятие неизбежный — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361101507,
+        "template": "sensory_earth",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000192",
+      "name": "Штормовой Анализ",
+      "nameEn": "Штормовой Анализ",
+      "type": "sensory",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 37,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Штормовой Анализ — техника восприятия уровня 1. Редкость: rare. Радиус: 37м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "slow": true,
+          "burning": true
+        },
+        "effectValues": {
+          "slowPercent": 35.1,
+          "slowDuration": 2,
+          "burningDamage": 11.9,
+          "burningDuration": 3
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 37,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "slow",
+            "value": 35.1
+          },
+          {
+            "type": "burning",
+            "value": 11.9
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361101506,
+        "template": "sensory_air",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000193",
+      "name": "Статический Восприятие",
+      "nameEn": "Статический Восприятие",
+      "type": "sensory",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Статический Восприятие — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361101505,
+        "template": "sensory_lightning",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000194",
+      "name": "Эфирный Обнаружение",
+      "nameEn": "Эфирный Обнаружение",
+      "type": "sensory",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 37,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Эфирный Обнаружение — техника восприятия уровня 1. Редкость: rare. Радиус: 37м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "heal": true,
+          "burning": true
+        },
+        "effectValues": {
+          "healAmount": 27.1,
+          "burningDamage": 9.6,
+          "burningDuration": 3
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 37,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 27.1
+          },
+          {
+            "type": "burning",
+            "value": 9.6
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361101504,
+        "template": "sensory_void",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000195",
+      "name": "Истинный Обнаружение",
+      "nameEn": "Истинный Обнаружение",
+      "type": "sensory",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Истинный Обнаружение — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361101503,
+        "template": "sensory_neutral",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000196",
+      "name": "Пылающий Обнаружение",
+      "nameEn": "Пылающий Обнаружение",
+      "type": "sensory",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 30,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Пылающий Обнаружение — техника восприятия уровня 1. Редкость: uncommon. Радиус: 30м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 9.2,
+          "buffStat": "agility",
+          "buffDuration": 3
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 30,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 9.2
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361101502,
+        "template": "sensory_fire",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000197",
+      "name": "Струящийся Обнаружение",
+      "nameEn": "Струящийся Обнаружение",
+      "type": "sensory",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Струящийся Обнаружение — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361101501,
+        "template": "sensory_water",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000198",
+      "name": "Горный Анализ",
+      "nameEn": "Горный Анализ",
+      "type": "sensory",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 30,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Горный Анализ — техника восприятия уровня 1. Редкость: uncommon. Радиус: 30м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "burning": true
+        },
+        "effectValues": {
+          "burningDamage": 9.5,
+          "burningDuration": 3
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 30,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 9.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361101500,
+        "template": "sensory_earth",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000199",
+      "name": "Взгляд порывистый",
+      "nameEn": "Взгляд Порывистый",
+      "type": "sensory",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Взгляд порывистый — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361101499,
+        "template": "sensory_air",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000200",
+      "name": "Взгляд искрящийся",
+      "nameEn": "Взгляд Искрящийся",
+      "type": "sensory",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Взгляд искрящийся — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361100826,
+        "template": "sensory_lightning",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000201",
+      "name": "Взгляд забвенный",
+      "nameEn": "Взгляд Забвенный",
+      "type": "sensory",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 37,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Взгляд забвенный — техника восприятия уровня 1. Редкость: rare. Радиус: 37м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "burning": true,
+          "slow": true
+        },
+        "effectValues": {
+          "burningDamage": 19.3,
+          "burningDuration": 1,
+          "slowPercent": 25,
+          "slowDuration": 3
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 37,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 19.3
+          },
+          {
+            "type": "slow",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361100825,
+        "template": "sensory_void",
+        "generatedAt": "2026-03-01T11:20:13.767Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000202",
+      "name": "Взгляд концентрированный",
+      "nameEn": "Взгляд Концентрированный",
+      "type": "sensory",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Взгляд концентрированный — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361100824,
+        "template": "sensory_neutral",
+        "generatedAt": "2026-03-01T11:20:13.768Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000203",
+      "name": "Взгляд пожирающий",
+      "nameEn": "Взгляд Пожирающий",
+      "type": "sensory",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 37,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Взгляд пожирающий — техника восприятия уровня 1. Редкость: rare. Радиус: 37м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "freezing": true,
+          "heal": true
+        },
+        "effectValues": {
+          "freezingDuration": 1.1,
+          "healAmount": 10.5
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.1
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 37,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "freezing",
+            "value": 1.1
+          },
+          {
+            "type": "heal",
+            "value": 10.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361100823,
+        "template": "sensory_fire",
+        "generatedAt": "2026-03-01T11:20:13.768Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000204",
+      "name": "Штормовой Чутьё",
+      "nameEn": "Штормовой Чутьё",
+      "type": "sensory",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Штормовой Чутьё — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361100822,
+        "template": "sensory_water",
+        "generatedAt": "2026-03-01T11:20:13.768Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000205",
+      "name": "Обнаружение горный",
+      "nameEn": "Обнаружение Горный",
+      "type": "sensory",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 37,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Обнаружение горный — техника восприятия уровня 1. Редкость: rare. Радиус: 37м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "slow": true,
+          "buff": true
+        },
+        "effectValues": {
+          "slowPercent": 11.9,
+          "slowDuration": 3,
+          "buffAmount": 8.1,
+          "buffStat": "strength",
+          "buffDuration": 3
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.14
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 37,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "slow",
+            "value": 11.9
+          },
+          {
+            "type": "buff",
+            "value": 8.1
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361100821,
+        "template": "sensory_earth",
+        "generatedAt": "2026-03-01T11:20:13.768Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000206",
+      "name": "Восприятие вихревой",
+      "nameEn": "Восприятие Вихревой",
+      "type": "sensory",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Восприятие вихревой — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361100820,
+        "template": "sensory_air",
+        "generatedAt": "2026-03-01T11:20:13.768Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000207",
+      "name": "Анализ статический",
+      "nameEn": "Анализ Статический",
+      "type": "sensory",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 37,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Анализ статический — техника восприятия уровня 1. Редкость: rare. Радиус: 37м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "heal": true,
+          "burning": true
+        },
+        "effectValues": {
+          "healAmount": 37.4,
+          "burningDamage": 8.7,
+          "burningDuration": 2
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.22
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 37,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 37.4
+          },
+          {
+            "type": "burning",
+            "value": 8.7
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361100819,
+        "template": "sensory_lightning",
+        "generatedAt": "2026-03-01T11:20:13.768Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000208",
+      "name": "Восприятие пустотный",
+      "nameEn": "Восприятие Пустотный",
+      "type": "sensory",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Восприятие пустотный — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361100818,
+        "template": "sensory_void",
+        "generatedAt": "2026-03-01T11:20:13.768Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000209",
+      "name": "Истинный Анализ",
+      "nameEn": "Истинный Анализ",
+      "type": "sensory",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 30,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Истинный Анализ — техника восприятия уровня 1. Редкость: uncommon. Радиус: 30м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8.5,
+          "buffStat": "agility",
+          "buffDuration": 4
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 30,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361100817,
+        "template": "sensory_neutral",
+        "generatedAt": "2026-03-01T11:20:13.768Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000210",
+      "name": "Восприятие вулканический",
+      "nameEn": "Восприятие Вулканический",
+      "type": "sensory",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 24,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Восприятие вулканический — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1361100795,
+        "template": "sensory_fire",
+        "generatedAt": "2026-03-01T11:20:13.768Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000211",
+      "name": "Морской Чутьё",
+      "nameEn": "Морской Чутьё",
+      "type": "sensory",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 4,
+      "baseRange": 48,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Морской Чутьё — техника восприятия уровня 1. Редкость: legendary. Радиус: 48м.",
+      "rarity": "legendary",
+      "modifiers": {
+        "effects": {
+          "freezing": true,
+          "slow": true
+        },
+        "effectValues": {
+          "freezingDuration": 1.1,
+          "slowPercent": 23.8,
+          "slowDuration": 1
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 48,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "freezing",
+            "value": 1.1
+          },
+          {
+            "type": "slow",
+            "value": 23.8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1361100794,
+        "template": "sensory_water",
+        "generatedAt": "2026-03-01T11:20:13.768Z",
+        "generatorVersion": "2.1.0"
+      }
+    }
+  ]
+}

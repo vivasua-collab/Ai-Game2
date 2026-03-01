@@ -1,0 +1,2161 @@
+{
+  "version": "2.0",
+  "type": "healing",
+  "subtype": null,
+  "prefix": "HL",
+  "prefixName": "Исцеление",
+  "level": 1,
+  "count": 50,
+  "techniques": [
+    {
+      "id": "HL_000162",
+      "name": "Холодный Обновление",
+      "nameEn": "Холодный Обновление",
+      "type": "healing",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Холодный Обновление — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592360,
+        "template": "healing_water",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000163",
+      "name": "Титанический Обновление",
+      "nameEn": "Титанический Обновление",
+      "type": "healing",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 11,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Титанический Обновление — техника исцеления уровня 1. Редкость: uncommon. Восстанавливает 25 HP.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 25
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 11,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592359,
+        "template": "healing_earth",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000164",
+      "name": "Вихревой Обновление",
+      "nameEn": "Вихревой Обновление",
+      "type": "healing",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Вихревой Обновление — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592358,
+        "template": "healing_air",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000165",
+      "name": "Регенерация статический",
+      "nameEn": "Регенерация Статический",
+      "type": "healing",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 11,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Регенерация статический — техника исцеления уровня 1. Редкость: uncommon. Восстанавливает 25 HP.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 25
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 11,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592357,
+        "template": "healing_lightning",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000166",
+      "name": "Восстановление теневой",
+      "nameEn": "Восстановление Теневой",
+      "type": "healing",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Восстановление теневой — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592356,
+        "template": "healing_void",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000167",
+      "name": "Исцеление базовый",
+      "nameEn": "Исцеление Базовый",
+      "type": "healing",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 11,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Исцеление базовый — техника исцеления уровня 1. Редкость: uncommon. Восстанавливает 25 HP.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 25
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 11,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592355,
+        "template": "healing_neutral",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000168",
+      "name": "Обновление пылающий",
+      "nameEn": "Обновление Пылающий",
+      "type": "healing",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Обновление пылающий — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592354,
+        "template": "healing_fire",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000169",
+      "name": "Исцеление морской",
+      "nameEn": "Исцеление Морской",
+      "type": "healing",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 11,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Исцеление морской — техника исцеления уровня 1. Редкость: uncommon. Восстанавливает 25 HP.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 25
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 11,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592353,
+        "template": "healing_water",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000170",
+      "name": "Каменный Восстановление",
+      "nameEn": "Каменный Восстановление",
+      "type": "healing",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Каменный Восстановление — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592331,
+        "template": "healing_earth",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000171",
+      "name": "Исцеление невидимый",
+      "nameEn": "Исцеление Невидимый",
+      "type": "healing",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 10,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Исцеление невидимый — техника исцеления уровня 1. Редкость: rare. Восстанавливает 31 HP.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 31
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 10,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 31
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592330,
+        "template": "healing_air",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000172",
+      "name": "Статический Исцеление",
+      "nameEn": "Статический Исцеление",
+      "type": "healing",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Статический Исцеление — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592329,
+        "template": "healing_lightning",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000173",
+      "name": "Пустотный Обновление",
+      "nameEn": "Пустотный Обновление",
+      "type": "healing",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 11,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Пустотный Обновление — техника исцеления уровня 1. Редкость: uncommon. Восстанавливает 25 HP.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 25
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 11,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592328,
+        "template": "healing_void",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000174",
+      "name": "Регенерация базовый",
+      "nameEn": "Регенерация Базовый",
+      "type": "healing",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Регенерация базовый — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592327,
+        "template": "healing_neutral",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000175",
+      "name": "Раскалённый Восстановление",
+      "nameEn": "Раскалённый Восстановление",
+      "type": "healing",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 11,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Раскалённый Восстановление — техника исцеления уровня 1. Редкость: uncommon. Восстанавливает 25 HP.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 25
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 11,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592326,
+        "template": "healing_fire",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000176",
+      "name": "Регенерация штормовой",
+      "nameEn": "Регенерация Штормовой",
+      "type": "healing",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Регенерация штормовой — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592325,
+        "template": "healing_water",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000177",
+      "name": "Тяжёлый Восстановление",
+      "nameEn": "Тяжёлый Восстановление",
+      "type": "healing",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 11,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Тяжёлый Восстановление — техника исцеления уровня 1. Редкость: uncommon. Восстанавливает 25 HP.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 25
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 11,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592324,
+        "template": "healing_earth",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000178",
+      "name": "Штормовой Исцеление",
+      "nameEn": "Штормовой Исцеление",
+      "type": "healing",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Штормовой Исцеление — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592323,
+        "template": "healing_air",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000179",
+      "name": "Искрящийся Обновление",
+      "nameEn": "Искрящийся Обновление",
+      "type": "healing",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 11,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Искрящийся Обновление — техника исцеления уровня 1. Редкость: uncommon. Восстанавливает 25 HP.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 25
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 11,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592322,
+        "template": "healing_lightning",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000180",
+      "name": "Восстановление забвенный",
+      "nameEn": "Восстановление Забвенный",
+      "type": "healing",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Восстановление забвенный — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592300,
+        "template": "healing_void",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000181",
+      "name": "Истинный Исцеление",
+      "nameEn": "Истинный Исцеление",
+      "type": "healing",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 10,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Истинный Исцеление — техника исцеления уровня 1. Редкость: rare. Восстанавливает 31 HP.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 31
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 10,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 31
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592299,
+        "template": "healing_neutral",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000182",
+      "name": "Обновление раскалённый",
+      "nameEn": "Обновление Раскалённый",
+      "type": "healing",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Обновление раскалённый — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592298,
+        "template": "healing_fire",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000183",
+      "name": "Исцеление штормовой",
+      "nameEn": "Исцеление Штормовой",
+      "type": "healing",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 10,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Исцеление штормовой — техника исцеления уровня 1. Редкость: rare. Восстанавливает 31 HP.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 31
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 10,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 31
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592297,
+        "template": "healing_water",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000184",
+      "name": "Горный Обновление",
+      "nameEn": "Горный Обновление",
+      "type": "healing",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Горный Обновление — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592296,
+        "template": "healing_earth",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000185",
+      "name": "Регенерация штормовой",
+      "nameEn": "Регенерация Штормовой",
+      "type": "healing",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 10,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Регенерация штормовой — техника исцеления уровня 1. Редкость: rare. Восстанавливает 31 HP.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 31
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 10,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 31
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592295,
+        "template": "healing_air",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000186",
+      "name": "Громовой Восстановление",
+      "nameEn": "Громовой Восстановление",
+      "type": "healing",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Громовой Восстановление — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592294,
+        "template": "healing_lightning",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000187",
+      "name": "Исцеление эфирный",
+      "nameEn": "Исцеление Эфирный",
+      "type": "healing",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 10,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Исцеление эфирный — техника исцеления уровня 1. Редкость: rare. Восстанавливает 31 HP.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 31
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 10,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 31
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592293,
+        "template": "healing_void",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000188",
+      "name": "Чистый Восстановление",
+      "nameEn": "Чистый Восстановление",
+      "type": "healing",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Чистый Восстановление — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592292,
+        "template": "healing_neutral",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000189",
+      "name": "Исцеление вулканический",
+      "nameEn": "Исцеление Вулканический",
+      "type": "healing",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 11,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Исцеление вулканический — техника исцеления уровня 1. Редкость: uncommon. Восстанавливает 25 HP.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 25
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 11,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592291,
+        "template": "healing_fire",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000190",
+      "name": "Струящийся Исцеление",
+      "nameEn": "Струящийся Исцеление",
+      "type": "healing",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Струящийся Исцеление — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592269,
+        "template": "healing_water",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000191",
+      "name": "Восстановление неизбежный",
+      "nameEn": "Восстановление Неизбежный",
+      "type": "healing",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 10,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Восстановление неизбежный — техника исцеления уровня 1. Редкость: legendary. Восстанавливает 40 HP.",
+      "rarity": "legendary",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 40
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 10,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 40
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592268,
+        "template": "healing_earth",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000192",
+      "name": "Стремительный Исцеление",
+      "nameEn": "Стремительный Исцеление",
+      "type": "healing",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Стремительный Исцеление — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592267,
+        "template": "healing_air",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000193",
+      "name": "Ослепляющий Обновление",
+      "nameEn": "Ослепляющий Обновление",
+      "type": "healing",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 10,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Ослепляющий Обновление — техника исцеления уровня 1. Редкость: rare. Восстанавливает 31 HP.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 31
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 10,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 31
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592266,
+        "template": "healing_lightning",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000194",
+      "name": "Регенерация бесплотный",
+      "nameEn": "Регенерация Бесплотный",
+      "type": "healing",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Регенерация бесплотный — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592265,
+        "template": "healing_void",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000195",
+      "name": "Сфокусированный Обновление",
+      "nameEn": "Сфокусированный Обновление",
+      "type": "healing",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 10,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Сфокусированный Обновление — техника исцеления уровня 1. Редкость: rare. Восстанавливает 31 HP.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 31
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 10,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 31
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592264,
+        "template": "healing_neutral",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000196",
+      "name": "Регенерация вулканический",
+      "nameEn": "Регенерация Вулканический",
+      "type": "healing",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Регенерация вулканический — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592263,
+        "template": "healing_fire",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000197",
+      "name": "Холодный Исцеление",
+      "nameEn": "Холодный Исцеление",
+      "type": "healing",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 10,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Холодный Исцеление — техника исцеления уровня 1. Редкость: rare. Восстанавливает 31 HP.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 31
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 10,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 31
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592262,
+        "template": "healing_water",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000198",
+      "name": "Обновление титанический",
+      "nameEn": "Обновление Титанический",
+      "type": "healing",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Обновление титанический — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592261,
+        "template": "healing_earth",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000199",
+      "name": "Невидимый Регенерация",
+      "nameEn": "Невидимый Регенерация",
+      "type": "healing",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 10,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Невидимый Регенерация — техника исцеления уровня 1. Редкость: rare. Восстанавливает 31 HP.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 31
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 10,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 31
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144592260,
+        "template": "healing_air",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000200",
+      "name": "Громовой Обновление",
+      "nameEn": "Громовой Обновление",
+      "type": "healing",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Громовой Обновление — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144591587,
+        "template": "healing_lightning",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000201",
+      "name": "Эфирный Регенерация",
+      "nameEn": "Эфирный Регенерация",
+      "type": "healing",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Эфирный Регенерация — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144591586,
+        "template": "healing_void",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000202",
+      "name": "Восстановление сфокусированный",
+      "nameEn": "Восстановление Сфокусированный",
+      "type": "healing",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 10,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Восстановление сфокусированный — техника исцеления уровня 1. Редкость: legendary. Восстанавливает 40 HP.",
+      "rarity": "legendary",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 40
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 10,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 40
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144591585,
+        "template": "healing_neutral",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000203",
+      "name": "Вулканический Исцеление",
+      "nameEn": "Вулканический Исцеление",
+      "type": "healing",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Вулканический Исцеление — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144591584,
+        "template": "healing_fire",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000204",
+      "name": "Восстановление струящийся",
+      "nameEn": "Восстановление Струящийся",
+      "type": "healing",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 10,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Восстановление струящийся — техника исцеления уровня 1. Редкость: legendary. Восстанавливает 40 HP.",
+      "rarity": "legendary",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 40
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 10,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 40
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144591583,
+        "template": "healing_water",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000205",
+      "name": "Титанический Исцеление",
+      "nameEn": "Титанический Исцеление",
+      "type": "healing",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Титанический Исцеление — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144591582,
+        "template": "healing_earth",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000206",
+      "name": "Обновление вихревой",
+      "nameEn": "Обновление Вихревой",
+      "type": "healing",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 10,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Обновление вихревой — техника исцеления уровня 1. Редкость: rare. Восстанавливает 31 HP.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 31
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 10,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 31
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144591581,
+        "template": "healing_air",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000207",
+      "name": "Регенерация ослепляющий",
+      "nameEn": "Регенерация Ослепляющий",
+      "type": "healing",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Регенерация ослепляющий — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144591580,
+        "template": "healing_lightning",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000208",
+      "name": "Теневой Восстановление",
+      "nameEn": "Теневой Восстановление",
+      "type": "healing",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 10,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Теневой Восстановление — техника исцеления уровня 1. Редкость: rare. Восстанавливает 31 HP.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 31
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 10,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 31
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144591579,
+        "template": "healing_void",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000209",
+      "name": "Регенерация концентрированный",
+      "nameEn": "Регенерация Концентрированный",
+      "type": "healing",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Регенерация концентрированный — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144591578,
+        "template": "healing_neutral",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000210",
+      "name": "Огненный Регенерация",
+      "nameEn": "Огненный Регенерация",
+      "type": "healing",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Огненный Регенерация — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144591556,
+        "template": "healing_fire",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000211",
+      "name": "Восстановление холодный",
+      "nameEn": "Восстановление Холодный",
+      "type": "healing",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 11,
+      "baseRange": 5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Восстановление холодный — техника исцеления уровня 1. Редкость: uncommon. Восстанавливает 25 HP.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 25
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 11,
+        "finalRange": 5,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2144591555,
+        "template": "healing_water",
+        "generatedAt": "2026-03-01T11:20:04.835Z",
+        "generatorVersion": "2.1.0"
+      }
+    }
+  ]
+}

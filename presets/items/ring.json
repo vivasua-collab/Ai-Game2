@@ -1,0 +1,222 @@
+{
+  "version": "2.0",
+  "type": "ring",
+  "count": 12,
+  "items": [
+    {
+      "id": "AC_000004",
+      "name": "Прочный Перстень",
+      "nameEn": "Прочный Перстень",
+      "description": "Прочный Перстень уровня 1. Редкость: common.",
+      "type": "ring",
+      "slot": "ring_left_2",
+      "bonuses": {
+        "stats": {
+          "strength": 2
+        }
+      },
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000008",
+      "name": "Мистический Печать",
+      "nameEn": "Мистический Печать",
+      "description": "Мистический Печать уровня 1. Редкость: legendary.",
+      "type": "ring",
+      "slot": "ring_left_2",
+      "bonuses": {
+        "stats": {
+          "strength": 2,
+          "agility": 4
+        },
+        "special": [
+          {
+            "type": "critChance",
+            "value": 2,
+            "description": "Увеличивает шанс критического удара"
+          }
+        ]
+      },
+      "rarity": "legendary",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000011",
+      "name": "Тяжёлый Символ",
+      "nameEn": "Тяжёлый Символ",
+      "description": "Тяжёлый Символ уровня 1. Редкость: rare.",
+      "type": "ring",
+      "slot": "ring_left_1",
+      "bonuses": {
+        "stats": {
+          "intelligence": 3,
+          "strength": 4
+        }
+      },
+      "rarity": "rare",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000012",
+      "name": "Древний Обод",
+      "nameEn": "Древний Обод",
+      "description": "Древний Обод уровня 1. Редкость: common.",
+      "type": "ring",
+      "slot": "ring_right_2",
+      "bonuses": {
+        "stats": {
+          "strength": 2
+        }
+      },
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000013",
+      "name": "Тяжёлый Кольцо",
+      "nameEn": "Тяжёлый Кольцо",
+      "description": "Тяжёлый Кольцо уровня 1. Редкость: uncommon.",
+      "type": "ring",
+      "slot": "ring_right_1",
+      "bonuses": {
+        "stats": {
+          "intelligence": 2,
+          "conductivity": 1
+        }
+      },
+      "rarity": "uncommon",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000014",
+      "name": "Лёгкий Символ",
+      "nameEn": "Лёгкий Символ",
+      "description": "Лёгкий Символ уровня 1. Редкость: common.",
+      "type": "ring",
+      "slot": "ring_left_1",
+      "bonuses": {
+        "stats": {
+          "agility": 2
+        }
+      },
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000015",
+      "name": "Древний Перстень",
+      "nameEn": "Древний Перстень",
+      "description": "Древний Перстень уровня 1. Редкость: common.",
+      "type": "ring",
+      "slot": "ring_right_2",
+      "bonuses": {
+        "stats": {
+          "agility": 1
+        }
+      },
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000016",
+      "name": "Изящный Печать",
+      "nameEn": "Изящный Печать",
+      "description": "Изящный Печать уровня 1. Редкость: common.",
+      "type": "ring",
+      "slot": "ring_left_1",
+      "bonuses": {
+        "stats": {
+          "conductivity": 1
+        }
+      },
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000017",
+      "name": "Изящный Кольцо",
+      "nameEn": "Изящный Кольцо",
+      "description": "Изящный Кольцо уровня 1. Редкость: common.",
+      "type": "ring",
+      "slot": "ring_left_1",
+      "bonuses": {
+        "stats": {
+          "agility": 2
+        }
+      },
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000018",
+      "name": "Мистический Знак",
+      "nameEn": "Мистический Знак",
+      "description": "Мистический Знак уровня 1. Редкость: common.",
+      "type": "ring",
+      "slot": "ring_left_2",
+      "bonuses": {
+        "stats": {
+          "strength": 2
+        }
+      },
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000019",
+      "name": "Прочный Перстень",
+      "nameEn": "Прочный Перстень",
+      "description": "Прочный Перстень уровня 1. Редкость: common.",
+      "type": "ring",
+      "slot": "ring_left_2",
+      "bonuses": {
+        "stats": {
+          "conductivity": 1
+        }
+      },
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000020",
+      "name": "Прочный Обод",
+      "nameEn": "Прочный Обод",
+      "description": "Прочный Обод уровня 1. Редкость: uncommon.",
+      "type": "ring",
+      "slot": "ring_left_1",
+      "bonuses": {
+        "stats": {
+          "intelligence": 2,
+          "agility": 1
+        }
+      },
+      "rarity": "uncommon",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    }
+  ]
+}

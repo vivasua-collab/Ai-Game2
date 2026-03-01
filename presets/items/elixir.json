@@ -1,0 +1,405 @@
+{
+  "version": "2.0",
+  "type": "elixir",
+  "count": 20,
+  "items": [
+    {
+      "id": "CS_000021",
+      "name": "Крепкий Эликсир Лечение статуса",
+      "nameEn": "Крепкий Эликсир of Cure Status",
+      "description": "Снимает негативный статус",
+      "type": "elixir",
+      "effect": {
+        "type": "cure",
+        "value": 1
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 17
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 10,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000022",
+      "name": "Слабый Зелье Лечение статуса",
+      "nameEn": "Слабый Зелье of Cure Status",
+      "description": "Снимает негативный статус",
+      "type": "elixir",
+      "effect": {
+        "type": "cure",
+        "value": 1
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 27
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 10,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000023",
+      "name": "Обычный Эликсир Особый эффект",
+      "nameEn": "Обычный Эликсир of Special Effect",
+      "description": "Уникальный эффект. Длительность: 39 сек.",
+      "type": "elixir",
+      "effect": {
+        "type": "special",
+        "value": 1,
+        "duration": 39
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 33
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 10,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000024",
+      "name": "Слабый Напиток Лечение статуса",
+      "nameEn": "Слабый Напиток of Cure Status",
+      "description": "Снимает негативный статус",
+      "type": "elixir",
+      "effect": {
+        "type": "cure",
+        "value": 1
+      },
+      "usage": {
+        "castTime": 3,
+        "cooldown": 21
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 10,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000025",
+      "name": "Обычный Настойка Лечение статуса",
+      "nameEn": "Обычный Настойка of Cure Status",
+      "description": "Снимает негативный статус",
+      "type": "elixir",
+      "effect": {
+        "type": "cure",
+        "value": 1
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 23
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 10,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000026",
+      "name": "Обычный Зелье Особый эффект",
+      "nameEn": "Обычный Зелье of Special Effect",
+      "description": "Уникальный эффект. Длительность: 39 сек.",
+      "type": "elixir",
+      "effect": {
+        "type": "special",
+        "value": 1,
+        "duration": 39
+      },
+      "usage": {
+        "castTime": 3,
+        "cooldown": 38
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 10,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000027",
+      "name": "Крепкий Настойка Усиление сопротивления",
+      "nameEn": "Крепкий Настойка of Buff Resistance",
+      "description": "Временно увеличивает сопротивление эффектам. Длительность: 264 сек.",
+      "type": "elixir",
+      "effect": {
+        "type": "buff_resistance",
+        "value": 12,
+        "duration": 264
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 40
+      },
+      "rarity": "legendary",
+      "level": 1,
+      "stackSize": 10,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000028",
+      "name": "Слабый Зелье Особый эффект",
+      "nameEn": "Слабый Зелье of Special Effect",
+      "description": "Уникальный эффект. Длительность: 39 сек.",
+      "type": "elixir",
+      "effect": {
+        "type": "special",
+        "value": 1,
+        "duration": 39
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 38
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 10,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000029",
+      "name": "Слабый Зелье Особый эффект",
+      "nameEn": "Слабый Зелье of Special Effect",
+      "description": "Уникальный эффект. Длительность: 33 сек.",
+      "type": "elixir",
+      "effect": {
+        "type": "special",
+        "value": 1,
+        "duration": 33
+      },
+      "usage": {
+        "castTime": 3,
+        "cooldown": 43
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 10,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000030",
+      "name": "Мощный Эликсир Лечение статуса",
+      "nameEn": "Мощный Эликсир of Cure Status",
+      "description": "Снимает негативный статус",
+      "type": "elixir",
+      "effect": {
+        "type": "cure",
+        "value": 1
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 10
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 10,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000031",
+      "name": "Слабый Зелье Усиление сопротивления",
+      "nameEn": "Слабый Зелье of Buff Resistance",
+      "description": "Временно увеличивает сопротивление эффектам. Длительность: 158 сек.",
+      "type": "elixir",
+      "effect": {
+        "type": "buff_resistance",
+        "value": 6,
+        "duration": 158
+      },
+      "usage": {
+        "castTime": 3,
+        "cooldown": 38
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 10,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000032",
+      "name": "Крепкий Напиток Усиление характеристики",
+      "nameEn": "Крепкий Напиток of Buff Stat",
+      "description": "Временно усиливает характеристику (agility). Длительность: 66 сек.",
+      "type": "elixir",
+      "effect": {
+        "type": "buff_stat",
+        "value": 2,
+        "duration": 66,
+        "stat": "agility"
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 54
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 10,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000033",
+      "name": "Легендарный Эликсир Особый эффект",
+      "nameEn": "Легендарный Эликсир of Special Effect",
+      "description": "Уникальный эффект. Длительность: 49 сек.",
+      "type": "elixir",
+      "effect": {
+        "type": "special",
+        "value": 1,
+        "duration": 49
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 40
+      },
+      "rarity": "rare",
+      "level": 1,
+      "stackSize": 10,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000034",
+      "name": "Легендарный Эликсир Усиление характеристики",
+      "nameEn": "Легендарный Эликсир of Buff Stat",
+      "description": "Временно усиливает характеристику (intelligence). Длительность: 66 сек.",
+      "type": "elixir",
+      "effect": {
+        "type": "buff_stat",
+        "value": 2,
+        "duration": 66,
+        "stat": "intelligence"
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 43
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 10,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000035",
+      "name": "Мощный Зелье Особый эффект",
+      "nameEn": "Мощный Зелье of Special Effect",
+      "description": "Уникальный эффект. Длительность: 39 сек.",
+      "type": "elixir",
+      "effect": {
+        "type": "special",
+        "value": 1,
+        "duration": 39
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 51
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 10,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000036",
+      "name": "Мощный Настойка Усиление сопротивления",
+      "nameEn": "Мощный Настойка of Buff Resistance",
+      "description": "Временно увеличивает сопротивление эффектам. Длительность: 132 сек.",
+      "type": "elixir",
+      "effect": {
+        "type": "buff_resistance",
+        "value": 5,
+        "duration": 132
+      },
+      "usage": {
+        "castTime": 3,
+        "cooldown": 42
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 10,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000037",
+      "name": "Легендарный Зелье Усиление сопротивления",
+      "nameEn": "Легендарный Зелье of Buff Resistance",
+      "description": "Временно увеличивает сопротивление эффектам. Длительность: 132 сек.",
+      "type": "elixir",
+      "effect": {
+        "type": "buff_resistance",
+        "value": 5,
+        "duration": 132
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 49
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 10,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000038",
+      "name": "Слабый Настойка Усиление характеристики",
+      "nameEn": "Слабый Настойка of Buff Stat",
+      "description": "Временно усиливает характеристику (intelligence). Длительность: 79 сек.",
+      "type": "elixir",
+      "effect": {
+        "type": "buff_stat",
+        "value": 2,
+        "duration": 79,
+        "stat": "intelligence"
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 41
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 10,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000039",
+      "name": "Легендарный Зелье Усиление характеристики",
+      "nameEn": "Легендарный Зелье of Buff Stat",
+      "description": "Временно усиливает характеристику (agility). Длительность: 99 сек.",
+      "type": "elixir",
+      "effect": {
+        "type": "buff_stat",
+        "value": 3,
+        "duration": 99,
+        "stat": "agility"
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 35
+      },
+      "rarity": "rare",
+      "level": 1,
+      "stackSize": 10,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000040",
+      "name": "Легендарный Зелье Лечение статуса",
+      "nameEn": "Легендарный Зелье of Cure Status",
+      "description": "Снимает негативный статус",
+      "type": "elixir",
+      "effect": {
+        "type": "cure",
+        "value": 1
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 14
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 10,
+      "quantity": 1
+    }
+  ]
+}

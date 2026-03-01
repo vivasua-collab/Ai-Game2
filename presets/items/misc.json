@@ -1,0 +1,187 @@
+{
+  "version": "2.0",
+  "type": "misc",
+  "count": 10,
+  "items": [
+    {
+      "id": "CH_000001",
+      "name": "Древний Концентратор",
+      "nameEn": "Древний Charger",
+      "description": "Зарядник уровня 1. Вмещает 2 камней Ци. Эффективность: 52%. Скорость отдачи: 2 ед/сек. ⚠️ Потери: 48% Ци рассеивается.",
+      "capacity": 2,
+      "efficiency": 0.5253017902492089,
+      "chargeRate": 2,
+      "installed": false,
+      "installedStones": [],
+      "totalQiRemaining": 0,
+      "requirements": {
+        "cultivationLevel": 1
+      },
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "level": 1
+    },
+    {
+      "id": "CH_000002",
+      "name": "Мастерский Резервуар",
+      "nameEn": "Мастерский Charger",
+      "description": "Зарядник уровня 1. Вмещает 2 камней Ци. Эффективность: 58%. Скорость отдачи: 2 ед/сек. ⚠️ Потери: 42% Ци рассеивается.",
+      "capacity": 2,
+      "efficiency": 0.5891428008857849,
+      "chargeRate": 2,
+      "installed": false,
+      "installedStones": [],
+      "totalQiRemaining": 0,
+      "requirements": {
+        "cultivationLevel": 1
+      },
+      "rarity": "uncommon",
+      "upgradeFlags": 0,
+      "level": 1
+    },
+    {
+      "id": "CH_000003",
+      "name": "Улучшенный Усилитель",
+      "nameEn": "Улучшенный Charger",
+      "description": "Зарядник уровня 1. Вмещает 2 камней Ци. Эффективность: 55%. Скорость отдачи: 2 ед/сек. ⚠️ Потери: 45% Ци рассеивается.",
+      "capacity": 2,
+      "efficiency": 0.5512643814092802,
+      "chargeRate": 2,
+      "installed": false,
+      "installedStones": [],
+      "totalQiRemaining": 0,
+      "requirements": {
+        "cultivationLevel": 1
+      },
+      "rarity": "uncommon",
+      "upgradeFlags": 0,
+      "level": 1
+    },
+    {
+      "id": "CH_000004",
+      "name": "Мощный Зарядник",
+      "nameEn": "Мощный Charger",
+      "description": "Зарядник уровня 1. Вмещает 2 камней Ци. Эффективность: 51%. Скорость отдачи: 2 ед/сек. ⚠️ Потери: 49% Ци рассеивается.",
+      "capacity": 2,
+      "efficiency": 0.5154489517283853,
+      "chargeRate": 2,
+      "installed": false,
+      "installedStones": [],
+      "totalQiRemaining": 0,
+      "requirements": {
+        "cultivationLevel": 1
+      },
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "level": 1
+    },
+    {
+      "id": "CH_000005",
+      "name": "Мощный Концентратор",
+      "nameEn": "Мощный Charger",
+      "description": "Зарядник уровня 1. Вмещает 1 камней Ци. Эффективность: 50%. Скорость отдачи: 2 ед/сек. ⚠️ Потери: 50% Ци рассеивается.",
+      "capacity": 1,
+      "efficiency": 0.5024606719624534,
+      "chargeRate": 2,
+      "installed": false,
+      "installedStones": [],
+      "totalQiRemaining": 0,
+      "requirements": {
+        "cultivationLevel": 1
+      },
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "level": 1
+    },
+    {
+      "id": "CH_000006",
+      "name": "Древний Зарядник",
+      "nameEn": "Древний Charger",
+      "description": "Зарядник уровня 1. Вмещает 2 камней Ци. Эффективность: 52%. Скорость отдачи: 2 ед/сек. ⚠️ Потери: 48% Ци рассеивается.",
+      "capacity": 2,
+      "efficiency": 0.5218997657401021,
+      "chargeRate": 2,
+      "installed": false,
+      "installedStones": [],
+      "totalQiRemaining": 0,
+      "requirements": {
+        "cultivationLevel": 1
+      },
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "level": 1
+    },
+    {
+      "id": "CH_000007",
+      "name": "Простой Концентратор",
+      "nameEn": "Простой Charger",
+      "description": "Зарядник уровня 1. Вмещает 3 камней Ци. Эффективность: 64%. Скорость отдачи: 3 ед/сек. ⚠️ Потери: 36% Ци рассеивается.",
+      "capacity": 3,
+      "efficiency": 0.6406198501776065,
+      "chargeRate": 3,
+      "installed": false,
+      "installedStones": [],
+      "totalQiRemaining": 0,
+      "requirements": {
+        "cultivationLevel": 1
+      },
+      "rarity": "rare",
+      "upgradeFlags": 0,
+      "level": 1
+    },
+    {
+      "id": "CH_000008",
+      "name": "Древний Зарядник",
+      "nameEn": "Древний Charger",
+      "description": "Зарядник уровня 1. Вмещает 3 камней Ци. Эффективность: 56%. Скорость отдачи: 2 ед/сек. ⚠️ Потери: 44% Ци рассеивается.",
+      "capacity": 3,
+      "efficiency": 0.5628244400084133,
+      "chargeRate": 2,
+      "installed": false,
+      "installedStones": [],
+      "totalQiRemaining": 0,
+      "requirements": {
+        "cultivationLevel": 1
+      },
+      "rarity": "uncommon",
+      "upgradeFlags": 0,
+      "level": 1
+    },
+    {
+      "id": "CH_000009",
+      "name": "Легендарный Концентратор",
+      "nameEn": "Легендарный Charger",
+      "description": "Зарядник уровня 1. Вмещает 2 камней Ци. Эффективность: 50%. Скорость отдачи: 2 ед/сек. ⚠️ Потери: 50% Ци рассеивается.",
+      "capacity": 2,
+      "efficiency": 0.5052188575292094,
+      "chargeRate": 2,
+      "installed": false,
+      "installedStones": [],
+      "totalQiRemaining": 0,
+      "requirements": {
+        "cultivationLevel": 1
+      },
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "level": 1
+    },
+    {
+      "id": "CH_000010",
+      "name": "Мастерский Резервуар",
+      "nameEn": "Мастерский Charger",
+      "description": "Зарядник уровня 1. Вмещает 4 камней Ци. Эффективность: 63%. Скорость отдачи: 3 ед/сек. ⚠️ Потери: 37% Ци рассеивается.",
+      "capacity": 4,
+      "efficiency": 0.6365427017382079,
+      "chargeRate": 3,
+      "installed": false,
+      "installedStones": [],
+      "totalQiRemaining": 0,
+      "requirements": {
+        "cultivationLevel": 1
+      },
+      "rarity": "rare",
+      "upgradeFlags": 0,
+      "level": 1
+    }
+  ]
+}

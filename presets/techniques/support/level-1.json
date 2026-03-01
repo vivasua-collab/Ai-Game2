@@ -1,0 +1,2442 @@
+{
+  "version": "2.0",
+  "type": "support",
+  "subtype": null,
+  "prefix": "SP",
+  "prefixName": "Поддержка",
+  "level": 1,
+  "count": 50,
+  "techniques": [
+    {
+      "id": "SP_000162",
+      "name": "Барьер штормовой",
+      "nameEn": "Барьер Штормовой",
+      "type": "support",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Барьер штормовой — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519071,
+        "template": "support_water",
+        "generatedAt": "2026-03-01T11:20:22.683Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000163",
+      "name": "Горный Усиление",
+      "nameEn": "Горный Усиление",
+      "type": "support",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 7,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Горный Усиление — техника поддержки уровня 1. Редкость: uncommon.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "burning": true,
+          "buff": true
+        },
+        "effectValues": {
+          "burningDamage": 3.3,
+          "burningDuration": 3,
+          "buffAmount": 10,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 7,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 3.3
+          },
+          {
+            "type": "buff",
+            "value": 10
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519072,
+        "template": "support_earth",
+        "generatedAt": "2026-03-01T11:20:22.683Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000164",
+      "name": "Стена вихревой",
+      "nameEn": "Стена Вихревой",
+      "type": "support",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Стена вихревой — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519073,
+        "template": "support_air",
+        "generatedAt": "2026-03-01T11:20:22.683Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000165",
+      "name": "Молниеносный Усиление",
+      "nameEn": "Молниеносный Усиление",
+      "type": "support",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 7,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Молниеносный Усиление — техника поддержки уровня 1. Редкость: uncommon.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "heal": true,
+          "buff": true
+        },
+        "effectValues": {
+          "healAmount": 48.1,
+          "buffAmount": 10,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 7,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 48.1
+          },
+          {
+            "type": "buff",
+            "value": 10
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519074,
+        "template": "support_lightning",
+        "generatedAt": "2026-03-01T11:20:22.683Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000166",
+      "name": "Теневой Стена",
+      "nameEn": "Теневой Стена",
+      "type": "support",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Теневой Стена — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519075,
+        "template": "support_void",
+        "generatedAt": "2026-03-01T11:20:22.683Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000167",
+      "name": "Стена сфокусированный",
+      "nameEn": "Стена Сфокусированный",
+      "type": "support",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 7,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Стена сфокусированный — техника поддержки уровня 1. Редкость: uncommon.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "heal": true,
+          "buff": true
+        },
+        "effectValues": {
+          "healAmount": 41.2,
+          "buffAmount": 10,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 7,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 41.2
+          },
+          {
+            "type": "buff",
+            "value": 10
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519076,
+        "template": "support_neutral",
+        "generatedAt": "2026-03-01T11:20:22.683Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000168",
+      "name": "Барьер вулканический",
+      "nameEn": "Барьер Вулканический",
+      "type": "support",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Барьер вулканический — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519077,
+        "template": "support_fire",
+        "generatedAt": "2026-03-01T11:20:22.683Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000169",
+      "name": "Штормовой Стена",
+      "nameEn": "Штормовой Стена",
+      "type": "support",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 7,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Штормовой Стена — техника поддержки уровня 1. Редкость: uncommon.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "freezing": true,
+          "buff": true
+        },
+        "effectValues": {
+          "freezingDuration": 1.5,
+          "buffAmount": 10,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 7,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "freezing",
+            "value": 1.5
+          },
+          {
+            "type": "buff",
+            "value": 10
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519078,
+        "template": "support_water",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000170",
+      "name": "Защита горный",
+      "nameEn": "Защита Горный",
+      "type": "support",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 7,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Защита горный — техника поддержки уровня 1. Редкость: rare.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "heal": true,
+          "burning": true,
+          "buff": true
+        },
+        "effectValues": {
+          "healAmount": 6.7,
+          "burningDamage": 7.1,
+          "burningDuration": 3,
+          "buffAmount": 12,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 7,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 6.7
+          },
+          {
+            "type": "burning",
+            "value": 7.1
+          },
+          {
+            "type": "buff",
+            "value": 12
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519100,
+        "template": "support_earth",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000171",
+      "name": "Защита штормовой",
+      "nameEn": "Защита Штормовой",
+      "type": "support",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Защита штормовой — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519101,
+        "template": "support_air",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000172",
+      "name": "Стена громовой",
+      "nameEn": "Стена Громовой",
+      "type": "support",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Стена громовой — техника поддержки уровня 1. Редкость: legendary.",
+      "rarity": "legendary",
+      "modifiers": {
+        "effects": {
+          "burning": true,
+          "buff": true
+        },
+        "effectValues": {
+          "burningDamage": 15.2,
+          "burningDuration": 2,
+          "buffAmount": 16,
+          "buffStat": "intelligence",
+          "buffDuration": 5
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.14
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 15.2
+          },
+          {
+            "type": "buff",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519102,
+        "template": "support_lightning",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000173",
+      "name": "Защита бесплотный",
+      "nameEn": "Защита Бесплотный",
+      "type": "support",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Защита бесплотный — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519103,
+        "template": "support_void",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000174",
+      "name": "Барьер базовый",
+      "nameEn": "Барьер Базовый",
+      "type": "support",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Барьер базовый — техника поддержки уровня 1. Редкость: legendary.",
+      "rarity": "legendary",
+      "modifiers": {
+        "effects": {
+          "freezing": true,
+          "buff": true,
+          "slow": true
+        },
+        "effectValues": {
+          "freezingDuration": 2,
+          "buffAmount": 16,
+          "buffStat": "agility",
+          "buffDuration": 5,
+          "slowPercent": 30.3,
+          "slowDuration": 1
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "freezing",
+            "value": 2
+          },
+          {
+            "type": "buff",
+            "value": 16
+          },
+          {
+            "type": "slow",
+            "value": 30.3
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519104,
+        "template": "support_neutral",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000175",
+      "name": "Вулканический Усиление",
+      "nameEn": "Вулканический Усиление",
+      "type": "support",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 7,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Вулканический Усиление — техника поддержки уровня 1. Редкость: uncommon.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "slow": true,
+          "buff": true
+        },
+        "effectValues": {
+          "slowPercent": 21.7,
+          "slowDuration": 2,
+          "buffAmount": 10,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 7,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "slow",
+            "value": 21.7
+          },
+          {
+            "type": "buff",
+            "value": 10
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519105,
+        "template": "support_fire",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000176",
+      "name": "Защита холодный",
+      "nameEn": "Защита Холодный",
+      "type": "support",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Защита холодный — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519106,
+        "template": "support_water",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000177",
+      "name": "Стена горный",
+      "nameEn": "Стена Горный",
+      "type": "support",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 7,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Стена горный — техника поддержки уровня 1. Редкость: uncommon.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "slow": true,
+          "buff": true
+        },
+        "effectValues": {
+          "slowPercent": 17.1,
+          "slowDuration": 3,
+          "buffAmount": 10,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 7,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "slow",
+            "value": 17.1
+          },
+          {
+            "type": "buff",
+            "value": 10
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519107,
+        "template": "support_earth",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000178",
+      "name": "Барьер порывистый",
+      "nameEn": "Барьер Порывистый",
+      "type": "support",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Барьер порывистый — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519108,
+        "template": "support_air",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000179",
+      "name": "Усиление ослепляющий",
+      "nameEn": "Усиление Ослепляющий",
+      "type": "support",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 7,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Усиление ослепляющий — техника поддержки уровня 1. Редкость: uncommon.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "burning": true,
+          "buff": true
+        },
+        "effectValues": {
+          "burningDamage": 4.2,
+          "burningDuration": 1,
+          "buffAmount": 10,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 7,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 4.2
+          },
+          {
+            "type": "buff",
+            "value": 10
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519109,
+        "template": "support_lightning",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000180",
+      "name": "Стена бесплотный",
+      "nameEn": "Стена Бесплотный",
+      "type": "support",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 7,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Стена бесплотный — техника поддержки уровня 1. Редкость: rare.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "slow": true,
+          "heal": true,
+          "buff": true
+        },
+        "effectValues": {
+          "slowPercent": 36.6,
+          "slowDuration": 1,
+          "healAmount": 44.2,
+          "buffAmount": 12,
+          "buffDuration": 5
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.14
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 7,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "slow",
+            "value": 36.6
+          },
+          {
+            "type": "heal",
+            "value": 44.2
+          },
+          {
+            "type": "buff",
+            "value": 12
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519131,
+        "template": "support_void",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000181",
+      "name": "Концентрированный Стена",
+      "nameEn": "Концентрированный Стена",
+      "type": "support",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Концентрированный Стена — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519132,
+        "template": "support_neutral",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000182",
+      "name": "Стена вулканический",
+      "nameEn": "Стена Вулканический",
+      "type": "support",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 7,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Стена вулканический — техника поддержки уровня 1. Редкость: rare.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "burning": true,
+          "slow": true,
+          "buff": true
+        },
+        "effectValues": {
+          "burningDamage": 3.2,
+          "burningDuration": 2,
+          "slowPercent": 18.6,
+          "slowDuration": 3,
+          "buffAmount": 12,
+          "buffDuration": 5
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.22
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 3.2
+          },
+          {
+            "type": "slow",
+            "value": 18.6
+          },
+          {
+            "type": "buff",
+            "value": 12
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519133,
+        "template": "support_fire",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000183",
+      "name": "Стена струящийся",
+      "nameEn": "Стена Струящийся",
+      "type": "support",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Стена струящийся — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519134,
+        "template": "support_water",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000184",
+      "name": "Неизбежный Защита",
+      "nameEn": "Неизбежный Защита",
+      "type": "support",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 7,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Неизбежный Защита — техника поддержки уровня 1. Редкость: rare.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "slow": true,
+          "freezing": true,
+          "buff": true
+        },
+        "effectValues": {
+          "slowPercent": 24.3,
+          "slowDuration": 1,
+          "freezingDuration": 0.6,
+          "buffAmount": 12,
+          "buffDuration": 5
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.18
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "slow",
+            "value": 24.3
+          },
+          {
+            "type": "freezing",
+            "value": 0.6
+          },
+          {
+            "type": "buff",
+            "value": 12
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519135,
+        "template": "support_earth",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000185",
+      "name": "Стена вихревой",
+      "nameEn": "Стена Вихревой",
+      "type": "support",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Стена вихревой — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519136,
+        "template": "support_air",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000186",
+      "name": "Молниеносный Усиление",
+      "nameEn": "Молниеносный Усиление",
+      "type": "support",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Молниеносный Усиление — техника поддержки уровня 1. Редкость: legendary.",
+      "rarity": "legendary",
+      "modifiers": {
+        "effects": {
+          "slow": true,
+          "freezing": true,
+          "buff": true
+        },
+        "effectValues": {
+          "slowPercent": 30.5,
+          "slowDuration": 1,
+          "freezingDuration": 1.1,
+          "buffAmount": 16,
+          "buffStat": "strength",
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "slow",
+            "value": 30.5
+          },
+          {
+            "type": "freezing",
+            "value": 1.1
+          },
+          {
+            "type": "buff",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519137,
+        "template": "support_lightning",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000187",
+      "name": "Эфирный Защита",
+      "nameEn": "Эфирный Защита",
+      "type": "support",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Эфирный Защита — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519138,
+        "template": "support_void",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000188",
+      "name": "Концентрированный Барьер",
+      "nameEn": "Концентрированный Барьер",
+      "type": "support",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Концентрированный Барьер — техника поддержки уровня 1. Редкость: legendary.",
+      "rarity": "legendary",
+      "modifiers": {
+        "effects": {
+          "burning": true,
+          "buff": true
+        },
+        "effectValues": {
+          "burningDamage": 13.8,
+          "burningDuration": 3,
+          "buffAmount": 16,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 13.8
+          },
+          {
+            "type": "buff",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519139,
+        "template": "support_neutral",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000189",
+      "name": "Вулканический Защита",
+      "nameEn": "Вулканический Защита",
+      "type": "support",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Вулканический Защита — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519140,
+        "template": "support_fire",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000190",
+      "name": "Морской Защита",
+      "nameEn": "Морской Защита",
+      "type": "support",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 7,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Морской Защита — техника поддержки уровня 1. Редкость: uncommon.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 10,
+          "buffStat": "agility",
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 7,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 10
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519162,
+        "template": "support_water",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000191",
+      "name": "Каменный Защита",
+      "nameEn": "Каменный Защита",
+      "type": "support",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Каменный Защита — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519163,
+        "template": "support_earth",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000192",
+      "name": "Стремительный Барьер",
+      "nameEn": "Стремительный Барьер",
+      "type": "support",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 7,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Стремительный Барьер — техника поддержки уровня 1. Редкость: rare.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 12,
+          "buffStat": "intelligence",
+          "buffDuration": 5
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.14
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 7,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 12
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519164,
+        "template": "support_air",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000193",
+      "name": "Молниеносный Усиление",
+      "nameEn": "Молниеносный Усиление",
+      "type": "support",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Молниеносный Усиление — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519165,
+        "template": "support_lightning",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000194",
+      "name": "Барьер бесплотный",
+      "nameEn": "Барьер Бесплотный",
+      "type": "support",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 7,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Барьер бесплотный — техника поддержки уровня 1. Редкость: rare.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "freezing": true,
+          "heal": true,
+          "buff": true
+        },
+        "effectValues": {
+          "freezingDuration": 0.8,
+          "healAmount": 39.8,
+          "buffAmount": 12,
+          "buffDuration": 5
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.26
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "freezing",
+            "value": 0.8
+          },
+          {
+            "type": "heal",
+            "value": 39.8
+          },
+          {
+            "type": "buff",
+            "value": 12
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519166,
+        "template": "support_void",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000195",
+      "name": "Усиление концентрированный",
+      "nameEn": "Усиление Концентрированный",
+      "type": "support",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Усиление концентрированный — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519167,
+        "template": "support_neutral",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000196",
+      "name": "Барьер вулканический",
+      "nameEn": "Барьер Вулканический",
+      "type": "support",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 7,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Барьер вулканический — техника поддержки уровня 1. Редкость: rare.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "slow": true,
+          "heal": true,
+          "buff": true
+        },
+        "effectValues": {
+          "slowPercent": 14.5,
+          "slowDuration": 2,
+          "healAmount": 45.4,
+          "buffAmount": 12,
+          "buffDuration": 5
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.22
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "slow",
+            "value": 14.5
+          },
+          {
+            "type": "heal",
+            "value": 45.4
+          },
+          {
+            "type": "buff",
+            "value": 12
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519168,
+        "template": "support_fire",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000197",
+      "name": "Морской Барьер",
+      "nameEn": "Морской Барьер",
+      "type": "support",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Морской Барьер — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519169,
+        "template": "support_water",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000198",
+      "name": "Барьер титанический",
+      "nameEn": "Барьер Титанический",
+      "type": "support",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 7,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Барьер титанический — техника поддержки уровня 1. Редкость: rare.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "buff": true,
+          "slow": true
+        },
+        "effectValues": {
+          "buffAmount": 12,
+          "buffStat": "agility",
+          "buffDuration": 5,
+          "slowPercent": 17.1,
+          "slowDuration": 3
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.27
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 12
+          },
+          {
+            "type": "slow",
+            "value": 17.1
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519170,
+        "template": "support_earth",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000199",
+      "name": "Барьер вихревой",
+      "nameEn": "Барьер Вихревой",
+      "type": "support",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Барьер вихревой — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519171,
+        "template": "support_air",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000200",
+      "name": "Громовой Стена",
+      "nameEn": "Громовой Стена",
+      "type": "support",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Громовой Стена — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519844,
+        "template": "support_lightning",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000201",
+      "name": "Усиление забвенный",
+      "nameEn": "Усиление Забвенный",
+      "type": "support",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 7,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Усиление забвенный — техника поддержки уровня 1. Редкость: uncommon.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "burning": true,
+          "buff": true
+        },
+        "effectValues": {
+          "burningDamage": 8.8,
+          "burningDuration": 2,
+          "buffAmount": 10,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 7,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 8.8
+          },
+          {
+            "type": "buff",
+            "value": 10
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519845,
+        "template": "support_void",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000202",
+      "name": "Стена сфокусированный",
+      "nameEn": "Стена Сфокусированный",
+      "type": "support",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Стена сфокусированный — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519846,
+        "template": "support_neutral",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000203",
+      "name": "Усиление вулканический",
+      "nameEn": "Усиление Вулканический",
+      "type": "support",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 7,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Усиление вулканический — техника поддержки уровня 1. Редкость: uncommon.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "heal": true,
+          "buff": true
+        },
+        "effectValues": {
+          "healAmount": 16.8,
+          "buffAmount": 10,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 7,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 16.8
+          },
+          {
+            "type": "buff",
+            "value": 10
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519847,
+        "template": "support_fire",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000204",
+      "name": "Защита ледяной",
+      "nameEn": "Защита Ледяной",
+      "type": "support",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Защита ледяной — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519848,
+        "template": "support_water",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000205",
+      "name": "Горный Барьер",
+      "nameEn": "Горный Барьер",
+      "type": "support",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 7,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Горный Барьер — техника поддержки уровня 1. Редкость: rare.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "freezing": true,
+          "buff": true
+        },
+        "effectValues": {
+          "freezingDuration": 0.7,
+          "buffAmount": 12,
+          "buffDuration": 5
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.14
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 7,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "freezing",
+            "value": 0.7
+          },
+          {
+            "type": "buff",
+            "value": 12
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519849,
+        "template": "support_earth",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000206",
+      "name": "Стремительный Защита",
+      "nameEn": "Стремительный Защита",
+      "type": "support",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Стремительный Защита — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519850,
+        "template": "support_air",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000207",
+      "name": "Искрящийся Стена",
+      "nameEn": "Искрящийся Стена",
+      "type": "support",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 7,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Искрящийся Стена — техника поддержки уровня 1. Редкость: rare.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "freezing": true,
+          "buff": true
+        },
+        "effectValues": {
+          "freezingDuration": 1.3,
+          "buffAmount": 12,
+          "buffStat": "agility",
+          "buffDuration": 5
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.15
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "freezing",
+            "value": 1.3
+          },
+          {
+            "type": "buff",
+            "value": 12
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519851,
+        "template": "support_lightning",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000208",
+      "name": "Пустотный Барьер",
+      "nameEn": "Пустотный Барьер",
+      "type": "support",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Пустотный Барьер — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519852,
+        "template": "support_void",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000209",
+      "name": "Базовый Барьер",
+      "nameEn": "Базовый Барьер",
+      "type": "support",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 7,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Базовый Барьер — техника поддержки уровня 1. Редкость: rare.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 12,
+          "buffStat": "intelligence",
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 7,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 12
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519853,
+        "template": "support_neutral",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000210",
+      "name": "Огненный Защита",
+      "nameEn": "Огненный Защита",
+      "type": "support",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 8,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Огненный Защита — техника поддержки уровня 1. Редкость: common.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 8,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519875,
+        "template": "support_fire",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000211",
+      "name": "Холодный Стена",
+      "nameEn": "Холодный Стена",
+      "type": "support",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 7,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Холодный Стена — техника поддержки уровня 1. Редкость: uncommon.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "slow": true,
+          "buff": true
+        },
+        "effectValues": {
+          "slowPercent": 35.5,
+          "slowDuration": 3,
+          "buffAmount": 10,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 7,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "slow",
+            "value": 35.5
+          },
+          {
+            "type": "buff",
+            "value": 10
+          }
+        ]
+      },
+      "meta": {
+        "seed": 2124519876,
+        "template": "support_water",
+        "generatedAt": "2026-03-01T11:20:22.684Z",
+        "generatorVersion": "2.1.0"
+      }
+    }
+  ]
+}

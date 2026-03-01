@@ -1,0 +1,2261 @@
+{
+  "version": "2.0",
+  "type": "poison",
+  "subtype": "qi",
+  "prefix": "PN",
+  "prefixName": "Яд",
+  "level": 1,
+  "count": 50,
+  "techniques": [
+    {
+      "id": "PN_000162",
+      "name": "Губитель ледяной",
+      "nameEn": "Губитель Ледяной",
+      "type": "poison",
+      "subtype": "body",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Губитель ледяной — яд тела уровня 1. Способ доставки: ingestion. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705506,
+        "template": "poison_water_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000163",
+      "name": "Яд титанический",
+      "nameEn": "Яд Титанический",
+      "type": "poison",
+      "subtype": "body",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Яд титанический — яд тела уровня 1. Способ доставки: contact. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705505,
+        "template": "poison_earth_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000164",
+      "name": "Яд стремительный",
+      "nameEn": "Яд Стремительный",
+      "type": "poison",
+      "subtype": "body",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Яд стремительный — яд тела уровня 1. Способ доставки: ingestion. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705504,
+        "template": "poison_air_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000165",
+      "name": "Токсин молниеносный",
+      "nameEn": "Токсин Молниеносный",
+      "type": "poison",
+      "subtype": "body",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Токсин молниеносный — яд тела уровня 1. Способ доставки: contact. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705503,
+        "template": "poison_lightning_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000166",
+      "name": "Губитель пустотный",
+      "nameEn": "Губитель Пустотный",
+      "type": "poison",
+      "subtype": "body",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Губитель пустотный — яд тела уровня 1. Способ доставки: inhalation. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705502,
+        "template": "poison_void_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000167",
+      "name": "Разрушитель истинный",
+      "nameEn": "Разрушитель Истинный",
+      "type": "poison",
+      "subtype": "body",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Разрушитель истинный — яд тела уровня 1. Способ доставки: contact. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705501,
+        "template": "poison_neutral_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000168",
+      "name": "Токсин пожирающий",
+      "nameEn": "Токсин Пожирающий",
+      "type": "poison",
+      "subtype": "body",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Токсин пожирающий — яд тела уровня 1. Способ доставки: ingestion. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705500,
+        "template": "poison_fire_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000169",
+      "name": "Штормовой Яд",
+      "nameEn": "Штормовой Яд",
+      "type": "poison",
+      "subtype": "body",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Штормовой Яд — яд тела уровня 1. Способ доставки: contact. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705499,
+        "template": "poison_water_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000170",
+      "name": "Горный Отрава",
+      "nameEn": "Горный Отрава",
+      "type": "poison",
+      "subtype": "body",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Горный Отрава — яд тела уровня 1. Способ доставки: ingestion. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705477,
+        "template": "poison_earth_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000171",
+      "name": "Невидимый Разрушитель",
+      "nameEn": "Невидимый Разрушитель",
+      "type": "poison",
+      "subtype": "body",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Невидимый Разрушитель — яд тела уровня 1. Способ доставки: inhalation. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705476,
+        "template": "poison_air_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000172",
+      "name": "Искрящийся Разрушитель",
+      "nameEn": "Искрящийся Разрушитель",
+      "type": "poison",
+      "subtype": "body",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Искрящийся Разрушитель — яд тела уровня 1. Способ доставки: ingestion. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705475,
+        "template": "poison_lightning_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000174",
+      "name": "Токсин истинный",
+      "nameEn": "Токсин Истинный",
+      "type": "poison",
+      "subtype": "body",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Токсин истинный — яд тела уровня 1. Способ доставки: ingestion. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705473,
+        "template": "poison_neutral_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000175",
+      "name": "Пылающий Губитель",
+      "nameEn": "Пылающий Губитель",
+      "type": "poison",
+      "subtype": "body",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Пылающий Губитель — яд тела уровня 1. Способ доставки: inhalation. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705472,
+        "template": "poison_fire_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000176",
+      "name": "Губитель холодный",
+      "nameEn": "Губитель Холодный",
+      "type": "poison",
+      "subtype": "body",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Губитель холодный — яд тела уровня 1. Способ доставки: ingestion. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705471,
+        "template": "poison_water_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000177",
+      "name": "Тяжёлый Разрушитель",
+      "nameEn": "Тяжёлый Разрушитель",
+      "type": "poison",
+      "subtype": "body",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Тяжёлый Разрушитель — яд тела уровня 1. Способ доставки: contact. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705470,
+        "template": "poison_earth_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000178",
+      "name": "Вихревой Яд",
+      "nameEn": "Вихревой Яд",
+      "type": "poison",
+      "subtype": "body",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Вихревой Яд — яд тела уровня 1. Способ доставки: ingestion. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705469,
+        "template": "poison_air_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000179",
+      "name": "Молниеносный Отрава",
+      "nameEn": "Молниеносный Отрава",
+      "type": "poison",
+      "subtype": "body",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Молниеносный Отрава — яд тела уровня 1. Способ доставки: contact. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705468,
+        "template": "poison_lightning_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000180",
+      "name": "Губитель эфирный",
+      "nameEn": "Губитель Эфирный",
+      "type": "poison",
+      "subtype": "body",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Губитель эфирный — яд тела уровня 1. Способ доставки: contact. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705446,
+        "template": "poison_void_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000181",
+      "name": "Разрушитель концентрированный",
+      "nameEn": "Разрушитель Концентрированный",
+      "type": "poison",
+      "subtype": "body",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Разрушитель концентрированный — яд тела уровня 1. Способ доставки: inhalation. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705445,
+        "template": "poison_neutral_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000182",
+      "name": "Вулканический Токсин",
+      "nameEn": "Вулканический Токсин",
+      "type": "poison",
+      "subtype": "body",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Вулканический Токсин — яд тела уровня 1. Способ доставки: ingestion. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705444,
+        "template": "poison_fire_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000183",
+      "name": "Отрава морской",
+      "nameEn": "Отрава Морской",
+      "type": "poison",
+      "subtype": "body",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Отрава морской — яд тела уровня 1. Способ доставки: inhalation. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705443,
+        "template": "poison_water_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000184",
+      "name": "Губитель титанический",
+      "nameEn": "Губитель Титанический",
+      "type": "poison",
+      "subtype": "body",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Губитель титанический — яд тела уровня 1. Способ доставки: ingestion. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705442,
+        "template": "poison_earth_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000185",
+      "name": "Губитель невидимый",
+      "nameEn": "Губитель Невидимый",
+      "type": "poison",
+      "subtype": "body",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Губитель невидимый — яд тела уровня 1. Способ доставки: inhalation. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705441,
+        "template": "poison_air_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000186",
+      "name": "Разрушитель ослепляющий",
+      "nameEn": "Разрушитель Ослепляющий",
+      "type": "poison",
+      "subtype": "body",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Разрушитель ослепляющий — яд тела уровня 1. Способ доставки: ingestion. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705440,
+        "template": "poison_lightning_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000188",
+      "name": "Токсин сфокусированный",
+      "nameEn": "Токсин Сфокусированный",
+      "type": "poison",
+      "subtype": "body",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Токсин сфокусированный — яд тела уровня 1. Способ доставки: ingestion. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705438,
+        "template": "poison_neutral_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000189",
+      "name": "Пожирающий Отрава",
+      "nameEn": "Пожирающий Отрава",
+      "type": "poison",
+      "subtype": "body",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Пожирающий Отрава — яд тела уровня 1. Способ доставки: inhalation. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705437,
+        "template": "poison_fire_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000190",
+      "name": "Яд струящийся",
+      "nameEn": "Яд Струящийся",
+      "type": "poison",
+      "subtype": "body",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Яд струящийся — яд тела уровня 1. Способ доставки: contact. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705415,
+        "template": "poison_water_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000191",
+      "name": "Титанический Разрушитель",
+      "nameEn": "Титанический Разрушитель",
+      "type": "poison",
+      "subtype": "body",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Титанический Разрушитель — яд тела уровня 1. Способ доставки: inhalation. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705414,
+        "template": "poison_earth_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000192",
+      "name": "Стремительный Отрава",
+      "nameEn": "Стремительный Отрава",
+      "type": "poison",
+      "subtype": "body",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Стремительный Отрава — яд тела уровня 1. Способ доставки: contact. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705413,
+        "template": "poison_air_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000193",
+      "name": "Искрящийся Отрава",
+      "nameEn": "Искрящийся Отрава",
+      "type": "poison",
+      "subtype": "body",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Искрящийся Отрава — яд тела уровня 1. Способ доставки: inhalation. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705412,
+        "template": "poison_lightning_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000194",
+      "name": "Эфирный Токсин",
+      "nameEn": "Эфирный Токсин",
+      "type": "poison",
+      "subtype": "body",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Эфирный Токсин — яд тела уровня 1. Способ доставки: inhalation. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705411,
+        "template": "poison_void_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000195",
+      "name": "Истинный Яд",
+      "nameEn": "Истинный Яд",
+      "type": "poison",
+      "subtype": "body",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Истинный Яд — яд тела уровня 1. Способ доставки: inhalation. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705410,
+        "template": "poison_neutral_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000196",
+      "name": "Яд вулканический",
+      "nameEn": "Яд Вулканический",
+      "type": "poison",
+      "subtype": "body",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Яд вулканический — яд тела уровня 1. Способ доставки: ingestion. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705409,
+        "template": "poison_fire_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000197",
+      "name": "Ледяной Токсин",
+      "nameEn": "Ледяной Токсин",
+      "type": "poison",
+      "subtype": "body",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Ледяной Токсин — яд тела уровня 1. Способ доставки: inhalation. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705408,
+        "template": "poison_water_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000198",
+      "name": "Губитель каменный",
+      "nameEn": "Губитель Каменный",
+      "type": "poison",
+      "subtype": "body",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Губитель каменный — яд тела уровня 1. Способ доставки: ingestion. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705407,
+        "template": "poison_earth_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000199",
+      "name": "Отрава штормовой",
+      "nameEn": "Отрава Штормовой",
+      "type": "poison",
+      "subtype": "body",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Отрава штормовой — яд тела уровня 1. Способ доставки: inhalation. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705406,
+        "template": "poison_air_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000200",
+      "name": "Яд искрящийся",
+      "nameEn": "Яд Искрящийся",
+      "type": "poison",
+      "subtype": "body",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Яд искрящийся — яд тела уровня 1. Способ доставки: inhalation. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233704733,
+        "template": "poison_lightning_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000201",
+      "name": "Бесплотный Разрушитель",
+      "nameEn": "Бесплотный Разрушитель",
+      "type": "poison",
+      "subtype": "body",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Бесплотный Разрушитель — яд тела уровня 1. Способ доставки: inhalation. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233704732,
+        "template": "poison_void_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000202",
+      "name": "Токсин истинный",
+      "nameEn": "Токсин Истинный",
+      "type": "poison",
+      "subtype": "body",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Токсин истинный — яд тела уровня 1. Способ доставки: inhalation. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233704731,
+        "template": "poison_neutral_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000203",
+      "name": "Пылающий Отрава",
+      "nameEn": "Пылающий Отрава",
+      "type": "poison",
+      "subtype": "body",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Пылающий Отрава — яд тела уровня 1. Способ доставки: contact. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233704730,
+        "template": "poison_fire_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000204",
+      "name": "Разрушитель штормовой",
+      "nameEn": "Разрушитель Штормовой",
+      "type": "poison",
+      "subtype": "body",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Разрушитель штормовой — яд тела уровня 1. Способ доставки: inhalation. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233704729,
+        "template": "poison_water_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000205",
+      "name": "Разрушитель каменный",
+      "nameEn": "Разрушитель Каменный",
+      "type": "poison",
+      "subtype": "body",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Разрушитель каменный — яд тела уровня 1. Способ доставки: contact. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233704728,
+        "template": "poison_earth_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000206",
+      "name": "Штормовой Яд",
+      "nameEn": "Штормовой Яд",
+      "type": "poison",
+      "subtype": "body",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Штормовой Яд — яд тела уровня 1. Способ доставки: inhalation. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233704727,
+        "template": "poison_air_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000207",
+      "name": "Молниеносный Токсин",
+      "nameEn": "Молниеносный Токсин",
+      "type": "poison",
+      "subtype": "body",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Молниеносный Токсин — яд тела уровня 1. Способ доставки: contact. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233704726,
+        "template": "poison_lightning_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000209",
+      "name": "Отрава базовый",
+      "nameEn": "Отрава Базовый",
+      "type": "poison",
+      "subtype": "body",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Отрава базовый — яд тела уровня 1. Способ доставки: ingestion. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233704724,
+        "template": "poison_neutral_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000210",
+      "name": "Раскалённый Токсин",
+      "nameEn": "Раскалённый Токсин",
+      "type": "poison",
+      "subtype": "body",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Раскалённый Токсин — яд тела уровня 1. Способ доставки: ingestion. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233704702,
+        "template": "poison_fire_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000211",
+      "name": "Токсин холодный",
+      "nameEn": "Токсин Холодный",
+      "type": "poison",
+      "subtype": "body",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 45,
+      "minCultivationLevel": 1,
+      "description": "Токсин холодный — яд тела уровня 1. Способ доставки: contact. Длительность: 45 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 45
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 45,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233704701,
+        "template": "poison_water_body",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000173",
+      "name": "Токсин бесплотный",
+      "nameEn": "Токсин Бесплотный",
+      "type": "poison",
+      "subtype": "qi",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 10,
+      "baseDuration": 90,
+      "minCultivationLevel": 1,
+      "description": "Токсин бесплотный — яд Ци уровня 1. Способ доставки: technique. Длительность: 90 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 5,
+          "poisonDuration": 90
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 10,
+        "finalDuration": 90,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705474,
+        "template": "poison_void_qi",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000187",
+      "name": "Разрушитель теневой",
+      "nameEn": "Разрушитель Теневой",
+      "type": "poison",
+      "subtype": "qi",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 0,
+      "baseDuration": 90,
+      "minCultivationLevel": 1,
+      "description": "Разрушитель теневой — яд Ци уровня 1. Способ доставки: contaminated_qi. Длительность: 90 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 5,
+          "poisonDuration": 90
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 0,
+        "finalDuration": 90,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233705439,
+        "template": "poison_void_qi",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "PN_000208",
+      "name": "Яд забвенный",
+      "nameEn": "Яд Забвенный",
+      "type": "poison",
+      "subtype": "qi",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 50,
+      "baseRange": 10,
+      "baseDuration": 90,
+      "minCultivationLevel": 1,
+      "description": "Яд забвенный — яд Ци уровня 1. Способ доставки: technique. Длительность: 90 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 5,
+          "poisonDuration": 90
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 50,
+        "finalRange": 10,
+        "finalDuration": 90,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 233704725,
+        "template": "poison_void_qi",
+        "generatedAt": "2026-03-01T11:20:30.478Z",
+        "generatorVersion": "2.0.0"
+      }
+    }
+  ]
+}
