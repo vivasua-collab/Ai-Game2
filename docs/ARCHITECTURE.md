@@ -1,7 +1,7 @@
 # 🏗️ Архитектура Cultivation World Simulator
 
 > Подробное описание архитектуры с интеграцией Phaser 3.
-> Версия: 12 | Год: 2026
+> Версия: 13 | Год: 2026
 
 ---
 
@@ -34,7 +34,7 @@
 │                        SERVER (Next.js API)                         │
 │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                 │
 │  │/api/game/   │  │/api/rest    │  │/api/        │                 │
-│  │start,move   │  │             │  │technique/use│                 │
+│  │start,move   │  │             │  │technique/*  │                 │
 │  └──────┬──────┘  └──────┬──────┘  └──────┬──────┘                 │
 │         │                │                │                         │
 │         └────────────────┼────────────────┘                         │
@@ -58,6 +58,167 @@
 │                   └─────────────┘                                   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
+
+---
+
+## 📁 Структура проекта
+
+### `/src/app/api/` - API эндпоинты (42 файла)
+
+#### Игровые API
+| Файл | Назначение |
+|------|------------|
+| `game/start/route.ts` | Создание новой игры |
+| `game/state/route.ts` | Получение состояния |
+| `game/move/route.ts` | Движение + время + пассивное Ци |
+| `game/save/route.ts` | Сохранение игры |
+| `game/end/route.ts` | Завершение сессии |
+| `game/event/route.ts` | Event Bus для Phaser |
+| `rest/route.ts` | Медитация, отдых, сон |
+| `chat/route.ts` | Чат с LLM |
+| `map/route.ts` | Карта мира |
+| `meditation/route.ts` | Медитация |
+| `character/data/route.ts` | Данные персонажа |
+
+#### Техники API
+| Файл | Назначение |
+|------|------------|
+| `technique/use/route.ts` | Использование техники |
+| `technique/slot/route.ts` | Назначение в слот (слот 1 = только melee_strike) |
+| `techniques/pool/route.ts` | Пул техник при прорыве |
+
+#### Инвентарь API
+| Файл | Назначение |
+|------|------------|
+| `inventory/route.ts` | Получение инвентаря |
+| `inventory/use/route.ts` | Использование предмета |
+| `inventory/equip/route.ts` | Экипировка предмета |
+| `inventory/move/route.ts` | Перемещение предмета |
+| `inventory/sync/route.ts` | Синхронизация |
+| `inventory/state/route.ts` | Состояние инвентаря |
+| `inventory/storage/route.ts` | Хранилище |
+| `inventory/add-qi-stone/route.ts` | Добавление Ци-камня |
+
+#### Генераторы API
+| Файл | Назначение |
+|------|------------|
+| `generator/techniques/route.ts` | Генерация техник |
+| `generator/equipment/route.ts` | Генерация экипировки |
+| `generator/formations/route.ts` | Генерация формаций |
+| `generator/npc/route.ts` | Генерация NPC |
+| `generator/items/route.ts` | Генерация предметов |
+
+#### Читы API
+| Файл | Назначение |
+|------|------------|
+| `cheats/route.ts` | Основные читы |
+| `cheat/level/route.ts` | Изменение уровня |
+| `cheat/qi/route.ts` | Изменение Ци |
+| `cheat/fatigue/route.ts` | Изменение усталости |
+| `cheat/resources/route.ts` | Ресурсы |
+| `cheat/generate-technique/route.ts` | Генерация техники |
+
+#### Системные API
+| Файл | Назначение |
+|------|------------|
+| `database/migrate/route.ts` | Миграция БД |
+| `database/reset/route.ts` | Сброс БД |
+| `llm/status/route.ts` | Статус LLM |
+| `llm/route.ts` | LLM запросы |
+| `settings/llm/route.ts` | Настройки LLM |
+| `system/gpu/route.ts` | Информация о GPU |
+| `logs/route.ts` | Логи системы |
+
+### `/src/lib/generator/` - Генераторы (19 файлов)
+
+| Файл | Назначение |
+|------|------------|
+| `technique-generator.ts` | **Генератор техник** (combat, defense, curse, poison) |
+| `preset-storage.ts` | **Хранилище пресетов** (JSON файлы) |
+| `id-config.ts` | **Конфигурация ID префиксов** |
+| `technique-config.ts` | Конфигурация типов техник |
+| `weapon-generator.ts` | Генератор оружия |
+| `weapon-config.ts` | Конфигурация типов оружия |
+| `weapon-categories.ts` | Категории оружия (one_handed, two_handed, etc.) |
+| `armor-generator.ts` | Генератор брони |
+| `accessory-generator.ts` | Генератор аксессуаров |
+| `consumable-generator.ts` | Генератор расходников |
+| `charger-generator.ts` | Генератор заряжаемых предметов |
+| `qi-stone-generator.ts` | Генератор Ци-камней |
+| `formation-generator.ts` | Генератор формаций |
+| `npc-generator.ts` | Генератор NPC |
+| `name-generator.ts` | Генератор имён |
+| `base-item-generator.ts` | Базовый класс генератора |
+| `generated-objects-loader.ts` | Загрузчик сгенерированных объектов |
+| `item-config.ts` | Конфигурация предметов |
+| `lore-formulas.ts` | Лорные формулы |
+
+### `/src/services/` - Сервисы (14 файлов)
+
+| Файл | Назначение |
+|------|------------|
+| `game.service.ts` | Основной игровой сервис |
+| `game-bridge.service.ts` | Мост между сервисами |
+| `game-client.service.ts` | Клиентские операции |
+| `character.service.ts` | Операции с персонажем |
+| `character-data.service.ts` | Данные персонажа |
+| `inventory.service.ts` | Операции с инвентарём |
+| `inventory-sync.service.ts` | Синхронизация инвентаря |
+| `technique-pool.service.ts` | **Пул техник при прорыве** |
+| `world.service.ts` | Управление миром |
+| `map.service.ts` | Карта мира |
+| `session.service.ts` | Управление сессиями |
+| `time-tick.service.ts` | **Единый обработчик тиков времени** |
+| `cheats.service.ts` | Сервис читов |
+
+### `/src/lib/game/` - Игровая логика (30+ файлов)
+
+| Файл | Назначение |
+|------|------------|
+| `truth-system.ts` | **Система Истинности (singleton, память первична)** |
+| `qi-system.ts` | Медитация, прорыв (сервер) |
+| `qi-shared.ts` | **Единое место расчётов Ци** |
+| `conductivity-system.ts` | **Единая формула проводимости** |
+| `techniques.ts` | Активные техники (CombatSubtype, эффективность) |
+| `combat-system.ts` | Боевая система |
+| `fatigue-system.ts` | Система усталости |
+| `time-system.ts` | Система тиков времени |
+| `time-db.ts` | Продвижение времени в БД |
+| `body-system.ts` | Система тела (Kenshi-style) |
+| `limb-attachment.ts` | Приживление конечностей |
+| `world-coordinates.ts` | 3D координаты мира |
+| `constants.ts` | Все константы игры |
+
+### `/src/components/game/` - Игровые компоненты
+
+| Файл | Назначение |
+|------|------------|
+| `PhaserGame.tsx` | 2D игра на Phaser 3 |
+| `ChatPanel.tsx` | Чат + статус бар |
+| `RestDialog.tsx` | Диалог (Медитация, Отдых, Сон) |
+| `StatusDialog.tsx` | Полный статус персонажа |
+| `TechniquesDialog.tsx` | **Просмотр техник + назначение в слоты** |
+| `InventoryDialog.tsx` | Инвентарь |
+| `InventoryPanel.tsx` | Панель инвентаря |
+| `BodyDoll.tsx` | Кукла тела |
+| `BodyDollEditor.tsx` | Редактор тела |
+| `ActionButtons.tsx` | Кнопки быстрых действий |
+| `CheatMenuDialog.tsx` | Диалог читов |
+
+### `/src/data/presets/` - Унифицированные пресеты
+
+| Файл | Назначение |
+|------|------------|
+| `base-preset.ts` | Базовый интерфейс BasePreset |
+| `technique-presets.ts` | Пресеты техник |
+| `skill-presets.ts` | Пресеты навыков культивации |
+| `formation-presets.ts` | Пресеты формаций |
+| `item-presets.ts` | Пресеты предметов |
+| `character-presets.ts` | Стартовые персонажи |
+| `role-presets.ts` | Пресеты ролей |
+| `species-presets.ts` | Пресеты видов |
+| `personality-presets.ts` | Пресеты личностей |
+| `index.ts` | Единый экспорт + утилиты |
 
 ---
 
