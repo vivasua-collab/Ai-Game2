@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useGameSessionId } from '@/stores/game.store';
 import {
   Dialog,
   DialogContent,
@@ -196,6 +197,12 @@ export function NPCViewerDialog({ open, onOpenChange }: NPCViewerDialogProps) {
   
   // Source tab
   const [sourceTab, setSourceTab] = useState<'presets' | 'generated' | 'session'>('presets');
+  
+  // Loading states
+  const [respawning, setRespawning] = useState(false);
+
+  // Get sessionId from game store
+  const sessionId = useGameSessionId();
 
   // Load all data on open
   useEffect(() => {
@@ -211,7 +218,10 @@ export function NPCViewerDialog({ open, onOpenChange }: NPCViewerDialogProps) {
       const [genRes, presetRes, sessionRes] = await Promise.all([
         fetch('/api/generator/npc?action=list'),
         fetch('/api/npc/spawn?action=presets'),
-        fetch('/api/npc/spawn?action=list').catch(() => ({ json: () => ({ success: false }) })),
+        // Передаём sessionId для загрузки NPC текущей сессии
+        sessionId 
+          ? fetch(`/api/npc/spawn?action=list&sessionId=${sessionId}`).catch(() => ({ json: () => ({ success: false }) }))
+          : Promise.resolve({ json: () => ({ success: false }) }),
       ]);
       
       const genData = await genRes.json();
@@ -379,6 +389,44 @@ export function NPCViewerDialog({ open, onOpenChange }: NPCViewerDialogProps) {
     }
   };
 
+  // Очистить и пересоздать NPC сессии
+  const handleRespawnSessionNPCs = async () => {
+    if (!sessionId) return;
+    
+    setRespawning(true);
+    try {
+      // Получаем первую локацию сессии
+      const sessionRes = await fetch(`/api/game/session?id=${sessionId}`);
+      const sessionData = await sessionRes.json();
+      let locationId = 'loc_default';
+      
+      if (sessionData.success && sessionData.session?.locations?.length > 0) {
+        locationId = sessionData.session.locations[0].id;
+      }
+      
+      // Очищаем и пересоздаём NPC
+      const res = await fetch('/api/npc/spawn', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'respawn_presets',
+          sessionId,
+          locationId,
+        }),
+      });
+      
+      const data = await res.json();
+      if (data.success) {
+        // Перезагружаем список
+        await loadAllNPCs();
+      }
+    } catch (error) {
+      console.error('Failed to respawn NPCs:', error);
+    } finally {
+      setRespawning(false);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-slate-900 border-slate-700 text-white !max-w-6xl !w-[95vw] max-h-[90vh] p-0 overflow-hidden">
@@ -423,6 +471,25 @@ export function NPCViewerDialog({ open, onOpenChange }: NPCViewerDialogProps) {
                   📁 Ген. ({generatedNpcs.length})
                 </Button>
               </div>
+              
+              {/* Action buttons for session tab */}
+              {sourceTab === 'session' && sessionId && (
+                <div className="mb-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-xs h-7 px-2 border-red-600 text-red-400 hover:bg-red-900/30"
+                    onClick={handleRespawnSessionNPCs}
+                    disabled={respawning}
+                  >
+                    {respawning ? (
+                      <><Loader2 className="w-3 h-3 mr-1 animate-spin" /> Пересоздание...</>
+                    ) : (
+                      <>🔄 Очистить и пересоздать</>
+                    )}
+                  </Button>
+                </div>
+              )}
               
               {/* Search */}
               <div className="relative mb-2">
@@ -580,19 +647,23 @@ export function NPCViewerDialog({ open, onOpenChange }: NPCViewerDialogProps) {
                         <div className="grid grid-cols-2 gap-4 text-base">
                           <div className="flex justify-between">
                             <span className="text-slate-400">💪 Сила:</span>
-                            <span className="text-red-400 font-bold">{selectedNPC.stats.strength}</span>
+                            <span className="text-red-400 font-bold">{Math.round(selectedNPC.stats?.strength ?? 0)}</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-slate-400">🏃 Ловкость:</span>
-                            <span className="text-green-400 font-bold">{selectedNPC.stats.agility}</span>
+                            <span className="text-green-400 font-bold">{Math.round(selectedNPC.stats?.agility ?? 0)}</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-slate-400">🧠 Интеллект:</span>
-                            <span className="text-blue-400 font-bold">{selectedNPC.stats.intelligence}</span>
+                            <span className="text-blue-400 font-bold">{Math.round(selectedNPC.stats?.intelligence ?? 0)}</span>
                           </div>
                           <div className="flex justify-between">
                             <span className="text-slate-400">❤️ Живучесть:</span>
-                            <span className="text-amber-400 font-bold">{selectedNPC.stats.vitality}</span>
+                            <span className="text-amber-400 font-bold">{Math.round(selectedNPC.stats?.vitality ?? 10)}</span>
+                          </div>
+                          <div className="flex justify-between col-span-2">
+                            <span className="text-slate-400">⚡ Проводимость:</span>
+                            <span className="text-cyan-400 font-bold">{(selectedNPC.stats?.conductivity ?? 0).toFixed(2)}</span>
                           </div>
                         </div>
                       </div>

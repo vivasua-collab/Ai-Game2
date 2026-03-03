@@ -294,53 +294,8 @@ export async function POST(request: NextRequest) {
           data: { sectId: sect.id },
         });
 
-        // Глава секты
-        await tx.nPC.create({
-          data: {
-            name: generateNPCName(),
-            title: "Глава секты",
-            age: 150 + Math.floor(Math.random() * 100),
-            cultivationLevel: 6,
-            cultivationSubLevel: 5,
-            coreCapacity: 50000,
-            currentQi: 45000,
-            strength: 35.0,
-            agility: 32.0,
-            intelligence: 28.0,
-            conductivity: 138.9,
-            personality: JSON.stringify({ traits: ["мудрый", "строгий", "справедливый"] }),
-            disposition: 0,
-            sectId: sect.id,
-            locationId: location.id,
-            role: "sect_leader",
-            sessionId: session.id,
-          },
-        });
-
-        // Старейшины
-        for (let i = 0; i < 3; i++) {
-          await tx.nPC.create({
-            data: {
-              name: generateNPCName(),
-              title: "Старейшина",
-              age: 100 + Math.floor(Math.random() * 80),
-              cultivationLevel: 6,
-              cultivationSubLevel: 1 + Math.floor(Math.random() * 3),
-              coreCapacity: 30000 + Math.floor(Math.random() * 20000),
-              currentQi: 25000 + Math.floor(Math.random() * 15000),
-              strength: 25.0 + Math.random() * 10,
-              agility: 23.0 + Math.random() * 10,
-              intelligence: 20.0 + Math.random() * 10,
-              conductivity: 80 + Math.random() * 40,
-              personality: JSON.stringify({ traits: ["опытный", "осторожный"] }),
-              disposition: Math.random() * 20 - 10,
-              sectId: sect.id,
-              locationId: location.id,
-              role: "elder",
-              sessionId: session.id,
-            },
-          });
-        }
+        // NOTE: NPC создаются через spawnStoryNPCs ниже (5 случайных из 20 пресетов)
+        // Старый код создания главы секты и старейшин удалён
       }
 
       // 6. Создаём базовые техники и формации для персонажа (ОПТИМИЗИРОВАНО)

@@ -213,6 +213,7 @@ model NPC {
   agility      Float
   intelligence Float
   conductivity Float
+  vitality     Float @default(10) // Живучесть - влияет на HP частей тела
   
   // === Личность ===
   personality String    // Черты характера (JSON)

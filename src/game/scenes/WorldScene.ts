@@ -35,23 +35,29 @@ export class WorldScene extends BaseScene {
   }
   
   async create(): Promise<void> {
+    console.log('[WorldScene] create() started');
+    
     // Camera fade in
     this.cameras.main.fadeIn(300);
     
     // Create world background
     this.createBackground();
+    console.log('[WorldScene] Background created');
     
     // Load locations from API
     await this.loadLocations();
+    console.log('[WorldScene] Locations loaded');
     
     // Create player marker
     this.createPlayer();
+    console.log('[WorldScene] Player created');
     
     // Setup input
     this.setupInput();
     
     // Create UI
     this.createUI();
+    console.log('[WorldScene] UI created, scene ready');
   }
   
   private createBackground(): void {
@@ -93,34 +99,86 @@ export class WorldScene extends BaseScene {
   
   private async loadLocations(): Promise<void> {
     try {
-      const response = await fetch('/api/map');
+      // Get sessionId from localStorage (saved by page.tsx)
+      const sessionId = typeof window !== 'undefined' 
+        ? localStorage.getItem('cultivation_session_id') 
+        : null;
+      
+      if (!sessionId) {
+        console.error('[WorldScene] No sessionId found');
+        this.showError('Сессия не найдена. Перезагрузите страницу.');
+        return;
+      }
+      
+      // Load all locations for this session
+      const response = await fetch(`/api/map?action=all&sessionId=${sessionId}`);
       const data = await response.json();
       
-      if (data.locations && Array.isArray(data.locations)) {
+      if (data.success && data.locations && Array.isArray(data.locations)) {
+        if (data.locations.length === 0) {
+          this.showError('Локации не найдены. Создайте мир заново.');
+          return;
+        }
         this.worldData = data.locations;
         this.renderLocations(data.locations);
+      } else {
+        console.error('[WorldScene] API error:', data.error);
+        this.showError(data.error || 'Не удалось загрузить локации');
       }
     } catch (error) {
-      console.error('Failed to load locations:', error);
-      // Show error message
-      this.createText(450, 275, 'Не удалось загрузить карту мира', {
-        color: '#ef4444',
-      }).setOrigin(0.5);
+      console.error('[WorldScene] Failed to load locations:', error);
+      this.showError('Ошибка загрузки карты мира');
     }
   }
   
-  private renderLocations(locations: Location[]): void {
-    // If locations don't have coordinates, arrange them in a grid
-    const needsCoordinates = locations.some(loc => loc.x === null || loc.y === null);
+  private showError(message: string): void {
+    // Show error message with retry button
+    const container = this.add.container(450, 275);
+    container.setDepth(DEPTHS.ui + 10);
     
-    if (needsCoordinates) {
-      this.arrangeLocationsInCircle(locations);
-    }
+    const bg = this.add.rectangle(0, 0, 400, 100, 0x1a1a2e, 0.95);
+    bg.setStrokeStyle(2, 0xef4444);
+    
+    const text = this.add.text(0, -20, message, {
+      fontSize: '14px',
+      color: '#ef4444',
+      align: 'center',
+      wordWrap: { width: 380 },
+    }).setOrigin(0.5);
+    
+    // Retry button
+    const btnBg = this.add.rectangle(0, 25, 120, 30, 0x4ade80, 0.8);
+    btnBg.setInteractive({ useHandCursor: true });
+    
+    const btnText = this.add.text(0, 25, '🔄 Повторить', {
+      fontSize: '12px',
+      color: '#000000',
+    }).setOrigin(0.5);
+    
+    btnBg.on('pointerover', () => btnBg.setFillStyle(0x86efac, 1));
+    btnBg.on('pointerout', () => btnBg.setFillStyle(0x4ade80, 0.8));
+    btnBg.on('pointerdown', () => {
+      container.destroy();
+      this.loadLocations();
+    });
+    
+    container.add([bg, text, btnBg, btnText]);
+  }
+  
+  private renderLocations(locations: Location[]): void {
+    console.log('[WorldScene] Rendering locations:', locations.length);
+    
+    // Always arrange locations in a circle for the world map view
+    // Real coordinates are too large for display (thousands of meters)
+    this.arrangeLocationsInCircle(locations);
     
     locations.forEach((location) => {
+      console.log('[WorldScene] Creating marker for:', location.name, 'at', location.x, location.y);
       const container = this.createLocationMarker(location);
       this.locations.set(location.id, container);
     });
+    
+    console.log('[WorldScene] Total markers created:', this.locations.size);
   }
   
   private arrangeLocationsInCircle(locations: Location[]): void {
@@ -128,18 +186,20 @@ export class WorldScene extends BaseScene {
     const centerY = 275;
     const radius = 180;
     
+    // Always recalculate screen positions for display
+    // Real world coordinates are in meters and too large for screen
     locations.forEach((location, index) => {
-      if (location.x === null || location.y === null) {
-        const angle = (index / locations.length) * Math.PI * 2 - Math.PI / 2;
-        location.x = centerX + Math.cos(angle) * radius;
-        location.y = centerY + Math.sin(angle) * radius;
-      }
+      const angle = (index / locations.length) * Math.PI * 2 - Math.PI / 2;
+      // Store display coordinates (override real coordinates for rendering)
+      (location as any).displayX = centerX + Math.cos(angle) * radius;
+      (location as any).displayY = centerY + Math.sin(angle) * radius;
     });
   }
   
   private createLocationMarker(location: Location): Phaser.GameObjects.Container {
-    const x = location.x || 450;
-    const y = location.y || 275;
+    // Use display coordinates if available, otherwise use real coordinates or center
+    const x = (location as any).displayX ?? location.x ?? 450;
+    const y = (location as any).displayY ?? location.y ?? 275;
     
     const container = this.add.container(x, y);
     container.setDepth(DEPTHS.npcs);
@@ -267,9 +327,16 @@ export class WorldScene extends BaseScene {
     // Visual feedback
     this.cameras.main.flash(100, 0x4a, 0xde, 0x80);
     
-    // Transition to location scene
+    // Get sessionId from localStorage (saved by page.tsx)
+    const sessionId = typeof window !== 'undefined' ? localStorage.getItem('cultivation_session_id') : null;
+    
+    // Transition to location scene with sessionId
     this.time.delayedCall(100, () => {
-      this.goToScene('LocationScene', { locationId: location.id });
+      this.goToScene('LocationScene', { 
+        locationId: location.id, 
+        locationName: location.name,
+        sessionId: sessionId || undefined,
+      });
     });
   }
   

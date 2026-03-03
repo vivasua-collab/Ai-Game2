@@ -60,6 +60,8 @@ export async function GET(request: NextRequest) {
         orderBy: { name: 'asc' },
       });
 
+      console.log(`[Map API] Loaded ${locations.length} locations for session ${sessionId}`);
+
       return NextResponse.json({
         success: true,
         locations,

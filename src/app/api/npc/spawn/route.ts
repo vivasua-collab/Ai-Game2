@@ -398,10 +398,56 @@ export async function POST(request: NextRequest) {
         }
       }
       
+      case 'clear_session_npcs': {
+        if (!sessionId) {
+          return NextResponse.json({
+            success: false,
+            error: 'sessionId is required',
+          }, { status: 400 });
+        }
+        
+        // Delete all NPCs from database for this session
+        const deleted = await db.nPC.deleteMany({
+          where: { sessionId },
+        });
+        
+        return NextResponse.json({
+          success: true,
+          message: `Deleted ${deleted.count} NPCs from session`,
+          deletedCount: deleted.count,
+        });
+      }
+      
+      case 'respawn_presets': {
+        if (!sessionId || !locationId) {
+          return NextResponse.json({
+            success: false,
+            error: 'sessionId and locationId are required',
+          }, { status: 400 });
+        }
+        
+        // 1. Clear existing NPCs from database
+        const deleted = await db.nPC.deleteMany({
+          where: { sessionId },
+        });
+        
+        // 2. Spawn random 5 preset NPCs (как при старте игры)
+        const spawned = await spawnStoryNPCs(sessionId, locationId);
+        
+        return NextResponse.json({
+          success: true,
+          type: 'preset',
+          npcs: spawned,
+          total: spawned.length,
+          deletedCount: deleted.count,
+          message: `Deleted ${deleted.count} NPCs, spawned ${spawned.length} random preset NPCs`,
+        });
+      }
+      
       default:
         return NextResponse.json({
           success: false,
-          error: 'Unknown action. Use: spawn, spawn_story_npcs, spawn_all_presets, remove, update',
+          error: 'Unknown action. Use: spawn, spawn_story_npcs, spawn_all_presets, remove, update, clear_session_npcs, respawn_presets',
         }, { status: 400 });
     }
   } catch (error) {

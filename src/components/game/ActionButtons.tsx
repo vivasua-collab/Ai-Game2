@@ -47,6 +47,22 @@ export function ActionButtons({ className = '' }: ActionButtonsProps) {
     return () => window.removeEventListener('openGameMenu', handleOpenGameMenu);
   }, []);
 
+  // Слушатель событий от LocationScene (игровое меню в локации)
+  useEffect(() => {
+    const handleGameMenuAction = (event: CustomEvent) => {
+      const { action } = event.detail || {};
+      console.log('[ActionButtons] Game menu action:', action);
+      switch (action) {
+        case 'status': setStatusOpen(true); break;
+        case 'rest': setRestOpen(true); break;
+        case 'techniques': setTechniquesOpen(true); break;
+        case 'inventory': setInventoryOpen(true); break;
+      }
+    };
+    window.addEventListener('gameMenuAction', handleGameMenuAction as EventListener);
+    return () => window.removeEventListener('gameMenuAction', handleGameMenuAction as EventListener);
+  }, []);
+
   return (
     <>
       <div className={`flex gap-2 flex-wrap ${className}`}>

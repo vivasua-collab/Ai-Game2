@@ -6,8 +6,8 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
-  // Отключаем DevTools в левом нижнем углу - вызывает ре-рендеры сцены
-  devIndicators: false,
+  // Включаем DevTools для отладки
+  devIndicators: true,
 };
 
 export default nextConfig;

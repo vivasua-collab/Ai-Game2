@@ -308,6 +308,15 @@ function selectPersonality(role: RolePreset, rng: () => number): GeneratedNPC['p
 }
 
 /**
+ * Округление до 0.01 (сотые доли)
+ * Используется для характеристик, где целая часть - базовое значение,
+ * а дробная - накопленный прогресс развития
+ */
+function roundToHundredths(value: number): number {
+  return Math.round(value * 100) / 100;
+}
+
+/**
  * Генерация характеристик по формулам Lore
  * 
  * Из Lore:
@@ -315,6 +324,8 @@ function selectPersonality(role: RolePreset, rng: () => number): GeneratedNPC['p
  * - Профессионал: 10-20
  * - Гений: до 25
  * - Множители по уровню культивации (STAT_MULTIPLIERS_BY_LEVEL)
+ * 
+ * Формат: ЦЕЛЫЕ единицы, дробные (сотые) зарезервированы для развития
  */
 function generateStats(
   species: SpeciesPreset,
@@ -328,28 +339,31 @@ function generateStats(
   // Множитель из Lore (STAT_MULTIPLIERS_BY_LEVEL)
   const multiplier = STAT_MULTIPLIERS_BY_LEVEL[cultivationLevel] || 1.0;
   
-  // Базовые значения из вида
+  // Базовые значения из вида (целые числа)
   const baseStrength = randomInRange(baseStats.strength, rng);
   const baseAgility = randomInRange(baseStats.agility, rng);
   const baseIntelligence = randomInRange(baseStats.intelligence, rng);
   const baseVitality = randomInRange(baseStats.vitality, rng);
   
   // Применяем множитель уровня и модификаторы роли
+  // Округляем до целых - базовое значение
+  // Сотые доли (.00) зарезервированы для будущего развития
   const result = {
-    strength: Math.floor(baseStrength * multiplier) + (modifiers.strength || 0),
-    agility: Math.floor(baseAgility * multiplier) + (modifiers.agility || 0),
-    intelligence: Math.floor(baseIntelligence * multiplier) + (modifiers.intelligence || 0),
-    vitality: Math.floor(baseVitality * multiplier) + (modifiers.vitality || 0),
+    strength: Math.round(baseStrength * multiplier) + (modifiers.strength || 0),
+    agility: Math.round(baseAgility * multiplier) + (modifiers.agility || 0),
+    intelligence: Math.round(baseIntelligence * multiplier) + (modifiers.intelligence || 0),
+    vitality: Math.round(baseVitality * multiplier) + (modifiers.vitality || 0),
   };
   
   // Валидация по границам из Lore
   const bounds = getStatBoundsByLevel(cultivationLevel);
   
+  // Форматируем до 0.01 для будущего развития
   return {
-    strength: Math.max(bounds.strength.min, Math.min(bounds.strength.max, result.strength)),
-    agility: Math.max(bounds.agility.min, Math.min(bounds.agility.max, result.agility)),
-    intelligence: Math.max(bounds.intelligence.min, Math.min(bounds.intelligence.max, result.intelligence)),
-    vitality: Math.max(bounds.vitality.min, Math.min(bounds.vitality.max, result.vitality)),
+    strength: roundToHundredths(Math.max(bounds.strength.min, Math.min(bounds.strength.max, result.strength))),
+    agility: roundToHundredths(Math.max(bounds.agility.min, Math.min(bounds.agility.max, result.agility))),
+    intelligence: roundToHundredths(Math.max(bounds.intelligence.min, Math.min(bounds.intelligence.max, result.intelligence))),
+    vitality: roundToHundredths(Math.max(bounds.vitality.min, Math.min(bounds.vitality.max, result.vitality))),
   };
 }
 

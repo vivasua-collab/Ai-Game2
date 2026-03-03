@@ -110,7 +110,7 @@ export interface PresetNPCStats {
   agility: number;
   intelligence: number;
   conductivity: number;
-  vitality?: number;
+  vitality: number;  // Живучесть - влияет на HP частей тела
 }
 
 export interface PresetCultivation {
@@ -201,37 +201,49 @@ export function parsePresetNPCId(id: string): { prefix: string; counter: number 
 }
 
 /**
+ * Округление до 0.01 (сотые доли)
+ * Целая часть - базовое значение, дробная - прогресс развития
+ */
+function roundToHundredths(value: number): number {
+  return Math.round(value * 100) / 100;
+}
+
+/**
  * Конвертация PresetNPC в данные для БД (Prisma NPC model)
  */
-export function presetNPCToDBData(preset: PresetNPC, sessionId: string, locationId: string) {
+export function presetNPCToDBData(preset: PresetNPC, sessionId: string, locationId?: string | null) {
   return {
     sessionId,
     isPreset: true,
     presetId: preset.id,
     name: preset.name,
-    title: preset.title,
+    title: preset.title ?? null,
     age: preset.age,
-    backstory: preset.backstory,
+    backstory: preset.backstory ?? null,
     cultivationLevel: preset.cultivation.level,
     cultivationSubLevel: preset.cultivation.subLevel,
     coreCapacity: preset.cultivation.coreCapacity,
     currentQi: preset.cultivation.currentQi,
-    strength: preset.stats.strength,
-    agility: preset.stats.agility,
-    intelligence: preset.stats.intelligence,
-    conductivity: preset.stats.conductivity,
+    // Stats - напрямую в поля модели NPC
+    strength: roundToHundredths(preset.stats.strength),
+    agility: roundToHundredths(preset.stats.agility),
+    intelligence: roundToHundredths(preset.stats.intelligence),
+    conductivity: roundToHundredths(preset.stats.conductivity),
+    vitality: roundToHundredths(preset.stats.vitality ?? preset.stats.conductivity ?? 10),
+    // Личность
     personality: JSON.stringify(preset.personality),
-    motivation: preset.personality.motivation,
+    motivation: preset.personality.motivation ?? null,
     disposition: preset.relations.defaultPlayerDisposition ?? 0,
     relations: JSON.stringify(preset.relations),
-    // sectId не указываем как FK - секты из пресетов не существуют в БД
-    // Секту нужно создавать отдельно или привязывать после создания
-    sectId: null,
-    role: preset.sectRole || null,
-    factionId: preset.factionId || null,
+    // Принадлежность - все FK должны быть null если записи не существуют
+    sectId: null, // Секты из пресетов не существуют в БД
+    role: preset.sectRole ?? null,
+    factionId: null, // Фракции из пресетов не существуют в БД
+    // Экипировка и техники
     equipment: JSON.stringify(preset.equipment),
     techniques: JSON.stringify(preset.techniques),
-    locationId,
+    // Локация - только если существует в БД
+    locationId: locationId ?? null,
   };
 }
 

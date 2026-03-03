@@ -58,11 +58,16 @@ export function GameContainer({
 
     const initGame = async () => {
       try {
+        console.log('[GameContainer] Starting initialization...');
+        
         // Import Phaser dynamically
         const Phaser = await import('phaser');
         const { GAME_CONFIG } = await import('@/game/config/game.config');
         const { BootScene } = await import('@/game/scenes/BootScene');
         const { WorldScene } = await import('@/game/scenes/WorldScene');
+        const { LocationScene } = await import('@/game/scenes/LocationScene');
+
+        console.log('[GameContainer] Phaser and scenes imported');
 
         if (!mounted) return;
 
@@ -70,12 +75,16 @@ export function GameContainer({
         const config: Phaser.Types.Core.GameConfig = {
           ...GAME_CONFIG,
           parent: containerRef.current!,
-          scene: [BootScene, WorldScene],
+          scene: [BootScene, WorldScene, LocationScene],
         };
+
+        console.log('[GameContainer] Creating game instance...');
 
         // Create game instance
         const game = new Phaser.Game(config);
         gameRef.current = game as unknown as PhaserGame;
+
+        console.log('[GameContainer] Game instance created');
 
         // Register with bridge
         const bridge = GameBridge.getInstance();
@@ -152,12 +161,12 @@ export function GameContainer({
   }, []);
 
   return (
-    <div className={`relative ${className}`}>
+    <div className={`absolute inset-0 flex items-center justify-center ${className}`}>
       <div
         ref={containerRef}
         id="game-container"
-        className="w-full rounded-lg overflow-hidden border border-border bg-background"
-        style={{ maxWidth: GAME_WIDTH, aspectRatio: `${GAME_WIDTH}/${GAME_HEIGHT}` }}
+        className="w-full h-full min-h-[400px] bg-background"
+        style={{ width: '100%', height: '100%', minHeight: '400px' }}
       />
 
       {/* Loading overlay */}

@@ -184,12 +184,20 @@ export const STAT_MULTIPLIERS_BY_LEVEL: Record<number, number> = {
 };
 
 /**
+ * Округление до 0.01 (сотые доли)
+ * Целая часть - базовое значение, дробная - прогресс развития
+ */
+function roundToHundredths(value: number): number {
+  return Math.round(value * 100) / 100;
+}
+
+/**
  * Рассчитать характеристики NPC по уровню культивации
  * 
  * @param baseStats - базовые характеристики (10-15 для обычного взрослого)
  * @param cultivationLevel - уровень культивации (1-9)
  * @param roleBonus - бонус от роли (опционально)
- * @returns итоговые характеристики
+ * @returns итоговые характеристики (целые + 0.00 для развития)
  */
 export function calculateStats(
   baseStats: { strength: number; agility: number; intelligence: number; vitality: number },
@@ -198,11 +206,12 @@ export function calculateStats(
 ): { strength: number; agility: number; intelligence: number; vitality: number } {
   const multiplier = STAT_MULTIPLIERS_BY_LEVEL[cultivationLevel] || 1.0;
   
+  // Округляем до целых, добавляем 0.00 для будущего развития
   return {
-    strength: Math.floor(baseStats.strength * multiplier) + (roleBonus.strength || 0),
-    agility: Math.floor(baseStats.agility * multiplier) + (roleBonus.agility || 0),
-    intelligence: Math.floor(baseStats.intelligence * multiplier) + (roleBonus.intelligence || 0),
-    vitality: Math.floor(baseStats.vitality * multiplier) + (roleBonus.vitality || 0),
+    strength: roundToHundredths(Math.round(baseStats.strength * multiplier) + (roleBonus.strength || 0)),
+    agility: roundToHundredths(Math.round(baseStats.agility * multiplier) + (roleBonus.agility || 0)),
+    intelligence: roundToHundredths(Math.round(baseStats.intelligence * multiplier) + (roleBonus.intelligence || 0)),
+    vitality: roundToHundredths(Math.round(baseStats.vitality * multiplier) + (roleBonus.vitality || 0)),
   };
 }
 
