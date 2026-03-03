@@ -2,16 +2,21 @@
  * LocationScene - NPC Location with Player Movement
  * 
  * Features:
- * - WASD movement + mouse aiming (like training ground)
+ * - 8-direction player sprites (like training ground)
+ * - WASD movement + mouse aiming
  * - Training targets with HP
- * - NPC interactions
+ * - NPC interactions with directional sprites
  * - Camera following player
  * - Integrated game menu (Status, Rest, Techniques, Inventory)
+ * 
+ * Graphics: Uses same system as Training Ground (SpriteLoader)
  */
 
 import * as Phaser from 'phaser';
 import { BaseScene } from './BaseScene';
 import { DEPTHS } from '../constants';
+import { SpriteLoader, createDirectionalSpritesheet, angleToDirectionFrame, DIRECTION_FRAMES } from '../services/sprite-loader';
+import { getCultivationTheme } from '../config/sprites.config';
 
 // ==================== CONSTANTS ====================
 
@@ -36,6 +41,7 @@ interface LocationNPC {
   x: number;
   y: number;
   sprite?: Phaser.GameObjects.Container;
+  directionalSprite?: Phaser.GameObjects.Sprite;
 }
 
 interface TrainingTarget {
@@ -86,12 +92,18 @@ export class LocationScene extends BaseScene {
   private locationName: string = '';
   private sessionId: string = '';
   
+  // Graphics system
+  private spriteLoader!: SpriteLoader;
+  private cultivationLevel: number = 1;
+  
   // Player
   private player!: Phaser.GameObjects.Container;
-  private playerBody!: Phaser.GameObjects.Arc;
+  private playerSprite!: Phaser.GameObjects.Sprite;
+  private qiAura!: Phaser.GameObjects.Container;
   private playerX: number = 0;
   private playerY: number = 0;
   private playerRotation: number = 0;
+  private playerDirection: number = 0; // Frame index (0-7)
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private wasd!: { W: Phaser.Input.Keyboard.Key; A: Phaser.Input.Keyboard.Key; S: Phaser.Input.Keyboard.Key; D: Phaser.Input.Keyboard.Key };
   
@@ -104,7 +116,6 @@ export class LocationScene extends BaseScene {
   // UI
   private selectedNPC: LocationNPC | null = null;
   private tooltipContainer: Phaser.GameObjects.Container | null = null;
-  private menuButtons: Phaser.GameObjects.Rectangle[] = [];
 
   constructor() {
     super({ key: 'LocationScene' });
@@ -124,6 +135,15 @@ export class LocationScene extends BaseScene {
   async create(): Promise<void> {
     console.log('[LocationScene] Creating scene...');
     
+    // Get cultivation level from global state
+    this.cultivationLevel = this.getCultivationLevelFromStorage();
+    
+    // Initialize sprite loader
+    this.spriteLoader = new SpriteLoader(this);
+    
+    // Create directional spritesheet (same as training ground)
+    createDirectionalSpritesheet(this, this.cultivationLevel);
+    
     this.physics.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
     this.cameras.main.fadeIn(300);
     
@@ -134,7 +154,22 @@ export class LocationScene extends BaseScene {
     this.setupInput();
     this.createUI();
     
-    console.log('[LocationScene] Scene ready');
+    console.log('[LocationScene] Scene ready with directional sprites');
+  }
+
+  private getCultivationLevelFromStorage(): number {
+    try {
+      if (typeof window !== 'undefined') {
+        const stateStr = localStorage.getItem('cultivation_game_state');
+        if (stateStr) {
+          const state = JSON.parse(stateStr);
+          return state.character?.cultivationLevel || 1;
+        }
+      }
+    } catch {
+      // Ignore errors
+    }
+    return 1;
   }
 
   // ==================== BACKGROUND ====================
@@ -200,39 +235,36 @@ export class LocationScene extends BaseScene {
     this.playerX = WORLD_WIDTH / 2;
     this.playerY = WORLD_HEIGHT / 2;
     
+    // Create player container
     this.player = this.add.container(this.playerX, this.playerY);
     this.player.setDepth(DEPTHS.player);
     
-    // Qi Aura (like in training ground)
-    const qiAura = this.add.circle(0, 0, 35, 0x4ade80, 0.15);
+    // Create Qi Aura (same as training ground)
+    this.qiAura = this.spriteLoader.createQiAura(0, 0, this.cultivationLevel, 100, 100);
+    this.player.add(this.qiAura);
     
-    // Player body with better visuals
-    this.playerBody = this.add.circle(0, 0, PLAYER_SIZE, 0x4ade80, 0.9);
-    this.playerBody.setStrokeStyle(3, 0x22c55e);
+    // Create directional player sprite
+    this.playerSprite = this.add.sprite(0, 0, 'player_directions', DIRECTION_FRAMES.S);
+    this.playerSprite.setScale(0.75); // Scale 64px frames to ~48px
+    this.player.add(this.playerSprite);
     
-    // Direction indicator
-    const direction = this.add.triangle(PLAYER_SIZE + 8, 0, 0, -10, 0, 10, 14, 0x22c55e, 1);
-    direction.setName('direction');
+    // Add player icon overlay
+    const icon = this.add.text(0, -2, '🧘', { fontSize: '16px' }).setOrigin(0.5);
+    this.player.add(icon);
     
-    // Inner glow
-    const innerGlow = this.add.circle(0, 0, PLAYER_SIZE - 8, 0x86efac, 0.3);
-    
-    // Player icon
-    const icon = this.add.text(0, -2, '🧘', { fontSize: '18px' }).setOrigin(0.5);
-    
-    this.player.add([qiAura, innerGlow, this.playerBody, direction, icon]);
-    
-    // Pulsing Qi Aura animation
-    this.tweens.add({
-      targets: qiAura,
-      scale: { from: 1, to: 1.4 },
-      alpha: { from: 0.15, to: 0.05 },
-      duration: 2000, yoyo: true, repeat: -1,
-      ease: 'Sine.easeInOut',
-    });
-    
+    // Camera follow
     this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
     this.cameras.main.setZoom(1);
+  }
+
+  private updatePlayerDirection(): void {
+    // Convert mouse angle to direction frame
+    const newDirection = angleToDirectionFrame(this.playerRotation);
+    
+    if (newDirection !== this.playerDirection) {
+      this.playerDirection = newDirection;
+      this.playerSprite.setFrame(newDirection);
+    }
   }
 
   // ==================== TRAINING TARGETS ====================
@@ -448,19 +480,48 @@ export class LocationScene extends BaseScene {
   private createNPCSprite(npc: LocationNPC): Phaser.GameObjects.Container {
     const container = this.add.container(npc.x, npc.y);
     container.setDepth(DEPTHS.npcs);
+    
     const levelColor = LEVEL_COLORS[npc.cultivationLevel] || 0x9ca3af;
+    const theme = getCultivationTheme(npc.cultivationLevel);
     
+    // Create NPC directional sprite using same system
+    // For now use a circle with Qi aura
     const aura = this.add.circle(0, 0, 30, levelColor, 0.15);
-    const body = this.add.circle(0, 0, 20, 0xfbbf24, 0.8);
-    body.setStrokeStyle(2, levelColor);
+    
+    // Pulsing aura animation
+    this.tweens.add({
+      targets: aura,
+      scale: { from: 1, to: 1.3 },
+      alpha: { from: 0.15, to: 0.05 },
+      duration: 2000, yoyo: true, repeat: -1,
+      ease: 'Sine.easeInOut',
+    });
+    
+    // NPC body - larger and more detailed
+    const body = this.add.circle(0, 0, 20, 0xfbbf24, 0.9);
+    body.setStrokeStyle(3, levelColor);
+    
+    // Inner glow
+    const innerGlow = this.add.circle(0, 0, 15, levelColor, 0.2);
+    
+    // Direction indicator for NPC (faces player initially)
+    const direction = this.add.triangle(25, 0, 0, -8, 0, 8, 12, levelColor, 0.8);
+    
+    // NPC icon
     const icon = this.add.text(0, 0, this.getSpeciesIcon(npc.speciesId), {
-      fontSize: '18px',
-    }).setOrigin(0.5);
-    const label = this.add.text(0, 35, npc.name, {
-      fontSize: '10px', color: '#ffffff',
+      fontSize: '16px',
     }).setOrigin(0.5);
     
-    container.add([aura, body, icon, label]);
+    // Name label
+    const label = this.add.text(0, 35, npc.name, {
+      fontSize: '11px',
+      color: '#ffffff',
+      fontFamily: 'Arial',
+      stroke: '#000000',
+      strokeThickness: 2,
+    }).setOrigin(0.5);
+    
+    container.add([aura, innerGlow, body, direction, icon, label]);
     container.setData('npcId', npc.id);
     
     body.setInteractive({ useHandCursor: true });
@@ -506,12 +567,8 @@ export class LocationScene extends BaseScene {
       const dy = worldPoint.y - this.player.y;
       this.playerRotation = Math.atan2(dy, dx) * 180 / Math.PI;
       
-      const direction = this.player.getByName('direction') as Phaser.GameObjects.Triangle;
-      if (direction) {
-        const rad = this.playerRotation * Math.PI / 180;
-        direction.setPosition(Math.cos(rad) * (PLAYER_SIZE + 10), Math.sin(rad) * (PLAYER_SIZE + 10));
-        direction.setRotation(rad + Math.PI / 2);
-      }
+      // Update player direction based on rotation
+      this.updatePlayerDirection();
     });
     
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
