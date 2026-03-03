@@ -1,0 +1,482 @@
+{
+  "version": "2.0",
+  "type": "combat",
+  "subtype": "melee_weapon",
+  "prefix": "MW",
+  "prefixName": "Оружейная техника",
+  "level": 1,
+  "count": 10,
+  "techniques": [
+    {
+      "id": "MS_000020",
+      "name": "Укол базовый",
+      "nameEn": "Укол Базовый",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 9,
+      "baseQiCost": 10,
+      "baseRange": 0.88,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "weaponCategory": "one_handed_blunt",
+      "weaponType": "axe",
+      "isRangedQi": false,
+      "statRequirements": {
+        "strength": 3,
+        "agility": 2,
+        "intelligence": 1
+      },
+      "description": "Укол базовый — техника владения топор (одноручные дробящие) уровня 1. Редкость: common. Урон: 9. Дальность: 0.9м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 10
+        }
+      },
+      "computed": {
+        "finalDamage": 9,
+        "finalQiCost": 10,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1017806583,
+        "template": "combat_melee_weapon_one_handed_blunt_axe_neutral",
+        "generatedAt": "2026-03-01T11:19:52.818Z",
+        "generatorVersion": "3.1.0"
+      }
+    },
+    {
+      "id": "MS_000030",
+      "name": "Кулак горный",
+      "nameEn": "Кулак Горный",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 9,
+      "baseQiCost": 11,
+      "baseRange": 11.54,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "weaponCategory": "exotic",
+      "weaponType": "whip",
+      "isRangedQi": false,
+      "statRequirements": {
+        "strength": 2,
+        "agility": 3,
+        "intelligence": 1
+      },
+      "description": "Кулак горный — техника владения кнут (экзотическое) элемента earth уровня 1. Редкость: common. Урон: 9. Дальность: 11.5м. ✦ Связывание.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 9,
+        "finalQiCost": 11,
+        "finalRange": 11,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1017806614,
+        "template": "combat_melee_weapon_exotic_whip_earth",
+        "generatedAt": "2026-03-01T11:19:52.818Z",
+        "generatorVersion": "3.1.0"
+      }
+    },
+    {
+      "id": "MS_000032",
+      "name": "Клинок искрящийся",
+      "nameEn": "Клинок Искрящийся",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 9,
+      "baseQiCost": 12,
+      "baseRange": 0.09,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "weaponCategory": "light_fist",
+      "weaponType": "claw",
+      "isRangedQi": false,
+      "statRequirements": {
+        "strength": 2,
+        "agility": 3,
+        "intelligence": 1
+      },
+      "description": "Клинок искрящийся — техника владения коготь (кистевое) элемента lightning уровня 1. Редкость: common. Урон: 9. Дальность: 0.1м. ✦ Кровотечение.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {
+          "critChance": 12
+        }
+      },
+      "computed": {
+        "finalDamage": 9,
+        "finalQiCost": 12,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1017806616,
+        "template": "combat_melee_weapon_light_fist_claw_lightning",
+        "generatedAt": "2026-03-01T11:19:52.818Z",
+        "generatorVersion": "3.1.0"
+      }
+    },
+    {
+      "id": "MS_000034",
+      "name": "Чистый Толчок",
+      "nameEn": "Чистый Толчок",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 16,
+      "baseQiCost": 10,
+      "baseRange": 0.93,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "weaponCategory": "one_handed_blunt",
+      "weaponType": "axe",
+      "isRangedQi": false,
+      "statRequirements": {
+        "strength": 3,
+        "agility": 2,
+        "intelligence": 1
+      },
+      "description": "Чистый Толчок — техника владения топор (одноручные дробящие) уровня 1. Редкость: common. Урон: 16. Дальность: 0.9м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 10
+        }
+      },
+      "computed": {
+        "finalDamage": 16,
+        "finalQiCost": 10,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1017806618,
+        "template": "combat_melee_weapon_one_handed_blunt_axe_neutral",
+        "generatedAt": "2026-03-01T11:19:52.818Z",
+        "generatorVersion": "3.1.0"
+      }
+    },
+    {
+      "id": "MS_000036",
+      "name": "Волна холодный",
+      "nameEn": "Волна Холодный",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 4,
+      "baseQiCost": 10,
+      "baseRange": 11.25,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "weaponCategory": "exotic",
+      "weaponType": "whip",
+      "isRangedQi": false,
+      "statRequirements": {
+        "strength": 2,
+        "agility": 3,
+        "intelligence": 1
+      },
+      "description": "Волна холодный — техника владения кнут (экзотическое) элемента water уровня 1. Редкость: common. Урон: 4. Дальность: 11.3м. ✦ Связывание.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 4,
+        "finalQiCost": 10,
+        "finalRange": 11,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1017806620,
+        "template": "combat_melee_weapon_exotic_whip_water",
+        "generatedAt": "2026-03-01T11:19:52.818Z",
+        "generatorVersion": "3.1.0"
+      }
+    },
+    {
+      "id": "MS_000040",
+      "name": "Пустотный Взрыв",
+      "nameEn": "Пустотный Взрыв",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 7,
+      "baseQiCost": 15,
+      "baseRange": 0.62,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "weaponCategory": "exotic",
+      "weaponType": "fan",
+      "isRangedQi": false,
+      "statRequirements": {
+        "strength": 2,
+        "agility": 3,
+        "intelligence": 1
+      },
+      "description": "Пустотный Взрыв — техника владения веер (экзотическое) элемента void уровня 1. Редкость: common. Урон: 7. Дальность: 0.6м. ✦ Отражение.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 5
+        }
+      },
+      "computed": {
+        "finalDamage": 7,
+        "finalQiCost": 15,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1017806645,
+        "template": "combat_melee_weapon_exotic_fan_void",
+        "generatedAt": "2026-03-01T11:19:52.819Z",
+        "generatorVersion": "3.1.0"
+      }
+    },
+    {
+      "id": "MS_000042",
+      "name": "Раскалённый Клинок",
+      "nameEn": "Раскалённый Клинок",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 15,
+      "baseQiCost": 10,
+      "baseRange": 1.22,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "weaponCategory": "two_handed_heavy",
+      "weaponType": "hammer",
+      "isRangedQi": false,
+      "statRequirements": {
+        "strength": 3,
+        "agility": 2,
+        "intelligence": 1
+      },
+      "description": "Раскалённый Клинок — техника владения молот (двуручное тяжёлое) элемента fire уровня 1. Редкость: common. Урон: 15. Дальность: 1.2м. ✦ Сокрушение.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 15,
+        "finalQiCost": 10,
+        "finalRange": 1,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1017806647,
+        "template": "combat_melee_weapon_two_handed_heavy_hammer_fire",
+        "generatedAt": "2026-03-01T11:19:52.819Z",
+        "generatorVersion": "3.1.0"
+      }
+    },
+    {
+      "id": "MS_000044",
+      "name": "Взрыв тяжёлый",
+      "nameEn": "Взрыв Тяжёлый",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 9,
+      "baseQiCost": 11,
+      "baseRange": 10.89,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "weaponCategory": "exotic",
+      "weaponType": "whip",
+      "isRangedQi": false,
+      "statRequirements": {
+        "strength": 2,
+        "agility": 3,
+        "intelligence": 1
+      },
+      "description": "Взрыв тяжёлый — техника владения кнут (экзотическое) элемента earth уровня 1. Редкость: common. Урон: 9. Дальность: 10.9м. ✦ Связывание.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 9,
+        "finalQiCost": 11,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1017806649,
+        "template": "combat_melee_weapon_exotic_whip_earth",
+        "generatedAt": "2026-03-01T11:19:52.819Z",
+        "generatorVersion": "3.1.0"
+      }
+    },
+    {
+      "id": "MS_000046",
+      "name": "Удар ослепляющий",
+      "nameEn": "Удар Ослепляющий",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 9,
+      "baseQiCost": 12,
+      "baseRange": 0.1,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "weaponCategory": "light_fist",
+      "weaponType": "claw",
+      "isRangedQi": false,
+      "statRequirements": {
+        "strength": 2,
+        "agility": 3,
+        "intelligence": 1
+      },
+      "description": "Удар ослепляющий — техника владения коготь (кистевое) элемента lightning уровня 1. Редкость: common. Урон: 9. Дальность: 0.1м. ✦ Кровотечение.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 0,
+          "poisonDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {
+          "critChance": 12
+        }
+      },
+      "computed": {
+        "finalDamage": 9,
+        "finalQiCost": 12,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1017806651,
+        "template": "combat_melee_weapon_light_fist_claw_lightning",
+        "generatedAt": "2026-03-01T11:19:52.819Z",
+        "generatorVersion": "3.1.0"
+      }
+    },
+    {
+      "id": "MS_000048",
+      "name": "Сфокусированный Толчок",
+      "nameEn": "Сфокусированный Толчок",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 19,
+      "baseQiCost": 10,
+      "baseRange": 1.11,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "weaponCategory": "two_handed_heavy",
+      "weaponType": "axe",
+      "isRangedQi": false,
+      "statRequirements": {
+        "strength": 3,
+        "agility": 2,
+        "intelligence": 1
+      },
+      "description": "Сфокусированный Толчок — техника владения топор (двуручное тяжёлое) уровня 1. Редкость: common. Урон: 19. Дальность: 1.1м. ✦ Рассечение.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "aoe": true
+        },
+        "effectValues": {
+          "aoeRadius": 1.5
+        },
+        "penalties": {},
+        "bonuses": {
+          "critChance": 15
+        }
+      },
+      "computed": {
+        "finalDamage": 15,
+        "finalQiCost": 10,
+        "finalRange": 1,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "aoe",
+            "value": 1.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1017806653,
+        "template": "combat_melee_weapon_two_handed_heavy_axe_neutral",
+        "generatedAt": "2026-03-01T11:19:52.819Z",
+        "generatorVersion": "3.1.0"
+      }
+    }
+  ]
+}

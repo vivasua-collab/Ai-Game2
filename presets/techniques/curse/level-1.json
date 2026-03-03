@@ -1,0 +1,2311 @@
+{
+  "version": "2.0",
+  "type": "curse",
+  "subtype": "combat",
+  "prefix": "CR",
+  "prefixName": "Проклятие",
+  "level": 1,
+  "count": 50,
+  "techniques": [
+    {
+      "id": "CR_000162",
+      "name": "Метка ледяной",
+      "nameEn": "Метка Ледяной",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 22,
+      "baseRange": 15,
+      "baseDuration": 27,
+      "minCultivationLevel": 1,
+      "description": "Метка ледяной — боевое проклятие уровня 1. Эффект: slowness. Длительность: 27 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 27
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 22,
+        "finalRange": 15,
+        "finalDuration": 27,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672781,
+        "template": "curse_water_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000163",
+      "name": "Печать титанический",
+      "nameEn": "Печать Титанический",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 20,
+      "baseRange": 15,
+      "baseDuration": 13,
+      "minCultivationLevel": 1,
+      "description": "Печать титанический — боевое проклятие уровня 1. Эффект: weakness. Длительность: 13 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 13
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 20,
+        "finalRange": 15,
+        "finalDuration": 13,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672782,
+        "template": "curse_earth_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000164",
+      "name": "Невидимый Скверна",
+      "nameEn": "Невидимый Скверна",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 34,
+      "baseRange": 15,
+      "baseDuration": 10,
+      "minCultivationLevel": 1,
+      "description": "Невидимый Скверна — боевое проклятие уровня 1. Эффект: slowness. Длительность: 10 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 10
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 34,
+        "finalRange": 15,
+        "finalDuration": 10,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672783,
+        "template": "curse_air_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000165",
+      "name": "Искрящийся Печать",
+      "nameEn": "Искрящийся Печать",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 29,
+      "baseRange": 15,
+      "baseDuration": 27,
+      "minCultivationLevel": 1,
+      "description": "Искрящийся Печать — боевое проклятие уровня 1. Эффект: weakness. Длительность: 27 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 27
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 29,
+        "finalRange": 15,
+        "finalDuration": 27,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672784,
+        "template": "curse_lightning_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000166",
+      "name": "Забвенный Печать",
+      "nameEn": "Забвенный Печать",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 24,
+      "baseRange": 15,
+      "baseDuration": 12,
+      "minCultivationLevel": 1,
+      "description": "Забвенный Печать — боевое проклятие уровня 1. Эффект: slowness. Длительность: 12 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 12
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 24,
+        "finalRange": 15,
+        "finalDuration": 12,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672785,
+        "template": "curse_void_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000167",
+      "name": "Базовый Порча",
+      "nameEn": "Базовый Порча",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 23,
+      "baseRange": 15,
+      "baseDuration": 29,
+      "minCultivationLevel": 1,
+      "description": "Базовый Порча — боевое проклятие уровня 1. Эффект: weakness. Длительность: 29 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 29
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 23,
+        "finalRange": 15,
+        "finalDuration": 29,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672786,
+        "template": "curse_neutral_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000168",
+      "name": "Раскалённый Печать",
+      "nameEn": "Раскалённый Печать",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 21,
+      "baseRange": 15,
+      "baseDuration": 15,
+      "minCultivationLevel": 1,
+      "description": "Раскалённый Печать — боевое проклятие уровня 1. Эффект: slowness. Длительность: 15 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 15
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 21,
+        "finalRange": 15,
+        "finalDuration": 15,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672787,
+        "template": "curse_fire_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000169",
+      "name": "Штормовой Оковы",
+      "nameEn": "Штормовой Оковы",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 31,
+      "baseRange": 15,
+      "baseDuration": 12,
+      "minCultivationLevel": 1,
+      "description": "Штормовой Оковы — боевое проклятие уровня 1. Эффект: weakness. Длительность: 12 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 12
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 31,
+        "finalRange": 15,
+        "finalDuration": 12,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672788,
+        "template": "curse_water_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000170",
+      "name": "Порча неизбежный",
+      "nameEn": "Порча Неизбежный",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 25,
+      "baseRange": 15,
+      "baseDuration": 21,
+      "minCultivationLevel": 1,
+      "description": "Порча неизбежный — боевое проклятие уровня 1. Эффект: slowness. Длительность: 21 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 21
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 25,
+        "finalRange": 15,
+        "finalDuration": 21,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672810,
+        "template": "curse_earth_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000171",
+      "name": "Стремительный Скверна",
+      "nameEn": "Стремительный Скверна",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 20,
+      "baseRange": 15,
+      "baseDuration": 18,
+      "minCultivationLevel": 1,
+      "description": "Стремительный Скверна — боевое проклятие уровня 1. Эффект: weakness. Длительность: 18 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 18
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 20,
+        "finalRange": 15,
+        "finalDuration": 18,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672811,
+        "template": "curse_air_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000172",
+      "name": "Искрящийся Метка",
+      "nameEn": "Искрящийся Метка",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 22,
+      "baseRange": 15,
+      "baseDuration": 24,
+      "minCultivationLevel": 1,
+      "description": "Искрящийся Метка — боевое проклятие уровня 1. Эффект: slowness. Длительность: 24 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 24
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 22,
+        "finalRange": 15,
+        "finalDuration": 24,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672812,
+        "template": "curse_lightning_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000173",
+      "name": "Метка эфирный",
+      "nameEn": "Метка Эфирный",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 32,
+      "baseRange": 15,
+      "baseDuration": 21,
+      "minCultivationLevel": 1,
+      "description": "Метка эфирный — боевое проклятие уровня 1. Эффект: weakness. Длительность: 21 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 21
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 32,
+        "finalRange": 15,
+        "finalDuration": 21,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672813,
+        "template": "curse_void_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000174",
+      "name": "Порча сфокусированный",
+      "nameEn": "Порча Сфокусированный",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 27,
+      "baseRange": 15,
+      "baseDuration": 26,
+      "minCultivationLevel": 1,
+      "description": "Порча сфокусированный — боевое проклятие уровня 1. Эффект: slowness. Длительность: 26 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 26
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 27,
+        "finalRange": 15,
+        "finalDuration": 26,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672814,
+        "template": "curse_neutral_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000175",
+      "name": "Огненный Печать",
+      "nameEn": "Огненный Печать",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 26,
+      "baseRange": 15,
+      "baseDuration": 23,
+      "minCultivationLevel": 1,
+      "description": "Огненный Печать — боевое проклятие уровня 1. Эффект: weakness. Длительность: 23 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 23
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 26,
+        "finalRange": 15,
+        "finalDuration": 23,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672815,
+        "template": "curse_fire_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000176",
+      "name": "Ледяной Проклятие",
+      "nameEn": "Ледяной Проклятие",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 24,
+      "baseRange": 15,
+      "baseDuration": 29,
+      "minCultivationLevel": 1,
+      "description": "Ледяной Проклятие — боевое проклятие уровня 1. Эффект: slowness. Длительность: 29 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 29
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 24,
+        "finalRange": 15,
+        "finalDuration": 29,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672816,
+        "template": "curse_water_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000177",
+      "name": "Печать неизбежный",
+      "nameEn": "Печать Неизбежный",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 34,
+      "baseRange": 15,
+      "baseDuration": 26,
+      "minCultivationLevel": 1,
+      "description": "Печать неизбежный — боевое проклятие уровня 1. Эффект: weakness. Длительность: 26 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 26
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 34,
+        "finalRange": 15,
+        "finalDuration": 26,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672817,
+        "template": "curse_earth_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000178",
+      "name": "Порча стремительный",
+      "nameEn": "Порча Стремительный",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 30,
+      "baseRange": 15,
+      "baseDuration": 22,
+      "minCultivationLevel": 1,
+      "description": "Порча стремительный — боевое проклятие уровня 1. Эффект: slowness. Длительность: 22 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 22
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 30,
+        "finalRange": 15,
+        "finalDuration": 22,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672818,
+        "template": "curse_air_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000179",
+      "name": "Скверна громовой",
+      "nameEn": "Скверна Громовой",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 31,
+      "baseRange": 15,
+      "baseDuration": 28,
+      "minCultivationLevel": 1,
+      "description": "Скверна громовой — боевое проклятие уровня 1. Эффект: weakness. Длительность: 28 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 28
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 31,
+        "finalRange": 15,
+        "finalDuration": 28,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672819,
+        "template": "curse_lightning_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000180",
+      "name": "Эфирный Порча",
+      "nameEn": "Эфирный Порча",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 25,
+      "baseRange": 15,
+      "baseDuration": 18,
+      "minCultivationLevel": 1,
+      "description": "Эфирный Порча — боевое проклятие уровня 1. Эффект: slowness. Длительность: 18 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 18
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 25,
+        "finalRange": 15,
+        "finalDuration": 18,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672841,
+        "template": "curse_void_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000181",
+      "name": "Базовый Скверна",
+      "nameEn": "Базовый Скверна",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 33,
+      "baseRange": 15,
+      "baseDuration": 15,
+      "minCultivationLevel": 1,
+      "description": "Базовый Скверна — боевое проклятие уровня 1. Эффект: weakness. Длительность: 15 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 15
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 33,
+        "finalRange": 15,
+        "finalDuration": 15,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672842,
+        "template": "curse_neutral_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000182",
+      "name": "Вулканический Порча",
+      "nameEn": "Вулканический Порча",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 30,
+      "baseRange": 15,
+      "baseDuration": 11,
+      "minCultivationLevel": 1,
+      "description": "Вулканический Порча — боевое проклятие уровня 1. Эффект: slowness. Длительность: 11 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 11
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 30,
+        "finalRange": 15,
+        "finalDuration": 11,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672843,
+        "template": "curse_fire_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000183",
+      "name": "Ледяной Метка",
+      "nameEn": "Ледяной Метка",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 27,
+      "baseRange": 15,
+      "baseDuration": 17,
+      "minCultivationLevel": 1,
+      "description": "Ледяной Метка — боевое проклятие уровня 1. Эффект: weakness. Длительность: 17 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 17
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 27,
+        "finalRange": 15,
+        "finalDuration": 17,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672844,
+        "template": "curse_water_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000184",
+      "name": "Горный Проклятие",
+      "nameEn": "Горный Проклятие",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 27,
+      "baseRange": 15,
+      "baseDuration": 14,
+      "minCultivationLevel": 1,
+      "description": "Горный Проклятие — боевое проклятие уровня 1. Эффект: slowness. Длительность: 14 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 14
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 27,
+        "finalRange": 15,
+        "finalDuration": 14,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672845,
+        "template": "curse_earth_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000185",
+      "name": "Вихревой Скверна",
+      "nameEn": "Вихревой Скверна",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 22,
+      "baseRange": 15,
+      "baseDuration": 20,
+      "minCultivationLevel": 1,
+      "description": "Вихревой Скверна — боевое проклятие уровня 1. Эффект: weakness. Длительность: 20 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 20
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 22,
+        "finalRange": 15,
+        "finalDuration": 20,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672846,
+        "template": "curse_air_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000186",
+      "name": "Ослепляющий Проклятие",
+      "nameEn": "Ослепляющий Проклятие",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 33,
+      "baseRange": 15,
+      "baseDuration": 16,
+      "minCultivationLevel": 1,
+      "description": "Ослепляющий Проклятие — боевое проклятие уровня 1. Эффект: slowness. Длительность: 16 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 16
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 33,
+        "finalRange": 15,
+        "finalDuration": 16,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672847,
+        "template": "curse_lightning_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000187",
+      "name": "Пустотный Порча",
+      "nameEn": "Пустотный Порча",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 31,
+      "baseRange": 15,
+      "baseDuration": 13,
+      "minCultivationLevel": 1,
+      "description": "Пустотный Порча — боевое проклятие уровня 1. Эффект: weakness. Длительность: 13 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 13
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 31,
+        "finalRange": 15,
+        "finalDuration": 13,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672848,
+        "template": "curse_void_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000188",
+      "name": "Сфокусированный Порча",
+      "nameEn": "Сфокусированный Порча",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 30,
+      "baseRange": 15,
+      "baseDuration": 19,
+      "minCultivationLevel": 1,
+      "description": "Сфокусированный Порча — боевое проклятие уровня 1. Эффект: slowness. Длительность: 19 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 19
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 30,
+        "finalRange": 15,
+        "finalDuration": 19,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672849,
+        "template": "curse_neutral_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000189",
+      "name": "Вулканический Печать",
+      "nameEn": "Вулканический Печать",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 25,
+      "baseRange": 15,
+      "baseDuration": 16,
+      "minCultivationLevel": 1,
+      "description": "Вулканический Печать — боевое проклятие уровня 1. Эффект: weakness. Длительность: 16 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 16
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 25,
+        "finalRange": 15,
+        "finalDuration": 16,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672850,
+        "template": "curse_fire_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000190",
+      "name": "Оковы холодный",
+      "nameEn": "Оковы Холодный",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 33,
+      "baseRange": 15,
+      "baseDuration": 25,
+      "minCultivationLevel": 1,
+      "description": "Оковы холодный — боевое проклятие уровня 1. Эффект: slowness. Длительность: 25 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 25
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 33,
+        "finalRange": 15,
+        "finalDuration": 25,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672872,
+        "template": "curse_water_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000191",
+      "name": "Тяжёлый Проклятие",
+      "nameEn": "Тяжёлый Проклятие",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 32,
+      "baseRange": 15,
+      "baseDuration": 11,
+      "minCultivationLevel": 1,
+      "description": "Тяжёлый Проклятие — боевое проклятие уровня 1. Эффект: weakness. Длительность: 11 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 11
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 32,
+        "finalRange": 15,
+        "finalDuration": 11,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672873,
+        "template": "curse_earth_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000192",
+      "name": "Скверна вихревой",
+      "nameEn": "Скверна Вихревой",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 30,
+      "baseRange": 15,
+      "baseDuration": 28,
+      "minCultivationLevel": 1,
+      "description": "Скверна вихревой — боевое проклятие уровня 1. Эффект: slowness. Длительность: 28 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 28
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 30,
+        "finalRange": 15,
+        "finalDuration": 28,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672874,
+        "template": "curse_air_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000193",
+      "name": "Метка искрящийся",
+      "nameEn": "Метка Искрящийся",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 24,
+      "baseRange": 15,
+      "baseDuration": 25,
+      "minCultivationLevel": 1,
+      "description": "Метка искрящийся — боевое проклятие уровня 1. Эффект: weakness. Длительность: 25 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 25
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 24,
+        "finalRange": 15,
+        "finalDuration": 25,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672875,
+        "template": "curse_lightning_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000194",
+      "name": "Теневой Метка",
+      "nameEn": "Теневой Метка",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 21,
+      "baseRange": 15,
+      "baseDuration": 10,
+      "minCultivationLevel": 1,
+      "description": "Теневой Метка — боевое проклятие уровня 1. Эффект: slowness. Длительность: 10 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 10
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 21,
+        "finalRange": 15,
+        "finalDuration": 10,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672876,
+        "template": "curse_void_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000195",
+      "name": "Чистый Печать",
+      "nameEn": "Чистый Печать",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 32,
+      "baseRange": 15,
+      "baseDuration": 27,
+      "minCultivationLevel": 1,
+      "description": "Чистый Печать — боевое проклятие уровня 1. Эффект: weakness. Длительность: 27 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 27
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 32,
+        "finalRange": 15,
+        "finalDuration": 27,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672877,
+        "template": "curse_neutral_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000196",
+      "name": "Огненный Порча",
+      "nameEn": "Огненный Порча",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 33,
+      "baseRange": 15,
+      "baseDuration": 13,
+      "minCultivationLevel": 1,
+      "description": "Огненный Порча — боевое проклятие уровня 1. Эффект: slowness. Длительность: 13 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 13
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 33,
+        "finalRange": 15,
+        "finalDuration": 13,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672878,
+        "template": "curse_fire_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000197",
+      "name": "Штормовой Проклятие",
+      "nameEn": "Штормовой Проклятие",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 28,
+      "baseRange": 15,
+      "baseDuration": 10,
+      "minCultivationLevel": 1,
+      "description": "Штормовой Проклятие — боевое проклятие уровня 1. Эффект: weakness. Длительность: 10 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 10
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 28,
+        "finalRange": 15,
+        "finalDuration": 10,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672879,
+        "template": "curse_water_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000198",
+      "name": "Титанический Порча",
+      "nameEn": "Титанический Порча",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 30,
+      "baseRange": 15,
+      "baseDuration": 15,
+      "minCultivationLevel": 1,
+      "description": "Титанический Порча — боевое проклятие уровня 1. Эффект: slowness. Длительность: 15 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 15
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 30,
+        "finalRange": 15,
+        "finalDuration": 15,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672880,
+        "template": "curse_earth_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000199",
+      "name": "Невидимый Оковы",
+      "nameEn": "Невидимый Оковы",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 23,
+      "baseRange": 15,
+      "baseDuration": 12,
+      "minCultivationLevel": 1,
+      "description": "Невидимый Оковы — боевое проклятие уровня 1. Эффект: weakness. Длительность: 12 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 12
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 23,
+        "finalRange": 15,
+        "finalDuration": 12,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169672881,
+        "template": "curse_air_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000200",
+      "name": "Печать громовой",
+      "nameEn": "Печать Громовой",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 27,
+      "baseRange": 15,
+      "baseDuration": 25,
+      "minCultivationLevel": 1,
+      "description": "Печать громовой — боевое проклятие уровня 1. Эффект: weakness. Длительность: 25 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 25
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 27,
+        "finalRange": 15,
+        "finalDuration": 25,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169673554,
+        "template": "curse_lightning_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000201",
+      "name": "Печать забвенный",
+      "nameEn": "Печать Забвенный",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 20,
+      "baseRange": 15,
+      "baseDuration": 11,
+      "minCultivationLevel": 1,
+      "description": "Печать забвенный — боевое проклятие уровня 1. Эффект: slowness. Длительность: 11 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 11
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 20,
+        "finalRange": 15,
+        "finalDuration": 11,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169673555,
+        "template": "curse_void_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000202",
+      "name": "Концентрированный Метка",
+      "nameEn": "Концентрированный Метка",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 29,
+      "baseRange": 15,
+      "baseDuration": 28,
+      "minCultivationLevel": 1,
+      "description": "Концентрированный Метка — боевое проклятие уровня 1. Эффект: weakness. Длительность: 28 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 28
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 29,
+        "finalRange": 15,
+        "finalDuration": 28,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169673556,
+        "template": "curse_neutral_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000203",
+      "name": "Пожирающий Проклятие",
+      "nameEn": "Пожирающий Проклятие",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 26,
+      "baseRange": 15,
+      "baseDuration": 14,
+      "minCultivationLevel": 1,
+      "description": "Пожирающий Проклятие — боевое проклятие уровня 1. Эффект: slowness. Длительность: 14 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 14
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 26,
+        "finalRange": 15,
+        "finalDuration": 14,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169673557,
+        "template": "curse_fire_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000204",
+      "name": "Печать штормовой",
+      "nameEn": "Печать Штормовой",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 23,
+      "baseRange": 15,
+      "baseDuration": 10,
+      "minCultivationLevel": 1,
+      "description": "Печать штормовой — боевое проклятие уровня 1. Эффект: weakness. Длительность: 10 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 10
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 23,
+        "finalRange": 15,
+        "finalDuration": 10,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169673558,
+        "template": "curse_water_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000205",
+      "name": "Скверна горный",
+      "nameEn": "Скверна Горный",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 23,
+      "baseRange": 15,
+      "baseDuration": 27,
+      "minCultivationLevel": 1,
+      "description": "Скверна горный — боевое проклятие уровня 1. Эффект: slowness. Длительность: 27 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 27
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 23,
+        "finalRange": 15,
+        "finalDuration": 27,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169673559,
+        "template": "curse_earth_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000206",
+      "name": "Штормовой Печать",
+      "nameEn": "Штормовой Печать",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 33,
+      "baseRange": 15,
+      "baseDuration": 13,
+      "minCultivationLevel": 1,
+      "description": "Штормовой Печать — боевое проклятие уровня 1. Эффект: weakness. Длительность: 13 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 13
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 33,
+        "finalRange": 15,
+        "finalDuration": 13,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169673560,
+        "template": "curse_air_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000207",
+      "name": "Искрящийся Печать",
+      "nameEn": "Искрящийся Печать",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 28,
+      "baseRange": 15,
+      "baseDuration": 10,
+      "minCultivationLevel": 1,
+      "description": "Искрящийся Печать — боевое проклятие уровня 1. Эффект: slowness. Длительность: 10 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 10
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 28,
+        "finalRange": 15,
+        "finalDuration": 10,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169673561,
+        "template": "curse_lightning_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000208",
+      "name": "Печать бесплотный",
+      "nameEn": "Печать Бесплотный",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 28,
+      "baseRange": 15,
+      "baseDuration": 15,
+      "minCultivationLevel": 1,
+      "description": "Печать бесплотный — боевое проклятие уровня 1. Эффект: weakness. Длительность: 15 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "weakness",
+          "debuffAmount": 15,
+          "debuffDuration": 15
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 28,
+        "finalRange": 15,
+        "finalDuration": 15,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169673562,
+        "template": "curse_void_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000209",
+      "name": "Истинный Порча",
+      "nameEn": "Истинный Порча",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 25,
+      "baseRange": 15,
+      "baseDuration": 12,
+      "minCultivationLevel": 1,
+      "description": "Истинный Порча — боевое проклятие уровня 1. Эффект: slowness. Длительность: 12 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 12
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 25,
+        "finalRange": 15,
+        "finalDuration": 12,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169673563,
+        "template": "curse_neutral_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000210",
+      "name": "Порча вулканический",
+      "nameEn": "Порча Вулканический",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 34,
+      "baseRange": 15,
+      "baseDuration": 22,
+      "minCultivationLevel": 1,
+      "description": "Порча вулканический — боевое проклятие уровня 1. Эффект: slowness. Длительность: 22 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 22
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 34,
+        "finalRange": 15,
+        "finalDuration": 22,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169673585,
+        "template": "curse_fire_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000211",
+      "name": "Струящийся Печать",
+      "nameEn": "Струящийся Печать",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 8,
+      "baseQiCost": 29,
+      "baseRange": 15,
+      "baseDuration": 19,
+      "minCultivationLevel": 1,
+      "description": "Струящийся Печать — боевое проклятие уровня 1. Эффект: slowness. Длительность: 19 сек.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "slowness",
+          "debuffAmount": 15,
+          "debuffDuration": 19
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 29,
+        "finalRange": 15,
+        "finalDuration": 19,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 169673586,
+        "template": "curse_water_combat",
+        "generatedAt": "2026-03-01T11:20:26.722Z",
+        "generatorVersion": "2.0.0"
+      }
+    }
+  ]
+}

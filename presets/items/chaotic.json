@@ -1,0 +1,77 @@
+{
+  "version": "2.0",
+  "type": "chaotic",
+  "count": 5,
+  "items": [
+    {
+      "id": "QS_000004",
+      "name": "Нестабильный Камень",
+      "nameEn": "Нестабильный Medium Qi Stone",
+      "description": "Средний камень с хаотичная ци. Объём: 14.19 см³. Содержание Ци: 14533 ед. ⚠️ Опасен для неопытных практиков!",
+      "sizeClass": "medium",
+      "volumeCm3": 14.193,
+      "surfaceCm2": 35.17,
+      "totalQi": 14533,
+      "currentQi": 14533,
+      "type": "chaotic",
+      "isSealed": true,
+      "releaseRate": 17.59
+    },
+    {
+      "id": "QS_000008",
+      "name": "Неистовый Камень",
+      "nameEn": "Неистовый Medium Qi Stone",
+      "description": "Средний камень с хаотичная ци. Объём: 14.10 см³. Содержание Ци: 14433 ед. ⚠️ Опасен для неопытных практиков!",
+      "sizeClass": "medium",
+      "volumeCm3": 14.095,
+      "surfaceCm2": 35.01,
+      "totalQi": 14433,
+      "currentQi": 14433,
+      "type": "chaotic",
+      "isSealed": true,
+      "releaseRate": 17.51
+    },
+    {
+      "id": "QS_000013",
+      "name": "Тёмный Камень",
+      "nameEn": "Тёмный Large Qi Stone",
+      "description": "Большой камень с хаотичная ци. Объём: 52.79 см³. Содержание Ци: 54052 ед. ⚠️ Опасен для неопытных практиков!",
+      "sizeClass": "large",
+      "volumeCm3": 52.785,
+      "surfaceCm2": 84.43,
+      "totalQi": 54052,
+      "currentQi": 54052,
+      "type": "chaotic",
+      "isSealed": true,
+      "releaseRate": 42.21
+    },
+    {
+      "id": "QS_000018",
+      "name": "Хаотичный Камень",
+      "nameEn": "Хаотичный Medium Qi Stone",
+      "description": "Средний камень с хаотичная ци. Объём: 11.03 см³. Содержание Ци: 11298 ед. ⚠️ Опасен для неопытных практиков!",
+      "sizeClass": "medium",
+      "volumeCm3": 11.034,
+      "surfaceCm2": 29.74,
+      "totalQi": 11298,
+      "currentQi": 11298,
+      "type": "chaotic",
+      "isSealed": true,
+      "releaseRate": 14.87
+    },
+    {
+      "id": "QS_000019",
+      "name": "Хаотичный Камень",
+      "nameEn": "Хаотичный Medium Qi Stone",
+      "description": "Средний камень с хаотичная ци. Объём: 20.17 см³. Содержание Ци: 20656 ед. ⚠️ Опасен для неопытных практиков!",
+      "sizeClass": "medium",
+      "volumeCm3": 20.172,
+      "surfaceCm2": 44.46,
+      "totalQi": 20656,
+      "currentQi": 20656,
+      "type": "chaotic",
+      "isSealed": true,
+      "releaseRate": 22.23
+    }
+  ]
+}

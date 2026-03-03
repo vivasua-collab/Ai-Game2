@@ -1,0 +1,401 @@
+{
+  "version": "2.0",
+  "type": "combat",
+  "subtype": "melee_strike",
+  "prefix": "MS",
+  "prefixName": "Удар телом",
+  "level": 1,
+  "count": 10,
+  "techniques": [
+    {
+      "id": "MS_000001",
+      "name": "Толчок морской",
+      "nameEn": "Толчок Морской",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 16,
+      "baseQiCost": 10,
+      "baseRange": 0.5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "statRequirements": {
+        "strength": 3,
+        "agility": 1
+      },
+      "description": "Толчок морской — техника удара телом элемента water уровня 1. Редкость: common. Урон: 16. Дальность: 0.5м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 16,
+        "finalQiCost": 10,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1017806522,
+        "template": "combat_melee_strike_water",
+        "generatedAt": "2026-03-01T11:19:52.816Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000003",
+      "name": "Укол порывистый",
+      "nameEn": "Укол Порывистый",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 11,
+      "baseQiCost": 9,
+      "baseRange": 0.5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "statRequirements": {
+        "strength": 3,
+        "agility": 1
+      },
+      "description": "Укол порывистый — техника удара телом элемента air уровня 1. Редкость: common. Урон: 11. Дальность: 0.5м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 11,
+        "finalQiCost": 9,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1017806524,
+        "template": "combat_melee_strike_air",
+        "generatedAt": "2026-03-01T11:19:52.817Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000005",
+      "name": "Ладонь пустотный",
+      "nameEn": "Ладонь Пустотный",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 25,
+      "baseQiCost": 15,
+      "baseRange": 0.5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "statRequirements": {
+        "strength": 3,
+        "agility": 1
+      },
+      "description": "Ладонь пустотный — техника удара телом элемента void уровня 1. Редкость: common. Урон: 25. Дальность: 0.5м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 25,
+        "finalQiCost": 15,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1017806526,
+        "template": "combat_melee_strike_void",
+        "generatedAt": "2026-03-01T11:19:52.817Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000007",
+      "name": "Пылающий Взрыв",
+      "nameEn": "Пылающий Взрыв",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 15,
+      "baseQiCost": 10,
+      "baseRange": 0.5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "statRequirements": {
+        "strength": 3,
+        "agility": 1
+      },
+      "description": "Пылающий Взрыв — техника удара телом элемента fire уровня 1. Редкость: common. Урон: 15. Дальность: 0.5м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 15,
+        "finalQiCost": 10,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1017806528,
+        "template": "combat_melee_strike_fire",
+        "generatedAt": "2026-03-01T11:19:52.817Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000009",
+      "name": "Горный Взрыв",
+      "nameEn": "Горный Взрыв",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 14,
+      "baseQiCost": 11,
+      "baseRange": 0.5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "statRequirements": {
+        "strength": 3,
+        "agility": 1
+      },
+      "description": "Горный Взрыв — техника удара телом элемента earth уровня 1. Редкость: common. Урон: 14. Дальность: 0.5м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 14,
+        "finalQiCost": 11,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1017806530,
+        "template": "combat_melee_strike_earth",
+        "generatedAt": "2026-03-01T11:19:52.817Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000015",
+      "name": "Ледяной Толчок",
+      "nameEn": "Ледяной Толчок",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 16,
+      "baseQiCost": 10,
+      "baseRange": 0.5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "statRequirements": {
+        "strength": 3,
+        "agility": 1
+      },
+      "description": "Ледяной Толчок — техника удара телом элемента water уровня 1. Редкость: common. Урон: 16. Дальность: 0.5м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 16,
+        "finalQiCost": 10,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1017806557,
+        "template": "combat_melee_strike_water",
+        "generatedAt": "2026-03-01T11:19:52.817Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000017",
+      "name": "Порывистый Волна",
+      "nameEn": "Порывистый Волна",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 11,
+      "baseQiCost": 9,
+      "baseRange": 0.5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "statRequirements": {
+        "strength": 3,
+        "agility": 1
+      },
+      "description": "Порывистый Волна — техника удара телом элемента air уровня 1. Редкость: common. Урон: 11. Дальность: 0.5м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 11,
+        "finalQiCost": 9,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1017806559,
+        "template": "combat_melee_strike_air",
+        "generatedAt": "2026-03-01T11:19:52.817Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000019",
+      "name": "Пустотный Взрыв",
+      "nameEn": "Пустотный Взрыв",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 14,
+      "baseQiCost": 15,
+      "baseRange": 0.5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "statRequirements": {
+        "strength": 3,
+        "agility": 1
+      },
+      "description": "Пустотный Взрыв — техника удара телом элемента void уровня 1. Редкость: common. Урон: 14. Дальность: 0.5м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 14,
+        "finalQiCost": 15,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1017806561,
+        "template": "combat_melee_strike_void",
+        "generatedAt": "2026-03-01T11:19:52.817Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000029",
+      "name": "Ладонь штормовой",
+      "nameEn": "Ладонь Штормовой",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 16,
+      "baseQiCost": 10,
+      "baseRange": 0.5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "statRequirements": {
+        "strength": 3,
+        "agility": 1
+      },
+      "description": "Ладонь штормовой — техника удара телом элемента water уровня 1. Редкость: common. Урон: 16. Дальность: 0.5м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 16,
+        "finalQiCost": 10,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1017806592,
+        "template": "combat_melee_strike_water",
+        "generatedAt": "2026-03-01T11:19:52.818Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000050",
+      "name": "Толчок холодный",
+      "nameEn": "Толчок Холодный",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 13,
+      "baseQiCost": 10,
+      "baseRange": 0.5,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "statRequirements": {
+        "strength": 3,
+        "agility": 1
+      },
+      "description": "Толчок холодный — техника удара телом элемента water уровня 1. Редкость: common. Урон: 13. Дальность: 0.5м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 13,
+        "finalQiCost": 10,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1017806676,
+        "template": "combat_melee_strike_water",
+        "generatedAt": "2026-03-01T11:19:52.819Z",
+        "generatorVersion": "3.0.0"
+      }
+    }
+  ]
+}

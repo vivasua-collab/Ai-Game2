@@ -1,0 +1,2261 @@
+{
+  "version": "2.0",
+  "type": "defense",
+  "subtype": "shield",
+  "prefix": "DF",
+  "prefixName": "Защитная техника",
+  "level": 1,
+  "count": 50,
+  "techniques": [
+    {
+      "id": "DF_000212",
+      "name": "Стена морской",
+      "nameEn": "Стена Морской",
+      "type": "defense",
+      "subtype": "block",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 14,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Стена морской — защитная техника элемента water уровня 1. Редкость: uncommon. Щит: 20 HP на 1 мин.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 20,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 14,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668416,
+        "template": "defense_water",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000222",
+      "name": "Защита молниеносный",
+      "nameEn": "Защита Молниеносный",
+      "type": "defense",
+      "subtype": "block",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 16,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Защита молниеносный — защитная техника элемента lightning уровня 1. Редкость: rare. Щит: 25 HP на 1 мин.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 25,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 16,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668385,
+        "template": "defense_lightning",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000223",
+      "name": "Барьер забвенный",
+      "nameEn": "Барьер Забвенный",
+      "type": "defense",
+      "subtype": "block",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 22,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Барьер забвенный — защитная техника элемента void уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 22,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668384,
+        "template": "defense_void",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000225",
+      "name": "Огненный Броня",
+      "nameEn": "Огненный Броня",
+      "type": "defense",
+      "subtype": "block",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 15,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Огненный Броня — защитная техника элемента fire уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 15,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668382,
+        "template": "defense_fire",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000232",
+      "name": "Пожирающий Барьер",
+      "nameEn": "Пожирающий Барьер",
+      "type": "defense",
+      "subtype": "block",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 13,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Пожирающий Барьер — защитная техника элемента fire уровня 1. Редкость: rare. Щит: 25 HP на 1 мин.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 25,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 13,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668354,
+        "template": "defense_fire",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000233",
+      "name": "Ледяной Печать",
+      "nameEn": "Ледяной Печать",
+      "type": "defense",
+      "subtype": "block",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 15,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Ледяной Печать — защитная техника элемента water уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 15,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668353,
+        "template": "defense_water",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000236",
+      "name": "Броня молниеносный",
+      "nameEn": "Броня Молниеносный",
+      "type": "defense",
+      "subtype": "block",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 16,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Броня молниеносный — защитная техника элемента lightning уровня 1. Редкость: rare. Щит: 25 HP на 1 мин.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 25,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 16,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668350,
+        "template": "defense_lightning",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000246",
+      "name": "Щит раскалённый",
+      "nameEn": "Щит Раскалённый",
+      "type": "defense",
+      "subtype": "block",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 13,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Щит раскалённый — защитная техника элемента fire уровня 1. Редкость: rare. Щит: 25 HP на 1 мин.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 25,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 13,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668319,
+        "template": "defense_fire",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000247",
+      "name": "Штормовой Купол",
+      "nameEn": "Штормовой Купол",
+      "type": "defense",
+      "subtype": "block",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 15,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Штормовой Купол — защитная техника элемента water уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 15,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668318,
+        "template": "defense_water",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000256",
+      "name": "Штормовой Купол",
+      "nameEn": "Штормовой Купол",
+      "type": "defense",
+      "subtype": "block",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 11,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Штормовой Купол — защитная техника элемента air уровня 1. Редкость: legendary. Щит: 32 HP на 1 мин.",
+      "rarity": "legendary",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 32,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 11,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 32
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668288,
+        "template": "defense_air",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000257",
+      "name": "Искрящийся Стена",
+      "nameEn": "Искрящийся Стена",
+      "type": "defense",
+      "subtype": "block",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 18,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Искрящийся Стена — защитная техника элемента lightning уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 18,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668287,
+        "template": "defense_lightning",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000213",
+      "name": "Стена тяжёлый",
+      "nameEn": "Стена Тяжёлый",
+      "type": "defense",
+      "subtype": "reflect",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 16,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Стена тяжёлый — защитная техника элемента earth уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 16,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668415,
+        "template": "defense_earth",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000220",
+      "name": "Титанический Купол",
+      "nameEn": "Титанический Купол",
+      "type": "defense",
+      "subtype": "reflect",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 14,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Титанический Купол — защитная техника элемента earth уровня 1. Редкость: rare. Щит: 25 HP на 1 мин.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 25,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 14,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668387,
+        "template": "defense_earth",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000221",
+      "name": "Стена невидимый",
+      "nameEn": "Стена Невидимый",
+      "type": "defense",
+      "subtype": "reflect",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 13,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Стена невидимый — защитная техника элемента air уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 13,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668386,
+        "template": "defense_air",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000224",
+      "name": "Чистый Печать",
+      "nameEn": "Чистый Печать",
+      "type": "defense",
+      "subtype": "reflect",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 14,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Чистый Печать — защитная техника уровня 1. Редкость: uncommon. Щит: 20 HP на 1 мин.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 20,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 14,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668383,
+        "template": "defense_neutral",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000234",
+      "name": "Титанический Броня",
+      "nameEn": "Титанический Броня",
+      "type": "defense",
+      "subtype": "reflect",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 14,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Титанический Броня — защитная техника элемента earth уровня 1. Редкость: rare. Щит: 25 HP на 1 мин.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 25,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 14,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668352,
+        "template": "defense_earth",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000235",
+      "name": "Щит вихревой",
+      "nameEn": "Щит Вихревой",
+      "type": "defense",
+      "subtype": "reflect",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 13,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Щит вихревой — защитная техника элемента air уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 13,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668351,
+        "template": "defense_air",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000244",
+      "name": "Печать теневой",
+      "nameEn": "Печать Теневой",
+      "type": "defense",
+      "subtype": "reflect",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 20,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Печать теневой — защитная техника элемента void уровня 1. Редкость: rare. Щит: 25 HP на 1 мин.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 25,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 20,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668321,
+        "template": "defense_void",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000245",
+      "name": "Броня концентрированный",
+      "nameEn": "Броня Концентрированный",
+      "type": "defense",
+      "subtype": "reflect",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 15,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Броня концентрированный — защитная техника уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 15,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668320,
+        "template": "defense_neutral",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000248",
+      "name": "Неизбежный Стена",
+      "nameEn": "Неизбежный Стена",
+      "type": "defense",
+      "subtype": "reflect",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 14,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Неизбежный Стена — защитная техника элемента earth уровня 1. Редкость: rare. Щит: 25 HP на 1 мин.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 25,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 14,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668317,
+        "template": "defense_earth",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000258",
+      "name": "Защита бесплотный",
+      "nameEn": "Защита Бесплотный",
+      "type": "defense",
+      "subtype": "reflect",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 20,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Защита бесплотный — защитная техника элемента void уровня 1. Редкость: rare. Щит: 25 HP на 1 мин.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 25,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 20,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668286,
+        "template": "defense_void",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000259",
+      "name": "Барьер сфокусированный",
+      "nameEn": "Барьер Сфокусированный",
+      "type": "defense",
+      "subtype": "reflect",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 15,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Барьер сфокусированный — защитная техника уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 15,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668285,
+        "template": "defense_neutral",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000214",
+      "name": "Барьер штормовой",
+      "nameEn": "Барьер Штормовой",
+      "type": "defense",
+      "subtype": "absorb",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Барьер штормовой — защитная техника элемента air уровня 1. Редкость: uncommon. Щит: 20 HP на 1 мин.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 20,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668414,
+        "template": "defense_air",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000217",
+      "name": "Концентрированный Броня",
+      "nameEn": "Концентрированный Броня",
+      "type": "defense",
+      "subtype": "absorb",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 15,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Концентрированный Броня — защитная техника уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 15,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668411,
+        "template": "defense_neutral",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000227",
+      "name": "Щит тяжёлый",
+      "nameEn": "Щит Тяжёлый",
+      "type": "defense",
+      "subtype": "absorb",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 16,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Щит тяжёлый — защитная техника элемента earth уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 16,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668380,
+        "template": "defense_earth",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000228",
+      "name": "Стена штормовой",
+      "nameEn": "Стена Штормовой",
+      "type": "defense",
+      "subtype": "absorb",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Стена штормовой — защитная техника элемента air уровня 1. Редкость: uncommon. Щит: 20 HP на 1 мин.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 20,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668379,
+        "template": "defense_air",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000238",
+      "name": "Чистый Купол",
+      "nameEn": "Чистый Купол",
+      "type": "defense",
+      "subtype": "absorb",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 14,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Чистый Купол — защитная техника уровня 1. Редкость: uncommon. Щит: 20 HP на 1 мин.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 20,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 14,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668348,
+        "template": "defense_neutral",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000249",
+      "name": "Защита стремительный",
+      "nameEn": "Защита Стремительный",
+      "type": "defense",
+      "subtype": "absorb",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 13,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Защита стремительный — защитная техника элемента air уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 13,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668316,
+        "template": "defense_air",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000260",
+      "name": "Пылающий Стена",
+      "nameEn": "Пылающий Стена",
+      "type": "defense",
+      "subtype": "absorb",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 15,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Пылающий Стена — защитная техника элемента fire уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 15,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668263,
+        "template": "defense_fire",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000215",
+      "name": "Громовой Барьер",
+      "nameEn": "Громовой Барьер",
+      "type": "defense",
+      "subtype": "barrier",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 18,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Громовой Барьер — защитная техника элемента lightning уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 18,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668413,
+        "template": "defense_lightning",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000216",
+      "name": "Бесплотный Барьер",
+      "nameEn": "Бесплотный Барьер",
+      "type": "defense",
+      "subtype": "barrier",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 21,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Бесплотный Барьер — защитная техника элемента void уровня 1. Редкость: uncommon. Щит: 20 HP на 1 мин.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 20,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 21,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668412,
+        "template": "defense_void",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000226",
+      "name": "Холодный Щит",
+      "nameEn": "Холодный Щит",
+      "type": "defense",
+      "subtype": "barrier",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 14,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Холодный Щит — защитная техника элемента water уровня 1. Редкость: uncommon. Щит: 20 HP на 1 мин.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 20,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 14,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668381,
+        "template": "defense_water",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000229",
+      "name": "Громовой Печать",
+      "nameEn": "Громовой Печать",
+      "type": "defense",
+      "subtype": "barrier",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 18,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Громовой Печать — защитная техника элемента lightning уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 18,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668378,
+        "template": "defense_lightning",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000237",
+      "name": "Щит пустотный",
+      "nameEn": "Щит Пустотный",
+      "type": "defense",
+      "subtype": "barrier",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 22,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Щит пустотный — защитная техника элемента void уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 22,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668349,
+        "template": "defense_void",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000239",
+      "name": "Вулканический Стена",
+      "nameEn": "Вулканический Стена",
+      "type": "defense",
+      "subtype": "barrier",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 15,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Вулканический Стена — защитная техника элемента fire уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 15,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668347,
+        "template": "defense_fire",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000218",
+      "name": "Купол пылающий",
+      "nameEn": "Купол Пылающий",
+      "type": "defense",
+      "subtype": "dodge",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 14,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Купол пылающий — защитная техника элемента fire уровня 1. Редкость: uncommon. Щит: 20 HP на 1 мин.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 20,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 14,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668410,
+        "template": "defense_fire",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000230",
+      "name": "Стена бесплотный",
+      "nameEn": "Стена Бесплотный",
+      "type": "defense",
+      "subtype": "dodge",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 20,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Стена бесплотный — защитная техника элемента void уровня 1. Редкость: rare. Щит: 25 HP на 1 мин.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 25,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 20,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668356,
+        "template": "defense_void",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000240",
+      "name": "Ледяной Печать",
+      "nameEn": "Ледяной Печать",
+      "type": "defense",
+      "subtype": "dodge",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Ледяной Печать — защитная техника элемента water уровня 1. Редкость: legendary. Щит: 32 HP на 1 мин.",
+      "rarity": "legendary",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 32,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 32
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668325,
+        "template": "defense_water",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000243",
+      "name": "Громовой Барьер",
+      "nameEn": "Громовой Барьер",
+      "type": "defense",
+      "subtype": "dodge",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 18,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Громовой Барьер — защитная техника элемента lightning уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 18,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668322,
+        "template": "defense_lightning",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000250",
+      "name": "Статический Купол",
+      "nameEn": "Статический Купол",
+      "type": "defense",
+      "subtype": "dodge",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 18,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Статический Купол — защитная техника элемента lightning уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 18,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668294,
+        "template": "defense_lightning",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000253",
+      "name": "Печать вулканический",
+      "nameEn": "Печать Вулканический",
+      "type": "defense",
+      "subtype": "dodge",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 14,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Печать вулканический — защитная техника элемента fire уровня 1. Редкость: uncommon. Щит: 20 HP на 1 мин.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 20,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 14,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668291,
+        "template": "defense_fire",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000254",
+      "name": "Броня холодный",
+      "nameEn": "Броня Холодный",
+      "type": "defense",
+      "subtype": "dodge",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Броня холодный — защитная техника элемента water уровня 1. Редкость: legendary. Щит: 32 HP на 1 мин.",
+      "rarity": "legendary",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 32,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 32
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668290,
+        "template": "defense_water",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000261",
+      "name": "Барьер штормовой",
+      "nameEn": "Барьер Штормовой",
+      "type": "defense",
+      "subtype": "dodge",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 14,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Барьер штормовой — защитная техника элемента water уровня 1. Редкость: uncommon. Щит: 20 HP на 1 мин.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 20,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 14,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668262,
+        "template": "defense_water",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000219",
+      "name": "Барьер штормовой",
+      "nameEn": "Барьер Штормовой",
+      "type": "defense",
+      "subtype": "shield",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 15,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Барьер штормовой — защитная техника элемента water уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 15,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668409,
+        "template": "defense_water",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000231",
+      "name": "Базовый Броня",
+      "nameEn": "Базовый Броня",
+      "type": "defense",
+      "subtype": "shield",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 15,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Базовый Броня — защитная техника уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 15,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668355,
+        "template": "defense_neutral",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000241",
+      "name": "Стена тяжёлый",
+      "nameEn": "Стена Тяжёлый",
+      "type": "defense",
+      "subtype": "shield",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 16,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Стена тяжёлый — защитная техника элемента earth уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 16,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668324,
+        "template": "defense_earth",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000242",
+      "name": "Купол порывистый",
+      "nameEn": "Купол Порывистый",
+      "type": "defense",
+      "subtype": "shield",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 12,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Купол порывистый — защитная техника элемента air уровня 1. Редкость: rare. Щит: 25 HP на 1 мин.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 25,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668323,
+        "template": "defense_air",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000251",
+      "name": "Защита забвенный",
+      "nameEn": "Защита Забвенный",
+      "type": "defense",
+      "subtype": "shield",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 21,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Защита забвенный — защитная техника элемента void уровня 1. Редкость: uncommon. Щит: 20 HP на 1 мин.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 20,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 21,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668293,
+        "template": "defense_void",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000252",
+      "name": "Базовый Броня",
+      "nameEn": "Базовый Броня",
+      "type": "defense",
+      "subtype": "shield",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 15,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Базовый Броня — защитная техника уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 15,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668292,
+        "template": "defense_neutral",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "DF_000255",
+      "name": "Каменный Печать",
+      "nameEn": "Каменный Печать",
+      "type": "defense",
+      "subtype": "shield",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 16,
+      "baseRange": 0,
+      "baseDuration": 60,
+      "minCultivationLevel": 1,
+      "description": "Каменный Печать — защитная техника элемента earth уровня 1. Редкость: common. Щит: 16 HP на 1 мин.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 16,
+          "shieldDuration": 60
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 16,
+        "finalRange": 0,
+        "finalDuration": 60,
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 16
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1076668289,
+        "template": "defense_earth",
+        "generatedAt": "2026-03-01T11:19:59.617Z",
+        "generatorVersion": "2.1.0"
+      }
+    }
+  ]
+}
