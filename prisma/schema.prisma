@@ -190,10 +190,17 @@ model NPC {
   sessionId String
   session   GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   
+  // === Тип NPC ===
+  isPreset Boolean @default(false)  // Предустановленный (сюжетный) NPC
+  presetId String?                  // ID пресета (NPC_PRESET_XXXXX)
+  
   // === Базовые данные ===
   name  String
   title String?
   age   Int
+  
+  // === История (для preset NPC) ===
+  backstory String?  // Предыстория персонажа
   
   // === Культивация ===
   cultivationLevel    Int
@@ -209,19 +216,34 @@ model NPC {
   
   // === Личность ===
   personality String    // Черты характера (JSON)
-  motivation  String? // Мотивация
+  motivation  String?   // Мотивация
   
   // === Отношения ===
   disposition Float @default(0) // Отношение к ГГ (-100 до 100)
+  relations   String?           // JSON: отношения с другими сущностями
   
   // === Принадлежность ===
   sectId String?
   sect   Sect?   @relation(fields: [sectId], references: [id])
   role   String? // elder, disciple, candidate, etc.
   
+  // === Фракция (добавлено для системы отношений) ===
+  factionId String? // ID фракции
+  
+  // === Экипировка (JSON) ===
+  equipment String? // JSON: экипировка NPC
+  
+  // === Техники (JSON) ===
+  techniques String? // JSON: ID техник
+  
   // === Позиция ===
   locationId String?
   location   Location? @relation(fields: [locationId], references: [id])
+  
+  // === Индексы ===
+  @@index([isPreset])
+  @@index([presetId])
+  @@unique([sessionId, presetId])  // presetId уникален в рамках сессии
 }
 
 // ==================== LOCATION ====================

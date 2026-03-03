@@ -105,6 +105,10 @@ class GameBridgeImpl {
   
   setSessionId(id: string): void {
     this.sessionId = id;
+    // Сохраняем в sessionStorage для персистентности
+    if (typeof window !== 'undefined') {
+      sessionStorage.setItem('sessionId', id);
+    }
   }
   
   getSessionId(): string | null {
@@ -178,10 +182,47 @@ class GameBridgeImpl {
     }
   }
   
-  async getNPCs(locationId: string): Promise<NPC[]> {
-    // TODO: Implement NPC API endpoint
-    // For now return empty array
-    return [];
+  async getNPCs(locationId?: string): Promise<NPC[]> {
+    try {
+      // Получаем sessionId из sessionStorage
+      const sessionId = this.sessionId || (typeof window !== 'undefined' ? sessionStorage.getItem('sessionId') : null);
+      
+      if (!sessionId) {
+        console.warn('[GameBridge] No sessionId for NPC fetch');
+        return [];
+      }
+      
+      // Формируем URL с параметрами
+      const params = new URLSearchParams({
+        action: 'list',
+        sessionId,
+      });
+      
+      if (locationId) {
+        params.append('locationId', locationId);
+      }
+      
+      const response = await fetch(`/api/npc/spawn?${params.toString()}`);
+      const data = await response.json();
+      
+      if (data.success && data.npcs) {
+        return data.npcs.map((npc: any) => ({
+          id: npc.id,
+          name: npc.name,
+          type: npc.isPreset ? 'preset' : 'generated',
+          title: npc.title,
+          level: npc.cultivation?.level || 0,
+          subLevel: npc.cultivation?.subLevel || 0,
+          speciesId: npc.speciesId,
+          roleId: npc.roleId,
+        }));
+      }
+      
+      return [];
+    } catch (error) {
+      console.error('[GameBridge] Failed to fetch NPCs:', error);
+      return [];
+    }
   }
   
   async sendAction(action: string): Promise<string> {

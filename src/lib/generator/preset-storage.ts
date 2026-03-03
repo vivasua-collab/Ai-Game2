@@ -1092,6 +1092,201 @@ export class PresetStorageService {
     return { deletedFiles, deletedObjects };
   }
   
+  // ==================== PRESET NPC ====================
+  
+  /**
+   * Кэш preset NPC
+   */
+  private presetNpcCache = new Map<string, unknown>();
+  
+  /**
+   * Сохранить preset NPC
+   */
+  async savePresetNPCs(
+    npcs: Array<{ id: string; category?: string; [key: string]: unknown }>,
+    mode: 'replace' | 'append' = 'replace'
+  ): Promise<{ saved: number; total: number }> {
+    // Группируем по категории
+    const grouped = this.groupPresetNPCs(npcs);
+    
+    let saved = 0;
+    
+    // Создаём директорию для preset NPC
+    const presetDir = path.join(DATA_DIR, 'npcs', 'preset');
+    await fs.mkdir(presetDir, { recursive: true });
+    
+    for (const [category, categoryNpcs] of Object.entries(grouped)) {
+      const filePath = path.join(presetDir, `${category}.json`);
+      let allNpcs = categoryNpcs;
+      
+      if (mode === 'append') {
+        try {
+          const content = await fs.readFile(filePath, 'utf-8');
+          const existing = JSON.parse(content);
+          const existingIds = new Set(categoryNpcs.map(n => n.id));
+          const filteredExisting = (existing.npcs || []).filter(
+            (n: { id: string }) => !existingIds.has(n.id)
+          );
+          allNpcs = [...filteredExisting, ...categoryNpcs];
+        } catch {
+          // Файл не существует
+        }
+      }
+      
+      await fs.writeFile(filePath, JSON.stringify({
+        version: '2.0',
+        category,
+        count: allNpcs.length,
+        npcs: allNpcs,
+      }, null, 2), 'utf-8');
+      
+      saved += categoryNpcs.length;
+      
+      // Кэшируем
+      for (const npc of allNpcs) {
+        this.presetNpcCache.set((npc as { id: string }).id, npc);
+      }
+    }
+    
+    await this.updateManifest();
+    
+    return { saved, total: this.presetNpcCache.size };
+  }
+  
+  /**
+   * Группировка preset NPC по категории
+   */
+  private groupPresetNPCs(npcs: Array<{ id: string; category?: string; [key: string]: unknown }>): Record<string, Array<{ id: string; category?: string; [key: string]: unknown }>> {
+    const grouped: Record<string, Array<{ id: string; category?: string; [key: string]: unknown }>> = {};
+    
+    for (const npc of npcs) {
+      const category = npc.category || 'misc';
+      if (!grouped[category]) grouped[category] = [];
+      grouped[category].push(npc);
+    }
+    
+    return grouped;
+  }
+  
+  /**
+   * Загрузить все preset NPC
+   */
+  async loadPresetNPCs(): Promise<Array<{ id: string; [key: string]: unknown }>> {
+    if (this.presetNpcCache.size > 0) {
+      return Array.from(this.presetNpcCache.values()) as Array<{ id: string; [key: string]: unknown }>;
+    }
+    
+    const npcs: Array<{ id: string; [key: string]: unknown }> = [];
+    
+    try {
+      const presetDir = path.join(DATA_DIR, 'npcs', 'preset');
+      const entries = await fs.readdir(presetDir, { withFileTypes: true });
+      
+      for (const entry of entries) {
+        if (entry.isFile() && entry.name.endsWith('.json')) {
+          const filePath = path.join(presetDir, entry.name);
+          const content = await fs.readFile(filePath, 'utf-8');
+          const data = JSON.parse(content);
+          
+          if (data.npcs && Array.isArray(data.npcs)) {
+            npcs.push(...data.npcs);
+            for (const npc of data.npcs) {
+              this.presetNpcCache.set(npc.id, npc);
+            }
+          }
+        }
+      }
+    } catch {
+      // Игнорируем ошибки
+    }
+    
+    return npcs;
+  }
+  
+  /**
+   * Загрузить preset NPC по категории
+   */
+  async loadPresetNPCsByCategory(category: string): Promise<Array<{ id: string; [key: string]: unknown }>> {
+    const filePath = path.join(DATA_DIR, 'npcs', 'preset', `${category}.json`);
+    
+    try {
+      const content = await fs.readFile(filePath, 'utf-8');
+      const data = JSON.parse(content);
+      return data.npcs || [];
+    } catch {
+      return [];
+    }
+  }
+  
+  /**
+   * Получить preset NPC по ID
+   */
+  async getPresetNPCById(id: string): Promise<{ id: string; [key: string]: unknown } | undefined> {
+    if (this.presetNpcCache.has(id)) {
+      return this.presetNpcCache.get(id) as { id: string; [key: string]: unknown };
+    }
+    
+    await this.loadPresetNPCs();
+    return this.presetNpcCache.get(id) as { id: string; [key: string]: unknown } | undefined;
+  }
+  
+  /**
+   * Очистить preset NPC (все или по категории)
+   */
+  async clearPresetNPCs(category?: string): Promise<{ deletedFiles: number; deletedObjects: number }> {
+    let deletedFiles = 0;
+    let deletedObjects = 0;
+    
+    const presetDir = path.join(DATA_DIR, 'npcs', 'preset');
+    
+    if (category) {
+      const filePath = path.join(presetDir, `${category}.json`);
+      try {
+        const content = await fs.readFile(filePath, 'utf-8');
+        const data = JSON.parse(content);
+        deletedObjects = data.npcs?.length || 0;
+        await fs.rm(filePath);
+        deletedFiles = 1;
+      } catch {
+        // Файл не существует
+      }
+    } else {
+      const result = await this.deleteDirectoryRecursive(presetDir);
+      deletedFiles = result.files;
+      deletedObjects = result.objects;
+      
+      // Пересоздаём пустую директорию
+      await fs.mkdir(presetDir, { recursive: true });
+    }
+    
+    // Очищаем кэш
+    this.presetNpcCache.clear();
+    
+    return { deletedFiles, deletedObjects };
+  }
+  
+  /**
+   * Получить список категорий preset NPC
+   */
+  async getPresetNPCCategories(): Promise<string[]> {
+    const categories: string[] = [];
+    
+    try {
+      const presetDir = path.join(DATA_DIR, 'npcs', 'preset');
+      const entries = await fs.readdir(presetDir, { withFileTypes: true });
+      
+      for (const entry of entries) {
+        if (entry.isFile() && entry.name.endsWith('.json')) {
+          categories.push(entry.name.replace('.json', ''));
+        }
+      }
+    } catch {
+      // Игнорируем ошибки
+    }
+    
+    return categories;
+  }
+  
   // ==================== АНАЛИЗ ====================
   
   async analyzeStorage(): Promise<StorageStats> {

@@ -22,6 +22,7 @@ import {
   REQUEST_SIZE_LIMITS 
 } from "@/lib/request-size-validator";
 import { TruthSystem } from "@/lib/game/truth-system";
+import { spawnStoryNPCs } from "@/lib/game/preset-npc-spawner";
 
 // Инициализируем LLM
 let llmInitialized = false;
@@ -476,6 +477,21 @@ export async function POST(request: NextRequest) {
     const truthSystem = TruthSystem.getInstance();
     await truthSystem.loadSession(dbResult.session.id);
     await logDebug("SYSTEM", "Session loaded into TruthSystem", { sessionId: dbResult.session.id });
+
+    // === СПАВН СЮЖЕТНЫХ NPC В ТЕСТОВУЮ ЛОКАЦИЮ ===
+    // Спавним 5 тестовых сюжетных NPC в стартовую локацию
+    try {
+      const storyNPCs = await spawnStoryNPCs(dbResult.session.id, dbResult.location.id);
+      await logInfo("GAME", "Story NPCs spawned", { 
+        count: storyNPCs.length,
+        locationId: dbResult.location.id 
+      });
+    } catch (spawnError) {
+      // Не критично, если спавн NPC не удался
+      await logWarn("GAME", "Failed to spawn story NPCs", { 
+        error: spawnError instanceof Error ? spawnError.message : String(spawnError) 
+      });
+    }
 
     await timer.end("INFO", { sessionId: dbResult.session.id, variant, success: true });
     await logInfo("GAME", "Game started successfully", {

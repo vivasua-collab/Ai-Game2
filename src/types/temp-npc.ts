@@ -510,6 +510,7 @@ export function generateTempItemId(): string {
 export function tempNPCToClient(npc: TempNPC): TempNPCClaintView {
   return {
     id: npc.id,
+    isPreset: false,
     name: npc.name,
     speciesId: npc.speciesId,
     roleId: npc.roleId,
@@ -539,6 +540,7 @@ export function tempNPCToClient(npc: TempNPC): TempNPCClaintView {
  */
 export interface TempNPCClaintView {
   id: string;
+  isPreset?: false;  // Временный NPC
   name: string;
   speciesId: string;
   roleId: string;

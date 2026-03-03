@@ -589,3 +589,172 @@ Stage Summary:
 - API: инициализация локации, удаление NPC, очистка
 - Loot: духовные камни, экипировка, расходники
 - XP: 10*level + subLevel*2 + coreQuality/20
+
+---
+Task ID: checkpoint32
+Agent: Main Agent
+Task: Проектирование системы NPC, фракций и отношений
+
+Work Log:
+- Проанализирована текущая структура проекта:
+  - NPC Model в Prisma (id, sessionId, cultivation, disposition, sectId)
+  - Sect Model (id, name, powerLevel, resources)
+  - SessionNPCManager (TempNPC, память сессии)
+  - npc-generator.ts (процедурная генерация)
+- Создана документация docs/npc-session-integration.md:
+  - Два типа NPC: Preset NPC (БД) и Generated NPC (память)
+  - Жизненный цикл NPC (спавн, активность, удаление)
+  - API для спавна NPC (/api/npc/spawn)
+  - Алгоритм выбора типа NPC
+  - Конвертация TempNPC → Preset NPC
+- Создана документация docs/faction-system.md:
+  - Иерархия: Государство → Фракция → Секта → Культиватор
+  - Модели Nation, Faction, Sect (расширение)
+  - Одеяние секты (Sect Attire) — элемент экипировки
+  - Примеры политической карты мира
+  - Примеры одеяний (Небесный Меч, Кровавая Луна)
+- Создана документация docs/relations-system.md:
+  - 4 уровня отношений (личный, сектовый, фракционный, государственный)
+  - Формула расчёта итогового disposition
+  - Типы взаимодействий (мирные/враждебные)
+  - Влияние действий на отношения
+  - Пороги агрессии NPC
+  - Система репутации персонажа
+  - API endpoints для отношений и взаимодействий
+- Создан checkpoint32.md с итогами проработки
+
+Stage Summary:
+- Results: Полная архитектура NPC, фракций и отношений спроектирована
+- Docs: npc-session-integration.md, faction-system.md, relations-system.md
+- Key decisions:
+  - Два типа NPC: Preset (NPC_PRESET_XXXXX) и Generated (TEMP_XXXXXX)
+  - Иерархия принадлежности: Nation → Faction → Sect → Character
+  - 4 уровня отношений с весами: личный (100%), сектовый (50%), фракционный (30%), государственный (20%)
+  - Одеяние секты: визуальная идентификация + социальные эффекты
+- Next steps: Миграция Prisma, пресеты государств/фракций, API для спавна NPC
+
+---
+Task ID: preset-npc-integration
+Agent: Main Agent
+Task: Интеграция Preset NPC в движок игры
+
+Work Log:
+- Расширена Prisma схема NPC модели:
+  - Добавлены поля: isPreset, presetId, backstory, relations, factionId, equipment, techniques
+  - Добавлены индексы для isPreset и presetId
+  - Выполнен db:push для миграции схемы
+- Обновлён presetNPCToDBData() для новых полей схемы
+- Созданы 5 тестовых сюжетных NPC (presets/npcs/preset/story.json):
+  1. Мастер Фэн - Старейшина секты (ур.7, легендарный, наставник)
+  2. Ли Мэй - Внутренняя ученица (ур.3, uncommon, потенциальная союзница)
+  3. Торговец Ван - Странствующий торговец (ур.2, rare, информатор)
+  4. Тень - Наёмник без лица (ур.5, legendary, антагонист)
+  5. Старый Чжан - Отшельник (ур.8, legendary, квестодатель)
+- Создан сервис preset-npc-spawner.ts:
+  - spawnPresetNPCs() - спавн NPC по категории или ID
+  - spawnStoryNPCs() - спавн всех сюжетных NPC
+  - Проверка на дубликаты в сессии
+  - Создание NPC в БД с новыми полями
+- Обновлён /api/npc/spawn:
+  - Добавлен action: spawn_story_npcs
+  - Добавлен action: spawn_all_presets
+  - Поддержка category и presetIds в запросе
+- Интегрирован спавн NPC в game start:
+  - После создания сессии спавнятся 5 сюжетных NPC в стартовую локацию
+  - Обработка ошибок (не критично для старта игры)
+
+Stage Summary:
+- Results: Система Preset NPC полностью интегрирована
+- Files:
+  - prisma/schema.prisma (расширена NPC модель)
+  - src/types/preset-npc.ts (обновлён presetNPCToDBData)
+  - presets/npcs/preset/story.json (5 сюжетных NPC)
+  - src/lib/game/preset-npc-spawner.ts (новый сервис)
+  - src/app/api/npc/spawn/route.ts (новые actions)
+  - src/app/api/game/start/route.ts (интеграция спавна)
+- NPCs: 5 сюжетных персонажей с backstory, личностью, техниками, экипировкой
+- Integration: Автоматический спавн NPC при старте игры
+
+---
+Task ID: npc-spawn-debug
+Agent: Main Agent
+Task: Исправление спавна preset NPC при старте игры
+
+Work Log:
+- Проанализированы логи dev сервера - обнаружена ошибка Foreign Key Constraint
+- Найдена причина: preset NPC содержат sectId="sect_heavenly_sword", но такой секты нет в БД
+- Исправлен presetNPCToDBData() - sectId теперь всегда null (секты создаются с случайным ID)
+- Добавлена вкладка "⭐ Сюжетные" в GeneratedObjectsViewer для просмотра preset NPC
+- Добавлена загрузка preset NPC из /api/npc/spawn?action=presets
+- Обновлён loadAll() для параллельной загрузки preset NPC
+
+Stage Summary:
+- Results: Исправлена ошибка Foreign Key constraint при спавне preset NPC
+- Key Fix: presetNPCToDBData теперь не устанавливает sectId как FK
+- Files:
+  - src/types/preset-npc.ts (исправлен sectId: null)
+  - src/components/settings/GeneratedObjectsViewer.tsx (добавлена вкладка preset NPC)
+- NPC Spawn Flow: spawnStoryNPCs() → presetStorage.loadPresetNPCs() → db.nPC.create()
+
+---
+Task ID: npc-viewer-data-fix
+Agent: Main Agent
+Task: Исправление отображения данных NPC в NPC Viewer
+
+Work Log:
+- Выявлена проблема: в NPC Viewer все NPC отображались с уровнем 0 и характеристиками 0
+- Причина 1: API /api/npc/spawn?action=presets возвращал только id, name, category
+- Причина 2: NPCViewerDialog создавал placeholder объекты с нулями вместо реальных данных
+- Исправлен API (route.ts):
+  - action=presets теперь возвращает ПОЛНЫЕ данные через presetNPCToClient()
+  - Включает stats, cultivation, personality, techniques, equipment
+- Исправлен NPCViewerDialog.tsx:
+  - Изменён тип presetNpcs на GeneratedNPC[] вместо минимального интерфейса
+  - Добавлена конвертация preset данных в GeneratedNPC формат
+  - Удалено создание placeholder объектов с нулями
+  - npcs теперь использует presetNpcs напрямую
+
+Stage Summary:
+- Results: NPC Viewer теперь отображает корректные данные preset NPC
+- Key Fix: API возвращает полные данные, клиент их использует напрямую
+- Files:
+  - src/app/api/npc/spawn/route.ts (возврат полных preset данных)
+  - src/components/game/NPCViewerDialog.tsx (использование полных данных)
+- Expected Data:
+  - Мастер Фэн: ур.7, strength:45, agility:52, intelligence:68
+  - Ли Мэй: ур.3, strength:22, agility:28, intelligence:25
+  - Торговец Ван: ур.2, strength:12, agility:18, intelligence:42
+  - Тень: ур.5, strength:38, agility:55, intelligence:35
+  - Старый Чжан: ур.8, strength:25, agility:30, intelligence:85
+
+---
+Task ID: npc-regenerate-20
+Agent: Main Agent
+Task: Регенерация preset NPC - 20 человек, случайные 5 при старте
+
+Work Log:
+- Удалён файл presets/npcs/preset/story.json (5 старых NPC)
+- Создан скрипт scripts/generate-preset-npcs.ts для генерации NPC
+- Сгенерировано 20 NPC (все люди):
+  - Уровни: 1-6 с подуровнями (0-9)
+  - Роли: 20 разных (от outer_disciple до warrior)
+  - Характеристики: по формулам Lore
+  - Техники, экипировка, ресурсы
+- Обновлён preset-npc-spawner.ts:
+  - Добавлен параметр randomize для случайного выбора
+  - Fisher-Yates shuffle для перемешивания
+  - spawnStoryNPCs теперь выбирает случайных 5 из 20
+- Очищена БД: удалено 92 старых NPC
+
+Stage Summary:
+- Results: 20 preset NPC готовы, при старте игры спавнится случайные 5
+- Files:
+  - presets/npcs/preset/story.json (20 NPC)
+  - scripts/generate-preset-npcs.ts (новый скрипт генерации)
+  - src/lib/game/preset-npc-spawner.ts (randomize + limit=5)
+- NPC примеры:
+  - Ли Мэй (Внешний ученик): Ур.6.6, Str:42, Qi:212757/279739
+  - Чжан Фэн (Внутренний ученик): Ур.6.7, Str:61, Qi:40335/64265
+  - Ян Чжи (Алхимик): Ур.6.6, Int:67, Qi:181772/198105
+  - Вэй Лун (Воин): Ур.6.2, Str:75, Qi:21796/38446
+- Спавн: limit=5, randomize=true

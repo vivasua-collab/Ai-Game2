@@ -275,10 +275,13 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
   // NPC
   const [npcs, setNpcs] = useState<GeneratedNPC[]>([]);
   
+  // Preset NPC (сюжетные персонажи)
+  const [presetNpcs, setPresetNpcs] = useState<Array<{id: string; name: string; category?: string}>>([]);
+  
   // Общее
   const [loading, setLoading] = useState(false);
-  const [loaded, setLoaded] = useState<'none' | 'techniques' | 'formations' | 'items' | 'npcs' | 'both'>('none');
-  const [activeTab, setActiveTab] = useState<'techniques' | 'formations' | 'items' | 'npcs'>('techniques');
+  const [loaded, setLoaded] = useState<'none' | 'techniques' | 'formations' | 'items' | 'npcs' | 'presets' | 'both'>('none');
+  const [activeTab, setActiveTab] = useState<'techniques' | 'formations' | 'items' | 'npcs' | 'presets'>('techniques');
   
   // Фильтры техник
   const [techSearch, setTechSearch] = useState('');
@@ -441,25 +444,44 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
     }
   };
 
+  const loadPresetNPCs = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/npc/spawn?action=presets');
+      const data = await res.json();
+      if (data.success) {
+        setPresetNpcs(data.presets || []);
+        setLoaded(prev => prev === 'techniques' || prev === 'formations' || prev === 'items' || prev === 'both' ? 'both' : 'presets');
+      }
+    } catch (error) {
+      console.error('Failed to load preset NPCs:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const loadAll = async () => {
     setLoading(true);
     try {
-      const [techRes, formRes, itemsRes, npcRes] = await Promise.all([
+      const [techRes, formRes, itemsRes, npcRes, presetRes] = await Promise.all([
         fetch('/api/generator/techniques?action=list'),
         fetch('/api/generator/formations?action=list'),
         fetch('/api/generator/items?action=list'),
         fetch('/api/generator/npc?action=list'),
+        fetch('/api/npc/spawn?action=presets'),
       ]);
       
       const techData = await techRes.json();
       const formData = await formRes.json();
       const itemsData = await itemsRes.json();
       const npcData = await npcRes.json();
+      const presetData = await presetRes.json();
       
       if (techData.success) setTechniques(techData.techniques);
       if (formData.success) setFormations(formData.formations);
       if (itemsData.success) setItems(itemsData.items);
       if (npcData.success) setNpcs(npcData.npcs);
+      if (presetData.success) setPresetNpcs(presetData.presets || []);
       
       setLoaded('both');
     } catch (error) {
@@ -478,7 +500,7 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
           </DialogTitle>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'techniques' | 'formations' | 'items' | 'npcs')} className="w-full">
+        <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'techniques' | 'formations' | 'items' | 'npcs' | 'presets')} className="w-full">
           <div className="flex items-center justify-between mb-3">
             <TabsList className="bg-slate-800">
               <TabsTrigger value="techniques" className="text-xs">
@@ -489,6 +511,9 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
               </TabsTrigger>
               <TabsTrigger value="npcs" className="text-xs">
                 👥 NPC ({loaded !== 'none' ? npcs.length : '-'})
+              </TabsTrigger>
+              <TabsTrigger value="presets" className="text-xs">
+                ⭐ Сюжетные ({loaded !== 'none' ? presetNpcs.length : '-'})
               </TabsTrigger>
               <TabsTrigger value="formations" className="text-xs">
                 🛡️ Формации ({loaded !== 'none' ? formations.length : '-'})
@@ -1011,6 +1036,78 @@ export function GeneratedObjectsViewer({ open, onOpenChange }: GeneratedObjectsV
               loading={loading}
               onLoad={loadNPCs}
             />
+          </TabsContent>
+
+          {/* ==================== PRESET NPC (Сюжетные) ==================== */}
+          <TabsContent value="presets" className="mt-0">
+            <div className="flex gap-4 h-[60vh]">
+              {/* Список */}
+              <div className="w-1/2 flex flex-col min-h-0">
+                <div className="mb-3 flex-shrink-0">
+                  <div className="flex justify-between items-center mb-2">
+                    <h3 className="text-sm font-medium text-amber-400">Сюжетные NPC (шаблоны)</h3>
+                    <Badge variant="outline" className="border-amber-500 text-amber-400">
+                      {presetNpcs.length} персонажей
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-slate-400">
+                    Это предустановленные сюжетные персонажи из presets/npcs/preset/story.json
+                  </p>
+                </div>
+
+                {presetNpcs.length > 0 ? (
+                  <ScrollArea className="flex-1 min-h-0 border border-slate-700 rounded-lg">
+                    <div className="divide-y divide-slate-700">
+                      {presetNpcs.map((npc) => (
+                        <div
+                          key={npc.id}
+                          className="p-3 hover:bg-slate-800/50 transition-colors"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <User className="w-4 h-4 text-amber-400" />
+                              <span className="font-medium text-white">{npc.name}</span>
+                            </div>
+                            {npc.category && (
+                              <Badge variant="outline" className="text-xs border-purple-500 text-purple-400">
+                                {npc.category}
+                              </Badge>
+                            )}
+                          </div>
+                          <div className="text-xs text-slate-500 mt-1">
+                            ID: {npc.id}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                ) : (
+                  <div className="flex-1 flex flex-col items-center justify-center border border-slate-700 rounded-lg">
+                    <Users className="w-16 h-16 text-slate-600 mb-4" />
+                    <p className="text-slate-400 mb-2 text-center">
+                      Нажмите "Загрузить всё" для отображения данных
+                    </p>
+                    <p className="text-xs text-slate-500 text-center">
+                      Сюжетные NPC находятся в presets/npcs/preset/
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* Информация */}
+              <div className="w-1/2 bg-slate-800/30 rounded-lg p-4 min-h-0 overflow-hidden flex flex-col">
+                <div className="h-full flex items-center justify-center text-slate-400">
+                  <div className="text-center">
+                    <Sparkles className="w-12 h-12 mx-auto mb-3 opacity-30" />
+                    <p className="mb-2">Сюжетные NPC</p>
+                    <p className="text-xs text-slate-500 max-w-xs">
+                      Это уникальные персонажи с предустановленной историей, характеристиками и квестами.
+                      Они создаются автоматически при старте новой игры.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </TabsContent>
 
           {/* ==================== ФОРМАЦИИ ==================== */}

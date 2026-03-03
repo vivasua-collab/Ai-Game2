@@ -176,8 +176,10 @@ interface NPCViewerDialogProps {
 }
 
 export function NPCViewerDialog({ open, onOpenChange }: NPCViewerDialogProps) {
-  // NPC Data
-  const [npcs, setNpcs] = useState<GeneratedNPC[]>([]);
+  // NPC Data - три источника
+  const [generatedNpcs, setGeneratedNpcs] = useState<GeneratedNPC[]>([]);  // Файловые NPC из генератора
+  const [presetNpcs, setPresetNpcs] = useState<GeneratedNPC[]>([]);  // Preset шаблоны с полными данными
+  const [sessionNpcs, setSessionNpcs] = useState<GeneratedNPC[]>([]);  // NPC в текущей сессии
   const [selectedNPC, setSelectedNPC] = useState<GeneratedNPC | null>(null);
   const [loading, setLoading] = useState(false);
   
@@ -191,30 +193,115 @@ export function NPCViewerDialog({ open, onOpenChange }: NPCViewerDialogProps) {
   
   // Active tab
   const [activeTab, setActiveTab] = useState<'stats' | 'equipment' | 'techniques'>('stats');
+  
+  // Source tab
+  const [sourceTab, setSourceTab] = useState<'presets' | 'generated' | 'session'>('presets');
 
-  // Load NPCs on open
+  // Load all data on open
   useEffect(() => {
-    if (open && npcs.length === 0) {
-      loadNPCs();
+    if (open) {
+      loadAllNPCs();
     }
   }, [open]);
 
-  const loadNPCs = async () => {
+  const loadAllNPCs = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/generator/npc?action=list');
-      const data = await res.json();
-      if (data.success) {
-        // Deduplicate NPCs by ID
-        const uniqueNPCs = data.npcs.reduce((acc: GeneratedNPC[], npc: GeneratedNPC) => {
-          if (!acc.find(n => n.id === npc.id)) {
-            acc.push(npc);
-          }
+      // Загружаем все три источника параллельно
+      const [genRes, presetRes, sessionRes] = await Promise.all([
+        fetch('/api/generator/npc?action=list'),
+        fetch('/api/npc/spawn?action=presets'),
+        fetch('/api/npc/spawn?action=list').catch(() => ({ json: () => ({ success: false }) })),
+      ]);
+      
+      const genData = await genRes.json();
+      const presetData = await presetRes.json();
+      const sessionData = await sessionRes.json();
+      
+      // Generated NPCs
+      if (genData.success) {
+        const uniqueNPCs = genData.npcs.reduce((acc: GeneratedNPC[], npc: GeneratedNPC) => {
+          if (!acc.find(n => n.id === npc.id)) acc.push(npc);
           return acc;
         }, []);
-        setNpcs(uniqueNPCs);
-        if (uniqueNPCs.length > 0 && !selectedNPC) {
-          setSelectedNPC(uniqueNPCs[0]);
+        setGeneratedNpcs(uniqueNPCs);
+      }
+      
+      // Preset NPCs (шаблоны) - теперь с полными данными
+      if (presetData.success && presetData.presets) {
+        // Конвертируем формат preset NPC в GeneratedNPC формат
+        const presetConverted: GeneratedNPC[] = presetData.presets.map((p: any) => ({
+          id: p.id,
+          name: p.name,
+          title: p.title,
+          age: p.age || 25,
+          gender: p.gender || 'male',
+          speciesId: p.speciesId || 'human',
+          roleId: p.roleId || 'story',
+          stats: {
+            strength: p.stats?.strength || 0,
+            agility: p.stats?.agility || 0,
+            intelligence: p.stats?.intelligence || 0,
+            vitality: p.stats?.vitality || p.stats?.conductivity || 0,
+          },
+          cultivation: {
+            level: p.cultivation?.level || 0,
+            subLevel: p.cultivation?.subLevel || 0,
+            coreCapacity: p.cultivation?.coreCapacity || 0,
+            currentQi: p.cultivation?.currentQi || 0,
+            coreQuality: 1,
+            baseVolume: p.cultivation?.baseVolume,
+            qiDensity: p.cultivation?.qiDensity,
+            meridianConductivity: p.cultivation?.meridianConductivity,
+          },
+          personality: p.personality ? (typeof p.personality === 'string' ? JSON.parse(p.personality) : p.personality) : {
+            traits: [],
+            motivation: '',
+            dominantEmotion: 'neutral',
+            disposition: 0,
+          },
+          techniques: p.techniques ? (typeof p.techniques === 'string' ? JSON.parse(p.techniques) : p.techniques) : [],
+          equipment: p.equipment ? (typeof p.equipment === 'string' ? JSON.parse(p.equipment) : p.equipment) : {},
+          inventory: [],
+          resources: { spiritStones: 0, contributionPoints: 0 },
+        }));
+        setPresetNpcs(presetConverted);
+      }
+      
+      // Session NPCs
+      if (sessionData.success && sessionData.npcs) {
+        // Конвертируем формат session NPCs в GeneratedNPC формат
+        const sessionConverted: GeneratedNPC[] = sessionData.npcs.map((n: any) => ({
+          id: n.id,
+          name: n.name,
+          title: n.title,
+          age: n.age || 25,
+          gender: n.gender || 'male',
+          speciesId: n.speciesId || 'human',
+          roleId: n.roleId || n.role || 'unknown',
+          stats: n.stats || { strength: 10, agility: 10, intelligence: 10, vitality: 10 },
+          cultivation: n.cultivation || {
+            level: n.cultivationLevel || 1,
+            subLevel: n.cultivationSubLevel || 0,
+            coreCapacity: n.coreCapacity || 1000,
+            currentQi: n.currentQi || 0,
+            coreQuality: 1,
+          },
+          personality: n.personality ? (typeof n.personality === 'string' ? JSON.parse(n.personality) : n.personality) : {
+            traits: [],
+            motivation: n.motivation || '',
+            dominantEmotion: 'neutral',
+            disposition: n.disposition || 0,
+          },
+          techniques: n.techniques ? (typeof n.techniques === 'string' ? JSON.parse(n.techniques) : n.techniques) : [],
+          equipment: n.equipment ? (typeof n.equipment === 'string' ? JSON.parse(n.equipment) : n.equipment) : {},
+          inventory: [],
+          resources: n.resources || { spiritStones: 0, contributionPoints: 0 },
+        }));
+        setSessionNpcs(sessionConverted);
+        // Автовыбор первого NPC из сессии
+        if (sessionConverted.length > 0 && !selectedNPC) {
+          setSelectedNPC(sessionConverted[0]);
         }
       }
     } catch (error) {
@@ -223,6 +310,13 @@ export function NPCViewerDialog({ open, onOpenChange }: NPCViewerDialogProps) {
       setLoading(false);
     }
   };
+  
+  // Объединённый список NPC в зависимости от вкладки
+  const npcs = sourceTab === 'presets'
+    ? presetNpcs  // Уже сконвертированы с полными данными
+    : sourceTab === 'generated'
+    ? generatedNpcs
+    : sessionNpcs;
 
   // Get species type by ID
   const getSpeciesType = (speciesId: string): string => {
@@ -300,9 +394,34 @@ export function NPCViewerDialog({ open, onOpenChange }: NPCViewerDialogProps) {
               <div className="flex items-center gap-2 mb-2">
                 <Users className="w-5 h-5 text-amber-400" />
                 <h2 className="text-lg font-bold text-amber-400">NPC</h2>
-                <Badge variant="outline" className="border-slate-600 text-slate-300">
-                  {npcs.length}
-                </Badge>
+              </div>
+              
+              {/* Source Tabs */}
+              <div className="flex gap-1 mb-2">
+                <Button
+                  size="sm"
+                  variant={sourceTab === 'presets' ? 'default' : 'outline'}
+                  className={`text-xs h-7 px-2 ${sourceTab === 'presets' ? 'bg-amber-600' : 'border-slate-600 text-slate-300'}`}
+                  onClick={() => setSourceTab('presets')}
+                >
+                  ⭐ Сюжетные ({presetNpcs.length})
+                </Button>
+                <Button
+                  size="sm"
+                  variant={sourceTab === 'session' ? 'default' : 'outline'}
+                  className={`text-xs h-7 px-2 ${sourceTab === 'session' ? 'bg-amber-600' : 'border-slate-600 text-slate-300'}`}
+                  onClick={() => setSourceTab('session')}
+                >
+                  🎮 В игре ({sessionNpcs.length})
+                </Button>
+                <Button
+                  size="sm"
+                  variant={sourceTab === 'generated' ? 'default' : 'outline'}
+                  className={`text-xs h-7 px-2 ${sourceTab === 'generated' ? 'bg-amber-600' : 'border-slate-600 text-slate-300'}`}
+                  onClick={() => setSourceTab('generated')}
+                >
+                  📁 Ген. ({generatedNpcs.length})
+                </Button>
               </div>
               
               {/* Search */}
@@ -347,7 +466,27 @@ export function NPCViewerDialog({ open, onOpenChange }: NPCViewerDialogProps) {
             </div>
             
             {/* NPC List */}
-            <ScrollArea className="flex-1">
+            <ScrollArea className="flex-1 h-[calc(85vh-200px)]">
+              <style jsx global>{`
+                .npc-scroll-area [data-radix-scroll-area-viewport] {
+                  scrollbar-width: thin;
+                  scrollbar-color: #475569 #1e293b;
+                }
+                .npc-scroll-area [data-radix-scroll-area-viewport]::-webkit-scrollbar {
+                  width: 8px;
+                }
+                .npc-scroll-area [data-radix-scroll-area-viewport]::-webkit-scrollbar-track {
+                  background: #1e293b;
+                  border-radius: 4px;
+                }
+                .npc-scroll-area [data-radix-scroll-area-viewport]::-webkit-scrollbar-thumb {
+                  background: #475569;
+                  border-radius: 4px;
+                }
+                .npc-scroll-area [data-radix-scroll-area-viewport]::-webkit-scrollbar-thumb:hover {
+                  background: #64748b;
+                }
+              `}</style>
               {loading ? (
                 <div className="p-4 text-center">
                   <Loader2 className="w-6 h-6 animate-spin mx-auto text-amber-400" />
@@ -357,7 +496,7 @@ export function NPCViewerDialog({ open, onOpenChange }: NPCViewerDialogProps) {
                   NPC не найдены
                 </div>
               ) : (
-                <div className="divide-y divide-slate-700">
+                <div className="divide-y divide-slate-700 npc-scroll-area">
                   {filteredNPCs.map((npc) => (
                     <div
                       key={npc.id}
