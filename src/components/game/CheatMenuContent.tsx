@@ -132,6 +132,35 @@ export function CheatMenuContent() {
   // Qi Stone command
   const handleAddQiStone = () => executeCheat('add_qi_stone', { quality: qiStoneQuality, quantity: qiStoneQuantity });
 
+  // Test Equipment command
+  const handleAddTestEquipment = async () => {
+    setIsLoading(true);
+    setResult(null);
+    
+    try {
+      const response = await fetch('/api/inventory/add-test-equipment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          characterId: character.id,
+          clearExisting: true,
+        }),
+      });
+      
+      const data = await response.json();
+      if (data.success) {
+        await loadInventory();
+        setResult(`✅ ${data.message}\nПредметы: ${data.items?.map((i: { name: string }) => i.name).join(', ')}`);
+      } else {
+        setResult(`❌ Ошибка: ${data.error}`);
+      }
+    } catch (error) {
+      setResult(`❌ Ошибка: ${error instanceof Error ? error.message : 'Unknown'}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="space-y-4">
       {/* Current status */}
@@ -555,6 +584,27 @@ export function CheatMenuContent() {
                 className="w-full bg-gradient-to-r from-red-600 via-purple-600 to-blue-600 hover:opacity-90 h-9"
               >
                 ✨ АКТИВИРОВАТЬ GOD MODE
+              </Button>
+            </div>
+
+            {/* Test Equipment */}
+            <div className="bg-slate-800/50 rounded-lg p-4 space-y-3 sm:col-span-2">
+              <h4 className="text-emerald-400 font-medium">⚔️ Тестовая экипировка</h4>
+              <p className="text-xs text-slate-400">
+                Добавить полный набор экипировки для тестирования системы инвентаря
+              </p>
+              <div className="text-xs text-slate-500 space-y-1">
+                <div>• Оружие (меч, щит)</div>
+                <div>• Броня (мантия, капюшон, сапоги)</div>
+                <div>• Аксессуары (кольцо, амулет)</div>
+                <div>• Расходники и материалы</div>
+              </div>
+              <Button
+                onClick={handleAddTestEquipment}
+                disabled={isLoading}
+                className="w-full bg-emerald-600 hover:bg-emerald-700 h-9"
+              >
+                ⚔️ Добавить тестовую экипировку
               </Button>
             </div>
           </div>

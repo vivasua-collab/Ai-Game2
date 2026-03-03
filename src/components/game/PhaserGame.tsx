@@ -12,7 +12,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { useGameSessionId, useGameActions, useGameCharacter, useGameTechniques, useGameMessages, useGameTime } from '@/stores/game.store';
+import { useGameSessionId, useGameActions, useGameCharacter, useGameTechniques, useGameMessages, useGameTime, useGameInventory } from '@/stores/game.store';
 import type { Message, CharacterTechnique, Character } from '@/types/game';
 import { getCombatSlotsCount } from '@/types/game';
 import { calculateTotalConductivity } from '@/lib/game/conductivity-system';
@@ -160,6 +160,34 @@ let globalCharacter: Character | null = null;
 let globalTechniques: CharacterTechnique[] = [];
 let globalMessages: Message[] = [];
 let globalWorldTime: { year: number; month: number; day: number; hour: number; minute: number } | null = null;
+
+// === Inventory Bridge ===
+// Интерфейс для элемента инвентаря (синхронизирован с game.ts)
+interface PhaserInventoryItem {
+  id: string;
+  name: string;
+  nameId?: string;
+  description?: string;
+  type: "material" | "artifact" | "consumable" | "equipment" | "spirit_stone";
+  rarity?: "common" | "uncommon" | "rare" | "legendary";
+  icon?: string;
+  quantity: number;
+  isConsumable: boolean;
+  useAction?: string;
+  equipmentSlot?: string;
+  isEquipped?: boolean;
+  effects?: Record<string, number>;
+  weight?: number;
+  value?: number;
+  stackable?: boolean;
+  maxStack?: number;
+  sizeWidth?: number;
+  sizeHeight?: number;
+  posX?: number;
+  posY?: number;
+}
+
+let globalInventory: PhaserInventoryItem[] = [];
 
 // === Scene State ===
 let globalTargets: TrainingTarget[] = [];
@@ -1672,7 +1700,7 @@ const InventorySceneConfig = {
     gridBg.setStrokeStyle(1, 0x3a3a5a);
     
     // === СЕТКА ИНВЕНТАРЯ ===
-    const inventoryItems: { x: number; y: number; cell: Phaser.GameObjects.Rectangle }[] = [];
+    const gridCells: { x: number; y: number; cell: Phaser.GameObjects.Rectangle }[] = [];
     
     for (let row = 0; row < INVENTORY_ROWS; row++) {
       for (let col = 0; col < INVENTORY_COLS; col++) {
@@ -1697,21 +1725,13 @@ const InventorySceneConfig = {
           cell.setFillStyle(0x1a1a2e, 0.9);
         });
         
-        inventoryItems.push({ x: col, y: row, cell });
+        gridCells.push({ x: col, y: row, cell });
       }
     }
     
-    // === ДЕМО ПРЕДМЕТЫ ===
-    const demoItems = [
-      { name: 'Духовный меч', icon: '🗡️', rarity: 'rare', x: 0, y: 0, slot: 'right_hand' },
-      { name: 'Мантия', icon: '👘', rarity: 'uncommon', x: 1, y: 0, slot: 'torso' },
-      { name: 'Таблетка Ци', icon: '💊', rarity: 'common', x: 2, y: 0, qty: 12 },
-      { name: 'Эликсир', icon: '🧴', rarity: 'uncommon', x: 3, y: 0, qty: 5 },
-      { name: 'Камень духа', icon: '💎', rarity: 'rare', x: 0, y: 1, qty: 25 },
-      { name: 'Свиток', icon: '📜', rarity: 'epic', x: 1, y: 1 },
-      { name: 'Шлем', icon: '🧢', rarity: 'uncommon', x: 2, y: 1, slot: 'head' },
-      { name: 'Сапоги', icon: '👢', rarity: 'common', x: 3, y: 1, slot: 'feet' },
-    ];
+    // === ПРЕДМЕТЫ ИЗ ГЛОБАЛЬНОГО ИНВЕНТАРЯ ===
+    // Используем globalInventory который синхронизирован с React store
+    const items = globalInventory || [];
     
     // Маппинг типов предметов на иконки
     const typeToIcon: Record<string, string> = {
@@ -1728,6 +1748,10 @@ const InventorySceneConfig = {
       food: '🍖',
       book: '📖',
       key: '🔑',
+      consumable: '🧪',
+      artifact: '⚡',
+      equipment: '🛡️',
+      spirit_stone: '💎',
       default: '📦',
     };
     
@@ -1741,10 +1765,23 @@ const InventorySceneConfig = {
       common: 0x6b7280,    // gray
     };
     
-    // Отображаем демо предметы
-    demoItems.forEach((item, index) => {
-      const col = index % INVENTORY_COLS;
-      const row = Math.floor(index / INVENTORY_COLS);
+    // Разделяем предметы на инвентарь и экипировку
+    const backpackItems = items.filter(item => !item.isEquipped);
+    const equippedItems = items.filter(item => item.isEquipped);
+    
+    // Отображаем экипированные предметы на слоты
+    equippedItems.forEach(item => {
+      const slotId = item.equipmentSlot;
+      if (!slotId) return;
+      
+      // Находим слот по ID и обновляем его
+      // (слоты уже созданы выше)
+    });
+    
+    // Отображаем предметы в рюкзаке
+    backpackItems.forEach((item, index) => {
+      const col = item.posX ?? (index % INVENTORY_COLS);
+      const row = item.posY ?? Math.floor(index / INVENTORY_COLS);
       
       if (row >= INVENTORY_ROWS) return; // Не выходим за границы сетки
       
@@ -1752,12 +1789,12 @@ const InventorySceneConfig = {
       const cellY = rightPanelY + row * INVENTORY_CELL_SIZE + INVENTORY_CELL_SIZE / 2;
       
       // Рамка редкости
-      const rarityColor = rarityToColor[item.rarity] || rarityToColor.common;
+      const rarityColor = rarityToColor[item.rarity || 'common'] || rarityToColor.common;
       const rarityBorder = scene.add.rectangle(cellX, cellY, INVENTORY_CELL_SIZE - 4, INVENTORY_CELL_SIZE - 4, 0x1a1a2e, 1);
       rarityBorder.setStrokeStyle(2, rarityColor);
       
       // Иконка - приоритет: item.icon > typeToIcon[type] > default
-      const icon = (item as { icon?: string }).icon || typeToIcon[item.type] || typeToIcon.default;
+      const icon = item.icon || typeToIcon[item.type] || typeToIcon.default;
       const iconText = scene.add.text(cellX, cellY - 3, icon, { fontSize: '20px' }).setOrigin(0.5);
       iconText.setInteractive({ useHandCursor: true });
       
@@ -1765,8 +1802,8 @@ const InventorySceneConfig = {
       iconText.setData('itemData', item);
       
       // Количество
-      if (item.qty) {
-        scene.add.text(cellX + 10, cellY + 10, String(item.qty), {
+      if (item.quantity && item.quantity > 1) {
+        scene.add.text(cellX + 10, cellY + 10, String(item.quantity), {
           fontSize: '10px',
           color: '#ffffff',
           fontFamily: 'Arial',
@@ -1775,12 +1812,14 @@ const InventorySceneConfig = {
         }).setOrigin(0.5);
       }
       
-      // Tooltip
+      // Tooltip с полным описанием
       iconText.on('pointerover', () => {
-        const tooltipText = item.slot 
-          ? `${item.name}\nСлот: ${item.slot}` 
-          : item.name;
-        const tooltip = scene.add.text(cellX, cellY - 40, tooltipText, {
+        const lines = [item.name];
+        if (item.equipmentSlot) lines.push(`Слот: ${item.equipmentSlot}`);
+        if (item.description) lines.push(item.description);
+        if (item.quantity && item.quantity > 1) lines.push(`Количество: ${item.quantity}`);
+        
+        const tooltip = scene.add.text(cellX, cellY - 50, lines.join('\n'), {
           fontSize: '11px',
           color: '#ffffff',
           backgroundColor: '#000000ee',
@@ -1793,17 +1832,78 @@ const InventorySceneConfig = {
         const tooltip = iconText.getData('tooltip') as Phaser.GameObjects.Text;
         if (tooltip) tooltip.destroy();
       });
+      
+      // Клик - использовать/экипировать через Event Bus
+      iconText.on('pointerdown', async () => {
+        try {
+          let result;
+          
+          if (item.isConsumable) {
+            // Использовать расходник через шину
+            result = await eventBusClient.useItem(item.id, 1);
+          } else if (item.equipmentSlot) {
+            // Экипировать через шину
+            result = await eventBusClient.equipItem(item.id, item.equipmentSlot);
+          }
+          
+          if (result?.success) {
+            // Показываем эффект успеха
+            const successText = scene.add.text(cellX, cellY - 30, '✓', {
+              fontSize: '16px',
+              color: '#22c55e',
+              fontFamily: 'Arial',
+            }).setOrigin(0.5).setDepth(200);
+            
+            scene.tweens.add({
+              targets: successText,
+              y: cellY - 50,
+              alpha: 0,
+              duration: 800,
+              onComplete: () => successText.destroy(),
+            });
+            
+            // Отправляем window event для React (чтобы обновить store)
+            window.dispatchEvent(new CustomEvent('inventory:changed', { 
+              detail: { action: item.isConsumable ? 'use' : 'equip', itemId: item.id }
+            }));
+          } else if (result?.error) {
+            // Показываем ошибку
+            const errorText = scene.add.text(cellX, cellY - 30, result.error, {
+              fontSize: '11px',
+              color: '#ef4444',
+              fontFamily: 'Arial',
+              backgroundColor: '#000000aa',
+              padding: { x: 4, y: 2 },
+            }).setOrigin(0.5).setDepth(200);
+            
+            scene.tweens.add({
+              targets: errorText,
+              y: cellY - 50,
+              alpha: 0,
+              duration: 1500,
+              onComplete: () => errorText.destroy(),
+            });
+          }
+        } catch (error) {
+          console.error('[Inventory] Event Bus error:', error);
+        }
+      });
     });
+    
+    // Вычисляем статистику инвентаря
+    const totalWeight = items.reduce((sum, item) => sum + (item.weight || 0) * item.quantity, 0);
+    const usedSlots = backpackItems.length;
+    const totalSlots = INVENTORY_COLS * INVENTORY_ROWS;
     
     // === СТАТУС БАР (вес) ===
     const statusY = panelY + panelHeight - 25;
-    scene.add.text(panelX + 20, statusY, '⚖️ Вес: 12.5 / 50.0 кг', {
+    scene.add.text(panelX + 20, statusY, `⚖️ Вес: ${totalWeight.toFixed(1)} / 50.0 кг`, {
       fontSize: '11px',
       color: '#9ca3af',
       fontFamily: 'Arial',
     });
     
-    scene.add.text(panelX + 200, statusY, '📦 Слоты: 8 / 49', {
+    scene.add.text(panelX + 200, statusY, `📦 Слоты: ${usedSlots} / ${totalSlots}`, {
       fontSize: '11px',
       color: '#9ca3af',
       fontFamily: 'Arial',
@@ -2913,6 +3013,7 @@ export function PhaserGame() {
   const techniques = useGameTechniques();
   const messages = useGameMessages();
   const worldTime = useGameTime();
+  const inventory = useGameInventory();
   const { loadState, sendMessage, loadInventory } = useGameActions();
 
   // === React State Bridge ===
@@ -2956,6 +3057,34 @@ export function PhaserGame() {
   
   useEffect(() => { globalMessages = messages || []; }, [messages]);
   useEffect(() => { globalWorldTime = worldTime; }, [worldTime]);
+  
+  // === Inventory Sync ===
+  // Синхронизация инвентаря между React и Phaser
+  useEffect(() => {
+    if (inventory && inventory.length > 0) {
+      globalInventory = inventory as PhaserInventoryItem[];
+      console.log('[Inventory] Synced to Phaser:', inventory.length, 'items');
+    } else {
+      globalInventory = [];
+    }
+  }, [inventory]);
+  
+  // === Слушатель событий инвентаря от Phaser (через Event Bus) ===
+  // Phaser отправляет window event 'inventory:changed' после успешного действия
+  useEffect(() => {
+    const handleInventoryChanged = (event: CustomEvent) => {
+      const { action, itemId } = event.detail || {};
+      console.log('[Inventory] Phaser event received:', action, itemId);
+      // Перезагружаем инвентарь из БД
+      loadInventory();
+    };
+    
+    window.addEventListener('inventory:changed', handleInventoryChanged as EventListener);
+    
+    return () => {
+      window.removeEventListener('inventory:changed', handleInventoryChanged as EventListener);
+    };
+  }, [loadInventory]);
   
   // Qi Aura обновляется внутри Phaser update loop, а не через React useEffect
   // Это предотвращает ре-рендеры React при каждом изменении Qi

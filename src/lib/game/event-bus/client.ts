@@ -168,6 +168,64 @@ export class EventBusClient {
     return this.sendEvent('technique:charge_cancel', {});
   }
 
+  // ==================== ИНВЕНТАРЬ ====================
+
+  /**
+   * Использовать предмет
+   */
+  async useItem(itemId: string, quantity: number = 1): Promise<EventResponse> {
+    return this.sendEvent('inventory:use_item', { itemId, quantity });
+  }
+
+  /**
+   * Экипировать предмет
+   */
+  async equipItem(itemId: string, slotId: string): Promise<EventResponse> {
+    return this.sendEvent('inventory:equip_item', { itemId, slotId });
+  }
+
+  /**
+   * Снять предмет
+   */
+  async unequipItem(slotId: string): Promise<EventResponse> {
+    return this.sendEvent('inventory:unequip_item', { slotId });
+  }
+
+  /**
+   * Переместить предмет в инвентаре
+   */
+  async moveItem(itemId: string, fromPos: { x: number; y: number }, toPos: { x: number; y: number }): Promise<EventResponse> {
+    return this.sendEvent('inventory:move_item', { itemId, fromPos, toPos });
+  }
+
+  /**
+   * Выбросить предмет
+   */
+  async dropItem(itemId: string, quantity: number, position?: { x: number; y: number }): Promise<EventResponse> {
+    return this.sendEvent('inventory:drop_item', { itemId, quantity, position });
+  }
+
+  /**
+   * Разделить стак
+   */
+  async splitStack(itemId: string, quantity: number, targetPos: { x: number; y: number }): Promise<EventResponse> {
+    return this.sendEvent('inventory:split_stack', { itemId, quantity, targetPos });
+  }
+
+  /**
+   * Объединить стаки
+   */
+  async mergeStacks(sourceItemId: string, targetItemId: string): Promise<EventResponse> {
+    return this.sendEvent('inventory:merge_stacks', { sourceItemId, targetItemId });
+  }
+
+  /**
+   * Подобрать предмет
+   */
+  async pickupItem(worldItemId: string): Promise<EventResponse> {
+    return this.sendEvent('item:pickup', { worldItemId });
+  }
+
   /**
    * Очистить состояние клиента
    */

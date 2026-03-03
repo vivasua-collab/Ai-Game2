@@ -211,11 +211,69 @@ export interface InventoryItem {
     y: number;
   };
   
+  // Сортировка
+  sortOrder?: number;  // Порядок при автоматической сортировке
+  
   // Метаданные
   isEquipped: boolean;
   isBound: boolean;     // Привязан к персонажу
   isQuestItem: boolean;
 }
+
+// ==================== СОРТИРОВКА ====================
+
+/** Тип сортировки инвентаря */
+export type InventorySortType = 
+  | 'name'        // По имени (А-Я)
+  | 'rarity'      // По редкости (мифический → обычный)
+  | 'type'        // По типу (оружие → броня → расходники → материалы)
+  | 'weight'      // По весу (тяжёлые → лёгкие)
+  | 'value'       // По стоимости (дорогие → дешёвые)
+  | 'quantity'    // По количеству (много → мало)
+  | 'recent';     // По недавнему использованию
+
+/** Направление сортировки */
+export type SortDirection = 'asc' | 'desc';
+
+/** Настройки сортировки */
+export interface InventorySortSettings {
+  type: InventorySortType;
+  direction: SortDirection;
+  autoSort: boolean;  // Автоматически сортировать при изменении
+}
+
+/** Конфигурация типов сортировки */
+export const SORT_CONFIGS: Record<InventorySortType, { name: string; icon: string }> = {
+  name: { name: 'По имени', icon: '🔤' },
+  rarity: { name: 'По редкости', icon: '⭐' },
+  type: { name: 'По типу', icon: '📦' },
+  weight: { name: 'По весу', icon: '⚖️' },
+  value: { name: 'По стоимости', icon: '💰' },
+  quantity: { name: 'По количеству', icon: '📊' },
+  recent: { name: 'По использованию', icon: '🕐' },
+};
+
+/** Приоритет редкости для сортировки */
+export const RARITY_SORT_PRIORITY: Record<ItemRarity, number> = {
+  mythic: 6,
+  legendary: 5,
+  epic: 4,
+  rare: 3,
+  uncommon: 2,
+  common: 1,
+};
+
+/** Приоритет категории для сортировки */
+export const CATEGORY_SORT_PRIORITY: Record<ItemCategory, number> = {
+  weapon: 1,
+  armor: 2,
+  accessory: 3,
+  consumable: 4,
+  material: 5,
+  technique: 6,
+  quest: 7,
+  misc: 8,
+};
 
 // ==================== ЭКИПИРОВКА ====================
 

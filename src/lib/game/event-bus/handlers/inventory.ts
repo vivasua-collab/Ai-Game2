@@ -44,6 +44,15 @@ export async function handleInventoryEvent(
     case 'inventory:drop_item':
       return handleDrop(event, context, session);
 
+    case 'inventory:move_item':
+      return handleMoveItem(event, context, session);
+
+    case 'inventory:split_stack':
+      return handleSplitStack(event, context, session);
+
+    case 'inventory:merge_stacks':
+      return handleMergeStacks(event, context, session);
+
     default:
       return {
         success: false,
@@ -367,6 +376,281 @@ async function handleDrop(
       success: false,
       eventId: context.eventId,
       error: error instanceof Error ? error.message : 'Failed to drop item',
+      commands: [],
+    };
+  }
+}
+
+// ==================== НОВЫЕ ОБРАБОТЧИКИ ====================
+
+async function handleMoveItem(
+  event: GameEvent,
+  context: EventContext,
+  session: NonNullable<ReturnType<typeof TruthSystem.getInstance>['getSessionState']>
+): Promise<EventResult> {
+  const typedEvent = event as GameEvent & {
+    itemId: string;
+    fromPos: { x: number; y: number };
+    toPos: { x: number; y: number };
+  };
+
+  const { itemId, toPos } = typedEvent;
+  context.log('info', `Moving item: ${itemId} to (${toPos.x}, ${toPos.y})`);
+
+  try {
+    const { db } = await import('@/lib/db');
+    
+    // Обновляем позицию предмета в БД
+    await db.inventoryItem.update({
+      where: { id: itemId },
+      data: {
+        posX: toPos.x,
+        posY: toPos.y,
+      },
+    });
+
+    // Обновляем инвентарь в TruthSystem
+    const { inventoryService } = await import('@/services/inventory.service');
+    const items = await inventoryService.getCharacterItems(context.characterId);
+    const truthSystem = TruthSystem.getInstance();
+    truthSystem.updateInventory(context.sessionId, items.map(item => ({
+      id: item.id,
+      name: item.name,
+      type: item.type,
+      quantity: item.quantity,
+      rarity: item.rarity,
+      isConsumable: item.isConsumable,
+      effects: item.effects ? JSON.parse(item.effects) : null,
+    })));
+
+    return {
+      success: true,
+      eventId: context.eventId,
+      commands: [],
+      changes: {
+        inventory: {
+          moved: { itemId, toPos },
+        },
+      },
+      message: `Предмет перемещён`,
+    };
+  } catch (error) {
+    context.log('error', `Move error: ${error}`);
+    return {
+      success: false,
+      eventId: context.eventId,
+      error: error instanceof Error ? error.message : 'Failed to move item',
+      commands: [],
+    };
+  }
+}
+
+async function handleSplitStack(
+  event: GameEvent,
+  context: EventContext,
+  session: NonNullable<ReturnType<typeof TruthSystem.getInstance>['getSessionState']>
+): Promise<EventResult> {
+  const typedEvent = event as GameEvent & {
+    itemId: string;
+    quantity: number;
+    targetPos: { x: number; y: number };
+  };
+
+  const { itemId, quantity, targetPos } = typedEvent;
+  context.log('info', `Splitting stack: ${itemId} x${quantity}`);
+
+  try {
+    const { db } = await import('@/lib/db');
+    
+    // Получаем исходный предмет
+    const sourceItem = await db.inventoryItem.findUnique({
+      where: { id: itemId },
+    });
+
+    if (!sourceItem || !sourceItem.stackable) {
+      return {
+        success: false,
+        eventId: context.eventId,
+        error: 'Предмет нельзя разделить',
+        commands: [],
+      };
+    }
+
+    if (quantity >= sourceItem.quantity) {
+      return {
+        success: false,
+        eventId: context.eventId,
+        error: 'Нельзя отделить всё количество',
+        commands: [],
+      };
+    }
+
+    // Создаём новый предмет
+    const newItem = await db.inventoryItem.create({
+      data: {
+        characterId: sourceItem.characterId,
+        name: sourceItem.name,
+        nameId: sourceItem.nameId,
+        type: sourceItem.type,
+        category: sourceItem.category,
+        rarity: sourceItem.rarity,
+        icon: sourceItem.icon,
+        quantity: quantity,
+        maxStack: sourceItem.maxStack,
+        stackable: true,
+        weight: sourceItem.weight,
+        posX: targetPos.x,
+        posY: targetPos.y,
+        isConsumable: sourceItem.isConsumable,
+        effects: sourceItem.effects,
+      },
+    });
+
+    // Уменьшаем количество в исходном
+    await db.inventoryItem.update({
+      where: { id: itemId },
+      data: { quantity: sourceItem.quantity - quantity },
+    });
+
+    // Обновляем инвентарь в TruthSystem
+    const { inventoryService } = await import('@/services/inventory.service');
+    const items = await inventoryService.getCharacterItems(context.characterId);
+    const truthSystem = TruthSystem.getInstance();
+    truthSystem.updateInventory(context.sessionId, items.map(item => ({
+      id: item.id,
+      name: item.name,
+      type: item.type,
+      quantity: item.quantity,
+      rarity: item.rarity,
+      isConsumable: item.isConsumable,
+      effects: item.effects ? JSON.parse(item.effects) : null,
+    })));
+
+    return {
+      success: true,
+      eventId: context.eventId,
+      commands: [],
+      changes: {
+        inventory: {
+          split: { sourceItemId: itemId, newItemId: newItem.id, quantity },
+        },
+      },
+      message: `Стак разделён: ${quantity} предметов`,
+    };
+  } catch (error) {
+    context.log('error', `Split error: ${error}`);
+    return {
+      success: false,
+      eventId: context.eventId,
+      error: error instanceof Error ? error.message : 'Failed to split stack',
+      commands: [],
+    };
+  }
+}
+
+async function handleMergeStacks(
+  event: GameEvent,
+  context: EventContext,
+  session: NonNullable<ReturnType<typeof TruthSystem.getInstance>['getSessionState']>
+): Promise<EventResult> {
+  const typedEvent = event as GameEvent & {
+    sourceItemId: string;
+    targetItemId: string;
+  };
+
+  const { sourceItemId, targetItemId } = typedEvent;
+  context.log('info', `Merging stacks: ${sourceItemId} → ${targetItemId}`);
+
+  try {
+    const { db } = await import('@/lib/db');
+    
+    // Получаем оба предмета
+    const sourceItem = await db.inventoryItem.findUnique({
+      where: { id: sourceItemId },
+    });
+    const targetItem = await db.inventoryItem.findUnique({
+      where: { id: targetItemId },
+    });
+
+    if (!sourceItem || !targetItem) {
+      return {
+        success: false,
+        eventId: context.eventId,
+        error: 'Предметы не найдены',
+        commands: [],
+      };
+    }
+
+    if (!sourceItem.stackable || sourceItem.nameId !== targetItem.nameId) {
+      return {
+        success: false,
+        eventId: context.eventId,
+        error: 'Предметы нельзя объединить',
+        commands: [],
+      };
+    }
+
+    const maxAdd = targetItem.maxStack - targetItem.quantity;
+    const toAdd = Math.min(sourceItem.quantity, maxAdd);
+
+    if (toAdd <= 0) {
+      return {
+        success: false,
+        eventId: context.eventId,
+        error: 'Целевой стек полон',
+        commands: [],
+      };
+    }
+
+    // Обновляем целевой
+    await db.inventoryItem.update({
+      where: { id: targetItemId },
+      data: { quantity: targetItem.quantity + toAdd },
+    });
+
+    // Обновляем или удаляем источник
+    if (toAdd >= sourceItem.quantity) {
+      await db.inventoryItem.delete({
+        where: { id: sourceItemId },
+      });
+    } else {
+      await db.inventoryItem.update({
+        where: { id: sourceItemId },
+        data: { quantity: sourceItem.quantity - toAdd },
+      });
+    }
+
+    // Обновляем инвентарь в TruthSystem
+    const { inventoryService } = await import('@/services/inventory.service');
+    const items = await inventoryService.getCharacterItems(context.characterId);
+    const truthSystem = TruthSystem.getInstance();
+    truthSystem.updateInventory(context.sessionId, items.map(item => ({
+      id: item.id,
+      name: item.name,
+      type: item.type,
+      quantity: item.quantity,
+      rarity: item.rarity,
+      isConsumable: item.isConsumable,
+      effects: item.effects ? JSON.parse(item.effects) : null,
+    })));
+
+    return {
+      success: true,
+      eventId: context.eventId,
+      commands: [],
+      changes: {
+        inventory: {
+          merged: { sourceItemId, targetItemId, quantity: toAdd },
+        },
+      },
+      message: `Стаки объединены: +${toAdd}`,
+    };
+  } catch (error) {
+    context.log('error', `Merge error: ${error}`);
+    return {
+      success: false,
+      eventId: context.eventId,
+      error: error instanceof Error ? error.message : 'Failed to merge stacks',
       commands: [],
     };
   }
