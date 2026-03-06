@@ -78,6 +78,9 @@ export interface ProcessTimeTickOptions {
   applyDissipation?: boolean;     // Применять ли рассеивание Ци (по умолчанию true)
 }
 
+// Максимальное количество тиков за один запрос (anti-abuse: 1 день = 1440 минут)
+const MAX_TICKS_PER_REQUEST = 1440;
+
 // ==================== ОСНОВНЫЕ ФУНКЦИИ ====================
 
 /**
@@ -100,6 +103,48 @@ export async function processTimeTickEffects(
     applyPassiveQi = true,
     applyDissipation = true,
   } = options;
+  
+  // === РАННЯЯ ВАЛИДАЦИЯ ТИКОВ ===
+  // Защита от NaN, Infinity, отрицательных и нулевых значений
+  if (typeof ticks !== 'number' || !Number.isFinite(ticks)) {
+    console.error(`[time-tick] Invalid ticks: ${ticks} (NaN/Infinity not allowed)`);
+    return {
+      success: false,
+      ticksAdvanced: 0,
+      dayChanged: false,
+      qiEffects: { passiveGain: 0, dissipation: 0, finalQi: 0 },
+    };
+  }
+  
+  if (!Number.isInteger(ticks)) {
+    console.error(`[time-tick] Non-integer ticks: ${ticks}`);
+    return {
+      success: false,
+      ticksAdvanced: 0,
+      dayChanged: false,
+      qiEffects: { passiveGain: 0, dissipation: 0, finalQi: 0 },
+    };
+  }
+  
+  if (ticks <= 0) {
+    console.error(`[time-tick] Non-positive ticks: ${ticks}`);
+    return {
+      success: false,
+      ticksAdvanced: 0,
+      dayChanged: false,
+      qiEffects: { passiveGain: 0, dissipation: 0, finalQi: 0 },
+    };
+  }
+  
+  if (ticks > MAX_TICKS_PER_REQUEST) {
+    console.error(`[time-tick] Excessive ticks: ${ticks} > ${MAX_TICKS_PER_REQUEST}`);
+    return {
+      success: false,
+      ticksAdvanced: 0,
+      dayChanged: false,
+      qiEffects: { passiveGain: 0, dissipation: 0, finalQi: 0 },
+    };
+  }
   
   // === ИСПОЛЬЗУЕМ TRUTHSYSTEM (ПАМЯТЬ ПЕРВИЧНА!) ===
   const truthSystem = TruthSystem.getInstance();

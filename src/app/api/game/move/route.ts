@@ -23,18 +23,59 @@ interface MoveRequest {
   tilesMoved: number;  // Number of tiles moved
 }
 
+// Максимальное количество тайлов за один запрос (anti-abuse)
+const MAX_TILES_PER_MOVE = 1000;
+
+/**
+ * Строгая валидация запроса движения
+ * Защита от NaN, Infinity, отрицательных и нецелых значений
+ */
+function validateMoveRequest(body: unknown): { valid: true; data: MoveRequest } | { valid: false; error: string } {
+  if (!body || typeof body !== 'object') {
+    return { valid: false, error: 'Invalid request body' };
+  }
+  
+  const { sessionId, tilesMoved } = body as Partial<MoveRequest>;
+  
+  // sessionId - обязательная строка
+  if (typeof sessionId !== 'string' || sessionId.trim() === '') {
+    return { valid: false, error: 'sessionId must be a non-empty string' };
+  }
+  
+  // tilesMoved - число
+  if (typeof tilesMoved !== 'number') {
+    return { valid: false, error: 'tilesMoved must be a number' };
+  }
+  if (!Number.isFinite(tilesMoved)) {
+    return { valid: false, error: 'tilesMoved must be a finite number (NaN/Infinity not allowed)' };
+  }
+  if (!Number.isInteger(tilesMoved)) {
+    return { valid: false, error: 'tilesMoved must be an integer' };
+  }
+  if (tilesMoved < 0) {
+    return { valid: false, error: 'tilesMoved must be non-negative' };
+  }
+  if (tilesMoved > MAX_TILES_PER_MOVE) {
+    return { valid: false, error: `tilesMoved must not exceed ${MAX_TILES_PER_MOVE}` };
+  }
+  
+  return { valid: true, data: { sessionId: sessionId.trim(), tilesMoved } };
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json() as MoveRequest;
-    const { sessionId, tilesMoved } = body;
-
-    // Validate
-    if (!sessionId || typeof tilesMoved !== 'number') {
+    const body = await request.json();
+    
+    // Строгая валидация входных данных
+    const validation = validateMoveRequest(body);
+    if (!validation.valid) {
       return NextResponse.json(
-        { success: false, error: 'Missing sessionId or tilesMoved' },
+        { success: false, error: validation.error },
         { status: 400 }
       );
     }
+    
+    const { sessionId, tilesMoved } = validation.data;
 
     // === ПРОВЕРКА TRUTHSYSTEM (ПАМЯТЬ ПЕРВИЧНА!) ===
     const truthSystem = TruthSystem.getInstance();

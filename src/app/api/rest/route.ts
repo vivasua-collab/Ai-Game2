@@ -28,42 +28,71 @@ interface RestRequest {
 
 // Минимальное время сна (4 часа = 240 минут)
 const MIN_SLEEP_DURATION = 240;
+// Минимальное время лёгкого отдыха (1 минута)
+const MIN_REST_DURATION = 1;
 // Максимальное время отдыха (8 часов = 480 минут)
 const MAX_REST_DURATION = 480;
 
+/**
+ * Строгая валидация запроса отдыха
+ * Защита от NaN, Infinity, отрицательных и нецелых значений
+ */
+function validateRestRequest(body: unknown): { valid: true; data: RestRequest } | { valid: false; error: string } {
+  if (!body || typeof body !== 'object') {
+    return { valid: false, error: 'Invalid request body' };
+  }
+  
+  const { characterId, durationMinutes, restType } = body as Partial<RestRequest>;
+  
+  // characterId - обязательная строка
+  if (typeof characterId !== 'string' || characterId.trim() === '') {
+    return { valid: false, error: 'characterId must be a non-empty string' };
+  }
+  
+  // durationMinutes - число
+  if (typeof durationMinutes !== 'number') {
+    return { valid: false, error: 'durationMinutes must be a number' };
+  }
+  if (!Number.isFinite(durationMinutes)) {
+    return { valid: false, error: 'durationMinutes must be a finite number (NaN/Infinity not allowed)' };
+  }
+  if (!Number.isInteger(durationMinutes)) {
+    return { valid: false, error: 'durationMinutes must be an integer' };
+  }
+  if (durationMinutes < MIN_REST_DURATION) {
+    return { valid: false, error: `durationMinutes must be at least ${MIN_REST_DURATION}` };
+  }
+  if (durationMinutes > MAX_REST_DURATION) {
+    return { valid: false, error: `durationMinutes must not exceed ${MAX_REST_DURATION}` };
+  }
+  
+  // restType - enum
+  if (restType !== 'light' && restType !== 'sleep') {
+    return { valid: false, error: 'restType must be "light" or "sleep"' };
+  }
+  
+  // Дополнительная проверка для сна
+  if (restType === 'sleep' && durationMinutes < MIN_SLEEP_DURATION) {
+    return { valid: false, error: `Минимальное время сна: ${MIN_SLEEP_DURATION / 60} часа` };
+  }
+  
+  return { valid: true, data: { characterId: characterId.trim(), durationMinutes, restType } };
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json() as RestRequest;
-    const { characterId, durationMinutes, restType } = body;
-
-    // Валидация
-    if (!characterId || !durationMinutes || !restType) {
+    const body = await request.json();
+    
+    // Строгая валидация входных данных
+    const validation = validateRestRequest(body);
+    if (!validation.valid) {
       return NextResponse.json(
-        { success: false, error: 'Missing required fields' },
+        { success: false, error: validation.error },
         { status: 400 }
       );
     }
-
-    if (!['light', 'sleep'].includes(restType)) {
-      return NextResponse.json(
-        { success: false, error: 'Invalid restType. Must be "light" or "sleep"' },
-        { status: 400 }
-      );
-    }
-
-    if (restType === 'sleep' && durationMinutes < MIN_SLEEP_DURATION) {
-      return NextResponse.json(
-        { success: false, error: `Минимальное время сна: ${MIN_SLEEP_DURATION / 60} часа` },
-        { status: 400 }
-      );
-    }
-
-    if (durationMinutes > MAX_REST_DURATION) {
-      return NextResponse.json(
-        { success: false, error: `Максимальное время отдыха: ${MAX_REST_DURATION / 60} часов` },
-        { status: 400 }
-      );
-    }
+    
+    const { characterId, durationMinutes, restType } = validation.data;
 
     // === ПРОВЕРКА TRUTHSYSTEM (ПАМЯТЬ ПЕРВИЧНА!) ===
     const truthSystem = TruthSystem.getInstance();

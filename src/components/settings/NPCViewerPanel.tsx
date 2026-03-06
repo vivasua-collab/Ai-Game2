@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -118,8 +118,8 @@ interface NPCViewerPanelProps {
 }
 
 export function NPCViewerPanel({ npcs, loading, onLoad }: NPCViewerPanelProps) {
-  const [filteredNPCs, setFilteredNPCs] = useState<GeneratedNPC[]>([]);
-  const [selectedNPC, setSelectedNPC] = useState<GeneratedNPC | null>(null);
+  // Выбранный NPC (только через действие пользователя)
+  const [selectedNPCId, setSelectedNPCId] = useState<string | null>(null);
   
   // Фильтры
   const [search, setSearch] = useState('');
@@ -128,7 +128,7 @@ export function NPCViewerPanel({ npcs, loading, onLoad }: NPCViewerPanelProps) {
   const [roleFilter, setRoleFilter] = useState<string>('all');
 
   // Получаем тип вида по speciesId
-  const getSpeciesType = (speciesId: string): string => {
+  const getSpeciesType = useCallback((speciesId: string): string => {
     if (speciesId.includes('human') || speciesId.includes('elf') || speciesId.includes('demon') || speciesId.includes('giant') || speciesId.includes('beastkin')) {
       return 'humanoid';
     }
@@ -145,10 +145,10 @@ export function NPCViewerPanel({ npcs, loading, onLoad }: NPCViewerPanelProps) {
       return 'aberration';
     }
     return 'humanoid';
-  };
+  }, []);
 
   // Получаем тип роли по roleId
-  const getRoleType = (roleId: string): string => {
+  const getRoleType = useCallback((roleId: string): string => {
     const sectRoles = ['candidate', 'outer_disciple', 'inner_disciple', 'core_member', 'elder', 'sect_master', 'instructor', 'sect_alchemist', 'sect_guard', 'servant'];
     const professionRoles = ['merchant', 'alchemist', 'blacksmith', 'healer', 'scholar', 'hunter', 'farmer', 'innkeeper'];
     const socialRoles = ['noble', 'beggar', 'traveler', 'hermit', 'refugee', 'criminal'];
@@ -159,11 +159,11 @@ export function NPCViewerPanel({ npcs, loading, onLoad }: NPCViewerPanelProps) {
     if (socialRoles.includes(roleId)) return 'social';
     if (combatRoles.includes(roleId)) return 'combat';
     return 'sect';
-  };
+  }, []);
 
-  // Применяем фильтры
-  useEffect(() => {
-    if (npcs.length === 0) return;
+  // ✅ filteredNPCs вычисляется через useMemo (derived state)
+  const filteredNPCs = useMemo(() => {
+    if (npcs.length === 0) return [];
     
     let filtered = [...npcs];
     
@@ -189,15 +189,28 @@ export function NPCViewerPanel({ npcs, loading, onLoad }: NPCViewerPanelProps) {
       filtered = filtered.filter(npc => getRoleType(npc.roleId) === roleFilter);
     }
     
-    setFilteredNPCs(filtered);
-  }, [npcs, search, levelFilter, speciesFilter, roleFilter]);
+    return filtered;
+  }, [npcs, search, levelFilter, speciesFilter, roleFilter, getSpeciesType, getRoleType]);
 
-  // Автовыбор первого NPC при загрузке
-  useEffect(() => {
-    if (filteredNPCs.length > 0 && !selectedNPC) {
-      setSelectedNPC(filteredNPCs[0]);
+  // ✅ selectedNPC вычисляется через useMemo (derived state)
+  // Если выбранный ID не найден в filteredNPCs, показываем первого
+  const selectedNPC = useMemo(() => {
+    if (filteredNPCs.length === 0) return null;
+    
+    // Если есть выбранный ID и он в списке
+    if (selectedNPCId) {
+      const found = filteredNPCs.find(npc => npc.id === selectedNPCId);
+      if (found) return found;
     }
-  }, [filteredNPCs, selectedNPC]);
+    
+    // Иначе возвращаем первого
+    return filteredNPCs[0];
+  }, [filteredNPCs, selectedNPCId]);
+
+  // ✅ Обработчик выбора NPC (действие пользователя)
+  const handleSelectNPC = useCallback((npc: GeneratedNPC) => {
+    setSelectedNPCId(npc.id);
+  }, []);
 
   return (
     <div className="flex gap-4 h-[60vh]">
@@ -283,7 +296,7 @@ export function NPCViewerPanel({ npcs, loading, onLoad }: NPCViewerPanelProps) {
                   {filteredNPCs.map((npc) => (
                     <div
                       key={npc.id}
-                      onClick={() => setSelectedNPC(npc)}
+                      onClick={() => handleSelectNPC(npc)}
                       className={`p-2 cursor-pointer hover:bg-slate-800/50 transition-colors ${
                         selectedNPC?.id === npc.id ? 'bg-amber-900/20 border-l-2 border-amber-500' : ''
                       }`}

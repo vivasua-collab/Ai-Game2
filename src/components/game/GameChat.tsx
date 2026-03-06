@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, memo, useMemo, useCallback } from "react";
+import { useState, useRef, useEffect, memo, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -95,24 +95,22 @@ const StatusBar = memo(function StatusBar() {
   const location = useGameLocation();
   const daysSinceStart = useGameDaysSinceStart();
 
-  // Используем единые функции из qi-shared.ts
-  const qiPercent = useMemo(() => 
-    character ? getCoreFillPercent(character.currentQi, character.coreCapacity) : 0,
-    [character?.currentQi, character?.coreCapacity]
-  );
+  // Прямые вычисления без useMemo - они дешёвые (O(1), простая арифметика)
+  // React Compiler сам определит необходимость мемоизации
+  const qiPercent = character 
+    ? getCoreFillPercent(character.currentQi, character.coreCapacity) 
+    : 0;
   
-  const healthPercent = useMemo(() => character?.health ?? 0, [character?.health]);
+  const healthPercent = character?.health ?? 0;
   
-  // Прогресс прорыва: используем единую функцию
-  const breakthroughProgress = useMemo(() => {
-    if (!character) return { percent: 0, current: 0, required: 0 };
-    return getBreakthroughProgress(
-      character.cultivationLevel,
-      character.cultivationSubLevel,
-      character.accumulatedQi,
-      character.coreCapacity
-    );
-  }, [character?.accumulatedQi, character?.coreCapacity, character?.cultivationLevel, character?.cultivationSubLevel]);
+  const breakthroughProgress = character
+    ? getBreakthroughProgress(
+        character.cultivationLevel,
+        character.cultivationSubLevel,
+        character.accumulatedQi,
+        character.coreCapacity
+      )
+    : { percent: 0, current: 0, required: 0 };
 
   if (!character) return null;
 
