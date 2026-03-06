@@ -1,6 +1,6 @@
 # 👻 Система Души (Soul System)
 
-**Версия:** 1.1  
+**Версия:** 1.2  
 **Создано:** 2026-03-06  
 **Обновлено:** 2026-03-06  
 **Статус:** Черновик  
@@ -2312,5 +2312,1294 @@ const qiStone: SoulEntity = {
 
 ---
 
+## 📚 ПРИЛОЖЕНИЕ D: Строения, мебель и интерьер
+
+### D.1 Обзор системы строений
+
+Строения и мебель — особый класс объектов, которые:
+- Имеют **сложную структуру тела** (комнаты, этажи, части)
+- Могут содержать **другие души** (жильцы, содержимое)
+- Часто имеют **формации Ци** (защитные, накопительные)
+- Обычно **неподвижны** (фиксированная позиция)
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    ИЕРАРХИЯ СТРОЕНИЙ И МЕБЕЛИ                             │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│   ┌─────────────────────────────────────────────────────────────────┐   │
+│   │                     STRUCTURE (СТРОЕНИЕ)                         │   │
+│   │                                                                  │   │
+│   │  • Дом, Храм, Башня, Павильон                                    │   │
+│   │  • Может иметь несколько этажей и комнат                         │   │
+│   │  • Может содержать мебель и другие объекты                       │   │
+│   │  • Может иметь формации Ци                                       │   │
+│   └─────────────────────────────────────────────────────────────────┘   │
+│                              │                                           │
+│                              ▼                                           │
+│   ┌─────────────────────────────────────────────────────────────────┐   │
+│   │                     FURNITURE (МЕБЕЛЬ)                            │   │
+│   │                                                                  │   │
+│   │  • Кровать, Шкаф, Стол, Стул                                     │   │
+│   │  • Имеет слоты для содержимого                                   │   │
+│   │  • Может иметь простые эффекты                                   │   │
+│   └─────────────────────────────────────────────────────────────────┘   │
+│                              │                                           │
+│                              ▼                                           │
+│   ┌─────────────────────────────────────────────────────────────────┐   │
+│   │                     DECORATION (ДЕКОР)                            │   │
+│   │                                                                  │   │
+│   │  • Картина, Статуя, Ваза, Ковёр                                  │   │
+│   │  • Минимальная функциональность                                  │   │
+│   │  • Эстетическая ценность                                         │   │
+│   └─────────────────────────────────────────────────────────────────┘   │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### D.2 Расширение SoulType
+
+```typescript
+/**
+ * Расширенные типы душ
+ */
+type SoulType = 
+  | 'character'    // Персонаж (человек, гуманоид)
+  | 'creature'     // Существо (зверь, монстр)
+  | 'spirit'       // Дух (призрак, элементаль)
+  | 'plant'        // Растение
+  | 'object'       // Объект (камень, предмет)
+  | 'construct'    // Конструкт (голем, механизмы)
+  | 'structure'    // 🆕 Строение (здание, сооружение)
+  | 'furniture'    // 🆕 Мебель (кровать, шкаф)
+  | 'decoration';  // 🆕 Декор (картина, статуя)
+```
+
+### D.3 Интерфейс строения
+
+```typescript
+/**
+ * Строение — сложная неподвижная структура
+ */
+interface StructureSoul extends Soul {
+  soulType: 'structure';
+  
+  // === ТИП СТРОЕНИЯ ===
+  structureType: StructureType;
+  
+  // === РАЗМЕРЫ ===
+  dimensions: {
+    width: number;          // Ширина (м)
+    length: number;         // Длина (м)
+    height: number;         // Высота (м)
+    floors: number;         // Количество этажей
+    totalArea: number;      // Общая площадь (м²)
+  };
+  
+  // === ВЛАДЕНИЕ ===
+  ownership: {
+    owner?: string;         // ID души-владельца
+    clan?: string;          // ID клана/секты
+    isPublic: boolean;      // Общественное?
+    isRentable: boolean;    // Можно арендовать?
+  };
+  
+  // === СОДЕРЖИМОЕ ===
+  interior: {
+    rooms: Room[];          // Комнаты
+    furniture: string[];    // ID мебели внутри
+    npcs: string[];         // NPC внутри (постоянные)
+    spawnPoints: SpawnPoint[]; // Точки появления
+  };
+  
+  // === ВХОДЫ/ВЫХОДЫ ===
+  entrances: Entrance[];
+  
+  // === ФОРМАЦИИ ===
+  formations: FormationRef[];
+}
+
+/**
+ * Тип строения
+ */
+type StructureType = 
+  // === ЖИЛЫЕ ===
+  | 'house_small'       // Малый дом
+  | 'house_medium'      // Средний дом
+  | 'house_large'       // Большой дом
+  | 'mansion'           // Особняк
+  | 'estate'            // Поместье
+  
+  // === КУЛЬТОВАЦИЯ ===
+  | 'shrine'            // Святилище
+  | 'temple'            // Храм
+  | 'pagoda'            // Пагода
+  | 'pavilion'          // Павильон
+  | 'meditation_hall'   // Зал медитации
+  | 'cultivation_cave'  // Пещера культивации
+  
+  // === ОБОРОНИТЕЛЬНЫЕ ===
+  | 'wall'              // Стена
+  | 'gate'              // Ворота
+  | 'watchtower'        // Сторожевая башня
+  | 'fortress'          // Крепость
+  
+  // === ХОЗЯЙСТВЕННЫЕ ===
+  | 'shop'              // Лавка
+  | 'warehouse'         // Склад
+  | 'stable'            // Конюшня
+  | 'forge'             // Кузница
+  | 'alchemist_lab'     // Алхимическая лаборатория
+  
+  // === СПЕЦИАЛЬНЫЕ ===
+  | 'teleport_gate'     // Телепортационные врата
+  | 'array_anchor'      // Якорь массива
+  | 'spirit_tower';     // Духовная башня
+
+/**
+ * Комната в строении
+ */
+interface Room {
+  id: string;
+  name: string;
+  type: RoomType;
+  
+  // Размеры
+  area: number;              // Площадь (м²)
+  height: number;            // Высота потолка (м)
+  
+  // Позиция в строении
+  floor: number;             // Этаж (0 = подвал, 1 = первый)
+  position: { x: number; y: number }; // Координаты в плане
+  
+  // Функции
+  functions: RoomFunction[];
+  
+  // Содержимое
+  furnitureSlots: FurnitureSlot[];
+  occupants: string[];       // ID душ внутри
+  
+  // Свойства
+  properties: {
+    isPrivate: boolean;
+    hasLock: boolean;
+    lockLevel?: number;
+    qiDensity: number;       // Плотность Ци в комнате
+    ambiance: string;        // Атмосфера
+  };
+}
+
+type RoomType = 
+  | 'bedroom'          // Спальня
+  | 'living_room'      // Гостиная
+  | 'kitchen'          // Кухня
+  | 'storage'          // Кладовая
+  | 'study'            // Кабинет
+  | 'meditation'       // Медитационная
+  | 'training'         // Тренировочный зал
+  | 'altar'            // Алтарь
+  | 'throne'           // Тронный зал
+  | 'dungeon'          // Темница
+  | 'treasury'         // Сокровищница
+  | 'library'          // Библиотека
+  | 'bathroom'         // Баня/ванная
+  | 'courtyard'        // Двор
+  | 'garden'           // Сад
+  | 'corridor'         // Коридор
+  | 'entrance';        // Вход
+
+type RoomFunction = 
+  | 'rest'             // Отдых
+  | 'sleep'            // Сон
+  | 'cultivation'      // Культивация
+  | 'training'         // Тренировка
+  | 'storage'          // Хранение
+  | 'crafting'         // Ремесло
+  | 'social'           // Общение
+  | 'worship'          // Поклонение
+  | 'defense'          // Защита
+  | 'confinement';     // Заключение
+
+/**
+ * Вход в строение
+ */
+interface Entrance {
+  id: string;
+  type: 'door' | 'gate' | 'window' | 'secret';
+  
+  position: {
+    floor: number;
+    x: number;
+    y: number;
+    direction: 'north' | 'south' | 'east' | 'west';
+  };
+  
+  // Свойства
+  isLocked: boolean;
+  lockLevel: number;
+  requiresKey: boolean;
+  keyId?: string;
+  
+  // Куда ведёт
+  connectsTo?: {
+    structureId: string;      // ID другого строения
+    entranceId: string;       // ID входа
+  };
+  
+  // Ограничения
+  restrictions: {
+    minLevel?: number;
+    requiredItem?: string;
+    requiredStatus?: string;
+  };
+}
+
+/**
+ * Точка появления
+ */
+interface SpawnPoint {
+  id: string;
+  roomId: string;
+  position: { x: number; y: number };
+  
+  // Что появляется
+  spawnType: 'player' | 'npc' | 'item' | 'creature';
+  spawnId?: string;           // ID того, что появляется
+  
+  // Условия
+  conditions: {
+    time?: 'day' | 'night' | 'any';
+    event?: string;
+    probability?: number;
+  };
+}
+```
+
+### D.4 Тело строения (StructureBody)
+
+```typescript
+/**
+ * Тело строения — физическая структура
+ */
+interface StructureBody extends BodyComponent {
+  // === ОСНОВА ===
+  foundation: {
+    type: 'ground' | 'pillars' | 'floating' | 'underground';
+    depth: number;            // Глубина фундамента (м)
+    material: string;
+    integrity: number;        // Целостность (%)
+  };
+  
+  // === ЧАСТИ СТРОЕНИЯ ===
+  structureParts: StructurePart[];
+  
+  // === МАТЕРИАЛЫ ===
+  primaryMaterial: BuildingMaterial;
+  secondaryMaterial?: BuildingMaterial;
+  
+  // === СОСТОЯНИЕ ===
+  condition: {
+    overallIntegrity: number; // Общая целостность (%)
+    maintenanceLevel: number; // Уровень обслуживания
+    age: number;              // Возраст (годы)
+    wearRate: number;         // Износ за год
+  };
+  
+  // === ЗАЩИТА ===
+  defense: {
+    durability: number;       // Прочность
+    armor: number;            // Броня
+    resistances: string[];    // Сопротивления
+    vulnerabilities: string[]; // Уязвимости
+  };
+}
+
+/**
+ * Часть строения
+ */
+interface StructurePart {
+  id: string;
+  name: string;
+  type: StructurePartType;
+  
+  // Позиция
+  floor: number;
+  position: { x: number; y: number };
+  
+  // Размеры
+  dimensions: {
+    width: number;
+    height: number;
+    length?: number;
+  };
+  
+  // Прочность
+  durability: {
+    maxHP: number;
+    currentHP: number;
+    armor: number;
+  };
+  
+  // Состояние
+  status: 'intact' | 'damaged' | 'broken' | 'destroyed';
+  
+  // Функции
+  functions: string[];
+}
+
+type StructurePartType = 
+  | 'wall'             // Стена
+  | 'floor'            // Пол
+  | 'ceiling'          // Потолок
+  | 'roof'             // Крыша
+  | 'pillar'           // Колонна
+  | 'door_frame'       // Дверной проём
+  | 'window_frame'     // Оконный проём
+  | 'stairs'           // Лестница
+  | 'balcony'          // Балкон
+  | 'chimney'          // Труба
+  | 'decoration';      // Декоративный элемент
+
+/**
+ * Строительный материал
+ */
+interface BuildingMaterial {
+  id: string;
+  name: string;
+  
+  // Свойства
+  properties: {
+    hardness: number;         // Твёрдость (1-10)
+    durability: number;       // Долговечность (годы)
+    qiConductivity: number;   // Проводимость Ци
+    insulation: number;       // Теплоизоляция
+    flammability: number;     // Воспламеняемость
+  };
+  
+  // Эстетика
+  aesthetics: {
+    style: string;            // Стиль
+    color: string;            // Основной цвет
+    quality: number;          // Качество отделки (1-10)
+  };
+}
+
+// Справочник материалов
+const BUILDING_MATERIALS: Record<string, BuildingMaterial> = {
+  // === ДЕРЕВО ===
+  'pine_wood': {
+    id: 'pine_wood',
+    name: 'Сосна',
+    properties: { hardness: 3, durability: 50, qiConductivity: 0.8, insulation: 6, flammability: 7 },
+    aesthetics: { style: 'rustic', color: 'light_brown', quality: 3 },
+  },
+  'spirit_wood': {
+    id: 'spirit_wood',
+    name: 'Духовное дерево',
+    properties: { hardness: 5, durability: 500, qiConductivity: 3.0, insulation: 8, flammability: 2 },
+    aesthetics: { style: 'mystical', color: 'glowing_green', quality: 8 },
+  },
+  
+  // === КАМЕНЬ ===
+  'granite': {
+    id: 'granite',
+    name: 'Гранит',
+    properties: { hardness: 8, durability: 1000, qiConductivity: 0.2, insulation: 3, flammability: 0 },
+    aesthetics: { style: 'solid', color: 'gray', quality: 6 },
+  },
+  'spirit_jade': {
+    id: 'spirit_jade',
+    name: 'Духовный нефрит',
+    properties: { hardness: 9, durability: 5000, qiConductivity: 5.0, insulation: 5, flammability: 0 },
+    aesthetics: { style: 'divine', color: 'translucent_green', quality: 10 },
+  },
+  
+  // === МЕТАЛЛ ===
+  'iron': {
+    id: 'iron',
+    name: 'Железо',
+    properties: { hardness: 7, durability: 200, qiConductivity: 0.5, insulation: 1, flammability: 0 },
+    aesthetics: { style: 'industrial', color: 'dark_gray', quality: 5 },
+  },
+  'celestial_steel': {
+    id: 'celestial_steel',
+    name: 'Небесная сталь',
+    properties: { hardness: 10, durability: 10000, qiConductivity: 4.0, insulation: 2, flammability: 0 },
+    aesthetics: { style: 'celestial', color: 'silver_glow', quality: 10 },
+  },
+};
+```
+
+### D.5 Ци строения (StructureQi)
+
+```typescript
+/**
+ * Ци строения — формации и накопители
+ */
+interface StructureQi extends QiComponent {
+  // === ФОРМАЦИИ ===
+  formations: FormationSlot[];
+  
+  // === ПОТОКИ ЦИ ===
+  qiFlow: {
+    intake: number;           // Входящий поток (Ци/тик)
+    output: number;           // Исходящий поток
+    circulation: number;      // Циркуляция внутри
+    density: number;          // Плотность Ци в строении
+  };
+  
+  // === ЛЕЙ-ЛИНИИ ===
+  leyLines?: {
+    connected: boolean;       // Подключено к лей-линиям?
+    strength: number;         // Сила связи
+    alignment: string;        // Выравнивание
+  };
+  
+  // === АТМОСФЕРА ===
+  atmosphere: {
+    qiQuality: number;        // Качество Ци (1-10)
+    element?: string;         // Преобладающий элемент
+    effects: AtmosphereEffect[];
+  };
+}
+
+/**
+ * Слот формации
+ */
+interface FormationSlot {
+  id: string;
+  name: string;
+  
+  // Тип формации
+  type: FormationType;
+  
+  // Размеры
+  coverage: {
+    type: 'room' | 'floor' | 'building' | 'area';
+    targetId?: string;        // ID комнаты/этажа
+    radius?: number;          // Радиус (м)
+  };
+  
+  // Состояние
+  status: 'inactive' | 'active' | 'depleted' | 'damaged';
+  
+  // Параметры
+  parameters: {
+    power: number;            // Сила формации
+    efficiency: number;       // Эффективность
+    qiCost: number;           // Расход Ци/тик
+    duration?: number;        // Длительность (если временная)
+  };
+  
+  // Ядро формации
+  core: {
+    itemId?: string;          // ID предмета-ядра
+    soulId?: string;          // ID души-хранителя
+  };
+}
+
+type FormationType = 
+  // === ЗАЩИТНЫЕ ===
+  | 'barrier'          // Барьер
+  | 'shield'           // Щит
+  | 'alarm'            // Сигнализация
+  | 'repulsion'        // Отталкивание
+  
+  // === НАКОПИТЕЛЬНЫЕ ===
+  | 'accumulator'      // Накопитель Ци
+  | 'condenser'        // Конденсатор
+  | 'purifier'         // Очиститель
+  
+  // === УСИЛИВАЮЩИЕ ===
+  | 'cultivation_boost' // Ускорение культивации
+  | 'healing'          // Исцеление
+  | 'mental_clarity'   // Ясность разума
+  
+  // === СПЕЦИАЛЬНЫЕ ===
+  | 'teleport'         // Телепортация
+  | 'summoning'        // Призыв
+  | 'binding'          // Связывание
+  | 'concealment'      // Сокрытие
+  | 'elemental';       // Элементальная
+
+/**
+ * Эффект атмосферы
+ */
+interface AtmosphereEffect {
+  type: string;
+  power: number;
+  affectedStats: string[];
+  description: string;
+}
+```
+
+### D.6 Мебель (Furniture)
+
+```typescript
+/**
+ * Мебель — функциональные объекты интерьера
+ */
+interface FurnitureSoul extends Soul {
+  soulType: 'furniture';
+  
+  // === ТИП МЕБЕЛИ ===
+  furnitureType: FurnitureType;
+  
+  // === РАЗМЕЩЕНИЕ ===
+  placement: {
+    structureId?: string;     // В каком строении
+    roomId?: string;          // В какой комнате
+    position: { x: number; y: number };
+    rotation: number;         // Поворот (градусы)
+  };
+  
+  // === ФУНКЦИИ ===
+  functions: FurnitureFunction[];
+  
+  // === СЛОТЫ ===
+  slots: FurnitureSlot[];
+  
+  // === СВОЙСТВА ===
+  properties: {
+    quality: number;          // Качество (1-10)
+    comfort?: number;         // Комфорт
+    durability: number;       // Прочность
+    aesthetic: number;        // Эстетика
+  };
+}
+
+type FurnitureType = 
+  // === СПАЛЬНЯ ===
+  | 'bed'              // Кровать
+  | 'mattress'         // Матрас
+  
+  // === ХРАНЕНИЕ ===
+  | 'cabinet'          // Шкаф
+  | 'chest'            // Сундук
+  | 'drawer'           // Комод
+  | 'bookshelf'        // Книжная полка
+  | 'wardrobe'         // Гардероб
+  
+  // === РАБОТА ===
+  | 'desk'             // Письменный стол
+  | 'table'            // Стол
+  | 'workbench'        // Верстак
+  
+  // === СИДЕНИЕ ===
+  | 'chair'            // Стул
+  | 'bench'            // Скамья
+  | 'throne'           // Трон
+  
+  // === КУЛЬТИВАЦИЯ ===
+  | 'altar'            // Алтарь
+  | 'meditation_mat'   // Медитационный коврик
+  | 'formation_core'   // Ядро формации
+  
+  // === ОСОБЫЕ ===
+  | 'fountain'         // Фонтан
+  | 'incense_burner'   // Курильница
+  | 'spirit_lamp';     // Духовная лампа
+
+type FurnitureFunction = 
+  | 'sleep'            // Сон
+  | 'rest'             // Отдых
+  | 'storage'          // Хранение
+  | 'display'          // Демонстрация
+  | 'work'             // Работа
+  | 'cultivation'      // Культивация
+  | 'ritual'           // Ритуал
+  | 'decoration';      // Декор
+
+/**
+ * Слот мебели (для содержимого)
+ */
+interface FurnitureSlot {
+  id: string;
+  type: 'item' | 'equipment' | 'qi_stone' | 'book' | 'any';
+  
+  // Ограничения
+  limits: {
+    maxItems: number;
+    maxWeight?: number;
+    allowedTypes?: string[];
+    restrictedTypes?: string[];
+  };
+  
+  // Содержимое
+  items: string[];           // ID предметов
+  locked: boolean;
+}
+
+/**
+ * Пример: Кровать
+ */
+const bedEntity: SoulEntity = {
+  soul: {
+    id: 'FURN_000001',
+    name: 'Деревянная кровать',
+    soulType: 'furniture',
+    controller: 'none',
+    status: 'active',
+    hasBody: true,
+    hasQi: false,
+    hasMind: false,
+  },
+  
+  body: {
+    soulId: 'FURN_000001',
+    bodyType: 'furniture_bed',
+    size: { sizeClass: 'medium', height: 50, width: 200, length: 180 },
+    parts: [
+      { id: 'frame', type: 'frame', durability: { maxHP: 100, currentHP: 100 } },
+      { id: 'mattress', type: 'soft', durability: { maxHP: 50, currentHP: 50 } },
+      { id: 'pillow', type: 'soft', durability: { maxHP: 20, currentHP: 20 } },
+    ],
+    material: { type: 'wood', hardness: 4, flexibility: 3, qiConductivity: 0.5 },
+    isAlive: false,
+    canAct: false,
+  },
+  
+  qi: null,
+  mind: null,
+  
+  attachments: {
+    techniques: [],
+    inventory: [],
+    effects: [
+      { 
+        id: 'rest_bonus',
+        type: 'passive',
+        name: 'Бонус отдыха',
+        description: 'Восстановление HP и Ци +20% при сне',
+        power: 20,
+      },
+    ],
+    bonds: [],
+  },
+  
+  // furniture-specific
+  furnitureType: 'bed',
+  placement: {
+    structureId: 'STR_000001',
+    roomId: 'bedroom_1',
+    position: { x: 3, y: 2 },
+    rotation: 0,
+  },
+  functions: ['sleep', 'rest'],
+  slots: [],  // Кровать не имеет слотов хранения
+  properties: {
+    quality: 3,
+    comfort: 5,
+    durability: 100,
+    aesthetic: 4,
+  },
+};
+
+/**
+ * Пример: Алтарь культивации
+ */
+const altarEntity: SoulEntity = {
+  soul: {
+    id: 'FURN_000042',
+    name: 'Алтарь Духовного Нефрита',
+    soulType: 'furniture',
+    controller: 'none',
+    status: 'active',
+    hasBody: true,
+    hasQi: true,
+    hasMind: false,
+  },
+  
+  body: {
+    soulId: 'FURN_000042',
+    bodyType: 'furniture_altar',
+    size: { sizeClass: 'medium', height: 100, width: 150, length: 80 },
+    parts: [
+      { id: 'base', type: 'base', durability: { maxHP: 500, currentHP: 500 } },
+      { id: 'surface', type: 'surface', durability: { maxHP: 200, currentHP: 200 } },
+      { id: 'runes', type: 'inscription', durability: { maxHP: 100, currentHP: 100 } },
+    ],
+    material: { type: 'spirit_jade', hardness: 9, flexibility: 1, qiConductivity: 5.0 },
+    isAlive: false,
+    canAct: false,
+  },
+  
+  qi: {
+    soulId: 'FURN_000042',
+    core: { capacity: 0, quality: 0, current: 0 },
+    reservoir: { capacity: 1000, current: 800, regeneration: 0 },
+    attributes: { conductivity: 5.0, affinity: ['neutral', 'spirit'], purity: 80 },
+  },
+  
+  mind: null,
+  
+  attachments: {
+    techniques: [],
+    inventory: [],
+    effects: [
+      { 
+        id: 'cultivation_boost',
+        type: 'passive',
+        name: 'Ускорение культивации',
+        description: 'Скорость культивации +50% в радиусе 5м',
+        power: 50,
+        radius: 5,
+      },
+      {
+        id: 'qi_condensation',
+        type: 'passive',
+        name: 'Конденсация Ци',
+        description: 'Накапливает Ци из окружения',
+        power: 10,  // Ци/тик
+      },
+    ],
+    bonds: [],
+  },
+  
+  furnitureType: 'altar',
+  placement: {
+    structureId: 'STR_000010',  // Храм
+    roomId: 'altar_room',
+    position: { x: 0, y: 0 },  // Центр комнаты
+    rotation: 0,
+  },
+  functions: ['cultivation', 'ritual'],
+  slots: [
+    {
+      id: 'offering_slot',
+      type: 'any',
+      limits: { maxItems: 3 },
+      items: ['INCENSE_001'],
+      locked: false,
+    },
+    {
+      id: 'formation_core',
+      type: 'qi_stone',
+      limits: { maxItems: 1 },
+      items: ['QS_000100'],
+      locked: true,
+    },
+  ],
+  properties: {
+    quality: 8,
+    durability: 500,
+    aesthetic: 9,
+  },
+};
+```
+
+### D.7 Декор (Decoration)
+
+```typescript
+/**
+ * Декор — эстетические объекты
+ */
+interface DecorationSoul extends Soul {
+  soulType: 'decoration';
+  
+  // === ТИП ДЕКОРА ===
+  decorationType: DecorationType;
+  
+  // === РАЗМЕЩЕНИЕ ===
+  placement: {
+    structureId?: string;
+    roomId?: string;
+    position: { x: number; y: number; z?: number };  // z = высота на стене
+    mountType: 'floor' | 'wall' | 'ceiling' | 'freestanding';
+  };
+  
+  // === ЭСТЕТИКА ===
+  aesthetics: {
+    style: string;
+    era?: string;
+    artist?: string;
+    value: number;            // Денежная ценность
+    culturalValue: number;    // Культурная ценность
+  };
+  
+  // === ЭФФЕКТЫ ===
+  effects?: DecorationEffect[];
+}
+
+type DecorationType = 
+  // === СТАТУИ ===
+  | 'statue_small'     // Малая статуя
+  | 'statue_large'     // Большая статуя
+  | 'bust'             // Бюст
+  
+  // === КАРТИНЫ ===
+  | 'painting'         // Картина
+  | 'scroll'           // Свиток
+  | 'tapestry'         // Гобелен
+  
+  // === ВАЗЫ ===
+  | 'vase'             // Ваза
+  | 'urn'              // Урна
+  
+  // === СВЕТ ===
+  | 'lantern'          // Фонарь
+  | 'candlestick'      // Подсвечник
+  
+  // === ТЕКСТИЛЬ ===
+  | 'rug'              // Ковёр
+  | 'curtain'          // Занавес
+  | 'banner';          // Знамя
+
+/**
+ * Пример: Статуя основателя секты
+ */
+const statueEntity: SoulEntity = {
+  soul: {
+    id: 'DEC_000001',
+    name: 'Статуя Основателя',
+    soulType: 'decoration',
+    controller: 'none',
+    status: 'active',
+    hasBody: true,
+    hasQi: true,          // Может содержать остаточную Ци
+    hasMind: false,
+  },
+  
+  body: {
+    soulId: 'DEC_000001',
+    bodyType: 'statue_large',
+    size: { sizeClass: 'large', height: 300, width: 100, length: 100 },
+    parts: [
+      { id: 'pedestal', type: 'base', durability: { maxHP: 200, currentHP: 200 } },
+      { id: 'figure', type: 'statue', durability: { maxHP: 500, currentHP: 500 } },
+    ],
+    material: { type: 'spirit_jade', hardness: 9, flexibility: 1, qiConductivity: 4.0 },
+    isAlive: false,
+    canAct: false,
+  },
+  
+  qi: {
+    soulId: 'DEC_000001',
+    core: { capacity: 0, quality: 0, current: 0 },
+    reservoir: { capacity: 500, current: 50, regeneration: 0 },  // Остаточная Ци
+    attributes: { conductivity: 4.0, affinity: ['spirit'], purity: 60 },
+  },
+  
+  mind: null,
+  
+  attachments: {
+    techniques: [],
+    inventory: [],
+    effects: [
+      {
+        id: 'inspiration_aura',
+        type: 'passive',
+        name: 'Аура вдохновения',
+        description: 'Увеличивает скорость обучения +10%',
+        power: 10,
+        radius: 10,
+      },
+    ],
+    bonds: [],
+  },
+  
+  decorationType: 'statue_large',
+  placement: {
+    structureId: 'STR_000010',
+    roomId: 'entrance_hall',
+    position: { x: 0, y: -5 },
+    mountType: 'floor',
+  },
+  aesthetics: {
+    style: 'ancient',
+    era: 'founding_era',
+    artist: 'Мастер Камнерез',
+    value: 5000,
+    culturalValue: 100,
+  },
+  effects: [
+    { type: 'inspiration', power: 10, description: 'Вдохновение учеников' },
+  ],
+};
+```
+
+### D.8 Особые случаи
+
+#### D.8.1 Живое здание (Animated Structure)
+
+```typescript
+/**
+ * Живое здание — строение с разумом
+ */
+const livingTemple: SoulEntity = {
+  soul: {
+    id: 'STR_LIVING_001',
+    name: 'Храм Пробуждённого Духа',
+    soulType: 'structure',
+    controller: 'ai',           // ИИ управляет зданием!
+    aiProfile: 'ancient_guardian',
+    status: 'active',
+    hasBody: true,
+    hasQi: true,
+    hasMind: true,              // Имеет разум!
+  },
+  
+  body: {
+    // ... структура храма
+    isAlive: true,              // Живое!
+    canAct: true,               // Может действовать
+  },
+  
+  qi: {
+    // ... мощная система Ци
+  },
+  
+  mind: {
+    soulId: 'STR_LIVING_001',
+    intelligence: {
+      base: 150,
+      reasoning: 120,
+      memory: 200,
+      learning: 50,
+      creativity: 80,
+      focus: 100,
+    },
+    memory: { /* тысячелетия истории */ },
+    personality: {
+      traits: ['ancient', 'wise', 'protective', 'mysterious'],
+      goals: ['protect_disciples', 'preserve_knowledge'],
+    },
+    status: { sanity: 90, clarity: 95, mentalFatigue: 0 },
+  },
+  
+  attachments: {
+    techniques: [
+      { id: 'barrier_activate', name: 'Активация барьера', type: 'defense' },
+      { id: 'room_rearrange', name: 'Перестройка комнат', type: 'utility' },
+      { id: 'expel_intruder', name: 'Изгнание захватчиков', type: 'offense' },
+    ],
+    // ...
+  },
+  
+  // Живое здание может:
+  // - Перестраивать свой интерьер
+  // - Активировать защитные формации
+  // - Общаться с жильцами
+  // - Запоминать гостей
+  // - Защищать обитателей
+};
+```
+
+#### D.8.2 Оружейная стойка (Weapon Rack)
+
+```typescript
+/**
+ * Оружейная стойка — мебель со слотами
+ */
+const weaponRack: SoulEntity = {
+  soul: {
+    id: 'FURN_000100',
+    name: 'Оружейная стойка',
+    soulType: 'furniture',
+    controller: 'none',
+    status: 'active',
+    hasBody: true,
+    hasQi: false,
+    hasMind: false,
+  },
+  
+  body: {
+    soulId: 'FURN_000100',
+    bodyType: 'furniture_rack',
+    size: { sizeClass: 'medium', height: 180, width: 100, length: 30 },
+    parts: [
+      { id: 'frame', type: 'frame', durability: { maxHP: 80, currentHP: 80 } },
+      { id: 'hooks', type: 'holder', quantity: 6, durability: { maxHP: 30, currentHP: 30 } },
+    ],
+    material: { type: 'iron', hardness: 7, flexibility: 2, qiConductivity: 0.3 },
+    isAlive: false,
+    canAct: false,
+  },
+  
+  qi: null,
+  mind: null,
+  
+  attachments: {
+    techniques: [],
+    inventory: [],
+    effects: [
+      {
+        id: 'weapon_preservation',
+        type: 'passive',
+        name: 'Сохранение оружия',
+        description: 'Оружие не ржавеет и не тупится',
+      },
+    ],
+    bonds: [],
+  },
+  
+  furnitureType: 'rack',
+  placement: {
+    structureId: 'STR_000050',
+    roomId: 'armory',
+    position: { x: 5, y: 0 },
+    rotation: 0,
+  },
+  functions: ['storage', 'display'],
+  slots: [
+    {
+      id: 'weapon_slot_1',
+      type: 'equipment',
+      limits: { maxItems: 1, allowedTypes: ['weapon'] },
+      items: ['WP_000042'],
+      locked: false,
+    },
+    // ... ещё 5 слотов
+  ],
+  properties: {
+    quality: 5,
+    durability: 80,
+    aesthetic: 4,
+  },
+};
+```
+
+### D.9 Фабрика строений
+
+```typescript
+/**
+ * Фабрика строений
+ */
+class StructureFactory {
+  /**
+   * Создать дом
+   */
+  static createHouse(options: HouseOptions): SoulEntity {
+    const id = generateId('STR');
+    
+    return {
+      soul: {
+        id,
+        name: options.name || 'Дом',
+        soulType: 'structure',
+        controller: 'none',
+        status: 'active',
+        hasBody: true,
+        hasQi: options.hasQiFormation ?? false,
+        hasMind: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        source: 'constructed',
+      },
+      
+      body: {
+        soulId: id,
+        bodyType: 'structure_house',
+        size: {
+          sizeClass: options.sizeClass,
+          height: options.floors * 3,
+          width: options.width,
+          length: options.length,
+        },
+        parts: this.generateHouseParts(options),
+        material: BUILDING_MATERIALS[options.materialId],
+        isAlive: false,
+        canAct: false,
+      },
+      
+      qi: options.hasQiFormation ? this.createFormationQi(id, options) : null,
+      mind: null,
+      
+      attachments: {
+        techniques: [],
+        inventory: [],
+        effects: [],
+        bonds: [],
+      },
+      
+      // structure-specific
+      structureType: options.structureType || 'house_medium',
+      dimensions: {
+        width: options.width,
+        length: options.length,
+        height: options.floors * 3,
+        floors: options.floors,
+        totalArea: options.width * options.length * options.floors,
+      },
+      ownership: {
+        owner: options.ownerId,
+        isPublic: false,
+        isRentable: options.isRentable ?? false,
+      },
+      interior: {
+        rooms: this.generateRooms(options),
+        furniture: [],
+        npcs: [],
+        spawnPoints: options.spawnPoints || [],
+      },
+      entrances: this.generateEntrances(options),
+      formations: [],
+    };
+  }
+  
+  /**
+   * Создать храм
+   */
+  static createTemple(options: TempleOptions): SoulEntity {
+    const baseHouse = this.createHouse({
+      ...options,
+      structureType: 'temple',
+      hasQiFormation: true,
+    });
+    
+    // Добавляем особые комнаты
+    baseHouse.interior.rooms.push({
+      id: 'altar_room',
+      name: 'Зал Алтаря',
+      type: 'altar',
+      floor: 1,
+      area: 100,
+      height: 8,
+      functions: ['worship', 'cultivation'],
+      // ...
+    });
+    
+    // Добавляем формацию культивации
+    baseHouse.formations.push({
+      id: 'formation_001',
+      name: 'Формация Небесного Покровительства',
+      type: 'cultivation_boost',
+      coverage: { type: 'building' },
+      status: 'active',
+      parameters: { power: 50, efficiency: 80, qiCost: 5 },
+    });
+    
+    return baseHouse;
+  }
+  
+  /**
+   * Создать мебель
+   */
+  static createFurniture(options: FurnitureOptions): SoulEntity {
+    const id = generateId('FURN');
+    
+    return {
+      soul: {
+        id,
+        name: options.name,
+        soulType: 'furniture',
+        controller: 'none',
+        status: 'active',
+        hasBody: true,
+        hasQi: options.hasQiEffect ?? false,
+        hasMind: false,
+      },
+      
+      body: {
+        soulId: id,
+        bodyType: `furniture_${options.furnitureType}`,
+        size: FURNITURE_SIZES[options.furnitureType],
+        parts: this.generateFurnitureParts(options),
+        material: BUILDING_MATERIALS[options.materialId],
+        isAlive: false,
+        canAct: false,
+      },
+      
+      qi: options.hasQiEffect ? this.createFurnitureQi(id, options) : null,
+      mind: null,
+      
+      attachments: {
+        techniques: [],
+        inventory: [],
+        effects: options.effects || [],
+        bonds: [],
+      },
+      
+      furnitureType: options.furnitureType,
+      placement: options.placement || null,
+      functions: FURNITURE_FUNCTIONS[options.furnitureType],
+      slots: options.slots || [],
+      properties: {
+        quality: options.quality || 1,
+        comfort: options.comfort,
+        durability: 100,
+        aesthetic: options.aesthetic || 1,
+      },
+    };
+  }
+}
+```
+
+### D.10 Интеграция с существующими системами
+
+```typescript
+/**
+ * Обновлённая матрица компонентов
+ */
+const COMPONENT_MATRIX_V2 = {
+  // === Живые ===
+  'character_player':  { soul: true, body: true, qi: true, mind: true, controller: 'player' },
+  'character_npc':     { soul: true, body: true, qi: true, mind: true, controller: 'ai' },
+  'creature_player':   { soul: true, body: true, qi: true, mind: true, controller: 'player' },
+  'creature_ai':       { soul: true, body: true, qi: true, mind: false, controller: 'ai' },
+  
+  // === Духи ===
+  'spirit_player':     { soul: true, body: false, qi: true, mind: true, controller: 'player' },
+  'spirit_ai':         { soul: true, body: false, qi: true, mind: true, controller: 'ai' },
+  
+  // === Растения ===
+  'plant':             { soul: true, body: true, qi: false, mind: false, controller: 'none' },
+  'plant_spirit':      { soul: true, body: true, qi: true, mind: false, controller: 'none' },
+  
+  // === Объекты ===
+  'object':            { soul: true, body: true, qi: false, mind: false, controller: 'none' },
+  'object_qi':         { soul: true, body: true, qi: true, mind: false, controller: 'none' },
+  
+  // === Конструкты ===
+  'construct':         { soul: true, body: true, qi: true, mind: false, controller: 'ai' },
+  'construct_awakened':{ soul: true, body: true, qi: true, mind: true, controller: 'ai' },
+  
+  // 🆕 === Строения ===
+  'structure':         { soul: true, body: true, qi: false, mind: false, controller: 'none' },
+  'structure_qi':      { soul: true, body: true, qi: true, mind: false, controller: 'none' },
+  'structure_living':  { soul: true, body: true, qi: true, mind: true, controller: 'ai' },
+  
+  // 🆕 === Мебель ===
+  'furniture':         { soul: true, body: true, qi: false, mind: false, controller: 'none' },
+  'furniture_qi':      { soul: true, body: true, qi: true, mind: false, controller: 'none' },
+  
+  // 🆕 === Декор ===
+  'decoration':        { soul: true, body: true, qi: false, mind: false, controller: 'none' },
+  'decoration_qi':     { soul: true, body: true, qi: true, mind: false, controller: 'none' },
+};
+```
+
+### D.11 ID-префиксы для строений и мебели
+
+```typescript
+/**
+ * Расширенная система ID
+ */
+const ID_PREFIXES_V2 = {
+  // ... существующие префиксы ...
+  
+  // 🆕 Строения
+  'STR': { name: 'Строение', format: 'STR_XXXXXX' },
+  'STR_LIVING': { name: 'Живое строение', format: 'STR_LIVING_XXXXXX' },
+  'TEMPLE': { name: 'Храм', format: 'TEMPLE_XXXXXX' },
+  'TOWER': { name: 'Башня', format: 'TOWER_XXXXXX' },
+  'GATE': { name: 'Ворота', format: 'GATE_XXXXXX' },
+  
+  // 🆕 Мебель
+  'FURN': { name: 'Мебель', format: 'FURN_XXXXXX' },
+  'BED': { name: 'Кровать', format: 'BED_XXXXXX' },
+  'ALTAR': { name: 'Алтарь', format: 'ALTAR_XXXXXX' },
+  'RACK': { name: 'Стойка', format: 'RACK_XXXXXX' },
+  
+  // 🆕 Декор
+  'DEC': { name: 'Декор', format: 'DEC_XXXXXX' },
+  'STATUE': { name: 'Статуя', format: 'STATUE_XXXXXX' },
+  'PAINTING': { name: 'Картина', format: 'PAINTING_XXXXXX' },
+};
+```
+
+---
+
 *Документ описывает архитектуру системы наследования для всех объектов мира*  
-*Совместим с: id-system.md v3.0, body.md v1.1, equip.md v1.0, qi_stone.md v2.0, npc-generator-plan.md v2.0*
+*Совместим с: id-system.md v3.0, body.md v1.1, equip.md v1.0, qi_stone.md v2.0, npc-generator-plan.md v2.0*  
+*Версия: 1.2 — добавлена система строений и мебели*
