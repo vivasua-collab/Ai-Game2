@@ -1,0 +1,1294 @@
+{
+  "version": "2.1",
+  "category": "story",
+  "description": "Сюжетные NPC для тестирования (20 человек)",
+  "count": 20,
+  "npcs": [
+    {
+      "id": "NPC_PRESET_00001",
+      "isPreset": true,
+      "name": "Ли Мэй",
+      "nameEn": "Li Mei",
+      "title": "Внешний ученик",
+      "age": 104,
+      "gender": "female",
+      "backstory": "Персонаж мира культивации. Уровень 6.6.",
+      "personality": {
+        "traits": [
+          "Дружелюбие",
+          "Любопытство",
+          "Авантюризм"
+        ],
+        "motivation": "приключения",
+        "dominantEmotion": "открытость",
+        "speechStyle": "Обычная речь",
+        "quirks": []
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "outer_disciple",
+      "stats": {
+        "strength": 42,
+        "agility": 30,
+        "intelligence": 30,
+        "conductivity": 8,
+        "vitality": 51
+      },
+      "cultivation": {
+        "level": 6,
+        "subLevel": 6,
+        "coreCapacity": 279739,
+        "currentQi": 212757,
+        "coreQuality": 69,
+        "baseVolume": 3062,
+        "qiDensity": 32,
+        "meridianConductivity": 8.505555555555556
+      },
+      "techniques": [
+        "breath_of_qi",
+        "reinforced_strike"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "resources": {
+        "spiritStones": 44,
+        "contributionPoints": 9
+      },
+      "relations": {
+        "defaultPlayerDisposition": 70
+      },
+      "category": "story",
+      "rarity": "legendary",
+      "importance": "important",
+      "tags": [
+        "outer_disciple"
+      ],
+      "generatedAt": "2026-03-03T09:03:01.939Z",
+      "generatorVersion": "2.1.0-preset"
+    },
+    {
+      "id": "NPC_PRESET_00002",
+      "isPreset": true,
+      "name": "Чжан Фэн",
+      "nameEn": "Zhang Feng",
+      "title": "Внутренний ученик",
+      "age": 68,
+      "gender": "male",
+      "backstory": "Персонаж мира культивации. Уровень 6.7.",
+      "personality": {
+        "traits": [
+          "Амбициозность",
+          "Упорство",
+          "Соревновательность"
+        ],
+        "motivation": "признание",
+        "dominantEmotion": "решимость",
+        "speechStyle": "Обычная речь",
+        "quirks": []
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "inner_disciple",
+      "stats": {
+        "strength": 61,
+        "agility": 30,
+        "intelligence": 30,
+        "conductivity": 1,
+        "vitality": 30
+      },
+      "cultivation": {
+        "level": 6,
+        "subLevel": 7,
+        "coreCapacity": 64265,
+        "currentQi": 40335,
+        "coreQuality": 92,
+        "baseVolume": 637,
+        "qiDensity": 32,
+        "meridianConductivity": 1.7694444444444444
+      },
+      "techniques": [
+        "breath_of_qi",
+        "reinforced_strike"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "resources": {
+        "spiritStones": 5,
+        "contributionPoints": 28
+      },
+      "relations": {
+        "defaultPlayerDisposition": 50
+      },
+      "category": "story",
+      "rarity": "legendary",
+      "importance": "important",
+      "tags": [
+        "inner_disciple"
+      ],
+      "generatedAt": "2026-03-03T09:03:01.939Z",
+      "generatorVersion": "2.1.0-preset"
+    },
+    {
+      "id": "NPC_PRESET_00003",
+      "isPreset": true,
+      "name": "Чжан Лань",
+      "nameEn": "Zhang Lan",
+      "title": "Старейшина",
+      "age": 63,
+      "gender": "female",
+      "backstory": "Персонаж мира культивации. Уровень 4.3.",
+      "personality": {
+        "traits": [
+          "Лень",
+          "Покорность",
+          "Хитрость"
+        ],
+        "motivation": "минимум работы",
+        "dominantEmotion": "желание отдыха",
+        "speechStyle": "Обычная речь",
+        "quirks": []
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "elder",
+      "stats": {
+        "strength": 37,
+        "agility": 15,
+        "intelligence": 16,
+        "conductivity": 10,
+        "vitality": 31
+      },
+      "cultivation": {
+        "level": 4,
+        "subLevel": 3,
+        "coreCapacity": 53665,
+        "currentQi": 43623,
+        "coreQuality": 33,
+        "baseVolume": 3785,
+        "qiDensity": 8,
+        "meridianConductivity": 10.51388888888889
+      },
+      "techniques": [
+        "breath_of_qi"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "resources": {
+        "spiritStones": 13,
+        "contributionPoints": 10
+      },
+      "relations": {
+        "defaultPlayerDisposition": 55
+      },
+      "category": "story",
+      "rarity": "rare",
+      "importance": "normal",
+      "tags": [
+        "elder"
+      ],
+      "generatedAt": "2026-03-03T09:03:01.939Z",
+      "generatorVersion": "2.1.0-preset"
+    },
+    {
+      "id": "NPC_PRESET_00004",
+      "isPreset": true,
+      "name": "Ван Хао",
+      "nameEn": "Wang Hao",
+      "title": "Мастер секты",
+      "age": 24,
+      "gender": "male",
+      "backstory": "Персонаж мира культивации. Уровень 1.7.",
+      "personality": {
+        "traits": [
+          "Амбициозность",
+          "Упорство",
+          "Соревновательность"
+        ],
+        "motivation": "продвижение",
+        "dominantEmotion": "надежда",
+        "speechStyle": "Обычная речь",
+        "quirks": []
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "sect_master",
+      "stats": {
+        "strength": 20,
+        "agility": 22,
+        "intelligence": 19,
+        "conductivity": 1,
+        "vitality": 10
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 7,
+        "coreCapacity": 1074,
+        "currentQi": 708,
+        "coreQuality": 78,
+        "baseVolume": 549,
+        "qiDensity": 1,
+        "meridianConductivity": 1.525
+      },
+      "techniques": [
+        "breath_of_qi",
+        "reinforced_strike",
+        "fire_strike"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null,
+        "accessory1": null
+      },
+      "resources": {
+        "spiritStones": 59,
+        "contributionPoints": 83
+      },
+      "relations": {
+        "defaultPlayerDisposition": 50
+      },
+      "category": "story",
+      "rarity": "uncommon",
+      "importance": "normal",
+      "tags": [
+        "sect_master"
+      ],
+      "generatedAt": "2026-03-03T09:03:01.939Z",
+      "generatorVersion": "2.1.0-preset"
+    },
+    {
+      "id": "NPC_PRESET_00005",
+      "isPreset": true,
+      "name": "Чэнь Сю",
+      "nameEn": "Chen Xiu",
+      "title": "Инструктор",
+      "age": 64,
+      "gender": "female",
+      "backstory": "Персонаж мира культивации. Уровень 2.0.",
+      "personality": {
+        "traits": [
+          "Жадность",
+          "Хитрость",
+          "Обаяние"
+        ],
+        "motivation": "расширение торговли",
+        "dominantEmotion": "алчность",
+        "speechStyle": "Обычная речь",
+        "quirks": []
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "instructor",
+      "stats": {
+        "strength": 27,
+        "agility": 11,
+        "intelligence": 11,
+        "conductivity": 6,
+        "vitality": 27
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 0,
+        "coreCapacity": 5134,
+        "currentQi": 3320,
+        "coreQuality": 36,
+        "baseVolume": 2334,
+        "qiDensity": 2,
+        "meridianConductivity": 6.483333333333333
+      },
+      "techniques": [
+        "breath_of_qi",
+        "mental_shield"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null,
+        "accessory1": null
+      },
+      "resources": {
+        "spiritStones": 375,
+        "contributionPoints": 14
+      },
+      "relations": {
+        "defaultPlayerDisposition": 50
+      },
+      "category": "story",
+      "rarity": "uncommon",
+      "importance": "normal",
+      "tags": [
+        "instructor"
+      ],
+      "generatedAt": "2026-03-03T09:03:01.939Z",
+      "generatorVersion": "2.1.0-preset"
+    },
+    {
+      "id": "NPC_PRESET_00006",
+      "isPreset": true,
+      "name": "Лю Цзян",
+      "nameEn": "Liu Jiang",
+      "title": "Торговец",
+      "age": 95,
+      "gender": "male",
+      "backstory": "Персонаж мира культивации. Уровень 6.0.",
+      "personality": {
+        "traits": [
+          "Амбициозность",
+          "Упорство",
+          "Соревновательность"
+        ],
+        "motivation": "сила",
+        "dominantEmotion": "зависть",
+        "speechStyle": "Обычная речь",
+        "quirks": []
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "merchant",
+      "stats": {
+        "strength": 31,
+        "agility": 36,
+        "intelligence": 67,
+        "conductivity": 5,
+        "vitality": 30
+      },
+      "cultivation": {
+        "level": 6,
+        "subLevel": 0,
+        "coreCapacity": 99362,
+        "currentQi": 76545,
+        "coreQuality": 97,
+        "baseVolume": 1928,
+        "qiDensity": 32,
+        "meridianConductivity": 5.355555555555555
+      },
+      "techniques": [
+        "breath_of_qi",
+        "fire_ball",
+        "mental_shield",
+        "lightning_flash"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null,
+        "accessory1": null
+      },
+      "resources": {
+        "spiritStones": 180,
+        "contributionPoints": 771
+      },
+      "relations": {
+        "defaultPlayerDisposition": 50
+      },
+      "category": "story",
+      "rarity": "legendary",
+      "importance": "important",
+      "tags": [
+        "merchant"
+      ],
+      "generatedAt": "2026-03-03T09:03:01.939Z",
+      "generatorVersion": "2.1.0-preset"
+    },
+    {
+      "id": "NPC_PRESET_00007",
+      "isPreset": true,
+      "name": "Ян Чжи",
+      "nameEn": "Yang Zhi",
+      "title": "Алхимик",
+      "age": 54,
+      "gender": "male",
+      "backstory": "Персонаж мира культивации. Уровень 6.6.",
+      "personality": {
+        "traits": [
+          "Мудрость",
+          "Терпение",
+          "Доброта"
+        ],
+        "motivation": "помощь ученикам",
+        "dominantEmotion": "тепло",
+        "speechStyle": "Обычная речь",
+        "quirks": []
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "alchemist",
+      "stats": {
+        "strength": 75,
+        "agility": 30,
+        "intelligence": 30,
+        "conductivity": 6,
+        "vitality": 75
+      },
+      "cultivation": {
+        "level": 6,
+        "subLevel": 6,
+        "coreCapacity": 198105,
+        "currentQi": 181772,
+        "coreQuality": 15,
+        "baseVolume": 2168,
+        "qiDensity": 32,
+        "meridianConductivity": 6.022222222222222
+      },
+      "techniques": [],
+      "equipment": {
+        "armor": null
+      },
+      "resources": {
+        "spiritStones": 0,
+        "contributionPoints": 6
+      },
+      "relations": {
+        "defaultPlayerDisposition": 75
+      },
+      "category": "story",
+      "rarity": "legendary",
+      "importance": "important",
+      "tags": [
+        "alchemist"
+      ],
+      "generatedAt": "2026-03-03T09:03:01.940Z",
+      "generatorVersion": "2.1.0-preset"
+    },
+    {
+      "id": "NPC_PRESET_00008",
+      "isPreset": true,
+      "name": "Чжао Вэй",
+      "nameEn": "Zhao Wei",
+      "title": "Кузнец",
+      "age": 67,
+      "gender": "male",
+      "backstory": "Персонаж мира культивации. Уровень 5.4.",
+      "personality": {
+        "traits": [
+          "Таинственность",
+          "Мудрость",
+          "Отстранённость"
+        ],
+        "motivation": "тайные цели",
+        "dominantEmotion": "глубина",
+        "speechStyle": "Обычная речь",
+        "quirks": []
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "blacksmith",
+      "stats": {
+        "strength": 35,
+        "agility": 22,
+        "intelligence": 32,
+        "conductivity": 2,
+        "vitality": 27
+      },
+      "cultivation": {
+        "level": 5,
+        "subLevel": 4,
+        "coreCapacity": 33568,
+        "currentQi": 27621,
+        "coreQuality": 24,
+        "baseVolume": 977,
+        "qiDensity": 16,
+        "meridianConductivity": 2.713888888888889
+      },
+      "techniques": [
+        "breath_of_qi",
+        "mental_shield",
+        "lightning_flash",
+        "void_step",
+        "earth_armor"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null,
+        "accessory1": null
+      },
+      "resources": {
+        "spiritStones": 1710,
+        "contributionPoints": 2957
+      },
+      "relations": {
+        "defaultPlayerDisposition": 55
+      },
+      "category": "story",
+      "rarity": "legendary",
+      "importance": "important",
+      "tags": [
+        "blacksmith"
+      ],
+      "generatedAt": "2026-03-03T09:03:01.940Z",
+      "generatorVersion": "2.1.0-preset"
+    },
+    {
+      "id": "NPC_PRESET_00009",
+      "isPreset": true,
+      "name": "Чжоу Мэй",
+      "nameEn": "Zhou Mei",
+      "title": "Целитель",
+      "age": 99,
+      "gender": "female",
+      "backstory": "Персонаж мира культивации. Уровень 3.3.",
+      "personality": {
+        "traits": [
+          "Дружелюбие",
+          "Любопытство",
+          "Авантюризм"
+        ],
+        "motivation": "новые знакомства",
+        "dominantEmotion": "любопытство",
+        "speechStyle": "Обычная речь",
+        "quirks": []
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "healer",
+      "stats": {
+        "strength": 31,
+        "agility": 15,
+        "intelligence": 13,
+        "conductivity": 3,
+        "vitality": 23
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 3,
+        "coreCapacity": 8770,
+        "currentQi": 8011,
+        "coreQuality": 6,
+        "baseVolume": 1360,
+        "qiDensity": 4,
+        "meridianConductivity": 3.7777777777777777
+      },
+      "techniques": [
+        "breath_of_qi"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "resources": {
+        "spiritStones": 24,
+        "contributionPoints": 23
+      },
+      "relations": {
+        "defaultPlayerDisposition": 70
+      },
+      "category": "story",
+      "rarity": "rare",
+      "importance": "normal",
+      "tags": [
+        "healer"
+      ],
+      "generatedAt": "2026-03-03T09:03:01.940Z",
+      "generatorVersion": "2.1.0-preset"
+    },
+    {
+      "id": "NPC_PRESET_00010",
+      "isPreset": true,
+      "name": "Вэй Лин",
+      "nameEn": "Wei Ling",
+      "title": "Учёный",
+      "age": 22,
+      "gender": "female",
+      "backstory": "Персонаж мира культивации. Уровень 2.0.",
+      "personality": {
+        "traits": [
+          "Мудрость",
+          "Терпение",
+          "Доброта"
+        ],
+        "motivation": "сохранение традиций",
+        "dominantEmotion": "спокойствие",
+        "speechStyle": "Обычная речь",
+        "quirks": []
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "scholar",
+      "stats": {
+        "strength": 11,
+        "agility": 27,
+        "intelligence": 27,
+        "conductivity": 2,
+        "vitality": 11
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 0,
+        "coreCapacity": 1984,
+        "currentQi": 1171,
+        "coreQuality": 97,
+        "baseVolume": 902,
+        "qiDensity": 2,
+        "meridianConductivity": 2.5055555555555555
+      },
+      "techniques": [
+        "breath_of_qi",
+        "reinforced_strike",
+        "turtle_stance",
+        "ghost_shadow"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "resources": {
+        "spiritStones": 95,
+        "contributionPoints": 181
+      },
+      "relations": {
+        "defaultPlayerDisposition": 75
+      },
+      "category": "story",
+      "rarity": "uncommon",
+      "importance": "normal",
+      "tags": [
+        "scholar"
+      ],
+      "generatedAt": "2026-03-03T09:03:01.940Z",
+      "generatorVersion": "2.1.0-preset"
+    },
+    {
+      "id": "NPC_PRESET_00011",
+      "isPreset": true,
+      "name": "Вэй Лун",
+      "nameEn": "Wei Long",
+      "title": "Дворянин",
+      "age": 72,
+      "gender": "male",
+      "backstory": "Персонаж мира культивации. Уровень 1.0.",
+      "personality": {
+        "traits": [
+          "Мудрость",
+          "Терпение",
+          "Доброта"
+        ],
+        "motivation": "передача знаний",
+        "dominantEmotion": "спокойствие",
+        "speechStyle": "Обычная речь",
+        "quirks": []
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "noble",
+      "stats": {
+        "strength": 25,
+        "agility": 10,
+        "intelligence": 10,
+        "conductivity": 15,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 0,
+        "coreCapacity": 5610,
+        "currentQi": 3113,
+        "coreQuality": 3,
+        "baseVolume": 5610,
+        "qiDensity": 1,
+        "meridianConductivity": 15.583333333333334
+      },
+      "techniques": [
+        "breath_of_qi",
+        "mental_shield",
+        "void_step"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "resources": {
+        "spiritStones": 32,
+        "contributionPoints": 4
+      },
+      "relations": {
+        "defaultPlayerDisposition": 75
+      },
+      "category": "story",
+      "rarity": "uncommon",
+      "importance": "normal",
+      "tags": [
+        "noble"
+      ],
+      "generatedAt": "2026-03-03T09:03:01.940Z",
+      "generatorVersion": "2.1.0-preset"
+    },
+    {
+      "id": "NPC_PRESET_00012",
+      "isPreset": true,
+      "name": "Ван Юй",
+      "nameEn": "Wang Yu",
+      "title": "Нищий",
+      "age": 59,
+      "gender": "female",
+      "backstory": "Персонаж мира культивации. Уровень 1.6.",
+      "personality": {
+        "traits": [
+          "Эксцентричность",
+          "Интеллект",
+          "Одержимость"
+        ],
+        "motivation": "знания",
+        "dominantEmotion": "растерянность",
+        "speechStyle": "Обычная речь",
+        "quirks": []
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "beggar",
+      "stats": {
+        "strength": 13,
+        "agility": 19,
+        "intelligence": 24,
+        "conductivity": 2,
+        "vitality": 10
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 6,
+        "coreCapacity": 1508,
+        "currentQi": 1279,
+        "coreQuality": 55,
+        "baseVolume": 849,
+        "qiDensity": 1,
+        "meridianConductivity": 2.3583333333333334
+      },
+      "techniques": [
+        "breath_of_qi",
+        "qi_healing"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "resources": {
+        "spiritStones": 104,
+        "contributionPoints": 579
+      },
+      "relations": {
+        "defaultPlayerDisposition": 50
+      },
+      "category": "story",
+      "rarity": "uncommon",
+      "importance": "normal",
+      "tags": [
+        "beggar"
+      ],
+      "generatedAt": "2026-03-03T09:03:01.940Z",
+      "generatorVersion": "2.1.0-preset"
+    },
+    {
+      "id": "NPC_PRESET_00013",
+      "isPreset": true,
+      "name": "Чжан Лань",
+      "nameEn": "Zhang Lan",
+      "title": "Путник",
+      "age": 24,
+      "gender": "female",
+      "backstory": "Персонаж мира культивации. Уровень 2.4.",
+      "personality": {
+        "traits": [
+          "Агрессия",
+          "Жестокость",
+          "Нетерпение"
+        ],
+        "motivation": "нажива",
+        "dominantEmotion": "презрение",
+        "speechStyle": "Обычная речь",
+        "quirks": []
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "traveler",
+      "stats": {
+        "strength": 27,
+        "agility": 11,
+        "intelligence": 11,
+        "conductivity": 13,
+        "vitality": 27
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 4,
+        "coreCapacity": 15798,
+        "currentQi": 14353,
+        "coreQuality": 11,
+        "baseVolume": 4903,
+        "qiDensity": 2,
+        "meridianConductivity": 13.619444444444444
+      },
+      "techniques": [
+        "reinforced_strike"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "resources": {
+        "spiritStones": 18,
+        "contributionPoints": 23
+      },
+      "relations": {
+        "defaultPlayerDisposition": 0
+      },
+      "category": "story",
+      "rarity": "uncommon",
+      "importance": "normal",
+      "tags": [
+        "traveler"
+      ],
+      "generatedAt": "2026-03-03T09:03:01.940Z",
+      "generatorVersion": "2.1.0-preset"
+    },
+    {
+      "id": "NPC_PRESET_00014",
+      "isPreset": true,
+      "name": "Ван Хао",
+      "nameEn": "Wang Hao",
+      "title": "Отшельник",
+      "age": 112,
+      "gender": "male",
+      "backstory": "Персонаж мира культивации. Уровень 6.8.",
+      "personality": {
+        "traits": [
+          "Верность",
+          "Храбрость",
+          "Дисциплина"
+        ],
+        "motivation": "поддержание порядка",
+        "dominantEmotion": "гордость",
+        "speechStyle": "Обычная речь",
+        "quirks": []
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "hermit",
+      "stats": {
+        "strength": 30,
+        "agility": 41,
+        "intelligence": 75,
+        "conductivity": 2,
+        "vitality": 30
+      },
+      "cultivation": {
+        "level": 6,
+        "subLevel": 8,
+        "coreCapacity": 105185,
+        "currentQi": 56348,
+        "coreQuality": 20,
+        "baseVolume": 950,
+        "qiDensity": 32,
+        "meridianConductivity": 2.638888888888889
+      },
+      "techniques": [
+        "breath_of_qi",
+        "reinforced_strike",
+        "turtle_stance"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "resources": {
+        "spiritStones": 46,
+        "contributionPoints": 90
+      },
+      "relations": {
+        "defaultPlayerDisposition": 65
+      },
+      "category": "story",
+      "rarity": "legendary",
+      "importance": "important",
+      "tags": [
+        "hermit"
+      ],
+      "generatedAt": "2026-03-03T09:03:01.940Z",
+      "generatorVersion": "2.1.0-preset"
+    },
+    {
+      "id": "NPC_PRESET_00015",
+      "isPreset": true,
+      "name": "Чэнь Юнь",
+      "nameEn": "Chen Yun",
+      "title": "Наёмник",
+      "age": 29,
+      "gender": "male",
+      "backstory": "Персонаж мира культивации. Уровень 6.0.",
+      "personality": {
+        "traits": [
+          "Безжалостность",
+          "Дисциплина",
+          "Сила"
+        ],
+        "motivation": "победа",
+        "dominantEmotion": "презрение",
+        "speechStyle": "Обычная речь",
+        "quirks": []
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "mercenary",
+      "stats": {
+        "strength": 73,
+        "agility": 30,
+        "intelligence": 30,
+        "conductivity": 13,
+        "vitality": 75
+      },
+      "cultivation": {
+        "level": 6,
+        "subLevel": 0,
+        "coreCapacity": 244127,
+        "currentQi": 173820,
+        "coreQuality": 29,
+        "baseVolume": 4737,
+        "qiDensity": 32,
+        "meridianConductivity": 13.158333333333333
+      },
+      "techniques": [
+        "reinforced_strike",
+        "turtle_stance"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "resources": {
+        "spiritStones": 41,
+        "contributionPoints": 17
+      },
+      "relations": {
+        "defaultPlayerDisposition": 35
+      },
+      "category": "story",
+      "rarity": "legendary",
+      "importance": "important",
+      "tags": [
+        "mercenary"
+      ],
+      "generatedAt": "2026-03-03T09:03:01.940Z",
+      "generatorVersion": "2.1.0-preset"
+    },
+    {
+      "id": "NPC_PRESET_00016",
+      "isPreset": true,
+      "name": "Ян Фэй",
+      "nameEn": "Yang Fei",
+      "title": "Страж",
+      "age": 54,
+      "gender": "female",
+      "backstory": "Персонаж мира культивации. Уровень 5.9.",
+      "personality": {
+        "traits": [
+          "Лень",
+          "Покорность",
+          "Хитрость"
+        ],
+        "motivation": "спокойствие",
+        "dominantEmotion": "апатия",
+        "speechStyle": "Обычная речь",
+        "quirks": []
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "guard_combat",
+      "stats": {
+        "strength": 27,
+        "agility": 33,
+        "intelligence": 28,
+        "conductivity": 3,
+        "vitality": 31
+      },
+      "cultivation": {
+        "level": 5,
+        "subLevel": 9,
+        "coreCapacity": 71073,
+        "currentQi": 36859,
+        "coreQuality": 66,
+        "baseVolume": 1283,
+        "qiDensity": 16,
+        "meridianConductivity": 3.563888888888889
+      },
+      "techniques": [
+        "breath_of_qi"
+      ],
+      "equipment": {
+        "armor": null
+      },
+      "resources": {
+        "spiritStones": 7,
+        "contributionPoints": 5
+      },
+      "relations": {
+        "defaultPlayerDisposition": 55
+      },
+      "category": "story",
+      "rarity": "legendary",
+      "importance": "important",
+      "tags": [
+        "guard_combat"
+      ],
+      "generatedAt": "2026-03-03T09:03:01.940Z",
+      "generatorVersion": "2.1.0-preset"
+    },
+    {
+      "id": "NPC_PRESET_00017",
+      "isPreset": true,
+      "name": "Чжао Хуа",
+      "nameEn": "Zhao Hua",
+      "title": "Разбойник",
+      "age": 25,
+      "gender": "female",
+      "backstory": "Персонаж мира культивации. Уровень 4.7.",
+      "personality": {
+        "traits": [
+          "Фанатизм",
+          "Преданность",
+          "Тайна"
+        ],
+        "motivation": "распространение веры",
+        "dominantEmotion": "фанатизм",
+        "speechStyle": "Обычная речь",
+        "quirks": []
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "bandit",
+      "stats": {
+        "strength": 28,
+        "agility": 37,
+        "intelligence": 19,
+        "conductivity": 3,
+        "vitality": 19
+      },
+      "cultivation": {
+        "level": 4,
+        "subLevel": 7,
+        "coreCapacity": 24586,
+        "currentQi": 13502,
+        "coreQuality": 36,
+        "baseVolume": 1182,
+        "qiDensity": 8,
+        "meridianConductivity": 3.283333333333333
+      },
+      "techniques": [
+        "reinforced_strike",
+        "dirty_trick"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "resources": {
+        "spiritStones": 7,
+        "contributionPoints": 11
+      },
+      "relations": {
+        "defaultPlayerDisposition": 35
+      },
+      "category": "story",
+      "rarity": "rare",
+      "importance": "normal",
+      "tags": [
+        "bandit"
+      ],
+      "generatedAt": "2026-03-03T09:03:01.940Z",
+      "generatorVersion": "2.1.0-preset"
+    },
+    {
+      "id": "NPC_PRESET_00018",
+      "isPreset": true,
+      "name": "Сунь Цзы",
+      "nameEn": "Sun Zi",
+      "title": "Убийца",
+      "age": 19,
+      "gender": "female",
+      "backstory": "Персонаж мира культивации. Уровень 3.5.",
+      "personality": {
+        "traits": [
+          "Эксцентричность",
+          "Интеллект",
+          "Одержимость"
+        ],
+        "motivation": "открытия",
+        "dominantEmotion": "возбуждение",
+        "speechStyle": "Обычная речь",
+        "quirks": []
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "assassin",
+      "stats": {
+        "strength": 12,
+        "agility": 31,
+        "intelligence": 31,
+        "conductivity": 4,
+        "vitality": 19
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 5,
+        "coreCapacity": 11538,
+        "currentQi": 5858,
+        "coreQuality": 10,
+        "baseVolume": 1479,
+        "qiDensity": 4,
+        "meridianConductivity": 4.108333333333333
+      },
+      "techniques": [
+        "breath_of_qi",
+        "qi_healing"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "resources": {
+        "spiritStones": 240,
+        "contributionPoints": 6
+      },
+      "relations": {
+        "defaultPlayerDisposition": 50
+      },
+      "category": "story",
+      "rarity": "rare",
+      "importance": "normal",
+      "tags": [
+        "assassin"
+      ],
+      "generatedAt": "2026-03-03T09:03:01.940Z",
+      "generatorVersion": "2.1.0-preset"
+    },
+    {
+      "id": "NPC_PRESET_00019",
+      "isPreset": true,
+      "name": "Чжоу Мэй",
+      "nameEn": "Zhou Mei",
+      "title": "Культист",
+      "age": 46,
+      "gender": "female",
+      "backstory": "Персонаж мира культивации. Уровень 2.4.",
+      "personality": {
+        "traits": [
+          "Верность",
+          "Храбрость",
+          "Дисциплина"
+        ],
+        "motivation": "поддержание порядка",
+        "dominantEmotion": "решимость",
+        "speechStyle": "Обычная речь",
+        "quirks": []
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "cultist",
+      "stats": {
+        "strength": 24,
+        "agility": 23,
+        "intelligence": 11,
+        "conductivity": 2,
+        "vitality": 12
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 4,
+        "coreCapacity": 2420,
+        "currentQi": 1368,
+        "coreQuality": 59,
+        "baseVolume": 750,
+        "qiDensity": 2,
+        "meridianConductivity": 2.0833333333333335
+      },
+      "techniques": [
+        "reinforced_strike",
+        "breath_of_qi",
+        "wind_speed"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "resources": {
+        "spiritStones": 41,
+        "contributionPoints": 2
+      },
+      "relations": {
+        "defaultPlayerDisposition": 65
+      },
+      "category": "story",
+      "rarity": "uncommon",
+      "importance": "normal",
+      "tags": [
+        "cultist"
+      ],
+      "generatedAt": "2026-03-03T09:03:01.940Z",
+      "generatorVersion": "2.1.0-preset"
+    },
+    {
+      "id": "NPC_PRESET_00020",
+      "isPreset": true,
+      "name": "Вэй Лин",
+      "nameEn": "Wei Ling",
+      "title": "Воин",
+      "age": 108,
+      "gender": "female",
+      "backstory": "Персонаж мира культивации. Уровень 6.2.",
+      "personality": {
+        "traits": [
+          "Эксцентричность",
+          "Интеллект",
+          "Одержимость"
+        ],
+        "motivation": "открытия",
+        "dominantEmotion": "возбуждение",
+        "speechStyle": "Обычная речь",
+        "quirks": []
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "warrior",
+      "stats": {
+        "strength": 30,
+        "agility": 46,
+        "intelligence": 75,
+        "conductivity": 1,
+        "vitality": 40
+      },
+      "cultivation": {
+        "level": 6,
+        "subLevel": 2,
+        "coreCapacity": 38446,
+        "currentQi": 21796,
+        "coreQuality": 36,
+        "baseVolume": 616,
+        "qiDensity": 32,
+        "meridianConductivity": 1.711111111111111
+      },
+      "techniques": [
+        "breath_of_qi",
+        "reinforced_strike"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "resources": {
+        "spiritStones": 78,
+        "contributionPoints": 3
+      },
+      "relations": {
+        "defaultPlayerDisposition": 50
+      },
+      "category": "story",
+      "rarity": "legendary",
+      "importance": "important",
+      "tags": [
+        "warrior"
+      ],
+      "generatedAt": "2026-03-03T09:03:01.940Z",
+      "generatorVersion": "2.1.0-preset"
+    }
+  ]
+}

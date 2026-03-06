@@ -1,0 +1,387 @@
+{
+  "version": "2.0",
+  "type": "food",
+  "count": 20,
+  "items": [
+    {
+      "id": "CS_000041",
+      "name": "Сытный Суп Восстановление здоровья",
+      "nameEn": "Сытный Суп of Heal HP",
+      "description": "Восстанавливает здоровье",
+      "type": "food",
+      "effect": {
+        "type": "heal_hp",
+        "value": 10
+      },
+      "usage": {
+        "castTime": 4,
+        "cooldown": 21
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 50,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000042",
+      "name": "Простой Фрукт Восстановление сил",
+      "nameEn": "Простой Фрукт of Heal Stamina",
+      "description": "Восстанавливает силы",
+      "type": "food",
+      "effect": {
+        "type": "heal_stamina",
+        "value": 15
+      },
+      "usage": {
+        "castTime": 3,
+        "cooldown": 28
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 50,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000043",
+      "name": "Простой Мясо Восстановление сил",
+      "nameEn": "Простой Мясо of Heal Stamina",
+      "description": "Восстанавливает силы",
+      "type": "food",
+      "effect": {
+        "type": "heal_stamina",
+        "value": 19
+      },
+      "usage": {
+        "castTime": 4,
+        "cooldown": 13
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 50,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000044",
+      "name": "Сытный Суп Восстановление здоровья",
+      "nameEn": "Сытный Суп of Heal HP",
+      "description": "Восстанавливает здоровье",
+      "type": "food",
+      "effect": {
+        "type": "heal_hp",
+        "value": 10
+      },
+      "usage": {
+        "castTime": 3,
+        "cooldown": 13
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 50,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000045",
+      "name": "Сытный Суп Восстановление сил",
+      "nameEn": "Сытный Суп of Heal Stamina",
+      "description": "Восстанавливает силы",
+      "type": "food",
+      "effect": {
+        "type": "heal_stamina",
+        "value": 15
+      },
+      "usage": {
+        "castTime": 4,
+        "cooldown": 29
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 50,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000046",
+      "name": "Простой Рис Восстановление здоровья",
+      "nameEn": "Простой Рис of Heal HP",
+      "description": "Восстанавливает здоровье",
+      "type": "food",
+      "effect": {
+        "type": "heal_hp",
+        "value": 13
+      },
+      "usage": {
+        "castTime": 4,
+        "cooldown": 16
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 50,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000047",
+      "name": "Изысканный Фрукт Восстановление сил",
+      "nameEn": "Изысканный Фрукт of Heal Stamina",
+      "description": "Восстанавливает силы",
+      "type": "food",
+      "effect": {
+        "type": "heal_stamina",
+        "value": 19
+      },
+      "usage": {
+        "castTime": 3,
+        "cooldown": 29
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 50,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000048",
+      "name": "Изысканный Суп Восстановление сил",
+      "nameEn": "Изысканный Суп of Heal Stamina",
+      "description": "Восстанавливает силы",
+      "type": "food",
+      "effect": {
+        "type": "heal_stamina",
+        "value": 19
+      },
+      "usage": {
+        "castTime": 4,
+        "cooldown": 26
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 50,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000049",
+      "name": "Простой Хлеб Восстановление сил",
+      "nameEn": "Простой Хлеб of Heal Stamina",
+      "description": "Восстанавливает силы",
+      "type": "food",
+      "effect": {
+        "type": "heal_stamina",
+        "value": 15
+      },
+      "usage": {
+        "castTime": 4,
+        "cooldown": 19
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 50,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000050",
+      "name": "Изысканный Фрукт Восстановление здоровья",
+      "nameEn": "Изысканный Фрукт of Heal HP",
+      "description": "Восстанавливает здоровье",
+      "type": "food",
+      "effect": {
+        "type": "heal_hp",
+        "value": 10
+      },
+      "usage": {
+        "castTime": 3,
+        "cooldown": 29
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 50,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000051",
+      "name": "Питательный Рис Восстановление здоровья",
+      "nameEn": "Питательный Рис of Heal HP",
+      "description": "Восстанавливает здоровье",
+      "type": "food",
+      "effect": {
+        "type": "heal_hp",
+        "value": 10
+      },
+      "usage": {
+        "castTime": 4,
+        "cooldown": 26
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 50,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000052",
+      "name": "Вкусный Мясо Восстановление сил",
+      "nameEn": "Вкусный Мясо of Heal Stamina",
+      "description": "Восстанавливает силы",
+      "type": "food",
+      "effect": {
+        "type": "heal_stamina",
+        "value": 15
+      },
+      "usage": {
+        "castTime": 4,
+        "cooldown": 14
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 50,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000053",
+      "name": "Вкусный Рис Восстановление сил",
+      "nameEn": "Вкусный Рис of Heal Stamina",
+      "description": "Восстанавливает силы",
+      "type": "food",
+      "effect": {
+        "type": "heal_stamina",
+        "value": 15
+      },
+      "usage": {
+        "castTime": 4,
+        "cooldown": 21
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 50,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000054",
+      "name": "Вкусный Рис Восстановление здоровья",
+      "nameEn": "Вкусный Рис of Heal HP",
+      "description": "Восстанавливает здоровье",
+      "type": "food",
+      "effect": {
+        "type": "heal_hp",
+        "value": 13
+      },
+      "usage": {
+        "castTime": 4,
+        "cooldown": 22
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 50,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000055",
+      "name": "Сытный Мясо Восстановление сил",
+      "nameEn": "Сытный Мясо of Heal Stamina",
+      "description": "Восстанавливает силы",
+      "type": "food",
+      "effect": {
+        "type": "heal_stamina",
+        "value": 15
+      },
+      "usage": {
+        "castTime": 3,
+        "cooldown": 29
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 50,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000056",
+      "name": "Питательный Хлеб Восстановление сил",
+      "nameEn": "Питательный Хлеб of Heal Stamina",
+      "description": "Восстанавливает силы",
+      "type": "food",
+      "effect": {
+        "type": "heal_stamina",
+        "value": 15
+      },
+      "usage": {
+        "castTime": 4,
+        "cooldown": 24
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 50,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000057",
+      "name": "Изысканный Мясо Восстановление сил",
+      "nameEn": "Изысканный Мясо of Heal Stamina",
+      "description": "Восстанавливает силы",
+      "type": "food",
+      "effect": {
+        "type": "heal_stamina",
+        "value": 15
+      },
+      "usage": {
+        "castTime": 3,
+        "cooldown": 12
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 50,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000058",
+      "name": "Простой Фрукт Восстановление здоровья",
+      "nameEn": "Простой Фрукт of Heal HP",
+      "description": "Восстанавливает здоровье",
+      "type": "food",
+      "effect": {
+        "type": "heal_hp",
+        "value": 10
+      },
+      "usage": {
+        "castTime": 3,
+        "cooldown": 28
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 50,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000059",
+      "name": "Вкусный Хлеб Восстановление здоровья",
+      "nameEn": "Вкусный Хлеб of Heal HP",
+      "description": "Восстанавливает здоровье",
+      "type": "food",
+      "effect": {
+        "type": "heal_hp",
+        "value": 13
+      },
+      "usage": {
+        "castTime": 3,
+        "cooldown": 11
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 50,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000060",
+      "name": "Вкусный Рис Восстановление здоровья",
+      "nameEn": "Вкусный Рис of Heal HP",
+      "description": "Восстанавливает здоровье",
+      "type": "food",
+      "effect": {
+        "type": "heal_hp",
+        "value": 17
+      },
+      "usage": {
+        "castTime": 3,
+        "cooldown": 25
+      },
+      "rarity": "rare",
+      "level": 1,
+      "stackSize": 50,
+      "quantity": 1
+    }
+  ]
+}

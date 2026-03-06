@@ -1,0 +1,1811 @@
+{
+  "version": "2.0",
+  "type": "cultivation",
+  "subtype": null,
+  "prefix": "CU",
+  "prefixName": "Культивация",
+  "level": 1,
+  "count": 50,
+  "techniques": [
+    {
+      "id": "CU_000162",
+      "name": "Морской Концентрация",
+      "nameEn": "Морской Концентрация",
+      "type": "cultivation",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Морской Концентрация — техника культивации уровня 1. Редкость: rare. Увеличивает поглощение Ци на 6%.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 6
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136490,
+        "template": "cultivation_water",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000163",
+      "name": "Каменный Дыхание",
+      "nameEn": "Каменный Дыхание",
+      "type": "cultivation",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Каменный Дыхание — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136491,
+        "template": "cultivation_earth",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000164",
+      "name": "Поток порывистый",
+      "nameEn": "Поток Порывистый",
+      "type": "cultivation",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Поток порывистый — техника культивации уровня 1. Редкость: rare. Увеличивает поглощение Ци на 6%.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 6
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136492,
+        "template": "cultivation_air",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000165",
+      "name": "Ослепляющий Медитация",
+      "nameEn": "Ослепляющий Медитация",
+      "type": "cultivation",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Ослепляющий Медитация — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136493,
+        "template": "cultivation_lightning",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000166",
+      "name": "Дыхание теневой",
+      "nameEn": "Дыхание Теневой",
+      "type": "cultivation",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Дыхание теневой — техника культивации уровня 1. Редкость: rare. Увеличивает поглощение Ци на 6%.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 6
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136494,
+        "template": "cultivation_void",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000167",
+      "name": "Чистый Концентрация",
+      "nameEn": "Чистый Концентрация",
+      "type": "cultivation",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Чистый Концентрация — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136495,
+        "template": "cultivation_neutral",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000168",
+      "name": "Медитация вулканический",
+      "nameEn": "Медитация Вулканический",
+      "type": "cultivation",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Медитация вулканический — техника культивации уровня 1. Редкость: rare. Увеличивает поглощение Ци на 6%.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 6
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136496,
+        "template": "cultivation_fire",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000169",
+      "name": "Штормовой Накопление",
+      "nameEn": "Штормовой Накопление",
+      "type": "cultivation",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Штормовой Накопление — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136497,
+        "template": "cultivation_water",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000170",
+      "name": "Каменный Накопление",
+      "nameEn": "Каменный Накопление",
+      "type": "cultivation",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Каменный Накопление — техника культивации уровня 1. Редкость: uncommon. Увеличивает поглощение Ци на 5%.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 5
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136519,
+        "template": "cultivation_earth",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000171",
+      "name": "Невидимый Медитация",
+      "nameEn": "Невидимый Медитация",
+      "type": "cultivation",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Невидимый Медитация — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136520,
+        "template": "cultivation_air",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000172",
+      "name": "Громовой Поток",
+      "nameEn": "Громовой Поток",
+      "type": "cultivation",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Громовой Поток — техника культивации уровня 1. Редкость: uncommon. Увеличивает поглощение Ци на 5%.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 5
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136521,
+        "template": "cultivation_lightning",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000173",
+      "name": "Концентрация бесплотный",
+      "nameEn": "Концентрация Бесплотный",
+      "type": "cultivation",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Концентрация бесплотный — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136522,
+        "template": "cultivation_void",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000174",
+      "name": "Истинный Дыхание",
+      "nameEn": "Истинный Дыхание",
+      "type": "cultivation",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Истинный Дыхание — техника культивации уровня 1. Редкость: uncommon. Увеличивает поглощение Ци на 5%.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 5
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136523,
+        "template": "cultivation_neutral",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000175",
+      "name": "Поток пожирающий",
+      "nameEn": "Поток Пожирающий",
+      "type": "cultivation",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Поток пожирающий — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136524,
+        "template": "cultivation_fire",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000176",
+      "name": "Морской Медитация",
+      "nameEn": "Морской Медитация",
+      "type": "cultivation",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Морской Медитация — техника культивации уровня 1. Редкость: rare. Увеличивает поглощение Ци на 6%.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 6
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136525,
+        "template": "cultivation_water",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000177",
+      "name": "Дыхание тяжёлый",
+      "nameEn": "Дыхание Тяжёлый",
+      "type": "cultivation",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Дыхание тяжёлый — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136526,
+        "template": "cultivation_earth",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000178",
+      "name": "Порывистый Накопление",
+      "nameEn": "Порывистый Накопление",
+      "type": "cultivation",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Порывистый Накопление — техника культивации уровня 1. Редкость: rare. Увеличивает поглощение Ци на 6%.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 6
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136527,
+        "template": "cultivation_air",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000179",
+      "name": "Медитация ослепляющий",
+      "nameEn": "Медитация Ослепляющий",
+      "type": "cultivation",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Медитация ослепляющий — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136528,
+        "template": "cultivation_lightning",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000180",
+      "name": "Эфирный Дыхание",
+      "nameEn": "Эфирный Дыхание",
+      "type": "cultivation",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Эфирный Дыхание — техника культивации уровня 1. Редкость: uncommon. Увеличивает поглощение Ци на 5%.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 5
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136550,
+        "template": "cultivation_void",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000181",
+      "name": "Базовый Накопление",
+      "nameEn": "Базовый Накопление",
+      "type": "cultivation",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Базовый Накопление — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136551,
+        "template": "cultivation_neutral",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000182",
+      "name": "Медитация раскалённый",
+      "nameEn": "Медитация Раскалённый",
+      "type": "cultivation",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Медитация раскалённый — техника культивации уровня 1. Редкость: uncommon. Увеличивает поглощение Ци на 5%.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 5
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136552,
+        "template": "cultivation_fire",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000183",
+      "name": "Ледяной Дыхание",
+      "nameEn": "Ледяной Дыхание",
+      "type": "cultivation",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Ледяной Дыхание — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136553,
+        "template": "cultivation_water",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000184",
+      "name": "Концентрация каменный",
+      "nameEn": "Концентрация Каменный",
+      "type": "cultivation",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Концентрация каменный — техника культивации уровня 1. Редкость: uncommon. Увеличивает поглощение Ци на 5%.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 5
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136554,
+        "template": "cultivation_earth",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000185",
+      "name": "Медитация невидимый",
+      "nameEn": "Медитация Невидимый",
+      "type": "cultivation",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Медитация невидимый — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136555,
+        "template": "cultivation_air",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000186",
+      "name": "Накопление ослепляющий",
+      "nameEn": "Накопление Ослепляющий",
+      "type": "cultivation",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Накопление ослепляющий — техника культивации уровня 1. Редкость: uncommon. Увеличивает поглощение Ци на 5%.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 5
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136556,
+        "template": "cultivation_lightning",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000187",
+      "name": "Концентрация бесплотный",
+      "nameEn": "Концентрация Бесплотный",
+      "type": "cultivation",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Концентрация бесплотный — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136557,
+        "template": "cultivation_void",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000188",
+      "name": "Чистый Поток",
+      "nameEn": "Чистый Поток",
+      "type": "cultivation",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Чистый Поток — техника культивации уровня 1. Редкость: uncommon. Увеличивает поглощение Ци на 5%.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 5
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136558,
+        "template": "cultivation_neutral",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000189",
+      "name": "Накопление пожирающий",
+      "nameEn": "Накопление Пожирающий",
+      "type": "cultivation",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Накопление пожирающий — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136559,
+        "template": "cultivation_fire",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000190",
+      "name": "Концентрация штормовой",
+      "nameEn": "Концентрация Штормовой",
+      "type": "cultivation",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Концентрация штормовой — техника культивации уровня 1. Редкость: uncommon. Увеличивает поглощение Ци на 5%.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 5
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136581,
+        "template": "cultivation_water",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000191",
+      "name": "Титанический Дыхание",
+      "nameEn": "Титанический Дыхание",
+      "type": "cultivation",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Титанический Дыхание — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136582,
+        "template": "cultivation_earth",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000192",
+      "name": "Невидимый Накопление",
+      "nameEn": "Невидимый Накопление",
+      "type": "cultivation",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Невидимый Накопление — техника культивации уровня 1. Редкость: uncommon. Увеличивает поглощение Ци на 5%.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 5
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136583,
+        "template": "cultivation_air",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000193",
+      "name": "Громовой Медитация",
+      "nameEn": "Громовой Медитация",
+      "type": "cultivation",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Громовой Медитация — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136584,
+        "template": "cultivation_lightning",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000194",
+      "name": "Бесплотный Поток",
+      "nameEn": "Бесплотный Поток",
+      "type": "cultivation",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Бесплотный Поток — техника культивации уровня 1. Редкость: uncommon. Увеличивает поглощение Ци на 5%.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 5
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136585,
+        "template": "cultivation_void",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000195",
+      "name": "Концентрация истинный",
+      "nameEn": "Концентрация Истинный",
+      "type": "cultivation",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Концентрация истинный — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136586,
+        "template": "cultivation_neutral",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000196",
+      "name": "Раскалённый Дыхание",
+      "nameEn": "Раскалённый Дыхание",
+      "type": "cultivation",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Раскалённый Дыхание — техника культивации уровня 1. Редкость: uncommon. Увеличивает поглощение Ци на 5%.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 5
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136587,
+        "template": "cultivation_fire",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000197",
+      "name": "Поток ледяной",
+      "nameEn": "Поток Ледяной",
+      "type": "cultivation",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Поток ледяной — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136588,
+        "template": "cultivation_water",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000198",
+      "name": "Медитация каменный",
+      "nameEn": "Медитация Каменный",
+      "type": "cultivation",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Медитация каменный — техника культивации уровня 1. Редкость: uncommon. Увеличивает поглощение Ци на 5%.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 5
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136589,
+        "template": "cultivation_earth",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000199",
+      "name": "Дыхание порывистый",
+      "nameEn": "Дыхание Порывистый",
+      "type": "cultivation",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Дыхание порывистый — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103136590,
+        "template": "cultivation_air",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000200",
+      "name": "Накопление молниеносный",
+      "nameEn": "Накопление Молниеносный",
+      "type": "cultivation",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Накопление молниеносный — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103137263,
+        "template": "cultivation_lightning",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000201",
+      "name": "Медитация забвенный",
+      "nameEn": "Медитация Забвенный",
+      "type": "cultivation",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Медитация забвенный — техника культивации уровня 1. Редкость: uncommon. Увеличивает поглощение Ци на 5%.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 5
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103137264,
+        "template": "cultivation_void",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000202",
+      "name": "Поток концентрированный",
+      "nameEn": "Поток Концентрированный",
+      "type": "cultivation",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Поток концентрированный — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103137265,
+        "template": "cultivation_neutral",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000203",
+      "name": "Концентрация огненный",
+      "nameEn": "Концентрация Огненный",
+      "type": "cultivation",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Концентрация огненный — техника культивации уровня 1. Редкость: uncommon. Увеличивает поглощение Ци на 5%.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 5
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103137266,
+        "template": "cultivation_fire",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000204",
+      "name": "Концентрация морской",
+      "nameEn": "Концентрация Морской",
+      "type": "cultivation",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Концентрация морской — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103137267,
+        "template": "cultivation_water",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000205",
+      "name": "Накопление неизбежный",
+      "nameEn": "Накопление Неизбежный",
+      "type": "cultivation",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Накопление неизбежный — техника культивации уровня 1. Редкость: uncommon. Увеличивает поглощение Ци на 5%.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 5
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103137268,
+        "template": "cultivation_earth",
+        "generatedAt": "2026-03-01T11:20:18.515Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000206",
+      "name": "Вихревой Накопление",
+      "nameEn": "Вихревой Накопление",
+      "type": "cultivation",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Вихревой Накопление — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103137269,
+        "template": "cultivation_air",
+        "generatedAt": "2026-03-01T11:20:18.516Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000207",
+      "name": "Искрящийся Дыхание",
+      "nameEn": "Искрящийся Дыхание",
+      "type": "cultivation",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Искрящийся Дыхание — техника культивации уровня 1. Редкость: uncommon. Увеличивает поглощение Ци на 5%.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 5
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103137270,
+        "template": "cultivation_lightning",
+        "generatedAt": "2026-03-01T11:20:18.516Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000208",
+      "name": "Эфирный Поток",
+      "nameEn": "Эфирный Поток",
+      "type": "cultivation",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Эфирный Поток — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103137271,
+        "template": "cultivation_void",
+        "generatedAt": "2026-03-01T11:20:18.516Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000209",
+      "name": "Базовый Медитация",
+      "nameEn": "Базовый Медитация",
+      "type": "cultivation",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Базовый Медитация — техника культивации уровня 1. Редкость: uncommon. Увеличивает поглощение Ци на 5%.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 5
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103137272,
+        "template": "cultivation_neutral",
+        "generatedAt": "2026-03-01T11:20:18.516Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000210",
+      "name": "Дыхание огненный",
+      "nameEn": "Дыхание Огненный",
+      "type": "cultivation",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Дыхание огненный — техника культивации уровня 1. Редкость: legendary. Увеличивает поглощение Ци на 8%.",
+      "rarity": "legendary",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 8
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103137294,
+        "template": "cultivation_fire",
+        "generatedAt": "2026-03-01T11:20:18.516Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000211",
+      "name": "Холодный Поток",
+      "nameEn": "Холодный Поток",
+      "type": "cultivation",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 0,
+      "baseRange": 0,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Холодный Поток — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "efficiencyBonus": 4
+        }
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1103137295,
+        "template": "cultivation_water",
+        "generatedAt": "2026-03-01T11:20:18.516Z",
+        "generatorVersion": "2.1.0"
+      }
+    }
+  ]
+}

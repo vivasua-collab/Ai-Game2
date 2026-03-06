@@ -1,0 +1,2069 @@
+{
+  "version": "2.0",
+  "type": "movement",
+  "subtype": null,
+  "prefix": "MV",
+  "prefixName": "Перемещение",
+  "level": 1,
+  "count": 50,
+  "techniques": [
+    {
+      "id": "MV_000162",
+      "name": "Побег морской",
+      "nameEn": "Побег Морской",
+      "type": "movement",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 12,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Побег морской — техника перемещения уровня 1. Редкость: rare. Дальность: 12м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "freezing": true,
+          "slow": true
+        },
+        "effectValues": {
+          "freezingDuration": 0.9,
+          "slowPercent": 36.4,
+          "slowDuration": 2
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 12,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "freezing",
+            "value": 0.9
+          },
+          {
+            "type": "slow",
+            "value": 36.4
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951271379,
+        "template": "movement_water",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000163",
+      "name": "Неизбежный Прыжок",
+      "nameEn": "Неизбежный Прыжок",
+      "type": "movement",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Неизбежный Прыжок — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951271380,
+        "template": "movement_earth",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000164",
+      "name": "Стремительный Шаг",
+      "nameEn": "Стремительный Шаг",
+      "type": "movement",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 16,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Стремительный Шаг — техника перемещения уровня 1. Редкость: legendary. Дальность: 16м.",
+      "rarity": "legendary",
+      "modifiers": {
+        "effects": {
+          "burning": true,
+          "slow": true
+        },
+        "effectValues": {
+          "burningDamage": 10.4,
+          "burningDuration": 1,
+          "slowPercent": 37.1,
+          "slowDuration": 2
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.15
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 16,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 10.4
+          },
+          {
+            "type": "slow",
+            "value": 37.1
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951271381,
+        "template": "movement_air",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000165",
+      "name": "Громовой Смещение",
+      "nameEn": "Громовой Смещение",
+      "type": "movement",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Громовой Смещение — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951271382,
+        "template": "movement_lightning",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000166",
+      "name": "Теневой Побег",
+      "nameEn": "Теневой Побег",
+      "type": "movement",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 16,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Теневой Побег — техника перемещения уровня 1. Редкость: legendary. Дальность: 16м.",
+      "rarity": "legendary",
+      "modifiers": {
+        "effects": {
+          "slow": true,
+          "burning": true
+        },
+        "effectValues": {
+          "slowPercent": 16.4,
+          "slowDuration": 2,
+          "burningDamage": 19.7,
+          "burningDuration": 3
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 16,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "slow",
+            "value": 16.4
+          },
+          {
+            "type": "burning",
+            "value": 19.7
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951271383,
+        "template": "movement_void",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000167",
+      "name": "Побег базовый",
+      "nameEn": "Побег Базовый",
+      "type": "movement",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Побег базовый — техника перемещения уровня 1. Редкость: uncommon. Дальность: 10м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "burning": true
+        },
+        "effectValues": {
+          "burningDamage": 10.7,
+          "burningDuration": 3
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 10.7
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951271384,
+        "template": "movement_neutral",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000168",
+      "name": "Пылающий Шаг",
+      "nameEn": "Пылающий Шаг",
+      "type": "movement",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Пылающий Шаг — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951271385,
+        "template": "movement_fire",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000169",
+      "name": "Шаг холодный",
+      "nameEn": "Шаг Холодный",
+      "type": "movement",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Шаг холодный — техника перемещения уровня 1. Редкость: uncommon. Дальность: 10м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 10.9,
+          "buffStat": "agility",
+          "buffDuration": 6
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 10.9
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951271386,
+        "template": "movement_water",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000170",
+      "name": "Неизбежный Побег",
+      "nameEn": "Неизбежный Побег",
+      "type": "movement",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 12,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Неизбежный Побег — техника перемещения уровня 1. Редкость: rare. Дальность: 12м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "burning": true,
+          "buff": true
+        },
+        "effectValues": {
+          "burningDamage": 2.1,
+          "burningDuration": 2,
+          "buffAmount": 9.5,
+          "buffStat": "agility",
+          "buffDuration": 5
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.22
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 12,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 2.1
+          },
+          {
+            "type": "buff",
+            "value": 9.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951271408,
+        "template": "movement_earth",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000171",
+      "name": "Порывистый Рывок",
+      "nameEn": "Порывистый Рывок",
+      "type": "movement",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Порывистый Рывок — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951271409,
+        "template": "movement_air",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000172",
+      "name": "Смещение статический",
+      "nameEn": "Смещение Статический",
+      "type": "movement",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 12,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Смещение статический — техника перемещения уровня 1. Редкость: rare. Дальность: 12м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "buff": true,
+          "heal": true
+        },
+        "effectValues": {
+          "buffAmount": 16.6,
+          "buffStat": "strength",
+          "buffDuration": 6,
+          "healAmount": 22.2
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.22
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 12,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 16.6
+          },
+          {
+            "type": "heal",
+            "value": 22.2
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951271410,
+        "template": "movement_lightning",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000173",
+      "name": "Бесплотный Рывок",
+      "nameEn": "Бесплотный Рывок",
+      "type": "movement",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Бесплотный Рывок — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951271411,
+        "template": "movement_void",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000174",
+      "name": "Сфокусированный Рывок",
+      "nameEn": "Сфокусированный Рывок",
+      "type": "movement",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 12,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Сфокусированный Рывок — техника перемещения уровня 1. Редкость: rare. Дальность: 12м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "heal": true,
+          "slow": true
+        },
+        "effectValues": {
+          "healAmount": 41.4,
+          "slowPercent": 27.1,
+          "slowDuration": 1
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.22
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 12,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 41.4
+          },
+          {
+            "type": "slow",
+            "value": 27.1
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951271412,
+        "template": "movement_neutral",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000175",
+      "name": "Шаг вулканический",
+      "nameEn": "Шаг Вулканический",
+      "type": "movement",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Шаг вулканический — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951271413,
+        "template": "movement_fire",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000176",
+      "name": "Шаг морской",
+      "nameEn": "Шаг Морской",
+      "type": "movement",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 12,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Шаг морской — техника перемещения уровня 1. Редкость: rare. Дальность: 12м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "slow": true,
+          "freezing": true
+        },
+        "effectValues": {
+          "slowPercent": 35.8,
+          "slowDuration": 3,
+          "freezingDuration": 1.6
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.3
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 12,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "slow",
+            "value": 35.8
+          },
+          {
+            "type": "freezing",
+            "value": 1.6
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951271414,
+        "template": "movement_water",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000177",
+      "name": "Неизбежный Побег",
+      "nameEn": "Неизбежный Побег",
+      "type": "movement",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Неизбежный Побег — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951271415,
+        "template": "movement_earth",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000178",
+      "name": "Шаг невидимый",
+      "nameEn": "Шаг Невидимый",
+      "type": "movement",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 16,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Шаг невидимый — техника перемещения уровня 1. Редкость: legendary. Дальность: 16м.",
+      "rarity": "legendary",
+      "modifiers": {
+        "effects": {
+          "freezing": true,
+          "slow": true
+        },
+        "effectValues": {
+          "freezingDuration": 0.6,
+          "slowPercent": 11.5,
+          "slowDuration": 3
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.29
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 16,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "freezing",
+            "value": 0.6
+          },
+          {
+            "type": "slow",
+            "value": 11.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951271416,
+        "template": "movement_air",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000179",
+      "name": "Громовой Прыжок",
+      "nameEn": "Громовой Прыжок",
+      "type": "movement",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Громовой Прыжок — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951271417,
+        "template": "movement_lightning",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000180",
+      "name": "Смещение теневой",
+      "nameEn": "Смещение Теневой",
+      "type": "movement",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Смещение теневой — техника перемещения уровня 1. Редкость: uncommon. Дальность: 10м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 20.8
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20.8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951271439,
+        "template": "movement_void",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000181",
+      "name": "Чистый Прыжок",
+      "nameEn": "Чистый Прыжок",
+      "type": "movement",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Чистый Прыжок — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951271440,
+        "template": "movement_neutral",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000182",
+      "name": "Пожирающий Рывок",
+      "nameEn": "Пожирающий Рывок",
+      "type": "movement",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 12,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Пожирающий Рывок — техника перемещения уровня 1. Редкость: rare. Дальность: 12м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "slow": true,
+          "burning": true
+        },
+        "effectValues": {
+          "slowPercent": 30.7,
+          "slowDuration": 2,
+          "burningDamage": 9.3,
+          "burningDuration": 3
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.29
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 12,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "slow",
+            "value": 30.7
+          },
+          {
+            "type": "burning",
+            "value": 9.3
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951271441,
+        "template": "movement_fire",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000183",
+      "name": "Прыжок ледяной",
+      "nameEn": "Прыжок Ледяной",
+      "type": "movement",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Прыжок ледяной — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951271442,
+        "template": "movement_water",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000184",
+      "name": "Побег неизбежный",
+      "nameEn": "Побег Неизбежный",
+      "type": "movement",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 12,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Побег неизбежный — техника перемещения уровня 1. Редкость: rare. Дальность: 12м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "freezing": true
+        },
+        "effectValues": {
+          "freezingDuration": 1.8
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.21
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 12,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "freezing",
+            "value": 1.8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951271443,
+        "template": "movement_earth",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000185",
+      "name": "Штормовой Смещение",
+      "nameEn": "Штормовой Смещение",
+      "type": "movement",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Штормовой Смещение — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951271444,
+        "template": "movement_air",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000186",
+      "name": "Шаг молниеносный",
+      "nameEn": "Шаг Молниеносный",
+      "type": "movement",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 12,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Шаг молниеносный — техника перемещения уровня 1. Редкость: rare. Дальность: 12м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "burning": true,
+          "buff": true
+        },
+        "effectValues": {
+          "burningDamage": 6.8,
+          "burningDuration": 3,
+          "buffAmount": 18.6,
+          "buffStat": "strength",
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 12,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 6.8
+          },
+          {
+            "type": "buff",
+            "value": 18.6
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951271445,
+        "template": "movement_lightning",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000187",
+      "name": "Рывок теневой",
+      "nameEn": "Рывок Теневой",
+      "type": "movement",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Рывок теневой — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951271446,
+        "template": "movement_void",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000188",
+      "name": "Шаг базовый",
+      "nameEn": "Шаг Базовый",
+      "type": "movement",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 12,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Шаг базовый — техника перемещения уровня 1. Редкость: rare. Дальность: 12м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "buff": true,
+          "heal": true
+        },
+        "effectValues": {
+          "buffAmount": 23.2,
+          "buffStat": "agility",
+          "buffDuration": 7,
+          "healAmount": 43.7
+        },
+        "penalties": {
+          "qiCostMultiplier": 1.21
+        },
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 12,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 23.2
+          },
+          {
+            "type": "heal",
+            "value": 43.7
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951271447,
+        "template": "movement_neutral",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000189",
+      "name": "Огненный Шаг",
+      "nameEn": "Огненный Шаг",
+      "type": "movement",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Огненный Шаг — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951271448,
+        "template": "movement_fire",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000190",
+      "name": "Ледяной Смещение",
+      "nameEn": "Ледяной Смещение",
+      "type": "movement",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Ледяной Смещение — техника перемещения уровня 1. Редкость: uncommon. Дальность: 10м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "slow": true
+        },
+        "effectValues": {
+          "slowPercent": 33.5,
+          "slowDuration": 2
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "slow",
+            "value": 33.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951271470,
+        "template": "movement_water",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000191",
+      "name": "Прыжок неизбежный",
+      "nameEn": "Прыжок Неизбежный",
+      "type": "movement",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Прыжок неизбежный — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951271471,
+        "template": "movement_earth",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000192",
+      "name": "Невидимый Шаг",
+      "nameEn": "Невидимый Шаг",
+      "type": "movement",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Невидимый Шаг — техника перемещения уровня 1. Редкость: uncommon. Дальность: 10м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "burning": true
+        },
+        "effectValues": {
+          "burningDamage": 14,
+          "burningDuration": 3
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 14
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951271472,
+        "template": "movement_air",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000193",
+      "name": "Громовой Шаг",
+      "nameEn": "Громовой Шаг",
+      "type": "movement",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Громовой Шаг — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951271473,
+        "template": "movement_lightning",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000194",
+      "name": "Прыжок пустотный",
+      "nameEn": "Прыжок Пустотный",
+      "type": "movement",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Прыжок пустотный — техника перемещения уровня 1. Редкость: uncommon. Дальность: 10м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 18.3,
+          "buffStat": "strength",
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 18.3
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951271474,
+        "template": "movement_void",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000195",
+      "name": "Чистый Побег",
+      "nameEn": "Чистый Побег",
+      "type": "movement",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Чистый Побег — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951271475,
+        "template": "movement_neutral",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000196",
+      "name": "Пожирающий Прыжок",
+      "nameEn": "Пожирающий Прыжок",
+      "type": "movement",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Пожирающий Прыжок — техника перемещения уровня 1. Редкость: uncommon. Дальность: 10м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "slow": true
+        },
+        "effectValues": {
+          "slowPercent": 21.9,
+          "slowDuration": 2
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "slow",
+            "value": 21.9
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951271476,
+        "template": "movement_fire",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000197",
+      "name": "Побег ледяной",
+      "nameEn": "Побег Ледяной",
+      "type": "movement",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Побег ледяной — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951271477,
+        "template": "movement_water",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000198",
+      "name": "Смещение неизбежный",
+      "nameEn": "Смещение Неизбежный",
+      "type": "movement",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 12,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Смещение неизбежный — техника перемещения уровня 1. Редкость: rare. Дальность: 12м.",
+      "rarity": "rare",
+      "modifiers": {
+        "effects": {
+          "freezing": true,
+          "slow": true
+        },
+        "effectValues": {
+          "freezingDuration": 1.9,
+          "slowPercent": 38.5,
+          "slowDuration": 1
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 12,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "freezing",
+            "value": 1.9
+          },
+          {
+            "type": "slow",
+            "value": 38.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951271478,
+        "template": "movement_earth",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000199",
+      "name": "Порывистый Прыжок",
+      "nameEn": "Порывистый Прыжок",
+      "type": "movement",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Порывистый Прыжок — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951271479,
+        "template": "movement_air",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000200",
+      "name": "Шаг молниеносный",
+      "nameEn": "Шаг Молниеносный",
+      "type": "movement",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Шаг молниеносный — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951272152,
+        "template": "movement_lightning",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000201",
+      "name": "Эфирный Смещение",
+      "nameEn": "Эфирный Смещение",
+      "type": "movement",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Эфирный Смещение — техника перемещения уровня 1. Редкость: uncommon. Дальность: 10м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "freezing": true
+        },
+        "effectValues": {
+          "freezingDuration": 0.6
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "freezing",
+            "value": 0.6
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951272153,
+        "template": "movement_void",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000202",
+      "name": "Базовый Побег",
+      "nameEn": "Базовый Побег",
+      "type": "movement",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Базовый Побег — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951272154,
+        "template": "movement_neutral",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000203",
+      "name": "Пылающий Рывок",
+      "nameEn": "Пылающий Рывок",
+      "type": "movement",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Пылающий Рывок — техника перемещения уровня 1. Редкость: uncommon. Дальность: 10м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "burning": true
+        },
+        "effectValues": {
+          "burningDamage": 19,
+          "burningDuration": 1
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 19
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951272155,
+        "template": "movement_fire",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000204",
+      "name": "Морской Прыжок",
+      "nameEn": "Морской Прыжок",
+      "type": "movement",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Морской Прыжок — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951272156,
+        "template": "movement_water",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000205",
+      "name": "Шаг горный",
+      "nameEn": "Шаг Горный",
+      "type": "movement",
+      "element": "earth",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Шаг горный — техника перемещения уровня 1. Редкость: uncommon. Дальность: 10м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffAmount": 22.4,
+          "buffStat": "intelligence",
+          "buffDuration": 4
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 22.4
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951272157,
+        "template": "movement_earth",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000206",
+      "name": "Невидимый Смещение",
+      "nameEn": "Невидимый Смещение",
+      "type": "movement",
+      "element": "air",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Невидимый Смещение — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951272158,
+        "template": "movement_air",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000207",
+      "name": "Рывок молниеносный",
+      "nameEn": "Рывок Молниеносный",
+      "type": "movement",
+      "element": "lightning",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Рывок молниеносный — техника перемещения уровня 1. Редкость: uncommon. Дальность: 10м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 35.3
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 35.3
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951272159,
+        "template": "movement_lightning",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000208",
+      "name": "Бесплотный Шаг",
+      "nameEn": "Бесплотный Шаг",
+      "type": "movement",
+      "element": "void",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Бесплотный Шаг — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951272160,
+        "template": "movement_void",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000209",
+      "name": "Шаг сфокусированный",
+      "nameEn": "Шаг Сфокусированный",
+      "type": "movement",
+      "element": "neutral",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Шаг сфокусированный — техника перемещения уровня 1. Редкость: uncommon. Дальность: 10м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "slow": true
+        },
+        "effectValues": {
+          "slowPercent": 22.8,
+          "slowDuration": 3
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "slow",
+            "value": 22.8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951272161,
+        "template": "movement_neutral",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000210",
+      "name": "Пожирающий Смещение",
+      "nameEn": "Пожирающий Смещение",
+      "type": "movement",
+      "element": "fire",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 6,
+      "baseRange": 8,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Пожирающий Смещение — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "rarity": "common",
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "finalDuration": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1951272183,
+        "template": "movement_fire",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000211",
+      "name": "Шаг струящийся",
+      "nameEn": "Шаг Струящийся",
+      "type": "movement",
+      "element": "water",
+      "level": 1,
+      "baseDamage": 0,
+      "baseQiCost": 5,
+      "baseRange": 10,
+      "baseDuration": 0,
+      "minCultivationLevel": 1,
+      "description": "Шаг струящийся — техника перемещения уровня 1. Редкость: uncommon. Дальность: 10м.",
+      "rarity": "uncommon",
+      "modifiers": {
+        "effects": {
+          "burning": true
+        },
+        "effectValues": {
+          "burningDamage": 11.2,
+          "burningDuration": 1
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 10,
+        "finalDuration": 0,
+        "activeEffects": [
+          {
+            "type": "burning",
+            "value": 11.2
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1951272184,
+        "template": "movement_water",
+        "generatedAt": "2026-03-01T11:20:09.448Z",
+        "generatorVersion": "2.1.0"
+      }
+    }
+  ]
+}
