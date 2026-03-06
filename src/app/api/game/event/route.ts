@@ -62,7 +62,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<EventResu
         }, { status: 404 });
       }
       
-      session = loadResult.data;
+      session = loadResult.data ?? null;
     }
 
     // Проверяем, что персонаж принадлежит сессии
@@ -83,8 +83,8 @@ export async function POST(request: NextRequest): Promise<NextResponse<EventResu
     return NextResponse.json({
       ...result,
       metadata: {
-        ...result.metadata,
         processingTimeMs: duration,
+        handler: result.metadata?.handler ?? 'unknown',
       },
     });
 

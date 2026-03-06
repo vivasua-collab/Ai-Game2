@@ -293,11 +293,11 @@ export async function POST(request: NextRequest) {
     }
     
     // === CHECK FOR INTERRUPTIONS (ONLY FOR ACCUMULATION TYPE) ===
-    let interruptionResult = null;
+    let interruptionResult: ReturnType<typeof checkMeditationInterruption> | null = null;
     
     if (meditationType === 'accumulation' && actualDurationMinutes >= 60) {
-      const charForCheck: Character = {
-        id: character.id,
+      const charForCheck = {
+        id: character.id as any,
         name: character.name,
         age: character.age,
         cultivationLevel: character.cultivationLevel,
@@ -316,9 +316,9 @@ export async function POST(request: NextRequest) {
         hasAmnesia: character.hasAmnesia,
         knowsAboutSystem: character.knowsAboutSystem,
         sectRole: character.sectRole,
-        currentLocationId: character.currentLocationId,
-        sectId: character.sectId,
-      };
+        currentLocationId: character.currentLocationId as any,
+        sectId: character.sectId as any,
+      } as Character;
       
       interruptionResult = checkMeditationInterruption(
         charForCheck,
@@ -336,7 +336,7 @@ export async function POST(request: NextRequest) {
         interruptionResult.finalChance = Math.max(0, Math.min(100, interruptionResult.finalChance));
       }
       
-      if (interruptionResult.interrupted && interruptionResult.event) {
+      if (interruptionResult?.interrupted && interruptionResult.event) {
         actualDurationMinutes = interruptionResult.checkHour * 60;
       }
     }
@@ -347,7 +347,7 @@ export async function POST(request: NextRequest) {
     
     if (meditationType === 'breakthrough') {
       // === BREAKTHROUGH MEDITATION ===
-      result = performBreakthroughMeditation(character, location, 0);
+      result = performBreakthroughMeditation(character as any, location, 0);
       
       actualDurationMinutes = result.duration;
       
@@ -396,7 +396,17 @@ export async function POST(request: NextRequest) {
         stateAfterMeditation.character.coreCapacity
       );
       
-      let autoBreakthrough = null;
+      let autoBreakthrough: {
+        success: boolean;
+        oldLevel: number;
+        oldSubLevel: number;
+        newLevel: number;
+        newSubLevel: number;
+        levelName: string;
+        isMajorBreakthrough: boolean;
+        qiConsumed: number;
+        message: string;
+      } | null = null;
       if (breakthroughReq.canAttempt) {
         // Формируем объект для attemptBreakthrough
         const charForBreakthrough = {
@@ -515,19 +525,13 @@ export async function POST(request: NextRequest) {
           day: finalWorldTime?.day || 0,
           hour: finalWorldTime?.hour || 0,
           minute: finalWorldTime?.minute || 0,
-          daysSinceStart: finalWorldTime?.daysSinceStart || 0,
-          worldYear: finalWorldTime?.year || 0,
-          worldMonth: finalWorldTime?.month || 0,
-          worldDay: finalWorldTime?.day || 0,
-          worldHour: finalWorldTime?.hour || 0,
-          worldMinute: finalWorldTime?.minute || 0,
-        }),
+        } as any),
       });
       
     } else if (meditationType === 'conductivity') {
       // === CONDUCTIVITY MEDITATION ===
       result = performConductivityMeditation(
-        character, 
+        character as any, 
         location, 
         0,
         character.conductivityMeditations
@@ -602,19 +606,13 @@ export async function POST(request: NextRequest) {
           day: finalWorldTime?.day || 0,
           hour: finalWorldTime?.hour || 0,
           minute: finalWorldTime?.minute || 0,
-          daysSinceStart: finalWorldTime?.daysSinceStart || 0,
-          worldYear: finalWorldTime?.year || 0,
-          worldMonth: finalWorldTime?.month || 0,
-          worldDay: finalWorldTime?.day || 0,
-          worldHour: finalWorldTime?.hour || 0,
-          worldMinute: finalWorldTime?.minute || 0,
-        }),
+        } as any),
       });
       
     } else {
       // === ACCUMULATION MEDITATION (DEFAULT) ===
       const baseResult = performMeditation(
-        character,
+        character as any,
         location,
         actualDurationMinutes,
         'accumulation'
@@ -787,13 +785,7 @@ export async function POST(request: NextRequest) {
           day: finalWorldTime?.day || 0,
           hour: finalWorldTime?.hour || 0,
           minute: finalWorldTime?.minute || 0,
-          daysSinceStart: finalWorldTime?.daysSinceStart || 0,
-          worldYear: finalWorldTime?.year || 0,
-          worldMonth: finalWorldTime?.month || 0,
-          worldDay: finalWorldTime?.day || 0,
-          worldHour: finalWorldTime?.hour || 0,
-          worldMinute: finalWorldTime?.minute || 0,
-        }),
+        } as any),
         timeAdvanced: {
           ticks: actualDurationMinutes,
           dayChanged,

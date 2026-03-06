@@ -257,7 +257,7 @@ export function reorganizeInventory(
   return arrangeItemsInGrid(sorted, gridWidth, gridHeight);
 }
 
-export default {
+const inventorySort = {
   sortInventory,
   sortInventoryDefault,
   groupByCategory,
@@ -266,3 +266,5 @@ export default {
   arrangeItemsInGrid,
   reorganizeInventory,
 };
+
+export default inventorySort;

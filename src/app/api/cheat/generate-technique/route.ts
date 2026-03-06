@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
 
     // Pick a random technique from presets or generate one
     const availableTechniques = ALL_TECHNIQUE_PRESETS.filter(t => 
-      t.minCultivationLevel <= char.cultivationLevel
+      (t.requirements?.cultivationLevel || 1) <= char.cultivationLevel
     );
 
     let selectedTechnique: TechniquePreset;
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
         minLevel: 1,
         maxLevel: 9,
         canEvolve: true,
-        minCultivationLevel: char.cultivationLevel,
+        requirements: { cultivationLevel: char.cultivationLevel },
         qiCost: Math.floor(Math.random() * 50) + 5,
         fatigueCost: { 
           physical: Math.random() * 5, 
@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
         minLevel: selectedTechnique.minLevel,
         maxLevel: selectedTechnique.maxLevel,
         canEvolve: selectedTechnique.canEvolve ?? true,
-        minCultivationLevel: selectedTechnique.minCultivationLevel,
+        minCultivationLevel: selectedTechnique.requirements?.cultivationLevel || 1,
         qiCost: selectedTechnique.qiCost,
         physicalFatigueCost: selectedTechnique.fatigueCost?.physical ?? 0,
         mentalFatigueCost: selectedTechnique.fatigueCost?.mental ?? 0,

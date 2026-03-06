@@ -13,7 +13,7 @@ import {
   validateOrError,
   validationErrorResponse,
 } from "@/lib/validations/game";
-import { BASIC_TECHNIQUES } from "@/data/presets/technique-presets";
+import { BASIC_TECHNIQUES, TechniquePreset } from "@/data/presets/technique-presets";
 import { BASIC_FORMATIONS } from "@/data/presets/formation-presets";
 import { generatePositionAtDistance, generatePositionInRange } from "@/lib/game/world-coordinates";
 import { 
@@ -314,31 +314,25 @@ export async function POST(request: NextRequest) {
         await tx.technique.createMany({
           data: techniquesToCreate.map(preset => {
             const isFormation = 'formationType' in preset;
+            const techPreset = preset as TechniquePreset;
             return {
               name: preset.name,
               nameId: preset.id,
               description: preset.description,
-              type: isFormation ? 'formation' : preset.techniqueType,
-              element: isFormation ? 'neutral' : preset.element,
+              type: isFormation ? 'formation' : techPreset.techniqueType,
+              element: isFormation ? 'neutral' : techPreset.element,
               rarity: preset.rarity,
-              level: preset.level || 1,
-              minLevel: preset.minLevel || 1,
-              maxLevel: preset.maxLevel || (isFormation ? (preset as any).qualityLevels : 9),
-              canEvolve: preset.canEvolve ?? true,
-              minCultivationLevel: preset.minCultivationLevel || 1,
-              qiCost: preset.qiCost || 0,
-              physicalFatigueCost: (preset as any).fatigueCost?.physical || 0,
-              mentalFatigueCost: (preset as any).fatigueCost?.mental || (isFormation ? 5 : 0),
-              statRequirements: (preset as any).statRequirements ? JSON.stringify((preset as any).statRequirements) : null,
-              statScaling: (preset as any).scaling ? JSON.stringify((preset as any).scaling) : null,
-              effects: preset.effects ? JSON.stringify(preset.effects) : 
-                       isFormation ? JSON.stringify({
-                         formationType: (preset as any).formationType,
-                         formationEffects: (preset as any).formationEffects,
-                         setupTime: (preset as any).setupTime,
-                         duration: (preset as any).duration,
-                         difficulty: (preset as any).difficulty,
-                       }) : null,
+              level: techPreset.level || 1,
+              minLevel: techPreset.minLevel || 1,
+              maxLevel: techPreset.maxLevel || 9,
+              canEvolve: techPreset.canEvolve ?? true,
+              minCultivationLevel: preset.requirements?.cultivationLevel || 1,
+              qiCost: techPreset.qiCost || 0,
+              physicalFatigueCost: techPreset.fatigueCost?.physical || 0,
+              mentalFatigueCost: techPreset.fatigueCost?.mental || (isFormation ? 5 : 0),
+              statRequirements: preset.requirements?.stats ? JSON.stringify(preset.requirements.stats) : null,
+              statScaling: techPreset.scaling ? JSON.stringify(techPreset.scaling) : null,
+              effects: techPreset.effects ? JSON.stringify(techPreset.effects) : null,
               source: "preset",
             };
           }),

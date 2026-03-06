@@ -53,6 +53,7 @@ export type QiChangeSource =
   | 'technique'         // Использование техники
   | 'combat'            // Бой
   | 'item'              // Использование предмета
+  | 'passive'           // Пассивная генерация ядром
   | 'dissipation'       // Рассеивание избыточной Ци
   | 'cheat'             // Чит-команда
   | 'system'            // Системное изменение
@@ -365,7 +366,7 @@ export function getQiStats(sessionId: string): {
 
 // ==================== EXPORT ====================
 
-export default {
+const qiLogger = {
   logQiChange,
   logQiMeditation,
   logQiTechnique,
@@ -382,3 +383,5 @@ export default {
   getQiLogsBySource,
   getQiStats,
 };
+
+export default qiLogger;

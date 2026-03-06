@@ -25,7 +25,7 @@ export interface EventResult {
   message?: string;
   metadata?: {
     processingTimeMs: number;
-    handler: string;
+    handler?: string;
   };
 }
 

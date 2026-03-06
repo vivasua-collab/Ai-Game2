@@ -193,7 +193,7 @@ export function createContextLogger(
   };
 }
 
-export default {
+const eventBusLogger = {
   logEventReceived,
   logEventResult,
   logValidationError,
@@ -205,3 +205,5 @@ export default {
   clearLogs,
   createContextLogger,
 };
+
+export default eventBusLogger;

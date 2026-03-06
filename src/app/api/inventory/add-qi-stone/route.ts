@@ -9,9 +9,16 @@ import { createQiStoneItem, QiStoneQuality, QI_STONE_DEFINITIONS } from "@/types
 import { TruthSystem } from "@/lib/game/truth-system";
 
 export async function POST(request: NextRequest) {
+  // Declare variables outside try for error logging
+  let characterId: string | undefined;
+  let quality: string = "stone";
+  let quantity: number = 1;
+  
   try {
     const body = await request.json();
-    const { characterId, quality = "stone", quantity = 1 } = body;
+    characterId = body.characterId;
+    if (body.quality) quality = body.quality;
+    if (body.quantity) quantity = body.quantity;
     
     // Логирование для отладки
     console.log("[QiStone] POST request:", { characterId, quality, quantity });
@@ -38,7 +45,7 @@ export async function POST(request: NextRequest) {
 
     // Валидация качества
     const validQualities = Object.keys(QI_STONE_DEFINITIONS) as QiStoneQuality[];
-    if (!validQualities.includes(quality)) {
+    if (!validQualities.includes(quality as QiStoneQuality)) {
       return NextResponse.json(
         { success: false, error: `Invalid quality. Must be one of: ${validQualities.join(", ")}` },
         { status: 400 }

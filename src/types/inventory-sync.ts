@@ -463,7 +463,7 @@ export function deserializeInventoryState(json: string): InventorySyncState {
   };
 }
 
-export default {
+const inventorySync = {
   INVENTORY_GRID,
   MAX_ITEM_SIZE,
   createCellId,
@@ -477,3 +477,5 @@ export default {
   serializeInventoryState,
   deserializeInventoryState,
 };
+
+export default inventorySync;

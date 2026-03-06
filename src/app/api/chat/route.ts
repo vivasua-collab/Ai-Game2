@@ -875,7 +875,9 @@ ${location ? `- Плотность Ци: ${location.qiDensity} ед/м³` : ""}
     
     // Если LLM не вернул время и это не локальный обработчик - добавляем дефолтное время
     // Любое действие занимает минимум 3 минуты
-    if (totalMinutes === 0 && requestType !== "cultivation" && needsLLM(message)) {
+    // Примечание: cultivation уже обработан выше (локально), но TypeScript требует явной проверки
+    const localTypes: RequestType[] = ["cultivation", "status", "techniques", "inventory", "stats", "location_info"];
+    if (totalMinutes === 0 && !localTypes.includes(requestType) && needsLLM(message)) {
       totalMinutes = 5; // Дефолт: 5 минут на любое действие
     }
 

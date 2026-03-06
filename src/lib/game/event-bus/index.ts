@@ -58,4 +58,5 @@ export { handleMovementEvent } from './handlers/movement';
 export { eventBusClient, EventBusClient } from './client';
 export type { EventResponse, TechniqueUseResponse } from './client';
 
-export default { processEvent };
+const eventBus = { processEvent };
+export default eventBus;
