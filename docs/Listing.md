@@ -1,9 +1,9 @@
 # 📚 Перечень документации проекта Cultivation World Simulator
 
-**Последнее обновление:** 2026-03-04  
-**Версия:** 17.0
+**Последнее обновление:** 2026-03-11  
+**Версия:** 18.0
 
-Этот файл содержит полный перечень всех документов в папке `/docs` с описанием их назначения.
+Этот файл содержит полный перечень всех документов в папке `/docs` с описанием их назначения и оценкой в токенах.
 
 ---
 
@@ -11,267 +11,246 @@
 
 | Метрика | Значение |
 |---------|----------|
-| Файлов в /docs | 37 |
-| Файлов в /docs/checkpoints | 6 |
-| **Итого** | **43** |
-| Категорий | 7 |
+| Файлов в /docs | 48 |
+| Файлов в /docs/checkpoints | 8 |
+| **Итого** | **56** |
+| Категорий | 8 |
+| **Всего токенов** | **~186,000** |
 
 ---
 
-## 📁 Полный перечень файлов
+## 📁 Полный перечень файлов (сортировка по токенам)
 
-### 🚀 НАЧАЛО РАБОТЫ (3 файла)
+### 📖 ВСЕ ФАЙЛЫ (по убыванию размера)
 
-| Файл | Назначение | Статус |
-|------|------------|--------|
-| **[INSTALL.md](./INSTALL.md)** | Установка, настройка, запуск проекта, скрипты, устранение неполадок | ✅ ОБЯЗАТЕЛЕН |
-| **[PHASER_STACK.md](./PHASER_STACK.md)** | Минимальный стек Phaser 3, используемые библиотеки, оптимизации | ✅ ОБЯЗАТЕЛЕН |
-| **[start_lore.md](./start_lore.md)** | Лор мира культивации, контейнеры памяти, правила мира | ✅ ОБЯЗАТЕЛЕН |
-
----
-
-### 🏗️ АРХИТЕКТУРА (6 файлов)
-
-| Файл | Назначение | Статус |
-|------|------------|--------|
-| **[ARCHITECTURE.md](./ARCHITECTURE.md)** | Общая архитектура, потоки данных, компоненты, Truth System | ✅ ОБЯЗАТЕЛЕН |
-| **[FUNCTIONS.md](./FUNCTIONS.md)** | Справочник всех функций и типов, генератор техник, система Ци | ✅ ОБЯЗАТЕЛЕН |
-| **[id-system.md](./id-system.md)** | Система идентификаторов (префиксы MS/MW/RG/DF, счётчики) | ✅ НЕОБХОДИМ |
-| **[preset-storage.md](./preset-storage.md)** | Стратегия хранения пресетов (JSON vs БД) | ✅ НЕОБХОДИМ |
-| **[inventory-system.md](./inventory-system.md)** | Система инвентаря (7x7 сетка, экипировка, хранилище) | ✅ НЕОБХОДИМ |
-| **[database-analysis.md](./database-analysis.md)** | Комплексный анализ хранения данных (JSON vs SQLite) | ✅ ОБЯЗАТЕЛЕН |
-
----
-
-### 📋 ПЛАНИРОВАНИЕ И СТАТУС (6 файлов)
-
-| Файл | Назначение | Статус |
-|------|------------|--------|
-| **[PROJECT_ROADMAP.md](./PROJECT_ROADMAP.md)** | История версий, текущий статус (v0.7.0), планы развития | ✅ ОБЯЗАТЕЛЕН |
-| **[PHASE3-PHASER-PROGRESS.md](./PHASE3-PHASER-PROGRESS.md)** | Прогресс миграции на Phaser 3 (этапы 1-9 завершены) | ✅ НЕОБХОДИМ |
-| **[TRAINING_GROUND_ROADMAP.md](./TRAINING_GROUND_ROADMAP.md)** | План тренировочного полигона | ✅ НЕОБХОДИМ |
-| **[ENVIRONMENT_SYSTEM_PLAN.md](./ENVIRONMENT_SYSTEM_PLAN.md)** | План системы окружения (препятствия, деревья, руды) | ✅ НЕОБХОДИМ |
-| **[ELECTRON_MIGRATION.md](./ELECTRON_MIGRATION.md)** | Анализ миграции на Electron (десктоп) | ⚠️ НА БУДУЩЕЕ |
-| **[monetization.md](./monetization.md)** | Анализ вариантов монетизации (Standalone vs Web vs RimWorld мод) | ℹ️ СПРАВКА |
-
----
-
-### ⚔️ ИГРОВЫЕ СИСТЕМЫ (10 файлов)
-
-| Файл | Назначение | Статус |
-|------|------------|--------|
-| **[COMBAT_TECHNIQUES_SYSTEM.md](./COMBAT_TECHNIQUES_SYSTEM.md)** | Система боевых техник (melee/ranged/defense), время каста | ✅ ОБЯЗАТЕЛЕН |
-| **[TEST_WORLD_TARGETS.md](./TEST_WORLD_TARGETS.md)** | Тестовый полигон, мишени, хитбоксы, метрическая система | ✅ НЕОБХОДИМ |
-| **[Technic-Generator.md](./Technic-Generator.md)** | Оффлайн генератор техник (без LLM), пресеты, формулы | ✅ НЕОБХОДИМ |
-| **[technique-types-extension.md](./technique-types-extension.md)** | Расширение классификации техник (проклятия, яды) | ⚠️ ЧЕРНОВИК |
-| **[qi_stone.md](./qi_stone.md)** | Концепция Камней Ци (агрегатные состояния, физика) | ✅ НЕОБХОДИМ |
-| **[charger.md](./charger.md)** | Концепция Зарядника Ци (буфер для камней) | ⚠️ ЧЕРНОВИК |
-| **[vitality-hp-system.md](./vitality-hp-system.md)** | Система жизненной силы и HP | ✅ НЕОБХОДИМ |
-| **[relations-system.md](./relations-system.md)** | Система отношений между персонажами | ⚠️ ПЛАН |
-| **[faction-system.md](./faction-system.md)** | Система фракций | ⚠️ ПЛАН |
-| **[npc-session-integration.md](./npc-session-integration.md)** | Интеграция NPC с сессиями | ✅ НЕОБХОДИМ |
+| Файл | Токены | Категория | Статус |
+|------|--------|-----------|--------|
+| **[body.md](./body.md)** | 15,842 | Концепции | ✅ НЕОБХОДИМ |
+| **[equip.md](./equip.md)** | 14,339 | Концепции | ⚠️ ЧЕРНОВИК |
+| **[start_lore.md](./start_lore.md)** | 14,074 | Начало работы | ✅ ОБЯЗАТЕЛЕН |
+| **[ARCHITECTURE.md](./ARCHITECTURE.md)** | 12,231 | Архитектура | ✅ ОБЯЗАТЕЛЕН |
+| **[FUNCTIONS.md](./FUNCTIONS.md)** | 11,523 | Архитектура | ✅ ОБЯЗАТЕЛЕН |
+| **[Technic-Generator.md](./Technic-Generator.md)** | 10,789 | Игровые системы | ✅ НЕОБХОДИМ |
+| **[charger.md](./charger.md)** | 9,969 | Игровые системы | ⚠️ ЧЕРНОВИК |
+| **[database-analysis.md](./database-analysis.md)** | 9,226 | Архитектура | ✅ ОБЯЗАТЕЛЕН |
+| **[monetization.md](./monetization.md)** | 7,724 | Справка | ℹ️ СПРАВКА |
+| **[qi_stone.md](./qi_stone.md)** | 7,483 | Игровые системы | ✅ НЕОБХОДИМ |
+| **[preset-storage.md](./preset-storage.md)** | 6,798 | Архитектура | ✅ НЕОБХОДИМ |
+| **[soul-system_rewrite.md](./soul-system_rewrite.md)** | 6,497 | Концепции | ✅ НОВЫЙ |
+| **[random_npc.md](./random_npc.md)** | 6,472 | Концепции | ✅ НЕОБХОДИМ |
+| **[technique-types-extension.md](./technique-types-extension.md)** | 6,361 | Игровые системы | ⚠️ ЧЕРНОВИК |
+| **[soul-system.md](./soul-system.md)** | 6,119 | Концепции | ✅ НОВЫЙ |
+| **[ENVIRONMENT_SYSTEM_PLAN.md](./ENVIRONMENT_SYSTEM_PLAN.md)** | 6,065 | Планирование | ✅ НЕОБХОДИМ |
+| **[physical-object-system.md](./physical-object-system.md)** | 6,035 | Концепции | ✅ НОВЫЙ |
+| **[faction-system.md](./faction-system.md)** | 6,034 | Игровые системы | ⚠️ ПЛАН |
+| **[relations-system.md](./relations-system.md)** | 5,341 | Игровые системы | ⚠️ ПЛАН |
+| **[COMBAT_TECHNIQUES_SYSTEM.md](./COMBAT_TECHNIQUES_SYSTEM.md)** | 5,275 | Игровые системы | ✅ ОБЯЗАТЕЛЕН |
+| **[PROJECT_ROADMAP.md](./PROJECT_ROADMAP.md)** | 4,397 | Планирование | ✅ ОБЯЗАТЕЛЕН |
+| **[npc-session-integration.md](./npc-session-integration.md)** | 4,108 | Игровые системы | ✅ НЕОБХОДИМ |
+| **[INSTALL.md](./INSTALL.md)** | 3,968 | Начало работы | ✅ ОБЯЗАТЕЛЕН |
+| **[LOCAL-ADVENTURE-GENERATOR.md](./LOCAL-ADVENTURE-GENERATOR.md)** | 3,842 | Справка | ⚠️ НА БУДУЩЕЕ |
+| **[Listing.md](./Listing.md)** | 3,818 | Справка | ℹ️ СПРАВКА |
+| **[SPRITE_SIMPLIFICATION_PLAN.md](./SPRITE_SIMPLIFICATION_PLAN.md)** | 3,693 | Анализ | ⚠️ ПЛАН |
+| **[TEST_WORLD_TARGETS.md](./TEST_WORLD_TARGETS.md)** | 3,666 | Игровые системы | ✅ НЕОБХОДИМ |
+| **[PROMPT-EXAMPLES.md](./PROMPT-EXAMPLES.md)** | 3,606 | Справка | ℹ️ СПРАВКА |
+| **[PHASE3-PHASER-PROGRESS.md](./PHASE3-PHASER-PROGRESS.md)** | 3,412 | Планирование | ✅ НЕОБХОДИМ |
+| **[id-system.md](./id-system.md)** | 3,368 | Архитектура | ✅ НЕОБХОДИМ |
+| **[inventory-system.md](./inventory-system.md)** | 3,142 | Архитектура | ✅ НЕОБХОДИМ |
+| **[TRAINING_GROUND_ROADMAP.md](./TRAINING_GROUND_ROADMAP.md)** | 2,529 | Планирование | ✅ НЕОБХОДИМ |
+| **[ui-terminology.md](./ui-terminology.md)** | 2,406 | Справка | ✅ НЕОБХОДИМ |
+| **[CODE-REVIEW.md](./CODE-REVIEW.md)** | 1,865 | Анализ | ℹ️ АРХИВ |
+| **[ELECTRON_MIGRATION.md](./ELECTRON_MIGRATION.md)** | 1,804 | Планирование | ⚠️ НА БУДУЩЕЕ |
+| **[npc-generator-plan.md](./npc-generator-plan.md)** | 1,782 | Концепции | ⚠️ ПЛАН |
+| **[PLAYER_SPRITES.md](./PLAYER_SPRITES.md)** | 1,434 | Справка | ✅ НЕОБХОДИМ |
+| **[vitality-hp-system.md](./vitality-hp-system.md)** | 1,358 | Игровые системы | ✅ НЕОБХОДИМ |
+| **[PHASER_STACK.md](./PHASER_STACK.md)** | 1,244 | Начало работы | ✅ ОБЯЗАТЕЛЕН |
+| **[CHEATS.md](./CHEATS.md)** | 577 | Справка | ✅ НЕОБХОДИМ |
 
 ---
 
-### 🧬 КОНЦЕПЦИИ СУЩНОСТЕЙ (4 файла)
+### 📁 CHECKPOINTS (8 файлов, ~12,760 токенов)
 
-| Файл | Назначение | Статус |
-|------|------------|--------|
-| **[body.md](./body.md)** | Концепция Тела (Species, Body, Spirit), Kenshi-style повреждения | ✅ НЕОБХОДИМ |
-| **[equip.md](./equip.md)** | Система экипировки и брони | ⚠️ ЧЕРНОВИК |
-| **[random_npc.md](./random_npc.md)** | Генерация случайных NPC | ✅ НЕОБХОДИМ |
-| **[npc-generator-plan.md](./npc-generator-plan.md)** | План генератора NPC | ⚠️ ПЛАН |
-
----
-
-### 📊 АНАЛИЗ И ИССЛЕДОВАНИЯ (2 файла)
-
-| Файл | Назначение | Статус |
-|------|------------|--------|
-| **[CODE-REVIEW.md](./CODE-REVIEW.md)** | Отчёт ревью кода (оценка 9.5/10) | ℹ️ АРХИВ |
-| **[SPRITE_SIMPLIFICATION_PLAN.md](./SPRITE_SIMPLIFICATION_PLAN.md)** | План упрощения системы спрайтов | ⚠️ ПЛАН |
+| Файл | Токены | Назначение |
+|------|--------|------------|
+| **[checkpoints/checkpoint_03_04.md](./checkpoints/checkpoint_03_04.md)** | 5,040 | Контрольная точка 03.04 |
+| **[checkpoints/checkpoint_03_05_rev.md](./checkpoints/checkpoint_03_05_rev.md)** | 3,017 | Ревью чекпоинта |
+| **[checkpoints/checkpoint_03_05.md](./checkpoints/checkpoint_03_05.md)** | 1,624 | Контрольная точка 03.05 |
+| **[checkpoints/checkpoint29.md](./checkpoints/checkpoint29.md)** | 962 | Контрольная точка 29 |
+| **[checkpoints/checkpoint30.md](./checkpoints/checkpoint30.md)** | 726 | Контрольная точка 30 |
+| **[checkpoints/checkpoint32.md](./checkpoints/checkpoint32.md)** | 717 | Контрольная точка 32 |
+| **[checkpoints/checkpoint30_Npc_Rnd.md](./checkpoints/checkpoint30_Npc_Rnd.md)** | 708 | Генерация NPC |
+| **[checkpoints/chekpoint30.md](./checkpoints/chekpoint30.md)** | 366 | Дубликат |
 
 ---
 
-### 🔧 СПРАВКА (6 файлов)
+## 📊 Распределение по категориям
 
-| Файл | Назначение | Статус |
-|------|------------|--------|
-| **[CHEATS.md](./CHEATS.md)** | Чит-команды для тестирования | ✅ НЕОБХОДИМ |
-| **[PROMPT-EXAMPLES.md](./PROMPT-EXAMPLES.md)** | Примеры промптов для LLM | ℹ️ СПРАВКА |
-| **[LOCAL-ADVENTURE-GENERATOR.md](./LOCAL-ADVENTURE-GENERATOR.md)** | Концепт локального генератора приключений | ⚠️ НА БУДУЩЕЕ |
-| **[ui-terminology.md](./ui-terminology.md)** | Терминология UI элементов | ✅ НЕОБХОДИМ |
-| **[PLAYER_SPRITES.md](./PLAYER_SPRITES.md)** | Спрайты игрока | ✅ НЕОБХОДИМ |
-| **[OPTIMIZATION-TECHNIQUES.ts](./OPTIMIZATION-TECHNIQUES.ts)** | Примеры оптимизации кода | ⚠️ ВРЕМЕННЫЙ |
+### 🚀 НАЧАЛО РАБОТЫ (3 файла, ~19,286 токенов)
 
----
-
-### 📁 CHECKPOINTS (6 файлов)
-
-| Файл | Назначение | Статус |
-|------|------------|--------|
-| **[checkpoints/checkpoint29.md](./checkpoints/checkpoint29.md)** | Контрольная точка 29 | 📋 ИСТОРИЯ |
-| **[checkpoints/checkpoint30.md](./checkpoints/checkpoint30.md)** | Контрольная точка 30 | 📋 ИСТОРИЯ |
-| **[checkpoints/checkpoint30_Npc_Rnd.md](./checkpoints/checkpoint30_Npc_Rnd.md)** | Генерация NPC | 📋 ИСТОРИЯ |
-| **[checkpoints/checkpoint32.md](./checkpoints/checkpoint32.md)** | Контрольная точка 32 | 📋 ИСТОРИЯ |
-| **[checkpoints/checkpoint_03_04.md](./checkpoints/checkpoint_03_04.md)** | Контрольная точка 03.04 | 📋 ИСТОРИЯ |
+| Файл | Токены | Назначение |
+|------|--------|------------|
+| **[start_lore.md](./start_lore.md)** | 14,074 | Лор мира культивации |
+| **[INSTALL.md](./INSTALL.md)** | 3,968 | Установка и запуск |
+| **[PHASER_STACK.md](./PHASER_STACK.md)** | 1,244 | Стек Phaser 3 |
 
 ---
 
-## 🎯 Категоризация по статусу
+### 🏗️ АРХИТЕКТУРА (6 файлов, ~46,644 токенов)
 
-### ✅ ОБЯЗАТЕЛЬНЫЕ (10 файлов)
+| Файл | Токены | Назначение |
+|------|--------|------------|
+| **[ARCHITECTURE.md](./ARCHITECTURE.md)** | 12,231 | Общая архитектура |
+| **[FUNCTIONS.md](./FUNCTIONS.md)** | 11,523 | Справочник функций |
+| **[database-analysis.md](./database-analysis.md)** | 9,226 | Анализ хранения |
+| **[preset-storage.md](./preset-storage.md)** | 6,798 | Хранение пресетов |
+| **[id-system.md](./id-system.md)** | 3,368 | Система ID |
+| **[inventory-system.md](./inventory-system.md)** | 3,142 | Система инвентаря |
 
+---
+
+### 🧬 КОНЦЕПЦИИ СУЩНОСТЕЙ (7 файлов, ~56,255 токенов) 🆕
+
+| Файл | Токены | Назначение |
+|------|--------|------------|
+| **[body.md](./body.md)** | 15,842 | Система тела (Kenshi-style) |
+| **[equip.md](./equip.md)** | 14,339 | Система экипировки |
+| **[soul-system_rewrite.md](./soul-system_rewrite.md)** | 6,497 | 🆕 План переработки души |
+| **[random_npc.md](./random_npc.md)** | 6,472 | Генерация NPC |
+| **[soul-system.md](./soul-system.md)** | 6,119 | 🆕 Система живых объектов |
+| **[physical-object-system.md](./physical-object-system.md)** | 6,035 | 🆕 Система неживых объектов |
+| **[npc-generator-plan.md](./npc-generator-plan.md)** | 1,782 | План генератора NPC |
+
+---
+
+### ⚔️ ИГРОВЫЕ СИСТЕМЫ (10 файлов, ~47,763 токенов)
+
+| Файл | Токены | Назначение |
+|------|--------|------------|
+| **[Technic-Generator.md](./Technic-Generator.md)** | 10,789 | Генератор техник |
+| **[charger.md](./charger.md)** | 9,969 | Зарядник Ци |
+| **[qi_stone.md](./qi_stone.md)** | 7,483 | Камни Ци |
+| **[technique-types-extension.md](./technique-types-extension.md)** | 6,361 | Расширение техник |
+| **[faction-system.md](./faction-system.md)** | 6,034 | Система фракций |
+| **[relations-system.md](./relations-system.md)** | 5,341 | Система отношений |
+| **[COMBAT_TECHNIQUES_SYSTEM.md](./COMBAT_TECHNIQUES_SYSTEM.md)** | 5,275 | Боевая система |
+| **[npc-session-integration.md](./npc-session-integration.md)** | 4,108 | Интеграция NPC |
+| **[TEST_WORLD_TARGETS.md](./TEST_WORLD_TARGETS.md)** | 3,666 | Тестовый полигон |
+| **[vitality-hp-system.md](./vitality-hp-system.md)** | 1,358 | Система HP |
+
+---
+
+### 📋 ПЛАНИРОВАНИЕ (6 файлов, ~22,632 токенов)
+
+| Файл | Токены | Назначение |
+|------|--------|------------|
+| **[PROJECT_ROADMAP.md](./PROJECT_ROADMAP.md)** | 4,397 | Roadmap проекта |
+| **[ENVIRONMENT_SYSTEM_PLAN.md](./ENVIRONMENT_SYSTEM_PLAN.md)** | 6,065 | План окружения |
+| **[PHASE3-PHASER-PROGRESS.md](./PHASE3-PHASER-PROGRESS.md)** | 3,412 | Прогресс Phaser |
+| **[TRAINING_GROUND_ROADMAP.md](./TRAINING_GROUND_ROADMAP.md)** | 2,529 | План полигона |
+| **[ELECTRON_MIGRATION.md](./ELECTRON_MIGRATION.md)** | 1,804 | Миграция на Electron |
+| **[SPRITE_SIMPLIFICATION_PLAN.md](./SPRITE_SIMPLIFICATION_PLAN.md)** | 3,693 | Упрощение спрайтов |
+
+---
+
+### 📊 АНАЛИЗ И ИССЛЕДОВАНИЯ (2 файла, ~5,558 токенов)
+
+| Файл | Токены | Назначение |
+|------|--------|------------|
+| **[CODE-REVIEW.md](./CODE-REVIEW.md)** | 1,865 | Отчёт ревью кода |
+| **[SPRITE_SIMPLIFICATION_PLAN.md](./SPRITE_SIMPLIFICATION_PLAN.md)** | 3,693 | План спрайтов |
+
+---
+
+### 🔧 СПРАВКА (8 файлов, ~18,073 токенов)
+
+| Файл | Токены | Назначение |
+|------|--------|------------|
+| **[monetization.md](./monetization.md)** | 7,724 | Анализ монетизации |
+| **[LOCAL-ADVENTURE-GENERATOR.md](./LOCAL-ADVENTURE-GENERATOR.md)** | 3,842 | Генератор приключений |
+| **[Listing.md](./Listing.md)** | 3,818 | Этот файл |
+| **[PROMPT-EXAMPLES.md](./PROMPT-EXAMPLES.md)** | 3,606 | Примеры промптов |
+| **[ui-terminology.md](./ui-terminology.md)** | 2,406 | Терминология UI |
+| **[PLAYER_SPRITES.md](./PLAYER_SPRITES.md)** | 1,434 | Спрайты игрока |
+| **[CHEATS.md](./CHEATS.md)** | 577 | Чит-команды |
+
+---
+
+## 🎯 Приоритеты для AI-агентов
+
+### 🔴 ВЫСОКИЙ ПРИОРИТЕТ (>10,000 токенов)
 ```
-INSTALL.md              — Начало работы
-PHASER_STACK.md         — Стек движка
-ARCHITECTURE.md         — Архитектура проекта
-FUNCTIONS.md            — API документация
-PROJECT_ROADMAP.md      — Статус и планы
-COMBAT_TECHNIQUES_SYSTEM.md — Боевая система
-start_lore.md           — Лор мира
-database-analysis.md    — Анализ хранения данных
+body.md              — 15,842 — Система тела
+equip.md             — 14,339 — Экипировка
+start_lore.md        — 14,074 — Лор мира (ОБЯЗАТЕЛЕН)
+ARCHITECTURE.md      — 12,231 — Архитектура (ОБЯЗАТЕЛЕН)
+FUNCTIONS.md         — 11,523 — Справочник API (ОБЯЗАТЕЛЕН)
+Technic-Generator.md — 10,789 — Генератор техник
 ```
 
-### ✅ НЕОБХОДИМЫЕ (18 файлов)
-
+### 🟡 СРЕДНИЙ ПРИОРИТЕТ (5,000–10,000 токенов)
 ```
-PHASE3-PHASER-PROGRESS.md   — Прогресс Phaser
-TEST_WORLD_TARGETS.md       — Тестовый полигон
-body.md                     — Система тел
-qi_stone.md                 — Физика Ци
-Technic-Generator.md        — Генератор техник
-CHEATS.md                   — Чит-команды
-inventory-system.md         — Система инвентаря
-ui-terminology.md           — Терминология UI
-id-system.md                — Система ID
-preset-storage.md           — Хранение пресетов
-ENVIRONMENT_SYSTEM_PLAN.md  — План окружения
-TRAINING_GROUND_ROADMAP.md  — План полигона
-vitality-hp-system.md       — Система HP
-random_npc.md               — Генерация NPC
-npc-session-integration.md  — Интеграция NPC
-PLAYER_SPRITES.md           — Спрайты игрока
+charger.md                   — 9,969  — Зарядник Ци
+database-analysis.md         — 9,226  — Анализ БД
+monetization.md              — 7,724  — Монетизация
+qi_stone.md                  — 7,483  — Камни Ци
+preset-storage.md            — 6,798  — Пресеты
+soul-system_rewrite.md       — 6,497  — 🆕 План переработки
+random_npc.md                — 6,472  — Генерация NPC
+technique-types-extension.md — 6,361  — Типы техник
+soul-system.md               — 6,119  — 🆕 Система души
+ENVIRONMENT_SYSTEM_PLAN.md   — 6,065  — Окружение
+physical-object-system.md    — 6,035  — 🆕 Неживые объекты
+faction-system.md            — 6,034  — Фракции
 ```
 
-### ⚠️ ЧЕРНОВИКИ / НА БУДУЩЕЕ (8 файлов)
-
+### 🟢 НИЗКИЙ ПРИОРИТЕТ (<5,000 токенов)
 ```
-technique-types-extension.md  — Расширение типов техник
-charger.md                    — Зарядник Ци
-equip.md                      — Система экипировки
-ELECTRON_MIGRATION.md         — Миграция на Electron
-LOCAL-ADVENTURE-GENERATOR.md  — Генератор приключений
-relations-system.md           — Система отношений
-faction-system.md             — Система фракций
-npc-generator-plan.md         — План генератора NPC
-```
-
-### ℹ️ СПРАВОЧНЫЕ (2 файла)
-
-```
-CODE-REVIEW.md           — Исторический отчёт
-PROMPT-EXAMPLES.md       — Примеры промптов
-monetization.md          — Анализ монетизации
+COMBAT_TECHNIQUES_SYSTEM.md — 5,275 — Боевая система
+PROJECT_ROADMAP.md          — 4,397 — Roadmap
+npc-session-integration.md  — 4,108 — Интеграция NPC
+INSTALL.md                  — 3,968 — Установка
+...остальные файлы...
 ```
 
 ---
 
-## 🔗 Связи между документами
+## 🆕 Новые файлы (версия 18.0)
 
-```
-README.md (корень)
-    │
-    ├── worklog.md ─────────────────→ История работы
-    │
-    ├── docs/
-    │   ├── INSTALL.md ───────────────→ Установка
-    │   ├── ARCHITECTURE.md ──────────→ Архитектура
-    │   │       ├── FUNCTIONS.md ─────→ Справочник функций
-    │   │       └── id-system.md ─────→ Система ID
-    │   │
-    │   ├── PHASER_STACK.md ──────────→ Phaser стек
-    │   │       └── PHASE3-PHASER-PROGRESS.md → Прогресс миграции
-    │   │
-    │   ├── PROJECT_ROADMAP.md ───────→ Roadmap
-    │   │
-    │   ├── Игровые системы/
-    │   │   ├── COMBAT_TECHNIQUES_SYSTEM.md → Боевая система
-    │   │   ├── Technic-Generator.md ───────→ Генератор техник
-    │   │   ├── qi_stone.md ─────────────────→ Камни Ци
-    │   │   └── ENVIRONMENT_SYSTEM_PLAN.md ─→ План окружения
-    │   │
-    │   ├── Концепции/
-    │   │   ├── body.md ───────────────→ Тело (Species, Body, Spirit)
-    │   │   ├── equip.md ──────────────→ Экипировка
-    │   │   └── start_lore.md ─────────→ Лор мира
-    │   │
-    │   ├── Анализ/
-    │   │   └── database-analysis.md ──→ Комплексный анализ БД
-    │   │
-    │   ├── Системы/
-    │   │   ├── inventory-system.md ───→ Инвентарь
-    │   │   └── ui-terminology.md ─────→ Терминология UI
-    │   │
-    │   └── Listing.md ────────────────→ Этот файл
-```
+| Файл | Токены | Описание |
+|------|--------|----------|
+| **soul-system.md** | 6,119 | Система живых объектов (SoulEntity) |
+| **physical-object-system.md** | 6,035 | Система неживых объектов (PhysicalObject) |
+| **soul-system_rewrite.md** | 6,497 | План миграции на новую архитектуру |
 
 ---
 
 ## 📝 Рекомендации по использованию
 
 ### Для новых разработчиков
-1. **README.md** → **INSTALL.md**
+1. **INSTALL.md** → **PHASER_STACK.md** → **start_lore.md**
 2. Изучить **ARCHITECTURE.md** для понимания структуры
-3. Изучить **PHASER_STACK.md** для понимания 2D движка
-4. Прочитать **start_lore.md** для понимания мира
+3. Прочитать **body.md** и **soul-system.md** для понимания сущностей
 
 ### Для AI-агентов
 1. Изучить **PROJECT_ROADMAP.md** для текущего статуса
-2. Использовать **FUNCTIONS.md** как справочник
-3. Изучить **id-system.md** для генерации ID
-4. Изучить **ui-terminology.md** для единых терминов
-
-### Для тестирования
-1. Использовать **CHEATS.md** для быстрых тестов
-2. Изучить **TEST_WORLD_TARGETS.md** для полигона
-3. Проверить **COMBAT_TECHNIQUES_SYSTEM.md** для боёв
+2. Использовать **FUNCTIONS.md** как справочник API
+3. Изучить **soul-system_rewrite.md** для плана переработки
+4. Изучить **physical-object-system.md** для неживых объектов
 
 ---
 
 ## 📜 История изменений
 
+### Версия 18 (2026-03-11)
+- ✅ Добавлен **soul-system.md** — Система живых объектов (SoulEntity)
+- ✅ Добавлен **physical-object-system.md** — Система неживых объектов
+- ✅ Добавлен **soul-system_rewrite.md** — План миграции
+- ✅ Добавлен подсчёт токенов для всех файлов
+- ✅ Обновлена статистика (56 файлов, ~186,000 токенов)
+
 ### Версия 17 (2026-03-04)
 - ✅ Удалена папка docs/plans/ (5 файлов)
 - ✅ Обновлена статистика (43 файла, 7 категорий)
-
-### Версия 16 (2026-03-04)
-- ✅ Удалён файл rimka.md
-- ✅ Добавлены новые файлы: ENVIRONMENT_SYSTEM_PLAN.md, monetization.md, TRAINING_GROUND_ROADMAP.md
-- ✅ Обновлена статистика (48 файлов)
-- ✅ Переорганизованы категории
-
-### Версия 15 (2026-03-01)
-- ✅ Удалены файлы планов агентов: AGENT_1_PLAN.md, AGENT_2_PLAN.md
-- ✅ Добавлены новые файлы: inventory-system.md, ui-terminology.md
-- ✅ Добавлена категория "Планы" для docs/plans/
-
-### Версия 14 (2026-02-28)
-- ✅ Объединены файлы анализа БД → **database-analysis.md**
-- ✅ Добавлен .git-connect в .gitignore (защита токена)
-
----
-
-## 🗑️ Рекомендации по очистке
-
-### Можно удалить:
-- `OPTIMIZATION-TECHNIQUES.ts` — временный код-пример
-
-### Требуют доработки (черновики):
-- `technique-types-extension.md` — требует согласования
-- `charger.md` — требует реализации
-- `equip.md` — требует реализации
-- `LOCAL-ADVENTURE-GENERATOR.md` — будущая фича
 
 ---
 
