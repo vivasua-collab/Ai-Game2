@@ -32,6 +32,9 @@ import {
   createInitialStatsDevelopment,
 } from './stat-threshold';
 
+// Re-export for convenience
+export { createInitialStatsDevelopment } from './stat-threshold';
+
 import { STAT_DEVELOPMENT_CONSTANTS } from './constants';
 
 // ==================== ДОБАВЛЕНИЕ ДЕЛЬТЫ ====================

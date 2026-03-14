@@ -34,6 +34,8 @@ const PLAYER_SPEED = 200;
 const PLAYER_SIZE = 24;
 const METERS_TO_PIXELS = 32;
 const TARGET_HITBOX_RADIUS = 22;
+const NPC_COLLISION_RADIUS = 25;  // Collision radius for NPCs
+const PLAYER_COLLISION_RADIUS = 15;  // Collision radius for player
 
 // ==================== TYPES ====================
 
@@ -48,6 +50,9 @@ interface LocationNPC {
   disposition: number;
   x: number;
   y: number;
+  hitboxRadius: number;  // Collision radius
+  hp: number;            // Current HP
+  maxHp: number;         // Max HP
   sprite?: Phaser.GameObjects.Container;
   directionalSprite?: Phaser.GameObjects.Sprite;
 }
@@ -507,7 +512,12 @@ export class LocationScene extends BaseScene {
     const distance = 150 + Math.random() * 200;
     const x = WORLD_WIDTH / 2 + Math.cos(angle) * distance;
     const y = WORLD_HEIGHT / 2 + Math.sin(angle) * distance;
-    
+
+    // Calculate HP based on cultivation level
+    const baseHp = 100;
+    const levelMultiplier = 1 + (npcData.cultivation?.level || 1) * 0.5;
+    const maxHp = Math.floor(baseHp * levelMultiplier);
+
     const npc: LocationNPC = {
       id: npcData.id, name: npcData.name, title: npcData.title,
       cultivationLevel: npcData.cultivation?.level || 1,
@@ -516,6 +526,9 @@ export class LocationScene extends BaseScene {
       roleId: npcData.roleId || 'unknown',
       disposition: npcData.personality?.disposition || 50,
       x, y,
+      hitboxRadius: NPC_COLLISION_RADIUS,
+      hp: maxHp,
+      maxHp,
     };
     this.npcs.set(npc.id, npc);
     this.npcSprites.set(npc.id, this.createNPCSprite(npc));
@@ -825,15 +838,36 @@ export class LocationScene extends BaseScene {
     if (this.wasd?.D?.isDown || this.cursors?.right?.isDown) vx = 1;
     if (this.wasd?.W?.isDown || this.cursors?.up?.isDown) vy = -1;
     if (this.wasd?.S?.isDown || this.cursors?.down?.isDown) vy = 1;
-    
+
     if (vx !== 0 && vy !== 0) {
       const len = Math.sqrt(vx * vx + vy * vy);
       vx /= len; vy /= len;
     }
-    
+
+    // Calculate new position
     const margin = PLAYER_SIZE;
-    this.player.x = Phaser.Math.Clamp(this.player.x + vx * PLAYER_SPEED * (1/60), margin, WORLD_WIDTH - margin);
-    this.player.y = Phaser.Math.Clamp(this.player.y + vy * PLAYER_SPEED * (1/60), margin, WORLD_HEIGHT - margin);
+    let newX = Phaser.Math.Clamp(this.player.x + vx * PLAYER_SPEED * (1/60), margin, WORLD_WIDTH - margin);
+    let newY = Phaser.Math.Clamp(this.player.y + vy * PLAYER_SPEED * (1/60), margin, WORLD_HEIGHT - margin);
+
+    // Check collision with NPCs
+    for (const [id, npc] of this.npcs) {
+      const dx = newX - npc.x;
+      const dy = newY - npc.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const minDistance = PLAYER_COLLISION_RADIUS + npc.hitboxRadius;
+
+      if (distance < minDistance && distance > 0) {
+        // Push player out of NPC
+        const overlap = minDistance - distance;
+        const nx = dx / distance;
+        const ny = dy / distance;
+        newX += nx * overlap;
+        newY += ny * overlap;
+      }
+    }
+
+    this.player.x = newX;
+    this.player.y = newY;
     this.playerX = this.player.x;
     this.playerY = this.player.y;
   }
@@ -842,7 +876,7 @@ export class LocationScene extends BaseScene {
 
   private performAttack(): void {
     const now = Date.now();
-    
+
     // Calculate attack result with stat-based damage and cooldown
     const attackResult = calculateHandAttack(
       this.characterStats.strength,
@@ -850,36 +884,55 @@ export class LocationScene extends BaseScene {
       null, // TODO: technique from slot 1
       0     // TODO: mastery
     );
-    
+
     // Check cooldown
     if (!canAttack(this.lastAttackTime, attackResult.cooldown)) {
       return; // Attack on cooldown
     }
-    
+
     this.lastAttackTime = now;
-    
+
     const attackRange = 150;
     const attackAngle = 60;
-    
-    // Apply damage to targets
+
+    // Apply damage to training targets
     for (const target of this.targets) {
       if (this.checkAttackHit(
-        this.playerX, 
-        this.playerY, 
-        this.playerRotation, 
-        target.x, 
-        target.centerY, 
-        attackAngle, 
-        attackRange, 
+        this.playerX,
+        this.playerY,
+        this.playerRotation,
+        target.x,
+        target.centerY,
+        attackAngle,
+        attackRange,
         target.hitboxRadius
       )) {
         this.damageTarget(target, attackResult.damage, 'normal');
-        
+
         // Report attack to server via Event Bus for delta development
-        this.reportAttackToServer(target.id, attackResult.damage);
+        this.reportAttackToServer(target.id, attackResult.damage, 'training_target');
       }
     }
-    
+
+    // Apply damage to NPCs
+    for (const [id, npc] of this.npcs) {
+      if (this.checkAttackHit(
+        this.playerX,
+        this.playerY,
+        this.playerRotation,
+        npc.x,
+        npc.y,
+        attackAngle,
+        attackRange,
+        npc.hitboxRadius
+      )) {
+        this.damageNPC(npc, attackResult.damage);
+
+        // Report attack to server via Event Bus
+        this.reportAttackToServer(npc.id, attackResult.damage, 'temp_npc');
+      }
+    }
+
     this.showAttackEffect(attackRange, attackAngle);
   }
   
@@ -887,11 +940,11 @@ export class LocationScene extends BaseScene {
    * Report attack to server via Event Bus
    * This triggers stat delta generation on the server
    */
-  private async reportAttackToServer(targetId: string, damage: number): Promise<void> {
+  private async reportAttackToServer(targetId: string, damage: number, targetType: string): Promise<void> {
     try {
       await eventBusClient.reportDamageDealt(
         targetId,
-        'training_target',
+        targetType,
         'hand_attack',
         { x: this.playerX, y: this.playerY },
         0, // distance
@@ -902,6 +955,73 @@ export class LocationScene extends BaseScene {
       // Non-critical error, don't interrupt gameplay
       console.warn('[LocationScene] Failed to report attack:', error);
     }
+  }
+
+  /**
+   * Apply damage to an NPC
+   */
+  private damageNPC(npc: LocationNPC, damage: number): void {
+    npc.hp = Math.max(0, npc.hp - damage);
+
+    // Show damage number
+    this.showDamageNumber(npc.x, npc.y, damage, 'normal');
+
+    // Visual feedback - flash the NPC sprite
+    const sprite = this.npcSprites.get(npc.id);
+    if (sprite) {
+      // Find the body circle in the container (index 2)
+      const body = sprite.getAt(2) as Phaser.GameObjects.Arc;
+      if (body && body.setTint) {
+        body.setTint(0xff4444);
+        this.tweens.add({
+          targets: body,
+          alpha: 0.5,
+          duration: 50,
+          yoyo: true,
+          onComplete: () => {
+            body.clearTint();
+            body.setAlpha(0.9);
+          },
+        });
+      }
+
+      // Scale effect
+      this.tweens.add({
+        targets: sprite,
+        scale: 0.9,
+        duration: 50,
+        yoyo: true,
+      });
+    }
+
+    // Check for death
+    if (npc.hp <= 0) {
+      this.handleNPCDeath(npc);
+    }
+  }
+
+  /**
+   * Handle NPC death
+   */
+  private handleNPCDeath(npc: LocationNPC): void {
+    const sprite = this.npcSprites.get(npc.id);
+    if (sprite) {
+      // Death animation
+      this.tweens.add({
+        targets: sprite,
+        alpha: 0,
+        scale: 0.5,
+        duration: 500,
+        onComplete: () => {
+          sprite.destroy();
+          this.npcSprites.delete(npc.id);
+          this.npcs.delete(npc.id);
+        },
+      });
+    }
+
+    // Show death message
+    this.showDamageNumber(npc.x, npc.y - 30, 0, 'healing');
   }
 
   private checkAttackHit(px: number, py: number, rot: number, tx: number, ty: number, cone: number, range: number, hitbox: number): boolean {
