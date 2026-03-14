@@ -11,13 +11,16 @@
  * - Combat System (бой)
  * - Qi System (Ци)
  * - Inventory System (инвентарь)
+ * - Stat Development (развитие характеристик)
  * 
- * Версия: 1.0.0
+ * Версия: 1.1.0
  * ============================================================================
  */
 
 import { TruthSystem } from '../truth-system';
 import { processCombatEvent } from './combat-processor';
+import { processStatEvent } from '../event-bus/handlers/stat';
+import { isStatEvent } from '../events/stat-events';
 import type { 
   GameEvent, 
   EventResult, 
@@ -53,6 +56,11 @@ interface CharacterChanges {
 export async function processGameEvent(event: GameEvent): Promise<EventResult> {
   console.log(`[EventProcessor] Processing: ${event.type}`);
 
+  // Проверяем события развития статов
+  if (isStatEvent(event)) {
+    return processStatEvent(event);
+  }
+
   // Маршрутизация по категории
   const category = event.type.split(':')[0];
 
@@ -70,6 +78,9 @@ export async function processGameEvent(event: GameEvent): Promise<EventResult> {
 
     case 'player':
       return processMovementEvent(event);
+
+    case 'stat':
+      return processStatEvent(event);
 
     default:
       console.warn(`[EventProcessor] Unknown category: ${category}`);

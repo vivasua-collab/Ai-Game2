@@ -21,7 +21,7 @@
  * // Серверный код:
  * import { processEvent } from '@/lib/game/event-bus';
  * 
- * Версия: 2.0.0
+ * Версия: 2.1.0
  */
 
 // ==================== СЕРВЕРНЫЙ PACKAGE ====================
@@ -50,6 +50,7 @@ export { handleCombatEvent } from './handlers/combat';
 export { handleInventoryEvent } from './handlers/inventory';
 export { handleEnvironmentEvent } from './handlers/environment';
 export { handleMovementEvent } from './handlers/movement';
+export { processStatEvent } from './handlers/stat';
 
 // ==================== КЛИЕНТСКИЕ УТИЛИТЫ ====================
 
@@ -57,6 +58,18 @@ export { handleMovementEvent } from './handlers/movement';
 // ВАЖНО: Используйте '@/lib/game/event-bus/client' для клиентского кода!
 export { eventBusClient, EventBusClient } from './client';
 export type { EventResponse, TechniqueUseResponse } from './client';
+
+// ==================== СОБЫТИЯ РАЗВИТИЯ СТАТОВ ====================
+
+export { STAT_EVENT_TYPES, isStatEvent } from './events/stat-events';
+export type {
+  StatEvent,
+  StatDeltaAddEvent,
+  StatConsolidateEvent,
+  StatTrainingStartEvent,
+  StatTrainingTickEvent,
+  StatTrainingEndEvent,
+} from './events/stat-events';
 
 const eventBus = { processEvent };
 export default eventBus;

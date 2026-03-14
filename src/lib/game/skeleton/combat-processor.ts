@@ -12,8 +12,9 @@
  * - combat-system.ts (расчёты урона, дальности)
  * - TruthSystem (состояние персонажа)
  * - qi-shared.ts (расчёты Ци)
+ * - stat-truth.ts (развитие характеристик)
  * 
- * Версия: 1.1.0 (с расширенной формулой мастерства)
+ * Версия: 1.2.0 (интеграция Stat Development)
  * ============================================================================
  */
 
@@ -36,6 +37,11 @@ import {
   calculateQiDensity,
   type TechniqueRarity 
 } from '../techniques';
+import { 
+  addStatDelta, 
+  calculateFatiguePenaltyForDevelopment 
+} from '../stat-truth';
+import type { StatName, DeltaSource } from '@/types/stat-development';
 import { db } from '@/lib/db';
 import type { 
   GameEvent, 
@@ -324,7 +330,50 @@ async function processDamageDealt(
       ));
     }
 
-    // 7. Обновляем состояние персонажа
+    // 7. Генерируем виртуальную дельту для развития (Stat Development Integration)
+    if (damageResult.damage > 0) {
+      // Рассчитываем штраф от усталости
+      const fatiguePenalty = calculateFatiguePenaltyForDevelopment(
+        session.character.fatigue,
+        session.character.mentalFatigue
+      );
+
+      // Определяем целевую характеристику по типу техники
+      let targetStat: StatName = 'strength';
+      const combatType = technique.effects?.combatType;
+      if (combatType === 'defense_block' || combatType === 'defense_dodge') {
+        targetStat = 'agility';
+      } else if (combatType?.startsWith('ranged_')) {
+        targetStat = 'agility';
+      }
+
+      // Базовая дельта за удар
+      const baseDelta = 0.001; // STAT_DEVELOPMENT_CONSTANTS.DELTA_SOURCES.combat_hit
+      const finalDelta = baseDelta * fatiguePenalty;
+
+      // Добавляем дельту через Truth System
+      const statResult = addStatDelta(
+        event.sessionId,
+        targetStat,
+        finalDelta,
+        'combat_hit' as DeltaSource
+      );
+
+      // Если было повышение - добавляем уведомление
+      if (statResult.advanced) {
+        commands.push({
+          type: 'ui:show_notification',
+          timestamp: Date.now(),
+          data: {
+            message: `📈 ${targetStat === 'strength' ? 'Сила' : 'Ловкость'} повышена до ${statResult.stat.current}!`,
+            type: 'success',
+            duration: 3000,
+          },
+        });
+      }
+    }
+
+    // 8. Обновляем состояние персонажа
     const updatedSession = TruthSystem.getSessionState(event.sessionId);
     changes.character = {
       currentQi: updatedSession?.character.currentQi,
