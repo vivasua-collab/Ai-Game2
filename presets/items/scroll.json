@@ -1,0 +1,406 @@
+{
+  "version": "2.0",
+  "type": "scroll",
+  "count": 20,
+  "items": [
+    {
+      "id": "CS_000061",
+      "name": "Древний Гримуар Особый эффект",
+      "nameEn": "Древний Гримуар of Special Effect",
+      "description": "Уникальный эффект. Длительность: 39 сек.",
+      "type": "scroll",
+      "effect": {
+        "type": "special",
+        "value": 1,
+        "duration": 39
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 53
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 5,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000062",
+      "name": "Мистический Письмо Усиление характеристики",
+      "nameEn": "Мистический Письмо of Buff Stat",
+      "description": "Временно усиливает характеристику (intelligence). Длительность: 66 сек.",
+      "type": "scroll",
+      "effect": {
+        "type": "buff_stat",
+        "value": 2,
+        "duration": 66,
+        "stat": "intelligence"
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 54
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 5,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000063",
+      "name": "Проклятый Письмо Лечение статуса",
+      "nameEn": "Проклятый Письмо of Cure Status",
+      "description": "Снимает негативный статус",
+      "type": "scroll",
+      "effect": {
+        "type": "cure",
+        "value": 1
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 18
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 5,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000064",
+      "name": "Древний Письмо Лечение статуса",
+      "nameEn": "Древний Письмо of Cure Status",
+      "description": "Снимает негативный статус",
+      "type": "scroll",
+      "effect": {
+        "type": "cure",
+        "value": 1
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 23
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 5,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000065",
+      "name": "Древний Сказание Усиление характеристики",
+      "nameEn": "Древний Сказание of Buff Stat",
+      "description": "Временно усиливает характеристику (conductivity). Длительность: 66 сек.",
+      "type": "scroll",
+      "effect": {
+        "type": "buff_stat",
+        "value": 2,
+        "duration": 66,
+        "stat": "conductivity"
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 34
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 5,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000066",
+      "name": "Святой Письмо Лечение статуса",
+      "nameEn": "Святой Письмо of Cure Status",
+      "description": "Снимает негативный статус",
+      "type": "scroll",
+      "effect": {
+        "type": "cure",
+        "value": 1
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 20
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 5,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000067",
+      "name": "Древний Свиток Лечение статуса",
+      "nameEn": "Древний Свиток of Cure Status",
+      "description": "Снимает негативный статус",
+      "type": "scroll",
+      "effect": {
+        "type": "cure",
+        "value": 1
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 23
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 5,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000068",
+      "name": "Старый Гримуар Особый эффект",
+      "nameEn": "Старый Гримуар of Special Effect",
+      "description": "Уникальный эффект. Длительность: 39 сек.",
+      "type": "scroll",
+      "effect": {
+        "type": "special",
+        "value": 1,
+        "duration": 39
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 34
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 5,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000069",
+      "name": "Старый Письмо Лечение статуса",
+      "nameEn": "Старый Письмо of Cure Status",
+      "description": "Снимает негативный статус",
+      "type": "scroll",
+      "effect": {
+        "type": "cure",
+        "value": 1
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 14
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 5,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000070",
+      "name": "Старый Гримуар Лечение статуса",
+      "nameEn": "Старый Гримуар of Cure Status",
+      "description": "Снимает негативный статус",
+      "type": "scroll",
+      "effect": {
+        "type": "cure",
+        "value": 1
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 26
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 5,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000071",
+      "name": "Проклятый Сказание Усиление характеристики",
+      "nameEn": "Проклятый Сказание of Buff Stat",
+      "description": "Временно усиливает характеристику (agility). Длительность: 79 сек.",
+      "type": "scroll",
+      "effect": {
+        "type": "buff_stat",
+        "value": 2,
+        "duration": 79,
+        "stat": "agility"
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 52
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 5,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000072",
+      "name": "Святой Свиток Лечение статуса",
+      "nameEn": "Святой Свиток of Cure Status",
+      "description": "Снимает негативный статус",
+      "type": "scroll",
+      "effect": {
+        "type": "cure",
+        "value": 1
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 29
+      },
+      "rarity": "rare",
+      "level": 1,
+      "stackSize": 5,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000073",
+      "name": "Древний Свиток Усиление характеристики",
+      "nameEn": "Древний Свиток of Buff Stat",
+      "description": "Временно усиливает характеристику (intelligence). Длительность: 66 сек.",
+      "type": "scroll",
+      "effect": {
+        "type": "buff_stat",
+        "value": 2,
+        "duration": 66,
+        "stat": "intelligence"
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 35
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 5,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000074",
+      "name": "Старый Письмо Усиление характеристики",
+      "nameEn": "Старый Письмо of Buff Stat",
+      "description": "Временно усиливает характеристику (agility). Длительность: 66 сек.",
+      "type": "scroll",
+      "effect": {
+        "type": "buff_stat",
+        "value": 2,
+        "duration": 66,
+        "stat": "agility"
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 31
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 5,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000075",
+      "name": "Мистический Письмо Особый эффект",
+      "nameEn": "Мистический Письмо of Special Effect",
+      "description": "Уникальный эффект. Длительность: 33 сек.",
+      "type": "scroll",
+      "effect": {
+        "type": "special",
+        "value": 1,
+        "duration": 33
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 57
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 5,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000076",
+      "name": "Проклятый Свиток Усиление характеристики",
+      "nameEn": "Проклятый Свиток of Buff Stat",
+      "description": "Временно усиливает характеристику (agility). Длительность: 66 сек.",
+      "type": "scroll",
+      "effect": {
+        "type": "buff_stat",
+        "value": 2,
+        "duration": 66,
+        "stat": "agility"
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 45
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 5,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000077",
+      "name": "Древний Свиток Лечение статуса",
+      "nameEn": "Древний Свиток of Cure Status",
+      "description": "Снимает негативный статус",
+      "type": "scroll",
+      "effect": {
+        "type": "cure",
+        "value": 1
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 13
+      },
+      "rarity": "common",
+      "level": 1,
+      "stackSize": 5,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000078",
+      "name": "Старый Сказание Особый эффект",
+      "nameEn": "Старый Сказание of Special Effect",
+      "description": "Уникальный эффект. Длительность: 39 сек.",
+      "type": "scroll",
+      "effect": {
+        "type": "special",
+        "value": 1,
+        "duration": 39
+      },
+      "usage": {
+        "castTime": 2,
+        "cooldown": 32
+      },
+      "rarity": "uncommon",
+      "level": 1,
+      "stackSize": 5,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000079",
+      "name": "Старый Гримуар Особый эффект",
+      "nameEn": "Старый Гримуар of Special Effect",
+      "description": "Уникальный эффект. Длительность: 49 сек.",
+      "type": "scroll",
+      "effect": {
+        "type": "special",
+        "value": 1,
+        "duration": 49
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 32
+      },
+      "rarity": "rare",
+      "level": 1,
+      "stackSize": 5,
+      "quantity": 1
+    },
+    {
+      "id": "CS_000080",
+      "name": "Проклятый Гримуар Усиление характеристики",
+      "nameEn": "Проклятый Гримуар of Buff Stat",
+      "description": "Временно усиливает характеристику (conductivity). Длительность: 132 сек.",
+      "type": "scroll",
+      "effect": {
+        "type": "buff_stat",
+        "value": 5,
+        "duration": 132,
+        "stat": "conductivity"
+      },
+      "usage": {
+        "castTime": 1,
+        "cooldown": 53
+      },
+      "rarity": "legendary",
+      "level": 1,
+      "stackSize": 5,
+      "quantity": 1
+    }
+  ]
+}

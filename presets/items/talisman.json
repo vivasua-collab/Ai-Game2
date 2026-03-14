@@ -1,0 +1,319 @@
+{
+  "version": "2.0",
+  "type": "talisman",
+  "count": 16,
+  "items": [
+    {
+      "id": "AC_000001",
+      "name": "Экстренный Амулет Обнаружение",
+      "nameEn": "Экстренный Амулет of Detection",
+      "description": "Обнаруживает врагов, ловушки или скопления Ци в радиусе. Длительность: 36 сек. Одноразовый.",
+      "type": "talisman",
+      "slot": "talisman_2",
+      "effect": {
+        "type": "detection",
+        "duration": 36,
+        "radius": 20
+      },
+      "isConsumable": true,
+      "maxUses": 1,
+      "currentUses": 1,
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000002",
+      "name": "Экстренный Печать Очистка",
+      "nameEn": "Экстренный Печать of Purification",
+      "description": "Очищает от лёгких негативных эффектов. Длительность: 10 сек. Одноразовый.",
+      "type": "talisman",
+      "slot": "talisman_1",
+      "effect": {
+        "type": "purification",
+        "duration": 10
+      },
+      "isConsumable": true,
+      "maxUses": 1,
+      "currentUses": 1,
+      "rarity": "legendary",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000005",
+      "name": "Ситуативный Символ Очистка",
+      "nameEn": "Ситуативный Символ of Purification",
+      "description": "Очищает от лёгких негативных эффектов. Длительность: 9 сек. Одноразовый.",
+      "type": "talisman",
+      "slot": "talisman_2",
+      "effect": {
+        "type": "purification",
+        "duration": 9
+      },
+      "isConsumable": true,
+      "maxUses": 1,
+      "currentUses": 1,
+      "rarity": "rare",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000006",
+      "name": "Экстренный Оберег Обнаружение",
+      "nameEn": "Экстренный Оберег of Detection",
+      "description": "Обнаруживает врагов, ловушки или скопления Ци в радиусе. Длительность: 36 сек. Одноразовый.",
+      "type": "talisman",
+      "slot": "talisman_1",
+      "effect": {
+        "type": "detection",
+        "duration": 36,
+        "radius": 20
+      },
+      "isConsumable": true,
+      "maxUses": 1,
+      "currentUses": 1,
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000009",
+      "name": "Экстренный Символ Очистка",
+      "nameEn": "Экстренный Символ of Purification",
+      "description": "Очищает от лёгких негативных эффектов. Длительность: 10 сек. Одноразовый.",
+      "type": "talisman",
+      "slot": "talisman_2",
+      "effect": {
+        "type": "purification",
+        "duration": 10
+      },
+      "isConsumable": true,
+      "maxUses": 1,
+      "currentUses": 1,
+      "rarity": "legendary",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000010",
+      "name": "Экстренный Печать Усиление",
+      "nameEn": "Экстренный Печать of Enhancement",
+      "description": "Усиливает восприятие окружающего мира. Длительность: 72 сек. Одноразовый.",
+      "type": "talisman",
+      "slot": "talisman_2",
+      "effect": {
+        "type": "enhancement",
+        "duration": 72,
+        "radius": 30
+      },
+      "isConsumable": true,
+      "maxUses": 1,
+      "currentUses": 1,
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000031",
+      "name": "Одноразовый Оберег Очистка",
+      "nameEn": "Одноразовый Оберег of Purification",
+      "description": "Очищает от лёгких негативных эффектов. Длительность: 10 сек. Одноразовый.",
+      "type": "talisman",
+      "slot": "talisman_2",
+      "effect": {
+        "type": "purification",
+        "duration": 10
+      },
+      "isConsumable": true,
+      "maxUses": 1,
+      "currentUses": 1,
+      "rarity": "legendary",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000032",
+      "name": "Временный Талисман Усиление",
+      "nameEn": "Временный Талисман of Enhancement",
+      "description": "Усиливает восприятие окружающего мира. Длительность: 72 сек. Одноразовый.",
+      "type": "talisman",
+      "slot": "talisman_2",
+      "effect": {
+        "type": "enhancement",
+        "duration": 72,
+        "radius": 30
+      },
+      "isConsumable": true,
+      "maxUses": 1,
+      "currentUses": 1,
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000033",
+      "name": "Одноразовый Талисман Усиление",
+      "nameEn": "Одноразовый Талисман of Enhancement",
+      "description": "Усиливает восприятие окружающего мира. Длительность: 72 сек. Одноразовый.",
+      "type": "talisman",
+      "slot": "talisman_2",
+      "effect": {
+        "type": "enhancement",
+        "duration": 72,
+        "radius": 30
+      },
+      "isConsumable": true,
+      "maxUses": 1,
+      "currentUses": 1,
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000034",
+      "name": "Экстренный Талисман Усиление",
+      "nameEn": "Экстренный Талисман of Enhancement",
+      "description": "Усиливает восприятие окружающего мира. Длительность: 72 сек. Одноразовый.",
+      "type": "talisman",
+      "slot": "talisman_2",
+      "effect": {
+        "type": "enhancement",
+        "duration": 72,
+        "radius": 30
+      },
+      "isConsumable": true,
+      "maxUses": 1,
+      "currentUses": 1,
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000035",
+      "name": "Экстренный Символ Барьер",
+      "nameEn": "Экстренный Символ of Barrier",
+      "description": "Создаёт временный барьер, блокирующий проход. Длительность: 45 сек. Одноразовый.",
+      "type": "talisman",
+      "slot": "talisman_2",
+      "effect": {
+        "type": "barrier",
+        "duration": 45,
+        "radius": 3
+      },
+      "isConsumable": true,
+      "maxUses": 1,
+      "currentUses": 1,
+      "rarity": "uncommon",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000036",
+      "name": "Временный Символ Очистка",
+      "nameEn": "Временный Символ of Purification",
+      "description": "Очищает от лёгких негативных эффектов. Длительность: 9 сек. Одноразовый.",
+      "type": "talisman",
+      "slot": "talisman_1",
+      "effect": {
+        "type": "purification",
+        "duration": 9
+      },
+      "isConsumable": true,
+      "maxUses": 1,
+      "currentUses": 1,
+      "rarity": "rare",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000037",
+      "name": "Экстренный Амулет Усиление",
+      "nameEn": "Экстренный Амулет of Enhancement",
+      "description": "Усиливает восприятие окружающего мира. Длительность: 72 сек. Одноразовый.",
+      "type": "talisman",
+      "slot": "talisman_2",
+      "effect": {
+        "type": "enhancement",
+        "duration": 72,
+        "radius": 30
+      },
+      "isConsumable": true,
+      "maxUses": 1,
+      "currentUses": 1,
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000038",
+      "name": "Мгновенный Оберег Очистка",
+      "nameEn": "Мгновенный Оберег of Purification",
+      "description": "Очищает от лёгких негативных эффектов. Длительность: 9 сек. Одноразовый.",
+      "type": "talisman",
+      "slot": "talisman_1",
+      "effect": {
+        "type": "purification",
+        "duration": 9
+      },
+      "isConsumable": true,
+      "maxUses": 1,
+      "currentUses": 1,
+      "rarity": "rare",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000039",
+      "name": "Временный Символ Сокрытие",
+      "nameEn": "Временный Символ of Concealment",
+      "description": "Скрывает присутствие практика от обнаружения. Длительность: 180 сек. Одноразовый.",
+      "type": "talisman",
+      "slot": "talisman_2",
+      "effect": {
+        "type": "concealment",
+        "duration": 180
+      },
+      "isConsumable": true,
+      "maxUses": 1,
+      "currentUses": 1,
+      "rarity": "uncommon",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000040",
+      "name": "Мгновенный Печать Защита",
+      "nameEn": "Мгновенный Печать of Protection",
+      "description": "Создаёт кратковременный щит, поглощающий урон. Длительность: 12 сек. Одноразовый.",
+      "type": "talisman",
+      "slot": "talisman_2",
+      "effect": {
+        "type": "protection",
+        "duration": 12
+      },
+      "isConsumable": true,
+      "maxUses": 1,
+      "currentUses": 1,
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    }
+  ]
+}

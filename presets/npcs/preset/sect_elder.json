@@ -1,0 +1,127 @@
+{
+  "version": "2.0",
+  "category": "sect_elder",
+  "count": 3,
+  "npcs": [
+    {
+      "id": "PRESET_ELDER_001",
+      "name": "Грандмастер Вэй",
+      "title": "Глава секты",
+      "category": "sect_elder",
+      "age": 245,
+      "gender": "male",
+      "speciesId": "human",
+      "roleId": "sect_master",
+      "stats": {
+        "strength": 85,
+        "agility": 92,
+        "intelligence": 125,
+        "vitality": 95,
+        "conductivity": 1.45
+      },
+      "cultivation": {
+        "level": 8,
+        "subLevel": 9,
+        "coreCapacity": 8192000,
+        "currentQi": 7500000,
+        "coreQuality": 95,
+        "baseVolume": 2000,
+        "qiDensity": 128
+      },
+      "personality": {
+        "traits": ["Величественный", "Далёкий", "Проницательный"],
+        "motivation": "Сохранение баланса сил",
+        "dominantEmotion": "detached"
+      },
+      "techniques": ["Небесная Печать", "Путь Бессмертия", "Взгляд Истинного Дракона"],
+      "equipment": {
+        "weapon": "Небесный Меч",
+        "armor": "Мантия Главы"
+      },
+      "resources": {
+        "spiritStones": 50000,
+        "contributionPoints": 100000
+      }
+    },
+    {
+      "id": "PRESET_ELDER_002",
+      "name": "Старейшина Чэнь",
+      "title": "Наставник боевых искусств",
+      "category": "sect_elder",
+      "age": 178,
+      "gender": "male",
+      "speciesId": "human",
+      "roleId": "instructor",
+      "stats": {
+        "strength": 72,
+        "agility": 68,
+        "intelligence": 55,
+        "vitality": 70,
+        "conductivity": 0.95
+      },
+      "cultivation": {
+        "level": 6,
+        "subLevel": 5,
+        "coreCapacity": 640000,
+        "currentQi": 580000,
+        "coreQuality": 78,
+        "baseVolume": 1800,
+        "qiDensity": 32
+      },
+      "personality": {
+        "traits": ["Строгий", "Справедливый", "Требовательный"],
+        "motivation": "Воспитание сильных воинов",
+        "dominantEmotion": "stern"
+      },
+      "techniques": ["Железный Кулак", "Стойка Горы", "Дыхание Боевое"],
+      "equipment": {
+        "weapon": "Тренировочный Меч",
+        "armor": "Боевая Мантия"
+      },
+      "resources": {
+        "spiritStones": 2800,
+        "contributionPoints": 4500
+      }
+    },
+    {
+      "id": "PRESET_ELDER_003",
+      "name": "Матрона Сю",
+      "title": "Хранительница архивов",
+      "category": "sect_elder",
+      "age": 198,
+      "gender": "female",
+      "speciesId": "human",
+      "roleId": "elder",
+      "stats": {
+        "strength": 35,
+        "agility": 48,
+        "intelligence": 95,
+        "vitality": 52,
+        "conductivity": 1.12
+      },
+      "cultivation": {
+        "level": 7,
+        "subLevel": 2,
+        "coreCapacity": 1280000,
+        "currentQi": 1100000,
+        "coreQuality": 82,
+        "baseVolume": 1600,
+        "qiDensity": 64
+      },
+      "personality": {
+        "traits": ["Мудрая", "Тайная", "Проницательная"],
+        "motivation": "Сохранение знаний древних",
+        "dominantEmotion": "curious"
+      },
+      "techniques": ["Глаз Истины", "Печать Памяти", "Шёпот Времени"],
+      "equipment": {
+        "weapon": null,
+        "armor": "Мантия Архивариуса"
+      },
+      "resources": {
+        "spiritStones": 3500,
+        "contributionPoints": 7200
+      }
+    }
+  ]
+}

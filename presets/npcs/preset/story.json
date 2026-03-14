@@ -1,0 +1,207 @@
+{
+  "version": "2.0",
+  "category": "story",
+  "count": 5,
+  "npcs": [
+    {
+      "id": "PRESET_STORY_001",
+      "name": "Мастер Лин",
+      "title": "Старейшина внешнего двора",
+      "category": "story",
+      "age": 156,
+      "gender": "male",
+      "speciesId": "human",
+      "roleId": "elder",
+      "stats": {
+        "strength": 45,
+        "agility": 52,
+        "intelligence": 78,
+        "vitality": 60,
+        "conductivity": 0.85
+      },
+      "cultivation": {
+        "level": 5,
+        "subLevel": 7,
+        "coreCapacity": 512000,
+        "currentQi": 480000,
+        "coreQuality": 85,
+        "baseVolume": 2000,
+        "qiDensity": 16
+      },
+      "personality": {
+        "traits": ["Мудрый", "Справедливый", "Терпеливый"],
+        "motivation": "Обучение молодого поколения",
+        "dominantEmotion": "calm"
+      },
+      "techniques": ["Дыхание Нефритового Дракона", "Печать Сдерживания", "Шаг Облака"],
+      "equipment": {
+        "weapon": "Посох Старейшины",
+        "armor": "Мантия Секты"
+      },
+      "resources": {
+        "spiritStones": 1250,
+        "contributionPoints": 8500
+      }
+    },
+    {
+      "id": "PRESET_STORY_002",
+      "name": "Сю Ин",
+      "title": "Гений внутреннего двора",
+      "category": "story",
+      "age": 19,
+      "gender": "female",
+      "speciesId": "human",
+      "roleId": "inner_disciple",
+      "stats": {
+        "strength": 35,
+        "agility": 68,
+        "intelligence": 82,
+        "vitality": 45,
+        "conductivity": 1.25
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 4,
+        "coreCapacity": 32000,
+        "currentQi": 28500,
+        "coreQuality": 92,
+        "baseVolume": 1500,
+        "qiDensity": 4
+      },
+      "personality": {
+        "traits": ["Амбициозная", "Гордая", "Талантливая"],
+        "motivation": "Достичь уровня Мастера до 25 лет",
+        "dominantEmotion": "determination"
+      },
+      "techniques": ["Клинок Ледяного Лотоса", "Шаг Снежинки", "Медитация Чистой Воды"],
+      "equipment": {
+        "weapon": "Меч Ледяной Росы",
+        "armor": "Одеяние Внутреннего Двора"
+      },
+      "resources": {
+        "spiritStones": 320,
+        "contributionPoints": 1250
+      }
+    },
+    {
+      "id": "PRESET_STORY_003",
+      "name": "Торговец Вэй",
+      "title": "Владелец лавки артефактов",
+      "category": "story",
+      "age": 45,
+      "gender": "male",
+      "speciesId": "human",
+      "roleId": "merchant",
+      "stats": {
+        "strength": 25,
+        "agility": 30,
+        "intelligence": 65,
+        "vitality": 35,
+        "conductivity": 0.45
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 2,
+        "coreCapacity": 6400,
+        "currentQi": 5200,
+        "coreQuality": 60,
+        "baseVolume": 1200,
+        "qiDensity": 2
+      },
+      "personality": {
+        "traits": ["Предприимчивый", "Осторожный", "Щедрый"],
+        "motivation": "Накопить достаточно ресурсов для прорыва",
+        "dominantEmotion": "friendly"
+      },
+      "techniques": ["Оценка Истинного Взора", "Барьер Торговой Гильдии"],
+      "equipment": {
+        "armor": "Халат Торговца",
+        "accessory": "Кольцо Хранения"
+      },
+      "resources": {
+        "spiritStones": 8500,
+        "contributionPoints": 120
+      }
+    },
+    {
+      "id": "PRESET_STORY_004",
+      "name": "Фэн Безмолвный",
+      "title": "Странствующий мечник",
+      "category": "story",
+      "age": 28,
+      "gender": "male",
+      "speciesId": "human",
+      "roleId": "traveler",
+      "stats": {
+        "strength": 58,
+        "agility": 72,
+        "intelligence": 48,
+        "vitality": 52,
+        "conductivity": 0.75
+      },
+      "cultivation": {
+        "level": 4,
+        "subLevel": 1,
+        "coreCapacity": 96000,
+        "currentQi": 72000,
+        "coreQuality": 78,
+        "baseVolume": 1800,
+        "qiDensity": 8
+      },
+      "personality": {
+        "traits": ["Молчаливый", "Честный", "Одинокий"],
+        "motivation": "Найти достойного противника",
+        "dominantEmotion": "calm"
+      },
+      "techniques": ["Меч Ветра", "Путь Пустоты", "Шаг Тени"],
+      "equipment": {
+        "weapon": "Простой Меч",
+        "armor": "Поношенный Плащ"
+      },
+      "resources": {
+        "spiritStones": 180,
+        "contributionPoints": 0
+      }
+    },
+    {
+      "id": "PRESET_STORY_005",
+      "name": "Лань Мэй",
+      "title": "Целительница секты",
+      "category": "story",
+      "age": 32,
+      "gender": "female",
+      "speciesId": "human",
+      "roleId": "healer",
+      "stats": {
+        "strength": 22,
+        "agility": 35,
+        "intelligence": 75,
+        "vitality": 48,
+        "conductivity": 0.92
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 8,
+        "coreCapacity": 48000,
+        "currentQi": 42000,
+        "coreQuality": 88,
+        "baseVolume": 1400,
+        "qiDensity": 4
+      },
+      "personality": {
+        "traits": ["Заботливая", "Скромная", "Упорная"],
+        "motivation": "Спасать жизни и исцелять раны",
+        "dominantEmotion": "compassion"
+      },
+      "techniques": ["Искусство Зелёного Лотоса", "Очищение Ядов", "Дыхание Жизни"],
+      "equipment": {
+        "weapon": "Посох Целителя",
+        "armor": "Белая Мантия"
+      },
+      "resources": {
+        "spiritStones": 450,
+        "contributionPoints": 2100
+      }
+    }
+  ]
+}

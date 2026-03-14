@@ -1,0 +1,234 @@
+{
+  "version": "2.0",
+  "type": "amulet",
+  "count": 12,
+  "items": [
+    {
+      "id": "AC_000003",
+      "name": "Святой Подвеска",
+      "nameEn": "Святой Подвеска",
+      "description": "Святой Подвеска уровня 1. Редкость: common.",
+      "type": "amulet",
+      "slot": "amulet",
+      "bonuses": {
+        "stats": {
+          "intelligence": 1,
+          "strength": 2
+        }
+      },
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000007",
+      "name": "Тёмный Кулон",
+      "nameEn": "Тёмный Кулон",
+      "description": "Тёмный Кулон уровня 1. Редкость: common.",
+      "type": "amulet",
+      "slot": "amulet",
+      "bonuses": {
+        "stats": {
+          "intelligence": 2,
+          "strength": 2
+        }
+      },
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000021",
+      "name": "Святой Кулон",
+      "nameEn": "Святой Кулон",
+      "description": "Святой Кулон уровня 1. Редкость: common.",
+      "type": "amulet",
+      "slot": "amulet",
+      "bonuses": {
+        "stats": {
+          "strength": 2,
+          "conductivity": 1
+        }
+      },
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000022",
+      "name": "Проклятый Оберег",
+      "nameEn": "Проклятый Оберег",
+      "description": "Проклятый Оберег уровня 1. Редкость: common.",
+      "type": "amulet",
+      "slot": "amulet",
+      "bonuses": {
+        "stats": {
+          "agility": 1,
+          "strength": 1
+        }
+      },
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000023",
+      "name": "Могущественный Оберег",
+      "nameEn": "Могущественный Оберег",
+      "description": "Могущественный Оберег уровня 1. Редкость: common.",
+      "type": "amulet",
+      "slot": "amulet",
+      "bonuses": {
+        "stats": {
+          "strength": 1,
+          "agility": 2
+        }
+      },
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000024",
+      "name": "Тёмный Подвеска",
+      "nameEn": "Тёмный Подвеска",
+      "description": "Тёмный Подвеска уровня 1. Редкость: common.",
+      "type": "amulet",
+      "slot": "amulet",
+      "bonuses": {
+        "stats": {
+          "conductivity": 2,
+          "intelligence": 1
+        }
+      },
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000025",
+      "name": "Святой Талисман",
+      "nameEn": "Святой Талисман",
+      "description": "Святой Талисман уровня 1. Редкость: uncommon.",
+      "type": "amulet",
+      "slot": "amulet",
+      "bonuses": {
+        "stats": {
+          "strength": 1,
+          "conductivity": 3,
+          "intelligence": 2
+        }
+      },
+      "rarity": "uncommon",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000026",
+      "name": "Могущественный Кулон",
+      "nameEn": "Могущественный Кулон",
+      "description": "Могущественный Кулон уровня 1. Редкость: uncommon.",
+      "type": "amulet",
+      "slot": "amulet",
+      "bonuses": {
+        "stats": {
+          "strength": 2,
+          "intelligence": 2,
+          "agility": 1
+        }
+      },
+      "rarity": "uncommon",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000027",
+      "name": "Святой Оберег",
+      "nameEn": "Святой Оберег",
+      "description": "Святой Оберег уровня 1. Редкость: common.",
+      "type": "amulet",
+      "slot": "amulet",
+      "bonuses": {
+        "stats": {
+          "agility": 2,
+          "strength": 2
+        }
+      },
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000028",
+      "name": "Тёмный Подвеска",
+      "nameEn": "Тёмный Подвеска",
+      "description": "Тёмный Подвеска уровня 1. Редкость: rare.",
+      "type": "amulet",
+      "slot": "amulet",
+      "bonuses": {
+        "stats": {
+          "agility": 3,
+          "strength": 2,
+          "conductivity": 3
+        },
+        "special": [
+          {
+            "type": "dodgeChance",
+            "value": 5,
+            "description": "Увеличивает шанс уклонения от атак"
+          }
+        ]
+      },
+      "rarity": "rare",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000029",
+      "name": "Сияющий Талисман",
+      "nameEn": "Сияющий Талисман",
+      "description": "Сияющий Талисман уровня 1. Редкость: rare.",
+      "type": "amulet",
+      "slot": "amulet",
+      "bonuses": {
+        "stats": {
+          "strength": 3,
+          "agility": 3,
+          "conductivity": 2
+        }
+      },
+      "rarity": "rare",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    },
+    {
+      "id": "AC_000030",
+      "name": "Сияющий Кулон",
+      "nameEn": "Сияющий Кулон",
+      "description": "Сияющий Кулон уровня 1. Редкость: common.",
+      "type": "amulet",
+      "slot": "amulet",
+      "bonuses": {
+        "stats": {
+          "strength": 1,
+          "agility": 1
+        }
+      },
+      "rarity": "common",
+      "upgradeFlags": 0,
+      "isSetItem": false,
+      "level": 1
+    }
+  ]
+}
