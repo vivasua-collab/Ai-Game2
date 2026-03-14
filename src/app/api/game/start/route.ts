@@ -462,15 +462,25 @@ export async function POST(request: NextRequest) {
     // === СПАВН СЮЖЕТНЫХ NPC В ТЕСТОВУЮ ЛОКАЦИЮ ===
     // Спавним 5 тестовых сюжетных NPC в стартовую локацию
     try {
+      await logInfo("GAME", "Starting NPC spawn", {
+        sessionId: dbResult.session.id,
+        locationId: dbResult.location.id,
+        locationName: dbResult.location.name
+      });
+      
       const storyNPCs = await spawnStoryNPCs(dbResult.session.id, dbResult.location.id);
-      await logInfo("GAME", "Story NPCs spawned", { 
+      
+      await logInfo("GAME", "Story NPCs spawned successfully", { 
         count: storyNPCs.length,
-        locationId: dbResult.location.id 
+        sessionId: dbResult.session.id,
+        locationId: dbResult.location.id,
+        npcNames: storyNPCs.map(n => n.name)
       });
     } catch (spawnError) {
       // Не критично, если спавн NPC не удался
-      await logWarn("GAME", "Failed to spawn story NPCs", { 
-        error: spawnError instanceof Error ? spawnError.message : String(spawnError) 
+      await logError("GAME", "Failed to spawn story NPCs", { 
+        error: spawnError instanceof Error ? spawnError.message : String(spawnError),
+        stack: spawnError instanceof Error ? spawnError.stack : undefined
       });
     }
 

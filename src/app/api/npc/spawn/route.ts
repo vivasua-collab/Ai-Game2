@@ -49,10 +49,13 @@ export async function GET(request: NextRequest) {
   const locationId = searchParams.get('locationId');
   const npcId = searchParams.get('npcId');
 
+  console.log('[NPC SPAWN API] GET request:', { action, sessionId, locationId, npcId });
+
   try {
     switch (action) {
       case 'list': {
         if (!sessionId) {
+          console.warn('[NPC SPAWN API] No sessionId provided');
           return NextResponse.json({
             success: false,
             error: 'sessionId is required',
@@ -65,6 +68,8 @@ export async function GET(request: NextRequest) {
         const dbNpcs = await db.nPC.findMany({
           where: locationId ? { sessionId, locationId } : { sessionId },
         });
+        
+        console.log('[NPC SPAWN API] Found NPCs in DB:', dbNpcs.length, 'for sessionId:', sessionId);
         
         for (const dbNpc of dbNpcs) {
           npcs.push({

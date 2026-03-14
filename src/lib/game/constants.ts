@@ -407,16 +407,128 @@ export const MEDITATION_INTERRUPTION_TIME_MODIFIERS: Record<string, number> = {
 export const WORLD_CONSTANTS = {
   /** Конвертация метров в пиксели (1 метр = 32 пикселя) */
   METERS_TO_PIXELS: 32,
-  
+
   /** HP тренировочного чучела */
   DEFAULT_TRAINING_DUMMY_HP: 1000,
-  
+
   /** Размер тайла в пикселях */
   TILE_SIZE: 32,
-  
+
   /** Размер карты в тайлах */
   MAP_SIZE_TILES: 100,
-  
+
   /** Размер карты в пикселях */
   MAP_SIZE_PIXELS: 32 * 100, // TILE_SIZE * MAP_SIZE_TILES
+} as const;
+
+// ==================== СИСТЕМА РАЗВИТИЯ ТЕЛА ====================
+
+/**
+ * Константы системы развития характеристик
+ *
+ * Источник: docs/stat-threshold-system.md, docs/development-1000-days-calculation.md
+ *
+ * Ключевые параметры:
+ * - Прирост за действие: 0.001
+ * - Кап закрепления за сон (8ч): +0.20
+ * - Формула порога: floor(stat/10), min 1.0
+ * - Тело НЕ зависит от культивации
+ */
+export const STAT_DEVELOPMENT_CONSTANTS = {
+  // === ПРИРОСТ ЗА ДЕЙСТВИЕ ===
+  /** Базовый прирост виртуальной дельты за одно действие */
+  DELTA_PER_ACTION: 0.001,
+
+  // === ЗАКРЕПЛЕНИЕ ПРИ СНЕ ===
+  /** Минимальные часы сна для закрепления */
+  MIN_SLEEP_HOURS_FOR_CONSOLIDATION: 4,
+
+  /** Максимальные часы сна для расчёта закрепления (кап) */
+  MAX_SLEEP_HOURS_FOR_CONSOLIDATION: 8,
+
+  /** Максимальное закрепление за сон (за 8 часов) */
+  MAX_CONSOLIDATION_PER_SLEEP: 0.2,
+
+  /** Базовое закрепление за час (линейная интерполяция) */
+  BASE_CONSOLIDATION_PER_HOUR: 0.033,
+
+  /** Минимальное закрепление (за 4 часа) */
+  MIN_CONSOLIDATION_PER_SLEEP: 0.067,
+
+  // === ПОРОГИ РАЗВИТИЯ ===
+  /** Делитель для расчёта порога: threshold = floor(stat / THRESHOLD_DIVISOR) */
+  THRESHOLD_DIVISOR: 10,
+
+  /** Минимальный порог развития */
+  MIN_THRESHOLD: 1.0,
+
+  // === ИСТОЧНИКИ ДЕЛЬТЫ ===
+  /** Количество дельты от разных источников */
+  DELTA_SOURCES: {
+    combat_hit: 0.001, // За каждый удар
+    combat_block: 0.0005, // За блок
+    combat_dodge: 0.001, // За уклонение
+    physical_labor: 0.001, // За минуту труда
+    training_classical: 0.01, // За минуту классической тренировки
+    training_focused: 0.015, // За минуту фокусной тренировки
+    training_extreme: 0.02, // За минуту экстремальной тренировки
+    technique_learning: 0.001, // За минуту изучения техники
+    meditation_intelligence: 0.01, // За минуту медитации (интеллект)
+  } as const,
+
+  // === ВАРИАНТЫ ТРЕНИРОВКИ ===
+  /** Параметры типов тренировки */
+  TRAINING_TYPES: {
+    classical: {
+      physicalRatio: 0.5,
+      mentalRatio: 0.5,
+      deltaMultiplier: 1.0,
+      fatigueMultiplier: 1.0,
+      displayName: 'Классическая тренировка',
+      description: 'Сбалансированная тренировка с равным распределением нагрузки',
+    },
+    focused: {
+      physicalRatio: 0.7,
+      mentalRatio: 0.3,
+      deltaMultiplier: 1.2,
+      fatigueMultiplier: 1.3,
+      displayName: 'Фокусная тренировка',
+      description: 'Интенсивная тренировка с упором на физическую нагрузку',
+    },
+    extreme: {
+      physicalRatio: 0.95,
+      mentalRatio: 0.05,
+      deltaMultiplier: 1.5,
+      fatigueMultiplier: 2.0,
+      displayName: 'Экстремальная тренировка',
+      description: 'Максимально интенсивная тренировка, высокий риск критической усталости',
+    },
+  } as const,
+
+  // === КРИТИЧЕСКИЕ ПОРОГИ УСТАЛОСТИ ДЛЯ ТРЕНИРОВКИ ===
+  /** Порог критической усталости для остановки тренировки */
+  CRITICAL_TRAINING_FATIGUE: 80,
+  
+  /** Базовая дельта за минуту классической тренировки */
+  TRAINING_CLASSICAL_DELTA_PER_MINUTE: 0.01,
+  
+  /** Базовая дельта за минуту фокусной тренировки */
+  TRAINING_FOCUSED_DELTA_PER_MINUTE: 0.015,
+  
+  /** Базовая дельта за минуту экстремальной тренировки */
+  TRAINING_EXTREME_DELTA_PER_MINUTE: 0.02,
+} as const;
+
+/**
+ * Достижимые статы за периоды (для справки)
+ *
+ * При капе +0.20 за 8 часов сна и активности 75%:
+ * - 1000 дней: ~55 стат
+ * - 3000 дней: ~80 стат
+ * - 10000 дней: ~125 стат
+ */
+export const REACHABLE_STATS = {
+  DAYS_1000: 55,
+  DAYS_3000: 80,
+  DAYS_10000: 125,
 } as const;

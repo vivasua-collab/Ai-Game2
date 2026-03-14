@@ -15,6 +15,8 @@ import { logDebug, logError } from "@/lib/logger";
  */
 export async function GET() {
   try {
+    console.log('[LastSession API] Looking for last session...');
+    
     // Find the most recently updated session with character data
     const lastSession = await db.gameSession.findFirst({
       orderBy: { updatedAt: "desc" },
@@ -31,6 +33,8 @@ export async function GET() {
         },
       },
     });
+    
+    console.log('[LastSession API] Query result:', lastSession ? { id: lastSession.id, characterName: lastSession.character?.name } : null);
 
     if (!lastSession) {
       return NextResponse.json({

@@ -212,6 +212,9 @@ function roundToHundredths(value: number): number {
  * Конвертация PresetNPC в данные для БД (Prisma NPC model)
  */
 export function presetNPCToDBData(preset: PresetNPC, sessionId: string, locationId?: string | null) {
+  // Безопасно извлекаем отношение к игроку
+  const defaultDisposition = preset.relations?.defaultPlayerDisposition ?? 0;
+  
   return {
     sessionId,
     isPreset: true,
@@ -220,28 +223,28 @@ export function presetNPCToDBData(preset: PresetNPC, sessionId: string, location
     title: preset.title ?? null,
     age: preset.age,
     backstory: preset.backstory ?? null,
-    cultivationLevel: preset.cultivation.level,
-    cultivationSubLevel: preset.cultivation.subLevel,
-    coreCapacity: preset.cultivation.coreCapacity,
-    currentQi: preset.cultivation.currentQi,
+    cultivationLevel: preset.cultivation?.level ?? 1,
+    cultivationSubLevel: preset.cultivation?.subLevel ?? 0,
+    coreCapacity: preset.cultivation?.coreCapacity ?? 1000,
+    currentQi: preset.cultivation?.currentQi ?? 0,
     // Stats - напрямую в поля модели NPC
-    strength: roundToHundredths(preset.stats.strength),
-    agility: roundToHundredths(preset.stats.agility),
-    intelligence: roundToHundredths(preset.stats.intelligence),
-    conductivity: roundToHundredths(preset.stats.conductivity),
-    vitality: roundToHundredths(preset.stats.vitality ?? preset.stats.conductivity ?? 10),
+    strength: roundToHundredths(preset.stats?.strength ?? 10),
+    agility: roundToHundredths(preset.stats?.agility ?? 10),
+    intelligence: roundToHundredths(preset.stats?.intelligence ?? 10),
+    conductivity: roundToHundredths(preset.stats?.conductivity ?? 0.5),
+    vitality: roundToHundredths(preset.stats?.vitality ?? 10),
     // Личность
-    personality: JSON.stringify(preset.personality),
-    motivation: preset.personality.motivation ?? null,
-    disposition: preset.relations.defaultPlayerDisposition ?? 0,
-    relations: JSON.stringify(preset.relations),
+    personality: JSON.stringify(preset.personality ?? { traits: [], motivation: '', dominantEmotion: 'neutral' }),
+    motivation: preset.personality?.motivation ?? null,
+    disposition: defaultDisposition,
+    relations: JSON.stringify(preset.relations ?? {}),
     // Принадлежность - все FK должны быть null если записи не существуют
     sectId: null, // Секты из пресетов не существуют в БД
-    role: preset.sectRole ?? null,
+    role: preset.sectRole ?? preset.roleId ?? null,
     factionId: null, // Фракции из пресетов не существуют в БД
     // Экипировка и техники
-    equipment: JSON.stringify(preset.equipment),
-    techniques: JSON.stringify(preset.techniques),
+    equipment: JSON.stringify(preset.equipment ?? {}),
+    techniques: JSON.stringify(preset.techniques ?? []),
     // Локация - только если существует в БД
     locationId: locationId ?? null,
   };

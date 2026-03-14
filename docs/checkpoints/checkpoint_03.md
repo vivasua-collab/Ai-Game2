@@ -1,6 +1,6 @@
 # 📋 Checkpoint 03 — Сводка выполненных задач
 
-**Период:** 2026-03-01 — 2026-03-13
+**Период:** 2026-03-01 — 2026-03-15
 **Ветка:** main2d4
 **Статус:** ✅ Архив
 
@@ -18,8 +18,10 @@
 | Внешнее ревью P0 | 4 |
 | Sandbox fix (localStorage) | 6 |
 | Система техник (P0-1) | 12 |
-| **NPC Implementation (Phases 1-4)** | **20** |
-| **Итого** | **88** |
+| NPC Implementation (Phases 1-4) | 20 |
+| NPC Enhancement (экипировка, инвентарь, коллизии) | 8 |
+| Система развития тела (Phases 1-6, 8) | 14 |
+| **Итого** | **110** |
 
 ---
 
@@ -176,6 +178,121 @@
 
 ---
 
+### checkpoint_03_13_training — NPC Enhancement (2026-03-13) ✅
+
+**Экипировка, инвентарь, коллизии**
+
+#### Техники NPC
+- [x] calculateTechniqueSlots() уже реализована в lore-formulas.ts
+- [x] NPC L1 = 3 техники, L3 = 5, L5 = 7, L9 = 11
+
+#### Генерация экипировки
+- [x] Создан src/lib/generator/equipment-generator.ts
+- [x] generateEquipmentForNPC() — асинхронная с загрузкой из пула
+- [x] generateEquipmentForNPCSync() — синхронная генерация
+- [x] Таблица шансов экипировки по уровням
+- [x] Определение богатства по роли (poor/common/wealthy/rich)
+- [x] canSpeciesEquipEquipment() — звери и духи не получают экипировку
+
+#### Инвентарь NPC
+- [x] generateInventoryForNPC() — генерация расходников и хлама
+- [x] equipItemsToNPC() — надевание экипировки
+- [x] addInventoryToNPC() — добавление в quickSlots
+- [x] generateFullEquipmentForNPC() — полная генерация одной командой
+- [x] Таблицы шансов: таблетки (40-90%), эликсиры (0-50%), еда (20-60%), хлам (бедные)
+
+#### Система коллизий
+- [x] Создан src/lib/game/npc-collision.ts
+- [x] CollisionConfig и InteractionZones интерфейсы в temp-npc.ts
+- [x] checkNPCCollision(), checkAllCollisions(), applyCollisionPush()
+- [x] calculateCollisionRadius() — 10-50 пикселей по виду, +5% за уровень
+- [x] calculateInteractionZones() — зоны talk/trade/agro/flee/perception
+- [x] isInInteractionZone(), getNPCsInZone(), getNearestInteractableNPC()
+
+---
+
+### checkpoint_03_14 — Система развития тела (2026-03-14/15) ✅
+
+**Теоретические изыскания и реализация**
+
+#### Анализ и проектирование
+- [x] Создан docs/body-development-analysis.md (v2.1)
+- [x] Создан docs/development-1000-days-calculation.md (v2.2)
+- [x] Создан docs/stat-threshold-system.md
+- [x] Ключевые решения:
+  - Прирост за действие: **0.001**
+  - Кап за сон: **+0.20**
+  - Множитель культивации: **УБРАТЬ**
+  - Система: **Пороги развития**
+
+#### Реализация (Phases 1-6, 8)
+
+**Phase 1: Типы и интерфейсы** ✅
+- [x] Создан `src/types/stat-development.ts`
+- [x] Интерфейсы: StatDevelopment, CharacterStatsDevelopment
+- [x] Типы: DeltaSource, TrainingType, StatName
+- [x] Интерфейсы тренировки и закрепления
+- [x] Утилиты: STAT_NAMES_RU, STAT_EMOJIS, DELTA_SOURCE_ICONS
+
+**Phase 2: Система порогов** ✅
+- [x] Создан `src/lib/game/stat-threshold.ts`
+- [x] calculateStatThreshold(): floor(stat/10), min 1.0
+- [x] getStatProgress(), canAdvanceStat(), advanceStat(), advanceStatAll()
+- [x] getStatProgressInfo(), daysToAdvance(), daysToReachStat()
+- [x] createInitialStatDevelopment(), serialize/deserialize
+
+**Phase 3: Виртуальная дельта** ✅
+- [x] Создан `src/lib/game/stat-development.ts`
+- [x] addVirtualDelta() — добавление с автоматическим повышением
+- [x] calculateDeltaFromAction() — расчёт от действий
+- [x] calculateFatiguePenalty() — штраф от усталости
+- [x] processDeltaGeneratingAction() — обработка действия
+
+**Phase 4: Закрепление при сне** ✅
+- [x] calculateMaxConsolidation() — кап +0.20 за 8 часов
+- [x] consolidateDelta(), consolidateAllStats()
+- [x] processSleep() — интеграция в time-system
+- [x] formatSleepResultMessage()
+
+**Phase 5: Система тренировки** ✅
+- [x] Создан `src/lib/game/training-system.ts`
+- [x] TRAINING_TYPE_CONFIGS: classical (50/50), focused (70/30), extreme (95/5)
+- [x] startTraining(), processTrainingTick(), completeTraining()
+- [x] calculateTrainingEfficiency(), estimateTrainingResult()
+
+**Phase 6: Интеграция с боем** ✅
+- [x] Интеграция в `src/lib/game/combat-system.ts`
+- [x] generateAttackDelta(), generateBlockedAttackDelta()
+- [x] generateDefenseDelta(), generateDodgeDelta()
+- [x] createCombatDeltaAction(), CombatDeltaStats
+- [x] addDeltaToStats(), formatCombatDeltaMessage()
+
+**Phase 8: Тестирование и симуляция** ✅
+- [x] Создан `src/lib/game/stat-simulation.ts`
+- [x] runSimulation() — симуляция развития
+- [x] runAnalysisSeries() — серия симуляций (1000, 10000 дней)
+- [x] formatSimulationReport() — отчёт симуляции
+- [x] Подтверждены ожидаемые результаты: 1000 дней → ~55 стата, 10000 дней → ~125
+
+**Константы:**
+- [x] Добавлены STAT_DEVELOPMENT_CONSTANTS в constants.ts
+- [x] DELTA_SOURCES — таблица источников дельты
+- [x] TRAINING_TYPES — конфигурация типов тренировки
+- [x] REACHABLE_STATS — достижимые статы за периоды
+
+**База данных:**
+- [x] Добавлено поле statsDevelopment в Character (Prisma)
+- [x] Выполнен bun run db:push
+
+**Файлы созданы:**
+- `src/types/stat-development.ts`
+- `src/lib/game/stat-threshold.ts`
+- `src/lib/game/stat-development.ts`
+- `src/lib/game/training-system.ts`
+- `src/lib/game/stat-simulation.ts`
+
+---
+
 ## 📁 Удалённые чекпоинты (архив)
 
 | Файл | Причина удаления |
@@ -195,6 +312,15 @@
 | phase_03_ai_waves.md | Фаза 3 выполнена |
 | phase_04_refactoring.md | Фаза 4 выполнена |
 | checkpoint_index.md | Объединён в checkpoint_03.md |
+| checkpoint_03_13_plan.md | Задачи выполнены |
+| checkpoint_03_13_training.md | Задачи выполнены |
+| docs/implementation/phase-1-types.md | Фаза выполнена |
+| docs/implementation/phase-2-thresholds.md | Фаза выполнена |
+| docs/implementation/phase-3-virtual-delta.md | Фаза выполнена |
+| docs/implementation/phase-4-sleep-consolidation.md | Фаза выполнена |
+| docs/implementation/phase-5-training.md | Фаза выполнена |
+| docs/implementation/phase-6-combat-integration.md | Фаза выполнена |
+| docs/implementation/phase-8-testing.md | Фаза выполнена |
 
 ---
 
@@ -233,12 +359,38 @@
 
 ---
 
-## 📋 Текущие планы
+## 📋 Невыполненные задачи (Phase 7)
 
-См. `checkpoint_03_13_plan.md` для невыполненных и отложенных задач.
+### Phase 7: UI компоненты — В РАЗРАБОТКЕ
+
+**Файл:** `docs/implementation/phase-7-ui.md`
+
+**Задачи:**
+- [ ] StatProgressBar — компонент прогресса характеристики
+- [ ] StatsDevelopmentPanel — панель всех характеристик
+- [ ] TrainingSelection — выбор типа тренировки
+- [ ] SleepConsolidationResult — результаты закрепления
+- [ ] ThresholdTable — таблица порогов развития
+
+**Целевая директория:** `src/components/stats/`
+
+---
+
+## 📚 Связанные документы
+
+| Документ | Описание |
+|----------|----------|
+| `docs/body.md` | Система тела (Kenshi-style) |
+| `docs/body-development-analysis.md` | Анализ системы развития |
+| `docs/stat-threshold-system.md` | Система порогов развития |
+| `docs/development-1000-days-calculation.md` | Расчёты развития |
+| `docs/implementation-plan-body-development.md` | Главный план внедрения |
+| `docs/implementation/phase-7-ui.md` | Фаза 7: UI компоненты |
+| `docs/ARCHITECTURE.md` | Архитектура проекта |
+| `docs/Listing.md` | Перечень документации |
 
 ---
 
 *Документ создан: 2026-03-11*
-*Последнее обновление: 2026-03-13*
+*Последнее обновление: 2026-03-15*
 *Агент: Main Agent*

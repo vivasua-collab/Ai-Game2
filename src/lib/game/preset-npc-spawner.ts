@@ -41,9 +41,15 @@ export async function spawnPresetNPCs(
 ): Promise<SpawnedPresetNPC[]> {
   const { sessionId, locationId, category, presetIds, excludeIds, limit } = options;
   
+  console.log('[PRESET_SPAWNER] Starting spawn with options:', {
+    sessionId, locationId, category, presetIds, excludeIds, limit
+  });
+  
   try {
     // 1. Загружаем пресеты
     let presetNPCs = await presetStorage.loadPresetNPCs();
+    
+    console.log('[PRESET_SPAWNER] Loaded preset NPCs:', presetNPCs.length);
     
     await logDebug('PRESET_SPAWNER', `Loaded ${presetNPCs.length} preset NPCs`);
     
@@ -52,6 +58,7 @@ export async function spawnPresetNPCs(
       presetNPCs = presetNPCs.filter(npc => 
         (npc as PresetNPC).category === category
       );
+      console.log('[PRESET_SPAWNER] After category filter:', presetNPCs.length);
     }
     
     // 3. Фильтруем по конкретным ID
@@ -83,9 +90,12 @@ export async function spawnPresetNPCs(
     }
     
     if (presetNPCs.length === 0) {
+      console.log('[PRESET_SPAWNER] No preset NPCs to spawn after filtering');
       await logInfo('PRESET_SPAWNER', 'No preset NPCs to spawn', { options });
       return [];
     }
+    
+    console.log('[PRESET_SPAWNER] After all filters:', presetNPCs.length, 'presets to spawn');
     
     // 6. Проверяем, не существуют ли уже эти NPC в сессии
     const existingNPCs = await db.nPC.findMany({
@@ -96,10 +106,14 @@ export async function spawnPresetNPCs(
       select: { presetId: true },
     });
     
+    console.log('[PRESET_SPAWNER] Existing NPCs in session:', existingNPCs.length);
+    
     const existingPresetIds = new Set(existingNPCs.map(n => n.presetId));
     const newPresetNPCs = presetNPCs.filter(npc => 
       !existingPresetIds.has((npc as PresetNPC).id)
     );
+    
+    console.log('[PRESET_SPAWNER] New presets to create:', newPresetNPCs.length);
     
     if (newPresetNPCs.length === 0) {
       await logInfo('PRESET_SPAWNER', 'All preset NPCs already spawned', { 
@@ -119,12 +133,23 @@ export async function spawnPresetNPCs(
     for (const presetData of newPresetNPCs) {
       const preset = presetData as PresetNPC;
       
+      console.log('[PRESET_SPAWNER] Creating NPC:', preset.name, 'presetId:', preset.id);
+      
       try {
         const dbData = presetNPCToDBData(preset, sessionId, locationId);
+        
+        console.log('[PRESET_SPAWNER] DB data prepared:', {
+          name: dbData.name,
+          cultivationLevel: dbData.cultivationLevel,
+          sessionId: dbData.sessionId,
+          locationId: dbData.locationId
+        });
         
         const dbNPC = await db.nPC.create({
           data: dbData,
         });
+        
+        console.log('[PRESET_SPAWNER] NPC created successfully:', dbNPC.id);
         
         createdNPCs.push({
           id: dbNPC.id,
@@ -139,9 +164,25 @@ export async function spawnPresetNPCs(
           dbId: dbNPC.id,
         });
       } catch (createError) {
-        await logError('PRESET_SPAWNER', `Failed to spawn NPC ${preset.id}`, {
-          error: createError instanceof Error ? createError.message : String(createError),
+        const errorDetails = {
+          message: createError instanceof Error ? createError.message : String(createError),
+          name: createError instanceof Error ? createError.name : 'Unknown',
+          stack: createError instanceof Error ? createError.stack : undefined,
+          // @ts-expect-error Prisma error has code property
+          code: createError?.code || 'unknown',
+          // @ts-expect-error Prisma error has meta property
+          meta: createError?.meta || {},
+          presetId: preset.id,
+          npcName: preset.name,
+        };
+        console.error('[PRESET_SPAWNER] FAILED to create NPC:', preset.name, {
+          errorName: createError instanceof Error ? createError.name : 'Unknown',
+          errorMessage: createError instanceof Error ? createError.message : String(createError),
+          // @ts-expect-error Prisma error properties
+          code: createError?.code,
+          meta: createError?.meta,
         });
+        await logError('PRESET_SPAWNER', `Failed to spawn NPC ${preset.id}`, errorDetails);
       }
     }
     

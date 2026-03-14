@@ -1,7 +1,7 @@
 # 📚 Перечень документации проекта Cultivation World Simulator
 
-**Последнее обновление:** 2026-03-14
-**Версия:** 22.0
+**Последнее обновление:** 2026-03-15
+**Версия:** 23.0
 
 ---
 
@@ -9,9 +9,10 @@
 
 | Метрика | Значение |
 |---------|----------|
-| Файлов в /docs | 33 |
-| Файлов в /docs/checkpoints | 2 |
-| **Итого** | **35** |
+| Файлов в /docs | 38 |
+| Файлов в /docs/checkpoints | 1 |
+| Файлов в /docs/implementation | 2 |
+| **Итого** | **41** |
 
 ---
 
@@ -27,15 +28,16 @@
 
 ---
 
-### 🏗️ АРХИТЕКТУРА (5 файлов)
+### 🏗️ АРХИТЕКТУРА (6 файлов)
 
 | Файл | Назначение |
 |------|------------|
-| [ARCHITECTURE.md](./ARCHITECTURE.md) | Общая архитектура (v15) ✨ **Updated** |
-| [sector-architecture.md](./sector-architecture.md) | Архитектура мира и секторов (v1.1) ✨ **NEW** |
+| [ARCHITECTURE.md](./ARCHITECTURE.md) | Общая архитектура (v16) ✨ **Updated** |
+| [sector-architecture.md](./sector-architecture.md) | Архитектура мира и секторов |
 | [FUNCTIONS.md](./FUNCTIONS.md) | Справочник функций |
 | [data-systems.md](./data-systems.md) | Хранение данных, ID, пресеты |
 | [inventory-system.md](./inventory-system.md) | Система инвентаря |
+| [worklog.md](./worklog.md) | Журнал выполнения задач |
 
 ---
 
@@ -46,16 +48,16 @@
 | [body.md](./body.md) | Система тела (Kenshi-style) |
 | [equip.md](./equip.md) | Система экипировки |
 | [soul-system.md](./soul-system.md) | Система объектов (SoulEntity + PhysicalObject) |
-| [random_npc.md](./random_npc.md) | Генерация NPC ✨ **Updated v2.0** |
-| [npc-session-integration.md](./npc-session-integration.md) | Интеграция NPC ✨ **Updated v2.0** |
+| [random_npc.md](./random_npc.md) | Генерация NPC |
+| [npc-session-integration.md](./npc-session-integration.md) | Интеграция NPC |
 
 ---
 
-### ⚔️ ИГРОВЫЕ СИСТЕМЫ (11 файлов)
+### ⚔️ ИГРОВЫЕ СИСТЕМЫ (15 файлов)
 
 | Файл | Назначение |
 |------|------------|
-| [technique-system.md](./technique-system.md) | Система техник (объединённый) ✨ **NEW** |
+| [technique-system.md](./technique-system.md) | Система техник |
 | [Technic-Generator.md](./Technic-Generator.md) | Генератор техник |
 | [charger.md](./charger.md) | Зарядник Ци |
 | [qi_stone.md](./qi_stone.md) | Камни Ци |
@@ -66,6 +68,10 @@
 | [vitality-hp-system.md](./vitality-hp-system.md) | Система HP |
 | [TECHNIQUE_SCALING_LIMITS.md](./TECHNIQUE_SCALING_LIMITS.md) | Лимиты масштабирования техник |
 | [DAMAGE_FORMULAS_PROPOSAL.md](./DAMAGE_FORMULAS_PROPOSAL.md) | Предложение по формулам урона |
+| [body-development-analysis.md](./body-development-analysis.md) | Анализ системы развития тела |
+| [stat-threshold-system.md](./stat-threshold-system.md) | Система порогов развития ✨ **NEW** |
+| [development-1000-days-calculation.md](./development-1000-days-calculation.md) | Расчёты развития |
+| [implementation-plan-body-development.md](./implementation-plan-body-development.md) | План внедрения развития тела ✨ **NEW** |
 
 ---
 
@@ -80,7 +86,7 @@
 
 ---
 
-### 🔧 СПРАВКА (5 файла)
+### 🔧 СПРАВКА (5 файлов)
 
 | Файл | Назначение |
 |------|------------|
@@ -92,46 +98,42 @@
 
 ---
 
-### 📁 CHECKPOINTS (2 файла)
+### 📁 CHECKPOINTS (1 файл)
 
 | Файл | Назначение |
 |------|------------|
-| [checkpoints/checkpoint_03.md](./checkpoints/checkpoint_03.md) | Сводка выполненных задач ✨ **Updated** |
-| [checkpoints/checkpoint_03_13_plan.md](./checkpoints/checkpoint_03_13_plan.md) | План задач |
+| [checkpoints/checkpoint_03.md](./checkpoints/checkpoint_03.md) | Сводка выполненных задач |
 
 ---
 
-## 🆕 Изменения в версии 22.0
+### 📁 IMPLEMENTATION (2 файла)
 
-### Новые файлы (1)
-
-- `sector-architecture.md` — архитектура мира и секторов (текущая реализация + планы)
-
-### Обновлено документов
-
-- `Listing.md` → v22.0 — добавлен sector-architecture.md
-- `PROJECT_ROADMAP.md` → добавлена версия 0.8.0 с планом секторной системы
+| Файл | Назначение |
+|------|------------|
+| [implementation/phase-7-ui.md](./implementation/phase-7-ui.md) | Фаза 7: UI компоненты (в работе) |
 
 ---
 
-## 🆕 Изменения в версии 21.0
-
-### Удалено файлов (5)
-
-- `technique-generator-todo.md` — фаза выполнена
-- `technique-generator-analysis.md` — объединён в technique-system.md
-- `technique-generator-implementation.md` — объединён в technique-system.md
-- `npc-generator-plan.md` — реализовано
-- `checkpoints/rewrite.md` — план оптимизации выполнен
-
-### Новые файлы (1)
-
-- `technique-system.md` — объединённая документация по системе техник
+## 🆕 Изменения в версии 23.0
 
 ### Обновлено документов
 
-- `ARCHITECTURE.md` → v15 — добавлен soul-mapping.ts
-- `Listing.md` → v21.0 — актуализация списка файлов
+- `ARCHITECTURE.md` → v16 — добавлена система развития характеристик
+- `Listing.md` → v23.0 — актуализация списка файлов
+- `checkpoints/checkpoint_03.md` — добавлены фазы развития тела
+
+### Удалено файлов
+
+- `docs/checkpoints/checkpoint_03_13_plan.md` — задачи выполнены
+- `docs/checkpoints/checkpoint_03_13_training.md` — задачи выполнены
+- `docs/checkpoints/checkpoint_03_14_plan.md` — задачи выполнены
+- `docs/implementation/phase-1-types.md` — фаза выполнена
+- `docs/implementation/phase-2-thresholds.md` — фаза выполнена
+- `docs/implementation/phase-3-virtual-delta.md` — фаза выполнена
+- `docs/implementation/phase-4-sleep-consolidation.md` — фаза выполнена
+- `docs/implementation/phase-5-training.md` — фаза выполнена
+- `docs/implementation/phase-6-combat-integration.md` — фаза выполнена
+- `docs/implementation/phase-8-testing.md` — фаза выполнена
 
 ---
 
@@ -162,8 +164,10 @@
 | Sandbox fix | 6 | 6 |
 | Система техник | 12 | 12 |
 | NPC Implementation | 20 | 20 |
-| **Итого** | **88** | **88** |
+| NPC Enhancement | 8 | 8 |
+| Система развития тела | 14 | 15 |
+| **Итого** | **110** | **111** |
 
 ---
 
-*Файл обновлён: 2026-03-13*
+*Файл обновлён: 2026-03-15*

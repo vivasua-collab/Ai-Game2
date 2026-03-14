@@ -1,8 +1,8 @@
 # 🏗️ Архитектура Cultivation World Simulator
 
 > Подробное описание архитектуры с интеграцией Phaser 3.
-> Версия: 15 | Год: 2026
-> Обновлено: 2026-03-13 (NPC System + AI Integration)
+> Версия: 16 | Год: 2026
+> Обновлено: 2026-03-15 (Stat Development System)
 
 ---
 
@@ -186,7 +186,7 @@
 | `time-tick.service.ts` | **Единый обработчик тиков времени** |
 | `cheats.service.ts` | Сервис читов |
 
-### `/src/lib/game/` - Игровая логика (30+ файлов)
+### `/src/lib/game/` - Игровая логика (40+ файлов)
 
 | Файл | Назначение |
 |------|------------|
@@ -203,6 +203,14 @@
 | `limb-attachment.ts` | Приживление конечностей |
 | `world-coordinates.ts` | 3D координаты мира |
 | `constants.ts` | Все константы игры |
+| `stat-threshold.ts` | **Система порогов развития** |
+| `stat-development.ts` | **Виртуальная дельта развития** |
+| `training-system.ts` | **Система тренировки характеристик** |
+| `stat-simulation.ts` | **Симуляция развития** |
+| `npc-ai.ts` | **ИИ поведение NPC** |
+| `npc-collision.ts` | **Система коллизий NPC** |
+| `wave-manager.ts` | **Менеджер волн (Training Ground)** |
+| `session-npc-manager.ts` | **Менеджер сессионных NPC** |
 
 ### `/src/components/game/` - Игровые компоненты
 
@@ -1005,3 +1013,112 @@ useEffect(() => {
 ---
 
 *Архитектура актуальна для версии 14 (2026-03-11)*
+
+---
+
+## 📈 Система развития характеристик (Stat Development)
+
+> **Версия:** 1.0 | **Дата:** 2026-03-15
+> **Источник:** docs/body-development-analysis.md, docs/stat-threshold-system.md
+
+### Концепция
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    СИСТЕМА РАЗВИТИЯ ТЕЛА                        │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│   1. ВИРТУАЛЬНАЯ ДЕЛЬТА                                         │
+│      │                                                          │
+│      ├─ Временное накопление прогресса                          │
+│      ├─ Источники: бой, тренировка, труд, медитация             │
+│      └─ Прирост за действие: 0.001                              │
+│                                                                 │
+│   2. ПОРОГИ РАЗВИТИЯ                                            │
+│      │                                                          │
+│      ├─ Чем выше стат → больше дельты для повышения             │
+│      ├─ Формула: threshold = floor(currentStat / 10)            │
+│      └─ Минимум: 1.0                                            │
+│                                                                 │
+│   3. ЗАКРЕПЛЕНИЕ ПРИ СНЕ                                        │
+│      │                                                          │
+│      ├─ Конвертация виртуальной дельты в постоянные статы       │
+│      ├─ Кап: +0.20 за 8 часов сна                               │
+│      └─ Минимум: 4 часа для закрепления                         │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Ключевые параметры
+
+| Параметр | Значение |
+|----------|----------|
+| Прирост за действие | 0.001 |
+| Кап закрепления за сон (8ч) | +0.20 |
+| Минимальный сон для закрепления | 4 часа |
+| Формула порога | `floor(stat/10)`, min 1.0 |
+| Множитель культивации | НЕТ (тело независимо) |
+
+### Достижимость
+
+| Период | Достижимый стат |
+|--------|-----------------|
+| 1000 дней | ~55 |
+| 3000 дней | ~80 |
+| 10000 дней | ~125 |
+
+### Файлы системы
+
+| Файл | Назначение |
+|------|------------|
+| `src/types/stat-development.ts` | Типы и интерфейсы |
+| `src/lib/game/stat-threshold.ts` | Система порогов развития |
+| `src/lib/game/stat-development.ts` | Виртуальная дельта + закрепление |
+| `src/lib/game/training-system.ts` | Система тренировки |
+| `src/lib/game/stat-simulation.ts` | Симуляция развития |
+| `src/lib/game/constants.ts` | STAT_DEVELOPMENT_CONSTANTS |
+
+### Типы тренировок
+
+| Тип | Физическая/Ментальная | Множитель дельты | Риск |
+|-----|----------------------|------------------|------|
+| Классическая | 50% / 50% | ×1.0 | Низкий |
+| Фокусная | 70% / 30% | ×1.2 | Средний |
+| Экстремальная | 95% / 5% | ×1.5 | Высокий |
+
+### API системы
+
+```typescript
+// Пороги развития
+import { calculateStatThreshold, advanceStat, getStatProgress } from './stat-threshold';
+
+const threshold = calculateStatThreshold(25); // 2.0
+const progress = getStatProgress(stat); // 0-1
+
+// Виртуальная дельта
+import { addVirtualDelta, processSleep } from './stat-development';
+
+const result = addVirtualDelta(stat, 0.15, 'combat_hit');
+const sleepResult = processSleep(statsData, 8); // 8 часов сна
+
+// Тренировка
+import { startTraining, processTrainingTick, completeTraining } from './training-system';
+
+const session = startTraining(characterId, { type: 'focused', targetStat: 'strength', durationMinutes: 60 });
+```
+
+### Интеграция с боем
+
+Боевая система автоматически генерирует виртуальную дельту:
+
+```typescript
+// combat-system.ts
+import { generateAttackDelta, createCombatDeltaAction } from './combat-system';
+
+const delta = generateAttackDelta(isCritical, weaponType, techniqueMultiplier);
+const action = createCombatDeltaAction(delta, fatigue);
+```
+
+---
+
+*Документ обновлён: 2026-03-15*

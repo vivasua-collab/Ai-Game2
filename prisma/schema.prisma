@@ -135,6 +135,10 @@ model Character {
   // JSON: { parts: {...}, heart: {...}, activeBleeds: [...], activeAttachments: [...], isDead: bool }
   bodyState String @default("{}")
   
+  // === Система развития характеристик ===
+  // JSON: { strength: { current, virtualDelta, threshold }, agility: {...}, ... }
+  statsDevelopment String @default("{}")
+  
   // Связи
   sessions       GameSession[]
   inventory      InventoryItem[]

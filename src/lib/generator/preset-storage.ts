@@ -1180,13 +1180,18 @@ export class PresetStorageService {
     
     try {
       const presetDir = path.join(DATA_DIR, 'npcs', 'preset');
+      console.log('[PresetStorage] Loading preset NPCs from:', presetDir);
+      
       const entries = await fs.readdir(presetDir, { withFileTypes: true });
+      console.log('[PresetStorage] Found entries:', entries.length, entries.map(e => e.name));
       
       for (const entry of entries) {
         if (entry.isFile() && entry.name.endsWith('.json')) {
           const filePath = path.join(presetDir, entry.name);
           const content = await fs.readFile(filePath, 'utf-8');
           const data = JSON.parse(content);
+          
+          console.log('[PresetStorage] Loaded file:', entry.name, 'with', data.npcs?.length || 0, 'NPCs');
           
           if (data.npcs && Array.isArray(data.npcs)) {
             npcs.push(...data.npcs);
@@ -1196,9 +1201,12 @@ export class PresetStorageService {
           }
         }
       }
-    } catch {
+    } catch (error) {
+      console.error('[PresetStorage] ERROR loading preset NPCs:', error);
       // Игнорируем ошибки
     }
+    
+    console.log('[PresetStorage] Total preset NPCs loaded:', npcs.length);
     
     return npcs;
   }

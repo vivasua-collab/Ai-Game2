@@ -1013,3 +1013,282 @@ export function createCombatRange(
     max: fullDamage * maxRangeMultiplier
   };
 }
+
+// ============================================
+// СИСТЕМА РАЗВИТИЯ В БОЮ
+// ============================================
+
+import type {
+  StatName,
+  DeltaGeneratingAction,
+} from '@/types/stat-development';
+
+import { STAT_DEVELOPMENT_CONSTANTS } from './constants';
+
+/**
+ * Результат генерации дельты в бою
+ */
+export interface CombatDeltaResult {
+  /** Целевая характеристика */
+  targetStat: StatName;
+
+  /** Количество виртуальной дельты */
+  deltaGained: number;
+
+  /** Тип действия */
+  actionType: 'hit' | 'critical' | 'blocked' | 'dodge' | 'block' | 'parry';
+
+  /** Источник */
+  source: 'combat_hit' | 'combat_block' | 'combat_dodge';
+}
+
+/**
+ * Определяет целевую характеристику для боевого действия
+ *
+ * @param actionType Тип боевого действия
+ * @param weaponType Тип оружия (опционально)
+ */
+export function determineCombatTargetStat(
+  actionType: 'attack' | 'defense' | 'dodge',
+  weaponType?: string
+): StatName {
+  switch (actionType) {
+    case 'attack':
+      // Лёгкое оружие → ловкость, тяжёлое → сила
+      if (weaponType === 'dagger' || weaponType === 'sword_light' || weaponType === 'fist') {
+        return 'agility';
+      }
+      return 'strength';
+
+    case 'defense':
+      return 'strength';
+
+    case 'dodge':
+      return 'agility';
+
+    default:
+      return 'strength';
+  }
+}
+
+/**
+ * Генерирует дельту для успешной атаки
+ *
+ * @param isCritical Критический удар
+ * @param weaponType Тип оружия
+ * @param techniqueMultiplier Множитель от техники
+ */
+export function generateAttackDelta(
+  isCritical: boolean = false,
+  weaponType?: string,
+  techniqueMultiplier: number = 1.0
+): CombatDeltaResult {
+  const targetStat = determineCombatTargetStat('attack', weaponType);
+  const baseDelta = STAT_DEVELOPMENT_CONSTANTS.DELTA_SOURCES.combat_hit;
+
+  let delta = baseDelta * techniqueMultiplier;
+  if (isCritical) {
+    delta *= 1.5; // +50% за крит
+  }
+
+  return {
+    targetStat,
+    deltaGained: delta,
+    actionType: isCritical ? 'critical' : 'hit',
+    source: 'combat_hit',
+  };
+}
+
+/**
+ * Генерирует дельту для заблокированной атаки
+ *
+ * @param weaponType Тип оружия
+ */
+export function generateBlockedAttackDelta(
+  weaponType?: string
+): CombatDeltaResult {
+  const targetStat = determineCombatTargetStat('attack', weaponType);
+  const baseDelta = STAT_DEVELOPMENT_CONSTANTS.DELTA_SOURCES.combat_block;
+
+  return {
+    targetStat,
+    deltaGained: baseDelta,
+    actionType: 'blocked',
+    source: 'combat_block',
+  };
+}
+
+/**
+ * Генерирует дельту для защиты (блока)
+ *
+ * @param isParry Парирование (вместо блока)
+ */
+export function generateDefenseDelta(
+  isParry: boolean = false
+): CombatDeltaResult {
+  const baseDelta = STAT_DEVELOPMENT_CONSTANTS.DELTA_SOURCES.combat_block;
+
+  let delta = baseDelta;
+  if (isParry) {
+    delta *= 1.2; // +20% за парирование
+  }
+
+  return {
+    targetStat: 'strength',
+    deltaGained: delta,
+    actionType: isParry ? 'parry' : 'block',
+    source: 'combat_block',
+  };
+}
+
+/**
+ * Генерирует дельту для уклонения
+ */
+export function generateDodgeDelta(): CombatDeltaResult {
+  const baseDelta = STAT_DEVELOPMENT_CONSTANTS.DELTA_SOURCES.combat_dodge;
+
+  return {
+    targetStat: 'agility',
+    deltaGained: baseDelta,
+    actionType: 'dodge',
+    source: 'combat_dodge',
+  };
+}
+
+/**
+ * Создаёт DeltaGeneratingAction для боевого действия
+ *
+ * Используется для интеграции с системой развития.
+ *
+ * @param deltaResult Результат генерации дельты
+ * @param fatigue Текущая усталость
+ */
+export function createCombatDeltaAction(
+  deltaResult: CombatDeltaResult,
+  fatigue: { physical: number; mental: number }
+): DeltaGeneratingAction {
+  // Штраф от усталости
+  const physicalEfficiency =
+    1 - Math.pow(fatigue.physical, 2) / 10000;
+  const mentalEfficiency =
+    1 - Math.pow(fatigue.mental, 2) / 10000;
+  const fatiguePenalty = (physicalEfficiency + mentalEfficiency) / 2;
+
+  return {
+    type: deltaResult.source,
+    intensity: 1.0,
+    targetStat: deltaResult.targetStat,
+    modifiers: {
+      fatiguePenalty,
+    },
+  };
+}
+
+/**
+ * Статистика дельты за бой
+ */
+export interface CombatDeltaStats {
+  /** ID персонажа */
+  characterId: string;
+
+  /** Дельта силы */
+  strengthDelta: number;
+
+  /** Дельта ловкости */
+  agilityDelta: number;
+
+  /** Количество атак */
+  attackCount: number;
+
+  /** Критических ударов */
+  criticalCount: number;
+
+  /** Количество блоков */
+  blockCount: number;
+
+  /** Количество уклонений */
+  dodgeCount: number;
+
+  /** Количество заблокированных атак */
+  blockedAttacks: number;
+}
+
+/**
+ * Создаёт объект статистики дельты за бой
+ */
+export function createCombatDeltaStats(characterId: string): CombatDeltaStats {
+  return {
+    characterId,
+    strengthDelta: 0,
+    agilityDelta: 0,
+    attackCount: 0,
+    criticalCount: 0,
+    blockCount: 0,
+    dodgeCount: 0,
+    blockedAttacks: 0,
+  };
+}
+
+/**
+ * Добавляет результат боя к статистике дельты
+ */
+export function addDeltaToStats(
+  stats: CombatDeltaStats,
+  result: CombatDeltaResult
+): CombatDeltaStats {
+  const newStats = { ...stats };
+
+  // Добавляем дельту
+  if (result.targetStat === 'strength') {
+    newStats.strengthDelta += result.deltaGained;
+  } else if (result.targetStat === 'agility') {
+    newStats.agilityDelta += result.deltaGained;
+  }
+
+  // Обновляем счётчики
+  switch (result.actionType) {
+    case 'hit':
+      newStats.attackCount++;
+      break;
+    case 'critical':
+      newStats.attackCount++;
+      newStats.criticalCount++;
+      break;
+    case 'blocked':
+      newStats.blockedAttacks++;
+      break;
+    case 'block':
+    case 'parry':
+      newStats.blockCount++;
+      break;
+    case 'dodge':
+      newStats.dodgeCount++;
+      break;
+  }
+
+  return newStats;
+}
+
+/**
+ * Формирует сообщение о развитии в бою
+ */
+export function formatCombatDeltaMessage(stats: CombatDeltaStats): string {
+  const lines: string[] = [];
+
+  lines.push(`⚔️ Развитие в бою:`);
+
+  if (stats.strengthDelta > 0) {
+    lines.push(`  💪 Сила: +${stats.strengthDelta.toFixed(4)}`);
+  }
+
+  if (stats.agilityDelta > 0) {
+    lines.push(`  🏃 Ловкость: +${stats.agilityDelta.toFixed(4)}`);
+  }
+
+  lines.push(
+    `  📊 Атак: ${stats.attackCount} (${stats.criticalCount} крит.), ` +
+    `Защит: ${stats.blockCount}, Уклонений: ${stats.dodgeCount}`
+  );
+
+  return lines.join('\n');
+}

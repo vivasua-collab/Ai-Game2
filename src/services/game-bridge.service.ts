@@ -108,10 +108,12 @@ class GameBridgeImpl {
   
   setSessionId(id: string): void {
     this.sessionId = id;
+    console.log('[GameBridge] SessionId set to:', id);
     // Memory-only storage (no sessionStorage - sandbox restriction)
   }
   
   getSessionId(): string | null {
+    console.log('[GameBridge] getSessionId called, returning:', this.sessionId);
     return this.sessionId;
   }
   
