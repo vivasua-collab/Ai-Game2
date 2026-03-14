@@ -1,7 +1,7 @@
 # 🚀 План внедрения системы развития тела
 
 **Версия:** 1.0
-**Создано:** 2026-03-15
+**Создано:** 2026-03-14
 **Статус:** 📋 Готов к реализации
 **Источник:** docs/body.md + docs/development-1000-days-calculation.md + docs/stat-threshold-system.md
 
@@ -224,13 +224,13 @@ model Character {
     "current": 15.0,
     "virtualDelta": 0.85,
     "threshold": 1.0,
-    "lastTrainingAt": "2026-03-15T10:00:00Z"
+    "lastTrainingAt": "2026-03-14T10:00:00Z"
   },
   "agility": {
     "current": 12.0,
     "virtualDelta": 0.42,
     "threshold": 1.0,
-    "lastTrainingAt": "2026-03-15T08:30:00Z"
+    "lastTrainingAt": "2026-03-14T08:30:00Z"
   },
   // ...
 }
@@ -355,5 +355,5 @@ export const STAT_DEVELOPMENT_CONSTANTS = {
 
 ---
 
-*Документ создан: 2026-03-15*
+*Документ создан: 2026-03-14*
 *Для реализации ИИ агентами*

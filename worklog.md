@@ -592,3 +592,43 @@ Stage Summary:
 - src/lib/game/stat-development.ts
 - src/lib/game/training-system.ts
 - src/lib/game/stat-simulation.ts
+
+---
+Task ID: bonus_system_v2_03_16
+Agent: Main Agent
+Task: Обновление системы бонусов v2.0 — добавление категории CONDITION и унификация
+
+Work Log:
+- [x] Изучена текущая структура бонусов в docs/bonuses.md v1.0
+- [x] Проанализирован src/lib/generator/technique-config.ts для унификации BonusType
+- [x] Изучены docs/equip-v2.md, docs/soul-system.md, docs/technique-system.md, docs/FUNCTIONS.md
+- [x] Создан src/types/bonus-registry.ts — единый источник типов
+- [x] Добавлена новая категория CONDITION (состояния):
+  - Положительные (баффы): haste, regeneration, clarity, fortify, berserk, invisibility, shield, reflect
+  - Отрицательные (дебаффы): burning, freezing, poison, stun, slow, weakness, silence, bleed, curse, fear
+- [x] Разработана архитектура "Матрёшка":
+  - Базовый объект (привязан к уровню)
+  - Материал (надстройка, даёт бонусы)
+  - Грейд/Редкость (множители и дополнительные бонусы)
+- [x] Создан маппинг BonusType (technique-config.ts) → BonusCategory (bonus-registry.ts)
+- [x] Обновлён docs/bonuses.md до версии 2.0:
+  - Добавлена архитектура генерации "Матрёшка"
+  - Добавлена категория CONDITION с 18 состояниями
+  - Добавлен раздел унификации с technique-config.ts
+  - Обновлён интерфейс BonusDefinition (добавлено element, subcategory: buff/debuff)
+  - Добавлены утилиты для состояний: isBuffCondition, isDebuffCondition, isDotCondition
+- [x] Lint прошёл успешно (0 errors, 1 warning в существующем файле)
+
+Stage Summary:
+- **Единый файл типов:** src/types/bonus-registry.ts
+- **Новая категория CONDITION:** 8 баффов + 10 дебаффов
+- **Архитектура "Матрёшка":** База → Материал → Грейд
+- **Унификация:** BonusType маппится в BonusCategory
+- **8 категорий бонусов:** stat, combat, defense, qi, elemental, condition, special, utility
+
+Ключевые решения:
+1. Файл типов: src/types/bonus-registry.ts (единый источник)
+2. BonusType ⊂ BonusCategory (обратная совместимость с technique-config.ts)
+3. Состояния имеют subcategory: 'buff' | 'debuff'
+4. DoT состояния: burning, poison, bleed
+5. Несовместимости: burning ↔ freezing, haste ↔ slow, regeneration ↔ poison/bleed

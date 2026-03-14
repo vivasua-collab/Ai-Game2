@@ -962,7 +962,7 @@ const qiCost = technique.qiCost ?? 0;
 
 ## 📈 Система развития характеристик (Stat Development)
 
-> **Версия:** 1.0 | **Дата:** 2026-03-15
+> **Версия:** 1.0 | **Дата:** 2026-03-14
 > **Источник:** docs/body-development-analysis.md, docs/stat-threshold-system.md
 
 ### Концепция
@@ -1040,4 +1040,4 @@ const qiCost = technique.qiCost ?? 0;
 
 ---
 
-*Документ обновлён: 2026-03-15*
+*Документ обновлён: 2026-03-14*
