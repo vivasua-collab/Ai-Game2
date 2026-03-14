@@ -1,7 +1,7 @@
 # 📚 Перечень документации проекта Cultivation World Simulator
 
 **Последнее обновление:** 2026-03-14
-**Версия:** 27.0
+**Версия:** 28.0
 
 ---
 
@@ -9,9 +9,9 @@
 
 | Категория | Количество |
 |-----------|------------|
-| Документация (/docs) | 37 |
+| Документация (/docs) | 38 |
 | Checkpoints | 2 |
-| **Итого** | **39** |
+| **Итого** | **40** |
 
 > ⚠️ **Примечание:** Папка `/docs/implementation/` содержит ПЛАНЫ ВНЕДРЕНИЯ — это рабочие документы для ИИ-агентов, не включаются в перечень документации.
 
@@ -54,7 +54,7 @@
 
 ---
 
-### ⚔️ ИГРОВЫЕ СИСТЕМЫ (17 файлов)
+### ⚔️ ИГРОВЫЕ СИСТЕМЫ (18 файлов)
 
 | Файл | Назначение |
 |------|------------|
@@ -69,6 +69,7 @@
 | [vitality-hp-system.md](./vitality-hp-system.md) | Система HP |
 | [TECHNIQUE_SCALING_LIMITS.md](./TECHNIQUE_SCALING_LIMITS.md) | Лимиты масштабирования техник |
 | [DAMAGE_FORMULAS_PROPOSAL.md](./DAMAGE_FORMULAS_PROPOSAL.md) | Предложение по формулам урона |
+| [weapon-armor-system.md](./weapon-armor-system.md) | **Теоретические изыскания: Оружие и броня** |
 | [body-development-analysis.md](./body-development-analysis.md) | Анализ системы развития тела |
 | [stat-threshold-system.md](./stat-threshold-system.md) | Система порогов развития |
 | [development-1000-days-calculation.md](./development-1000-days-calculation.md) | Расчёты развития |

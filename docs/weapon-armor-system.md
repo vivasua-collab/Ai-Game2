@@ -1,20 +1,14 @@
-# PHASE 15: Weapon & Armor System — Теоретические изыскания
+# ⚔️ Система Оружия и Брони — Теоретические изыскания
 
-**PRIORITY:** P1
-**DEPENDS ON:** Phase 8 (Hand Combat), Phase 14 (NPC Collision)
-**CREATED:** 2026-03-14
-**STATUS:** 📋 Планирование
+**Версия:** 1.0
+**Создано:** 2026-03-14
+**Статус:** 📋 Теоретические изыскания
 
 ---
 
-## 📚 Требуемая документация
+## 📋 Обзор
 
-- [../equip.md](../equip.md) — Типы экипировки, слоты, материалы
-- [../body.md](../body.md) — Система тела, части тела, HP
-- [../combat-system.md](../combat-system.md) — Боевая система
-- [../DAMAGE_FORMULAS_PROPOSAL.md](../DAMAGE_FORMULAS_PROPOSAL.md) — Формулы урона
-- [../technique-system.md](../technique-system.md) — Техники, мастерство
-- [../vitality-hp-system.md](../vitality-hp-system.md) — Vitality и HP частей тела
+Документ содержит теоретический анализ системы оружия и брони для мира культивации. Рассматриваются несколько вариантов реализации каждой механики.
 
 ---
 
@@ -160,7 +154,7 @@ weaponMultiplier = 1 + (weaponDamage / 10)
 // Оружие — множитель к руке, не добавка
 ```
 
-**ВАРИАНТ C: Гибридный (рекомендуется)**
+**ВАРИАНТ C: Гибридный**
 ```
 baseDamage = max(handDamage, weaponDamage × 0.5)
 bonusDamage = weaponDamage × statScaling
@@ -170,7 +164,7 @@ totalDamage = baseDamage + bonusDamage
 // Плюс бонус от характеристик
 ```
 
-### 2.4 Влияние на слот 1
+### 2.4 Влияние на слот 1 (melee_strike техники)
 
 ```typescript
 // Оружие с melee_strike техникой
@@ -196,8 +190,8 @@ function calculateWeaponTechniqueDamage(
 
 ### 3.1 Части брони и защищаемые области
 
-| Часть брони | Защищаемые части тела | Слот |
-|-------------|----------------------|------|
+| Часть брони | Защищаемые части тела | Слот экипировки |
+|-------------|----------------------|-----------------|
 | Шлем (armor_head) | head | head |
 | Нагрудник (armor_torso) | torso, heart | torso |
 | Наручи (armor_arms) | left_arm, right_arm | arms |
@@ -235,7 +229,7 @@ interface ArmorStats {
 }
 ```
 
-### 3.3 Порядок расчёта урона
+### 3.3 Порядок расчёта урона (8 слоёв)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -303,9 +297,8 @@ const BASE_BODY_PART_CHANCES: Record<BodyPartType, number> = {
 };
 ```
 
-### 4.2 Модификаторы
+### 4.2 Модификаторы от позиции
 
-**От позиции атакующего:**
 ```typescript
 // Атака сверху (прыжок, полёт)
 positionModifier = {
@@ -327,7 +320,8 @@ positionModifier = {
 };
 ```
 
-**От размера цели:**
+### 4.3 Модификаторы от размера цели
+
 ```typescript
 // Маленькая цель (tiny)
 sizeModifier = { head: +5, torso: -10 };
@@ -336,7 +330,8 @@ sizeModifier = { head: +5, torso: -10 };
 sizeModifier = { legs: +10, torso: -10 };
 ```
 
-**От оружия:**
+### 4.4 Модификаторы от оружия
+
 ```typescript
 // Кинжал — точные удары
 weaponModifier = { head: +3, heart: +2, hands: +3 };
@@ -348,7 +343,7 @@ weaponModifier = { torso: +10, arms: +5, head: -5 };
 weaponModifier = { torso: +5, heart: +3, head: -3 };
 ```
 
-### 4.3 Прицельные удары
+### 4.5 Прицельные удары
 
 ```typescript
 interface AimedAttack {
@@ -390,14 +385,14 @@ aimedHead: {
 | Тип | Условие участия |
 |-----|-----------------|
 | artifact_active | Участвует если активирован (дает щит) |
-| implant_* | Участует только для: implant_limbs (протез руки/ноги) |
-| shield_* | Участует только при блоке |
+| implant_* | Участвует только: implant_limbs (протез руки/ноги) |
+| shield_* | Участвует только при блоке |
 
 ---
 
 ## 6️⃣ ПЕРВИЧНЫЙ УРОН И ЕГО УМЕНЬШЕНИЕ
 
-### 6.1 Схема слоёв защиты
+### 6.1 Слои защиты (5 слоёв)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -455,7 +450,7 @@ blackHP -= damage;
 redHP = min(redHP, blackHP × 0.5);
 ```
 
-**ВАРИАНТ C: Распределённый (Kenshi-style, рекомендуется)**
+**ВАРИАНТ C: Распределённый (Kenshi-style)**
 ```
 // Урон распределяется: 70% в redHP, 30% в blackHP
 redHP -= damage × 0.7;
@@ -510,98 +505,50 @@ if (blackHP < maxBlackHP × 0.3) {
 Дракон почти не чувствует удара!
 ```
 
----
+### Пример 3: Техника с оружием
 
-## 8️⃣ РЕАЛИЗАЦИЯ (псевдокод)
+```
+Исходные данные:
+- Атакующий: L5 культиватор, STR 25
+- Оружие: Меч Дракона (baseDamage 50, techniqueBonus ×1.5)
+- Техника: "Рубящий вихрь" L5 (baseDamage 75, qiCost 100)
 
-### 8.1 Основная функция расчёта
+Расчёт:
+1. Техника: qiDensity = 16 (L5)
+   effectiveness = 100 × 16 = 1600
+   
+2. Урон техники: 75 × (1 + 1600/1000) = 195
 
-```typescript
-// Файл: src/lib/game/damage-calculation.ts
+3. Бонус оружия: 50 × 1.5 = 75
 
-export function calculateDamage(
-  attacker: Character,
-  target: Character,
-  weapon: Weapon | null,
-  technique: Technique | null
-): DamageResult {
-  // 1. Исходный урон
-  const rawDamage = calculateRawDamage(attacker, weapon, technique);
-  
-  // 2. Определение части тела
-  const hitPart = rollBodyPartHit(attacker, target);
-  
-  // 3. Проверка уклонения
-  if (checkDodge(target)) {
-    return { damage: 0, hitPart, result: 'dodged' };
-  }
-  
-  // 4. Проверка блока
-  let damage = rawDamage;
-  const blockResult = checkBlock(target, hitPart);
-  if (blockResult.blocked) {
-    damage *= (1 - blockResult.effectiveness);
-    applyDurabilityLoss(target.shield, damage);
-  }
-  
-  // 5. Броня
-  const armor = getArmorForPart(target, hitPart);
-  if (armor && rollCoverage(armor.coverage)) {
-    damage = applyArmorReduction(damage, armor, weapon?.penetration || 0);
-    applyDurabilityLoss(armor, damage);
-  }
-  
-  // 6. Материал тела
-  damage = applyMaterialReduction(damage, target.bodyMaterial);
-  
-  // 7. Финальный урон
-  damage = Math.max(1, Math.floor(damage));
-  
-  // 8. Применение к HP
-  applyDamageToBodyPart(target, hitPart, damage);
-  
-  return { damage, hitPart, result: 'hit' };
-}
+4. Итоговый урон: 195 + 75 = 270
 ```
 
 ---
 
-## 9️⃣ ФАЙЛЫ ДЛЯ СОЗДАНИЯ
+## 8️⃣ РЕКОМЕНДУЕМЫЕ ВАРИАНТЫ
 
-| Файл | Назначение |
-|------|------------|
-| `src/lib/game/damage-calculation.ts` | Основной расчёт урона |
-| `src/lib/game/body-part-targeting.ts` | Расчёт попадания по частям |
-| `src/lib/game/durability-system.ts` | Система прочности и ремонта |
-| `src/lib/game/armor-system.ts` | Логика брони и защиты |
-| `src/types/equipment-stats.ts` | Типы для оружия и брони |
-| `prisma/schema.prisma` | Обновить модель InventoryItem |
+На основе анализа рекомендуется:
+
+| Механика | Рекомендуемый вариант | Обоснование |
+|----------|----------------------|-------------|
+| Потеря прочности | **ВАРИАНТ C** (Комбинированный) | Реалистичный + не слишком быстрый износ |
+| Ремонт | **ВАРИАНТ B + C** | Самостоятельный + Ци-ремонт для высоких уровней |
+| Урон оружия | **ВАРИАНТ C** (Гибридный) | Баланс между рукой и оружием |
+| Распределение HP | **ВАРИАНТ C** (Kenshi-style) | Проверенная механика |
 
 ---
 
-## 📋 ЗАДАЧИ ДЛЯ РЕАЛИЗАЦИИ
+## 🔗 Связанные документы
 
-### Фаза 15A: Базовая структура
-- [ ] Создать `src/types/equipment-stats.ts`
-- [ ] Обновить Prisma схему (durability, coverage)
-- [ ] Создать `src/lib/game/durability-system.ts`
-
-### Фаза 15B: Расчёт урона
-- [ ] Создать `src/lib/game/damage-calculation.ts`
-- [ ] Создать `src/lib/game/body-part-targeting.ts`
-- [ ] Интегрировать с `combat-system.ts`
-
-### Фаза 15C: Броня
-- [ ] Создать `src/lib/game/armor-system.ts`
-- [ ] Добавить coverage check
-- [ ] Добавить resistances
-
-### Фаза 15D: Интеграция
-- [ ] Обновить `LocationScene.ts`
-- [ ] Обновить UI инвентаря
-- [ ] Добавить отображение прочности
+- [equip.md](./equip.md) — Типы экипировки, слоты, материалы
+- [body.md](./body.md) — Система тела, части тела, HP
+- [combat-system.md](./combat-system.md) — Боевая система
+- [DAMAGE_FORMULAS_PROPOSAL.md](./DAMAGE_FORMULAS_PROPOSAL.md) — Формулы урона
+- [technique-system.md](./technique-system.md) — Техники, мастерство
+- [vitality-hp-system.md](./vitality-hp-system.md) — Vitality и HP частей тела
 
 ---
 
 *Документ создан: 2026-03-14*
-*Для планирования ИИ-агентами*
+*Статус: Теоретические изыскания для планирования*

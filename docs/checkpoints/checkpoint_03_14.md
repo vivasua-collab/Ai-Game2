@@ -108,71 +108,18 @@ cooldown = max(200ms, 1000ms - (AGI-10) × 15ms)
 | Файл | Описание | Приоритет | Статус |
 |------|----------|-----------|--------|
 | [roadmap.md](../implementation/roadmap.md) | 🗺️ Дорожная карта | — | ✅ |
-| [phase-15-weapon-armor-system.md](../implementation/phase-15-weapon-armor-system.md) | Оружие и броня | P1 | 📋 NEW |
+
+**Все выполненные планы удалены из docs/implementation/**
 
 ---
 
-## 🆕 PHASE 15: Оружие и Броня — Теоретические изыскания
+## 📚 ТЕОРЕТИЧЕСКИЕ ИЗЫСКАНИЯ
 
-### Ключевые решения для внедрения
+> ⚠️ **Внимание:** Теоретические изыскания находятся в основной документации, НЕ в docs/implementation
 
-#### 1. Система прочности (Durability)
-
-**Выбор: ВАРИАНТ C (Комбинированный)**
-```
-totalLoss = baseLoss + impactLoss
-baseLoss = 0.01 × actionCount
-impactLoss = max(0, damageAbsorbed - threshold) / hardness
-```
-
-**Условия поломки:**
-- Critical (1-24%): Шанс сломаться = (1 - durability/max) × 0.1 × hitCount
-- Broken (0%): Невозможно использовать
-
-**Ремонт:** Вариант B + C (самостоятельный + Ци-ремонт)
-
-#### 2. Урон оружия
-
-**Выбор: ВАРИАНТ C (Гибридный)**
-```
-baseDamage = max(handDamage, weaponDamage × 0.5)
-bonusDamage = weaponDamage × statScaling
-totalDamage = baseDamage + bonusDamage
-```
-
-#### 3. Распределение урона по HP
-
-**Выбор: ВАРИАНТ C (Kenshi-style)**
-```
-redHP -= damage × 0.7
-blackHP -= damage × 0.3
-// При blackHP < 30% → шок, ускоренная потеря redHP
-```
-
-#### 4. Порядок расчёта урона
-
-```
-1. rawDamage = handDamage + weaponDamage + techniqueDamage
-2. hitPart = rollBodyPartHit()
-3. checkDodge() → damage = 0 if success
-4. checkBlock() → damage *= (1 - effectiveness)
-5. armor = getArmorForPart(hitPart)
-   - coverage check (80% шанс работы брони)
-   - damageReduction (% снижения)
-   - penetration check (пробитие)
-6. materialReduction (кожа/чешуя/призрак)
-7. finalDamage = max(1, floor(damage))
-8. applyDamageToBodyPart()
-```
-
-### Задачи Phase 15
-
-| Subtask | Описание | Файлы |
-|---------|----------|-------|
-| 15A | Базовая структура | `types/equipment-stats.ts`, Prisma, `durability-system.ts` |
-| 15B | Расчёт урона | `damage-calculation.ts`, `body-part-targeting.ts` |
-| 15C | Броня | `armor-system.ts`, coverage, resistances |
-| 15D | Интеграция | `LocationScene.ts`, UI инвентаря |
+| Файл | Описание | Статус |
+|------|----------|--------|
+| [weapon-armor-system.md](../weapon-armor-system.md) | 📋 Оружие и броня | Теоретические изыскания |
 
 ---
 
