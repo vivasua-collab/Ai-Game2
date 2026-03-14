@@ -1,333 +1,379 @@
-# ФАЗА 7: UI компоненты
+# PHASE 7: Stats UI Components
 
-**Task ID:** 7
-**Приоритет:** P2
-**Зависимости:** Фаза 1-4
-**Ожидаемый результат:** UI компоненты для отображения развития
-
----
-
-## 🎯 Задача
-
-Создать UI компоненты для отображения прогресса развития характеристик.
+**PRIORITY:** P2
+**DEPENDS ON:** Phase 9 (Delta Integration)
+**TARGET:** UI for stat development visualization
 
 ---
 
-## 📐 Спецификация
-
-### Компоненты
-
-#### 1. StatProgressBar
-
-Отображение прогресса характеристики с порогом.
-
-```typescript
-/**
- * Компонент прогресса характеристики
- * 
- * Отображает:
- * - Текущее значение
- * - Прогресс до следующего повышения
- * - Виртуальную дельту
- * - Порог
- */
-
-interface StatProgressBarProps {
-  /** Название характеристики */
-  name: string;
-  
-  /** Данные развития */
-  development: StatDevelopment;
-  
-  /** Показывать детали */
-  showDetails?: boolean;
-  
-  /** Компактный режим */
-  compact?: boolean;
-}
-
-// Пример использования:
-<StatProgressBar
-  name="Сила"
-  development={{
-    current: 25,
-    virtualDelta: 1.5,
-    threshold: 2.0,
-  }}
-  showDetails
-/>
-```
-
-**Визуализация:**
-```
-┌─────────────────────────────────────────────────┐
-│ 💪 Сила: 25                                     │
-│ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ │
-│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░░░░░░░░ │
-│                           75% (1.5 / 2.0)       │
-│ 📊 Дельта: 1.5 | Порог: 2.0 | ~7 дней до +1    │
-└─────────────────────────────────────────────────┘
-```
-
----
-
-#### 2. StatsDevelopmentPanel
-
-Панель всех характеристик.
-
-```typescript
-/**
- * Панель развития всех характеристик
- */
-
-interface StatsDevelopmentPanelProps {
-  /** Все характеристики */
-  stats: CharacterStatsDevelopment;
-  
-  /** Заголовок */
-  title?: string;
-  
-  /** Показывать прогнозы */
-  showEstimates?: boolean;
-}
-
-// Пример:
-<StatsDevelopmentPanel
-  stats={character.statsDevelopment}
-  title="Развитие тела"
-  showEstimates
-/>
-```
-
-**Визуализация:**
-```
-┌─────────────────────────────────────────────────────────────┐
-│ 📊 Развитие тела                                            │
-├─────────────────────────────────────────────────────────────┤
-│ 💪 Сила: 25        ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░░  75% (1.5/2.0) │
-│ 🏃 Ловкость: 18    ▓▓▓▓▓▓▓▓░░░░░░░░░░░░░░░░  40% (0.4/1.0) │
-│ 🧠 Интеллект: 22   ▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░  55% (1.1/2.0) │
-│ ❤️ Живучесть: 15   ▓▓▓▓▓▓░░░░░░░░░░░░░░░░░░  30% (0.3/1.0) │
-├─────────────────────────────────────────────────────────────┤
-│ 💤 При следующем сне (8ч): до +0.20 закрепления            │
-└─────────────────────────────────────────────────────────────┘
-```
-
----
-
-#### 3. TrainingSelection
-
-Выбор типа тренировки.
-
-```typescript
-/**
- * Компонент выбора тренировки
- */
-
-interface TrainingSelectionProps {
-  /** Доступные типы */
-  availableTypes: TrainingType[];
-  
-  /** Выбранный тип */
-  selectedType: TrainingType | null;
-  
-  /** Callback выбора */
-  onSelect: (type: TrainingType) => void;
-  
-  /** Текущая усталость */
-  currentFatigue: { physical: number; mental: number };
-  
-  /** Целевая характеристика */
-  targetStat: StatName;
-}
-
-// Пример:
-<TrainingSelection
-  availableTypes={['classical', 'focused', 'extreme']}
-  selectedType={selectedTraining}
-  onSelect={setSelectedTraining}
-  currentFatigue={{ physical: 30, mental: 20 }}
-  targetStat="strength"
-/>
-```
-
-**Визуализация:**
-```
-┌─────────────────────────────────────────────────────────────┐
-│ 🏋️ Выберите тип тренировки                                  │
-├─────────────────────────────────────────────────────────────┤
-│ ┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐│
-│ │   КЛАССИЧЕСКАЯ  │ │    ФОКУСНАЯ     │ │   ЭКСТРЕМАЛЬНАЯ ││
-│ │                 │ │                 │ │                 ││
-│ │  50/50 баланс   │ │  70/30 упор     │ │  95/5 максимум  ││
-│ │  ×1.0 дельта    │ │  ×1.2 дельта    │ │  ×1.5 дельта    ││
-│ │  Низкий риск    │ │  Средний риск   │ │  Высокий риск   ││
-│ │  ✓ Выбрано      │ │                 │ │                 ││
-│ └─────────────────┘ └─────────────────┘ └─────────────────┘│
-├─────────────────────────────────────────────────────────────┤
-│ 📊 Прогноз за 60 минут:                                     │
-│    Дельта: +0.72 | Усталость: физ. +15%, мент. +15%        │
-│    ⚠️ Не достигнет критической усталости                    │
-└─────────────────────────────────────────────────────────────┘
-```
-
----
-
-#### 4. SleepConsolidationResult
-
-Результаты закрепления при сне.
-
-```typescript
-/**
- * Компонент результатов сна
- */
-
-interface SleepConsolidationResultProps {
-  /** Результаты закрепления */
-  result: SleepConsolidationResult;
-  
-  /** Показывать детали */
-  showDetails?: boolean;
-}
-
-// Пример:
-<SleepConsolidationResult
-  result={sleepResult}
-  showDetails
-/>
-```
-
-**Визуализация:**
-```
-┌─────────────────────────────────────────────────────────────┐
-│ 💤 Результаты сна (8 часов)                                 │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  💪 Сила: 24 → 25 (+1) ✨                                   │
-│     Закреплено: +0.20                                       │
-│                                                             │
-│  🏃 Ловкость: 18                                            │
-│     Закреплено: +0.15                                       │
-│                                                             │
-│  🧠 Интеллект: 21 → 22 (+1) ✨                              │
-│     Закреплено: +0.20                                       │
-│                                                             │
-│  ❤️ Живучесть: 15                                           │
-│     Закреплено: +0.08                                       │
-│                                                             │
-├─────────────────────────────────────────────────────────────┤
-│ ✨ Повышений: 2                                             │
-└─────────────────────────────────────────────────────────────┘
-```
-
----
-
-#### 5. ThresholdTable
-
-Таблица порогов развития.
-
-```typescript
-/**
- * Таблица порогов развития
- */
-
-interface ThresholdTableProps {
-  /** Начальный стат */
-  fromStat?: number;
-  
-  /** Конечный стат */
-  toStat?: number;
-  
-  /** Текущий стат (подсветка) */
-  currentStat?: number;
-}
-
-// Пример:
-<ThresholdTable
-  fromStat={10}
-  toStat={60}
-  currentStat={25}
-/>
-```
-
-**Визуализация:**
-```
-┌─────────────────────────────────────────────────────────────┐
-│ 📈 Таблица порогов развития                                 │
-├──────┬───────────┬───────────────┬──────────────────────────┤
-│ Стат │ Порог     │ Дней до +1    │ Накоплено дней           │
-├──────┼───────────┼───────────────┼──────────────────────────┤
-│  10  │   1.0     │     7 дней    │                          │
-│  15  │   1.0     │     7 дней    │                          │
-│  20  │   2.0     │    14 дней    │                          │
-│ ►25  │   2.0     │    14 дней    │ ← Текущий                │
-│  30  │   3.0     │    21 день    │                          │
-│  40  │   4.0     │    28 дней    │                          │
-│  50  │   5.0     │    35 дней    │                          │
-│  60  │   6.0     │    42 дня     │                          │
-└──────┴───────────┴───────────────┴──────────────────────────┘
-```
-
----
-
-## 🎨 Стилистика
-
-### Цветовая схема
-
-```typescript
-const STAT_COLORS = {
-  strength: 'text-red-500',
-  agility: 'text-green-500',
-  intelligence: 'text-blue-500',
-  vitality: 'text-pink-500',
-};
-
-const PROGRESS_COLORS = {
-  low: 'bg-gray-300',      // 0-25%
-  medium: 'bg-yellow-400', // 25-50%
-  high: 'bg-green-400',    // 50-75%
-  almost: 'bg-blue-400',   // 75-99%
-  ready: 'bg-purple-500',  // 100%+
-};
-```
-
-### Анимации
-
-- Плавное заполнение прогресс-бара
-- Подсветка при повышении
-- Пульсация при достижении порога
-
----
-
-## 📁 Структура файлов
+## DIR STRUCTURE
 
 ```
 src/components/stats/
+├── StatIcon.tsx
 ├── StatProgressBar.tsx
 ├── StatsDevelopmentPanel.tsx
 ├── TrainingSelection.tsx
 ├── SleepConsolidationResult.tsx
 ├── ThresholdTable.tsx
-├── StatIcon.tsx
 └── index.ts
 ```
 
 ---
 
-## ✅ Критерии приёмки
+## FILE 1: `src/components/stats/StatIcon.tsx`
 
-1. Компоненты отображают корректные данные
-2. Прогресс-бары анимированы
-3. Поддержка тёмной/светлой темы
-4. Адаптивность для мобильных устройств
-5. Доступность (ARIA)
+```typescript
+'use client';
+
+import type { StatName } from '@/types/stat-development';
+import { STAT_EMOJIS, STAT_NAMES_RU } from '@/types/stat-development';
+
+interface StatIconProps {
+  stat: StatName;
+  size?: 'sm' | 'md' | 'lg';
+  showLabel?: boolean;
+}
+
+const SIZE_CLASSES = { sm: 'text-sm', md: 'text-base', lg: 'text-xl' };
+
+export function StatIcon({ stat, size = 'md', showLabel = false }: StatIconProps) {
+  return (
+    <span className={`inline-flex items-center gap-1 ${SIZE_CLASSES[size]}`}>
+      <span>{STAT_EMOJIS[stat]}</span>
+      {showLabel && <span className="text-muted-foreground">{STAT_NAMES_RU[stat]}</span>}
+    </span>
+  );
+}
+```
 
 ---
 
-## 📎 Связанные документы
+## FILE 2: `src/components/stats/StatProgressBar.tsx`
 
-- [implementation-plan-body-development.md](../implementation-plan-body-development.md)
+```typescript
+'use client';
+
+import { Progress } from '@/components/ui/progress';
+import { Card, CardContent } from '@/components/ui/card';
+import type { StatDevelopment, StatName } from '@/types/stat-development';
+import { STAT_EMOJIS, STAT_NAMES_RU } from '@/types/stat-development';
+
+interface StatProgressBarProps {
+  stat: StatName;
+  development: StatDevelopment;
+  showDetails?: boolean;
+  compact?: boolean;
+}
+
+function getProgressColor(progress: number): string {
+  if (progress >= 1.0) return 'bg-purple-500';
+  if (progress >= 0.75) return 'bg-blue-400';
+  if (progress >= 0.5) return 'bg-green-400';
+  if (progress >= 0.25) return 'bg-yellow-400';
+  return 'bg-gray-300';
+}
+
+export function StatProgressBar({ stat, development, showDetails = false, compact = false }: StatProgressBarProps) {
+  const { current, virtualDelta, threshold } = development;
+  const progress = Math.min(1, virtualDelta / threshold);
+  const progressPercent = Math.round(progress * 100);
+
+  if (compact) {
+    return (
+      <div className="flex items-center gap-2">
+        <span className="text-sm">{STAT_EMOJIS[stat]}</span>
+        <span className="text-sm font-medium w-8">{current}</span>
+        <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+          <div className={`h-full transition-all ${getProgressColor(progress)}`} style={{ width: `${progressPercent}%` }} />
+        </div>
+        <span className="text-xs text-muted-foreground w-10 text-right">{progressPercent}%</span>
+      </div>
+    );
+  }
+
+  return (
+    <Card className="overflow-hidden">
+      <CardContent className="p-3 space-y-2">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="text-lg">{STAT_EMOJIS[stat]}</span>
+            <span className="font-medium">{STAT_NAMES_RU[stat]}</span>
+          </div>
+          <span className="text-xl font-bold">{current}</span>
+        </div>
+        <div className="space-y-1">
+          <Progress value={progressPercent} className="h-3" />
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>{virtualDelta.toFixed(3)} / {threshold.toFixed(1)}</span>
+            <span>{progressPercent}%</span>
+          </div>
+        </div>
+        {showDetails && (
+          <div className="text-xs text-muted-foreground pt-1 border-t">
+            <div className="flex justify-between">
+              <span>Дельта: {virtualDelta.toFixed(3)}</span>
+              <span>Порог: {threshold.toFixed(1)}</span>
+            </div>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+```
 
 ---
 
-*Фаза 7 — UI компоненты*
+## FILE 3: `src/components/stats/StatsDevelopmentPanel.tsx`
+
+```typescript
+'use client';
+
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { StatProgressBar } from './StatProgressBar';
+import type { CharacterStatsDevelopment, StatName } from '@/types/stat-development';
+
+interface StatsDevelopmentPanelProps {
+  stats: CharacterStatsDevelopment;
+  title?: string;
+  showEstimates?: boolean;
+  compact?: boolean;
+}
+
+const STAT_ORDER: StatName[] = ['strength', 'agility', 'intelligence', 'vitality'];
+
+export function StatsDevelopmentPanel({ stats, title = 'Развитие тела', showEstimates = false, compact = false }: StatsDevelopmentPanelProps) {
+  const totalDelta = Object.values(stats).reduce((sum, stat) => sum + stat.virtualDelta, 0);
+
+  return (
+    <Card>
+      <CardHeader className={compact ? 'py-2 px-3' : 'py-3'}>
+        <CardTitle className={`flex items-center gap-2 ${compact ? 'text-sm' : ''}`}>📊 {title}</CardTitle>
+      </CardHeader>
+      <CardContent className={compact ? 'py-2 px-3 space-y-2' : 'space-y-3'}>
+        {STAT_ORDER.map((statName) => (
+          <StatProgressBar key={statName} stat={statName} development={stats[statName]} showDetails={showEstimates && !compact} compact={compact} />
+        ))}
+        {showEstimates && !compact && (
+          <div className="pt-2 mt-2 border-t text-sm text-muted-foreground">
+            💤 При следующем сне (8ч): до +0.20 закрепления
+            <br />📈 Всего дельты: {totalDelta.toFixed(3)}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+---
+
+## FILE 4: `src/components/stats/TrainingSelection.tsx`
+
+```typescript
+'use client';
+
+import { Card, CardContent } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import type { TrainingType, StatName } from '@/types/stat-development';
+
+interface TrainingSelectionProps {
+  availableTypes: TrainingType[];
+  selectedType: TrainingType | null;
+  onSelect: (type: TrainingType) => void;
+  currentFatigue: { physical: number; mental: number };
+  targetStat: StatName;
+}
+
+const TRAINING_INFO: Record<TrainingType, { name: string; mult: number; risk: string }> = {
+  classical: { name: 'Классическая', mult: 1.0, risk: 'low' },
+  focused: { name: 'Фокусная', mult: 1.2, risk: 'medium' },
+  extreme: { name: 'Экстремальная', mult: 1.5, risk: 'high' },
+};
+
+const RISK_COLORS: Record<string, string> = { low: 'text-green-500', medium: 'text-yellow-500', high: 'text-red-500' };
+
+export function TrainingSelection({ availableTypes, selectedType, onSelect, currentFatigue }: TrainingSelectionProps) {
+  const isCriticalFatigue = currentFatigue.physical >= 80 || currentFatigue.mental >= 80;
+
+  return (
+    <Card>
+      <CardContent className="p-4 space-y-4">
+        <div className="text-sm font-medium">🏋️ Выберите тип тренировки</div>
+        <div className="grid grid-cols-3 gap-3">
+          {availableTypes.map((type) => {
+            const info = TRAINING_INFO[type];
+            return (
+              <Button key={type} variant={selectedType === type ? 'default' : 'outline'} className="h-auto py-3 flex flex-col items-center gap-1" onClick={() => onSelect(type)} disabled={isCriticalFatigue && type === 'extreme'}>
+                <span className="font-medium text-sm">{info.name}</span>
+                <span className="text-xs text-muted-foreground">×{info.mult}</span>
+                <span className={`text-xs ${RISK_COLORS[info.risk]}`}>{info.risk === 'low' ? 'Низкий риск' : info.risk === 'medium' ? 'Средний риск' : 'Высокий риск'}</span>
+              </Button>
+            );
+          })}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+---
+
+## FILE 5: `src/components/stats/SleepConsolidationResult.tsx`
+
+```typescript
+'use client';
+
+import { Card, CardContent } from '@/components/ui/card';
+import type { SleepConsolidationResult, StatName } from '@/types/stat-development';
+import { STAT_EMOJIS, STAT_NAMES_RU } from '@/types/stat-development';
+
+interface Props { result: SleepConsolidationResult; showDetails?: boolean; }
+
+const STAT_ORDER: StatName[] = ['strength', 'agility', 'intelligence', 'vitality'];
+
+export function SleepConsolidationResultComponent({ result, showDetails = true }: Props) {
+  const { stats, sleepHours, totalAdvancements } = result;
+
+  return (
+    <Card>
+      <CardContent className="p-4 space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="font-medium">💤 Результаты сна ({sleepHours} ч)</h3>
+          {totalAdvancements > 0 && <span className="text-sm text-purple-500 font-medium">✨ Повышений: {totalAdvancements}</span>}
+        </div>
+        <div className="space-y-3">
+          {STAT_ORDER.map((statName) => {
+            const statResult = stats[statName];
+            if (!statResult) return null;
+            const { before, after, advancements } = statResult;
+            const hasAdvanced = advancements.length > 0;
+
+            return (
+              <div key={statName} className={`flex items-center justify-between p-2 rounded ${hasAdvanced ? 'bg-purple-500/10' : ''}`}>
+                <div className="flex items-center gap-2">
+                  <span>{STAT_EMOJIS[statName]}</span>
+                  <span className="font-medium">{STAT_NAMES_RU[statName]}</span>
+                </div>
+                <div className="flex items-center gap-3 text-sm">
+                  {hasAdvanced ? (
+                    <div className="flex items-center gap-1">
+                      <span className="text-muted-foreground">{before.current}</span>
+                      <span>→</span>
+                      <span className="font-bold text-purple-500">{after.current}</span>
+                      <span className="text-purple-500">✨</span>
+                    </div>
+                  ) : (
+                    <span className="text-muted-foreground">{after.current}</span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+---
+
+## FILE 6: `src/components/stats/ThresholdTable.tsx`
+
+```typescript
+'use client';
+
+import { Card, CardContent } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+
+interface Props { fromStat?: number; toStat?: number; currentStat?: number; }
+
+function calcThreshold(stat: number): number { return Math.floor(stat / 10); }
+function calcDays(threshold: number): number { return Math.ceil(threshold / 0.15); }
+
+export function ThresholdTable({ fromStat = 10, toStat = 60, currentStat }: Props) {
+  const rows = [];
+  for (let stat = fromStat; stat <= toStat; stat += 5) {
+    const threshold = calcThreshold(stat);
+    const days = calcDays(threshold);
+    const isCurrent = currentStat !== undefined && stat <= currentStat && stat + 5 > currentStat;
+    rows.push(
+      <TableRow key={stat} className={isCurrent ? 'bg-primary/10' : undefined}>
+        <TableCell className="font-medium">{isCurrent && '▶'}{stat}</TableCell>
+        <TableCell>{threshold.toFixed(1)}</TableCell>
+        <TableCell>{days} дней</TableCell>
+        <TableCell className="text-muted-foreground">{isCurrent && '← Текущий'}</TableCell>
+      </TableRow>
+    );
+  }
+
+  return (
+    <Card>
+      <CardContent className="p-4">
+        <h3 className="font-medium mb-3">📈 Таблица порогов развития</h3>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Стат</TableHead>
+              <TableHead>Порог</TableHead>
+              <TableHead>Дней до +1</TableHead>
+              <TableHead></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>{rows}</TableBody>
+        </Table>
+      </CardContent>
+    </Card>
+  );
+}
+```
+
+---
+
+## FILE 7: `src/components/stats/index.ts`
+
+```typescript
+export { StatIcon } from './StatIcon';
+export { StatProgressBar } from './StatProgressBar';
+export { StatsDevelopmentPanel } from './StatsDevelopmentPanel';
+export { TrainingSelection } from './TrainingSelection';
+export { SleepConsolidationResultComponent } from './SleepConsolidationResult';
+export { ThresholdTable } from './ThresholdTable';
+```
+
+---
+
+## INTEGRATION: RestDialog.tsx
+
+**ADD IMPORTS:**
+```typescript
+import { StatsDevelopmentPanel, SleepConsolidationResultComponent } from '@/components/stats';
+```
+
+**ADD TO JSX:**
+```tsx
+<StatsDevelopmentPanel stats={character.statsDevelopment} title="Текущее развитие" compact />
+{sleepResult && <SleepConsolidationResultComponent result={sleepResult} />}
+```
+
+---
+
+## VALIDATION
+
+```bash
+bun run lint
+```
+
+---
+
+## RELATED DOCS
+
+- [src/types/stat-development.ts](../../../src/types/stat-development.ts)
+- [docs/stat-threshold-system.md](../../stat-threshold-system.md)
+
+---
+
+*END OF PHASE 7*

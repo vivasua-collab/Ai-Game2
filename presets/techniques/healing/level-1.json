@@ -1,0 +1,281 @@
+{
+  "version": "2.0",
+  "type": "healing",
+  "subtype": null,
+  "level": 1,
+  "count": 10,
+  "techniques": [
+    {
+      "id": "HL_000101",
+      "name": "Обновление раскалённый",
+      "nameEn": "Обновление Раскалённый",
+      "description": "Обновление раскалённый — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "type": "healing",
+      "element": "fire",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334008,
+        "template": "healing_fire",
+        "generatedAt": "2026-03-14T08:02:13.906Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000102",
+      "name": "Регенерация струящийся",
+      "nameEn": "Регенерация Струящийся",
+      "description": "Регенерация струящийся — техника исцеления уровня 1. Редкость: uncommon. Восстанавливает 25 HP.",
+      "type": "healing",
+      "element": "water",
+      "level": 1,
+      "rarity": "uncommon",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 11,
+        "finalRange": 5,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334009,
+        "template": "healing_water",
+        "generatedAt": "2026-03-14T08:02:13.906Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000103",
+      "name": "Восстановление неизбежный",
+      "nameEn": "Восстановление Неизбежный",
+      "description": "Восстановление неизбежный — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "type": "healing",
+      "element": "earth",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334010,
+        "template": "healing_earth",
+        "generatedAt": "2026-03-14T08:02:13.906Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000104",
+      "name": "Обновление порывистый",
+      "nameEn": "Обновление Порывистый",
+      "description": "Обновление порывистый — техника исцеления уровня 1. Редкость: uncommon. Восстанавливает 25 HP.",
+      "type": "healing",
+      "element": "air",
+      "level": 1,
+      "rarity": "uncommon",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 11,
+        "finalRange": 5,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334011,
+        "template": "healing_air",
+        "generatedAt": "2026-03-14T08:02:13.906Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000105",
+      "name": "Молниеносный Регенерация",
+      "nameEn": "Молниеносный Регенерация",
+      "description": "Молниеносный Регенерация — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "type": "healing",
+      "element": "lightning",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334012,
+        "template": "healing_lightning",
+        "generatedAt": "2026-03-14T08:02:13.906Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000106",
+      "name": "Исцеление бесплотный",
+      "nameEn": "Исцеление Бесплотный",
+      "description": "Исцеление бесплотный — техника исцеления уровня 1. Редкость: uncommon. Восстанавливает 25 HP.",
+      "type": "healing",
+      "element": "void",
+      "level": 1,
+      "rarity": "uncommon",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 11,
+        "finalRange": 5,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 25
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334013,
+        "template": "healing_void",
+        "generatedAt": "2026-03-14T08:02:13.906Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000107",
+      "name": "Сфокусированный Обновление",
+      "nameEn": "Сфокусированный Обновление",
+      "description": "Сфокусированный Обновление — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "type": "healing",
+      "element": "neutral",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334014,
+        "template": "healing_neutral",
+        "generatedAt": "2026-03-14T08:02:13.906Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000108",
+      "name": "Регенерация пылающий",
+      "nameEn": "Регенерация Пылающий",
+      "description": "Регенерация пылающий — техника исцеления уровня 1. Редкость: rare. Восстанавливает 31 HP.",
+      "type": "healing",
+      "element": "fire",
+      "level": 1,
+      "rarity": "rare",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 10,
+        "finalRange": 5,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 31
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334015,
+        "template": "healing_fire",
+        "generatedAt": "2026-03-14T08:02:13.906Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000109",
+      "name": "Струящийся Исцеление",
+      "nameEn": "Струящийся Исцеление",
+      "description": "Струящийся Исцеление — техника исцеления уровня 1. Редкость: common. Восстанавливает 20 HP.",
+      "type": "healing",
+      "element": "water",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 12,
+        "finalRange": 5,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 20
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334016,
+        "template": "healing_water",
+        "generatedAt": "2026-03-14T08:02:13.906Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "HL_000110",
+      "name": "Неизбежный Обновление",
+      "nameEn": "Неизбежный Обновление",
+      "description": "Неизбежный Обновление — техника исцеления уровня 1. Редкость: rare. Восстанавливает 31 HP.",
+      "type": "healing",
+      "element": "earth",
+      "level": 1,
+      "rarity": "rare",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 10,
+        "finalRange": 5,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 31
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334017,
+        "template": "healing_earth",
+        "generatedAt": "2026-03-14T08:02:13.906Z",
+        "generatorVersion": "2.1.0"
+      }
+    }
+  ],
+  "autoGenerated": true,
+  "generatedAt": "2026-03-14T08:02:13.924Z"
+}

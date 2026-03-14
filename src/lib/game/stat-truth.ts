@@ -1,265 +1,245 @@
 /**
- * ============================================================================
- * STAT DEVELOPMENT TRUTH SYSTEM - Расширение TruthSystem для работы со статами
- * ============================================================================
+ * Stat Delta - Truth System Integration
  * 
- * Интеграция Stat Development с Truth System.
- * Предоставляет методы для работы с развитием характеристик.
+ * Provides functions for adding stat development delta to characters.
+ * Used by Event Bus handlers for combat delta generation.
  * 
- * Версия: 1.0.0
- * ============================================================================
+ * @see src/lib/game/stat-development.ts - Core delta functions
+ * @see src/types/stat-development.ts - Type definitions
+ * @see docs/implementation/phase-9-delta-integration.md
  */
 
-import { TruthSystem } from './truth-system';
-import type { StatName, CharacterStatsDevelopment, StatDevelopment, AddDeltaResult, DeltaSource } from '@/types/stat-development';
-import {
-  addVirtualDelta,
-  processSleep,
-  calculateMaxConsolidation,
-  calculateFatiguePenalty,
+import { db } from '@/lib/db';
+import { 
+  addDeltaToStats, 
+  createInitialStatsDevelopment 
 } from './stat-development';
-import {
-  createInitialStatsDevelopment,
-  deserializeStatsDevelopment,
-  serializeStatsDevelopment,
-} from './stat-threshold';
-import { STAT_DEVELOPMENT_CONSTANTS } from './constants';
+import type { 
+  StatName, 
+  DeltaSource, 
+  StatDevelopment, 
+  CharacterStatsDevelopment 
+} from '@/types/stat-development';
 
-// ==================== РАСШИРЕНИЕ TRUTH SYSTEM ====================
+// ==================== MAIN FUNCTION ====================
 
 /**
- * Получить развитие характеристик персонажа
+ * Add virtual delta to a character's stat
  * 
- * Если поле statsDevelopment отсутствует, создаётся начальное состояние.
- */
-export function getStatsDevelopment(sessionId: string): CharacterStatsDevelopment {
-  const session = TruthSystem.getSessionState(sessionId);
-  
-  if (!session) {
-    console.warn('[StatTruth] Session not loaded:', sessionId);
-    return createInitialStatsDevelopment();
-  }
-  
-  // Проверяем, есть ли кастомное поле statsDevelopment
-  const character = session.character as any;
-  
-  if (character.statsDevelopment) {
-    if (typeof character.statsDevelopment === 'string') {
-      return deserializeStatsDevelopment(character.statsDevelopment);
-    }
-    return character.statsDevelopment as CharacterStatsDevelopment;
-  }
-  
-  // Создаём начальное состояние на основе текущих статов
-  const initial = createInitialStatsDevelopment();
-  
-  // Устанавливаем текущие значения
-  initial.strength.current = session.character.strength;
-  initial.agility.current = session.character.agility;
-  initial.intelligence.current = session.character.intelligence;
-  initial.vitality.current = 10; // vitality не хранится в CharacterState
-  
-  return initial;
-}
-
-/**
- * Сохранить развитие характеристик
- */
-export function setStatsDevelopment(
-  sessionId: string,
-  stats: CharacterStatsDevelopment
-): void {
-  const session = TruthSystem.getSessionState(sessionId);
-  
-  if (!session) {
-    console.warn('[StatTruth] Session not loaded:', sessionId);
-    return;
-  }
-  
-  // Сохраняем в расширенном поле
-  (session.character as any).statsDevelopment = stats;
-  
-  // Обновляем основные статы для совместимости
-  session.character.strength = stats.strength.current;
-  session.character.agility = stats.agility.current;
-  session.character.intelligence = stats.intelligence.current;
-  
-  session.isDirty = true;
-}
-
-/**
- * Добавить виртуальную дельту к характеристике
+ * Updates the character's statsDevelopment JSON in the database.
+ * Creates initial stats if not present.
  * 
- * @returns Результат добавления (с информацией о повышении)
+ * @param characterId - Character's database ID
+ * @param statName - Target stat (strength, agility, intelligence, vitality)
+ * @param amount - Delta amount to add
+ * @param source - Source of the delta (for tracking)
+ * @returns Result with success status and updated stat
  */
-export function addStatDelta(
-  sessionId: string,
-  targetStat: StatName,
+export async function addStatDelta(
+  characterId: string,
+  statName: StatName,
   amount: number,
   source: DeltaSource
-): AddDeltaResult {
-  const stats = getStatsDevelopment(sessionId);
-  const result = addVirtualDelta(stats[targetStat], amount, source);
-  
-  // Обновляем статы
-  const updatedStats = {
-    ...stats,
-    [targetStat]: result.stat,
-  };
-  
-  setStatsDevelopment(sessionId, updatedStats);
-  
-  // Логируем если было повышение
-  if (result.advanced) {
-    console.log(
-      `[StatTruth] ${targetStat} advanced from ${result.stat.current - result.advancementCount} to ${result.stat.current} (${result.advancementCount} times)`
-    );
+): Promise<{ success: boolean; stat?: StatDevelopment; error?: string }> {
+  try {
+    // Get character's current statsDevelopment
+    const character = await db.character.findUnique({
+      where: { id: characterId },
+      select: { statsDevelopment: true },
+    });
+
+    if (!character) {
+      return { success: false, error: 'Character not found' };
+    }
+
+    // Parse or create stats
+    let stats: CharacterStatsDevelopment;
+    try {
+      const parsed = JSON.parse(character.statsDevelopment || '{}');
+      // Validate structure
+      if (!parsed.strength || !parsed.agility || !parsed.intelligence || !parsed.vitality) {
+        stats = createInitialStatsDevelopment();
+      } else {
+        stats = parsed;
+      }
+    } catch {
+      stats = createInitialStatsDevelopment();
+    }
+
+    // Add delta
+    const { stats: newStats, result } = addDeltaToStats(stats, statName, amount, source);
+
+    // Save to database
+    await db.character.update({
+      where: { id: characterId },
+      data: { statsDevelopment: JSON.stringify(newStats) },
+    });
+
+    return { success: true, stat: result.stat };
+    
+  } catch (error) {
+    console.error('[stat-truth] addStatDelta error:', error);
+    return { success: false, error: String(error) };
   }
-  
-  return result;
 }
 
+// ==================== BATCH OPERATIONS ====================
+
 /**
- * Обработать сон и закрепление
+ * Add delta to multiple stats at once
  * 
- * @returns Результаты закрепления по всем статам
+ * @param characterId - Character's database ID
+ * @param deltas - Array of { statName, amount, source }
+ * @returns Updated stats or error
  */
-export function processSleepConsolidation(
-  sessionId: string,
+export async function addMultipleStatDeltas(
+  characterId: string,
+  deltas: Array<{ statName: StatName; amount: number; source: DeltaSource }>
+): Promise<{ success: boolean; stats?: CharacterStatsDevelopment; error?: string }> {
+  try {
+    const character = await db.character.findUnique({
+      where: { id: characterId },
+      select: { statsDevelopment: true },
+    });
+
+    if (!character) {
+      return { success: false, error: 'Character not found' };
+    }
+
+    let stats: CharacterStatsDevelopment;
+    try {
+      const parsed = JSON.parse(character.statsDevelopment || '{}');
+      if (!parsed.strength) {
+        stats = createInitialStatsDevelopment();
+      } else {
+        stats = parsed;
+      }
+    } catch {
+      stats = createInitialStatsDevelopment();
+    }
+
+    // Apply all deltas
+    for (const { statName, amount, source } of deltas) {
+      const result = addDeltaToStats(stats, statName, amount, source);
+      stats = result.stats;
+    }
+
+    await db.character.update({
+      where: { id: characterId },
+      data: { statsDevelopment: JSON.stringify(stats) },
+    });
+
+    return { success: true, stats };
+    
+  } catch (error) {
+    console.error('[stat-truth] addMultipleStatDeltas error:', error);
+    return { success: false, error: String(error) };
+  }
+}
+
+// ==================== GETTERS ====================
+
+/**
+ * Get character's current stats development
+ * 
+ * @param characterId - Character's database ID
+ * @returns Stats development or error
+ */
+export async function getStatsDevelopment(
+  characterId: string
+): Promise<{ success: boolean; stats?: CharacterStatsDevelopment; error?: string }> {
+  try {
+    const character = await db.character.findUnique({
+      where: { id: characterId },
+      select: { statsDevelopment: true },
+    });
+
+    if (!character) {
+      return { success: false, error: 'Character not found' };
+    }
+
+    let stats: CharacterStatsDevelopment;
+    try {
+      const parsed = JSON.parse(character.statsDevelopment || '{}');
+      if (!parsed.strength) {
+        stats = createInitialStatsDevelopment();
+      } else {
+        stats = parsed;
+      }
+    } catch {
+      stats = createInitialStatsDevelopment();
+    }
+
+    return { success: true, stats };
+    
+  } catch (error) {
+    console.error('[stat-truth] getStatsDevelopment error:', error);
+    return { success: false, error: String(error) };
+  }
+}
+
+// ==================== SLEEP CONSOLIDATION ====================
+
+/**
+ * Process sleep consolidation for character
+ * 
+ * @param characterId - Character's database ID
+ * @param sleepHours - Hours of sleep
+ * @returns Consolidation result
+ */
+export async function processSleepConsolidation(
+  characterId: string,
   sleepHours: number
-): ReturnType<typeof processSleep> {
-  const stats = getStatsDevelopment(sessionId);
-  const statsData = serializeStatsDevelopment(stats);
-  
-  const result = processSleep(statsData, sleepHours);
-  
-  // Сохраняем обновлённые статы
-  setStatsDevelopment(sessionId, result.updatedStats);
-  
-  // Обновляем базовые статы в CharacterState
-  const session = TruthSystem.getSessionState(sessionId);
-  if (session) {
-    session.character.strength = result.updatedStats.strength.current;
-    session.character.agility = result.updatedStats.agility.current;
-    session.character.intelligence = result.updatedStats.intelligence.current;
-    session.isDirty = true;
-  }
-  
-  // Логируем повышения
-  if (result.result.totalAdvancements > 0) {
-    console.log(
-      `[StatTruth] Sleep consolidation: ${result.result.totalAdvancements} advancements`
-    );
-  }
-  
-  return result;
-}
-
-/**
- * Получить информацию о прогрессе характеристики
- */
-export function getStatProgress(sessionId: string, statName: StatName): {
-  current: number;
-  virtualDelta: number;
-  threshold: number;
-  progress: number;
-} {
-  const stats = getStatsDevelopment(sessionId);
-  const stat = stats[statName];
-  
-  return {
-    current: stat.current,
-    virtualDelta: stat.virtualDelta,
-    threshold: stat.threshold,
-    progress: stat.threshold > 0 ? Math.min(1, stat.virtualDelta / stat.threshold) : 0,
+): Promise<{ 
+  success: boolean; 
+  result?: {
+    stats: CharacterStatsDevelopment;
+    totalAdvancements: number;
+    message: string;
   };
-}
+  error?: string 
+}> {
+  try {
+    const { processSleep, formatSleepResultMessage } = await import('./stat-development');
+    
+    const character = await db.character.findUnique({
+      where: { id: characterId },
+      select: { statsDevelopment: true },
+    });
 
-/**
- * Получить всё развитие персонажа для отправки клиенту
- */
-export function getStatsDevelopmentForClient(sessionId: string): {
-  stats: CharacterStatsDevelopment;
-  progressInfo: Record<StatName, {
-    current: number;
-    progress: number;
-    estimatedDaysToAdvance: number;
-  }>;
-} {
-  const stats = getStatsDevelopment(sessionId);
-  const statNames: StatName[] = ['strength', 'agility', 'intelligence', 'vitality'];
-  
-  const progressInfo: Record<StatName, {
-    current: number;
-    progress: number;
-    estimatedDaysToAdvance: number;
-  }> = {} as any;
-  
-  for (const name of statNames) {
-    const stat = stats[name];
-    const progress = stat.threshold > 0 ? stat.virtualDelta / stat.threshold : 0;
-    
-    // Расчёт дней до повышения
-    const remainingDelta = stat.threshold - stat.virtualDelta;
-    const dailyRate = STAT_DEVELOPMENT_CONSTANTS.MAX_CONSOLIDATION_PER_SLEEP * 0.75;
-    const estimatedDays = remainingDelta > 0 ? Math.ceil(remainingDelta / dailyRate) : 0;
-    
-    progressInfo[name] = {
-      current: stat.current,
-      progress: Math.min(1, progress),
-      estimatedDaysToAdvance: estimatedDays,
+    if (!character) {
+      return { success: false, error: 'Character not found' };
+    }
+
+    const { updatedStatsData, result, updatedStats } = processSleep(
+      character.statsDevelopment || '{}',
+      sleepHours
+    );
+
+    // Update character with consolidated stats
+    await db.character.update({
+      where: { id: characterId },
+      data: {
+        statsDevelopment: updatedStatsData,
+        // Update base stats if they advanced
+        strength: updatedStats.strength.current,
+        agility: updatedStats.agility.current,
+        intelligence: updatedStats.intelligence.current,
+        vitality: updatedStats.vitality.current,
+      },
+    });
+
+    return {
+      success: true,
+      result: {
+        stats: updatedStats,
+        totalAdvancements: result.totalAdvancements,
+        message: formatSleepResultMessage(result),
+      },
     };
+    
+  } catch (error) {
+    console.error('[stat-truth] processSleepConsolidation error:', error);
+    return { success: false, error: String(error) };
   }
-  
-  return { stats, progressInfo };
-}
-
-// ==================== ЭКСПОРТ УТИЛИТ ====================
-
-/**
- * Рассчитать дельту для боевого действия
- */
-export function calculateCombatDelta(
-  actionType: 'hit' | 'block' | 'dodge' | 'critical',
-  fatiguePenalty: number = 1.0
-): { targetStat: StatName; amount: number } {
-  const sources = STAT_DEVELOPMENT_CONSTANTS.DELTA_SOURCES;
-  
-  switch (actionType) {
-    case 'hit':
-      return {
-        targetStat: 'strength',
-        amount: sources.combat_hit * fatiguePenalty,
-      };
-    case 'critical':
-      return {
-        targetStat: 'strength',
-        amount: sources.combat_hit * 1.5 * fatiguePenalty,
-      };
-    case 'block':
-      return {
-        targetStat: 'strength',
-        amount: sources.combat_block * fatiguePenalty,
-      };
-    case 'dodge':
-      return {
-        targetStat: 'agility',
-        amount: sources.combat_dodge * fatiguePenalty,
-      };
-    default:
-      return {
-        targetStat: 'strength',
-        amount: sources.combat_hit * fatiguePenalty,
-      };
-  }
-}
-
-/**
- * Рассчитать штраф усталости для развития
- */
-export function calculateFatiguePenaltyForDevelopment(
-  physicalFatigue: number,
-  mentalFatigue: number
-): number {
-  return calculateFatiguePenalty(physicalFatigue, mentalFatigue);
 }

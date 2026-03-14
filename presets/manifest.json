@@ -1,14 +1,14 @@
 {
   "version": "2.0",
-  "generatedAt": "2026-03-11T19:11:41.144Z",
-  "lastModifiedAt": "2026-03-11T19:11:41.144Z",
+  "generatedAt": "2026-03-14T08:02:13.929Z",
+  "lastModifiedAt": "2026-03-14T08:02:13.929Z",
   "techniques": {
-    "total": 110,
+    "total": 130,
     "byLevel": {
-      "1": 110
+      "1": 130
     },
     "byType": {
-      "combat": 30,
+      "combat": 50,
       "defense": 10,
       "cultivation": 10,
       "support": 10,
@@ -19,13 +19,13 @@
       "poison": 10
     },
     "byElement": {
-      "fire": 22,
-      "water": 22,
-      "earth": 22,
-      "air": 11,
-      "lightning": 11,
-      "void": 11,
-      "neutral": 11
+      "fire": 26,
+      "water": 26,
+      "earth": 26,
+      "air": 13,
+      "lightning": 13,
+      "void": 13,
+      "neutral": 13
     }
   },
   "formations": {

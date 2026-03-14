@@ -1,0 +1,291 @@
+{
+  "version": "2.0",
+  "type": "combat",
+  "subtype": "ranged_aoe",
+  "level": 1,
+  "count": 10,
+  "techniques": [
+    {
+      "id": "MS_000041",
+      "name": "Пожирающий Кулак",
+      "nameEn": "Пожирающий Кулак",
+      "description": "Пожирающий Кулак — площадная техника элемента fire уровня 1. Редкость: common. Урон: 8. Дальность: 8м. Радиус: 2.5м. Затухание: полный урон до 4м, 50% до 6м.",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "fire",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 6,
+        "finalQiCost": 10,
+        "finalRange": 8,
+        "activeEffects": [
+          {
+            "type": "aoe",
+            "value": 2.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333944,
+        "template": "combat_ranged_aoe_fire",
+        "generatedAt": "2026-03-14T08:02:13.903Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000042",
+      "name": "Ледяной Клинок",
+      "nameEn": "Ледяной Клинок",
+      "description": "Ледяной Клинок — площадная техника элемента water уровня 1. Редкость: common. Урон: 8. Дальность: 8м. Радиус: 2.5м. Затухание: полный урон до 4м, 50% до 6м.",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "water",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 6,
+        "finalQiCost": 10,
+        "finalRange": 8,
+        "activeEffects": [
+          {
+            "type": "aoe",
+            "value": 2.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333946,
+        "template": "combat_ranged_aoe_water",
+        "generatedAt": "2026-03-14T08:02:13.903Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000043",
+      "name": "Взрыв неизбежный",
+      "nameEn": "Взрыв Неизбежный",
+      "description": "Взрыв неизбежный — площадная техника элемента earth уровня 1. Редкость: rare. Урон: 16. Дальность: 10.4м. Радиус: 3.5м. Затухание: полный урон до 5м, 50% до 8м.",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "earth",
+      "level": 1,
+      "rarity": "rare",
+      "computed": {
+        "finalDamage": 15,
+        "finalQiCost": 9,
+        "finalRange": 10,
+        "activeEffects": [
+          {
+            "type": "aoe",
+            "value": 3.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333947,
+        "template": "combat_ranged_aoe_earth",
+        "generatedAt": "2026-03-14T08:02:13.903Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000044",
+      "name": "Вихревой Ладонь",
+      "nameEn": "Вихревой Ладонь",
+      "description": "Вихревой Ладонь — площадная техника элемента air уровня 1. Редкость: common. Урон: 5. Дальность: 8м. Радиус: 2.5м. Затухание: полный урон до 4м, 50% до 6м.",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "air",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 4,
+        "finalQiCost": 9,
+        "finalRange": 8,
+        "activeEffects": [
+          {
+            "type": "aoe",
+            "value": 2.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333948,
+        "template": "combat_ranged_aoe_air",
+        "generatedAt": "2026-03-14T08:02:13.903Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000045",
+      "name": "Удар статический",
+      "nameEn": "Удар Статический",
+      "description": "Удар статический — площадная техника элемента lightning уровня 1. Редкость: rare. Урон: 11. Дальность: 10.4м. Радиус: 3.5м. Затухание: полный урон до 5м, 50% до 8м.",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "lightning",
+      "level": 1,
+      "rarity": "rare",
+      "computed": {
+        "finalDamage": 10,
+        "finalQiCost": 10,
+        "finalRange": 10,
+        "activeEffects": [
+          {
+            "type": "aoe",
+            "value": 3.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333949,
+        "template": "combat_ranged_aoe_lightning",
+        "generatedAt": "2026-03-14T08:02:13.903Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000046",
+      "name": "Забвенный Удар",
+      "nameEn": "Забвенный Удар",
+      "description": "Забвенный Удар — площадная техника элемента void уровня 1. Редкость: common. Урон: 11. Дальность: 8м. Радиус: 2.5м. Затухание: полный урон до 4м, 50% до 6м.",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "void",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 15,
+        "finalRange": 8,
+        "activeEffects": [
+          {
+            "type": "aoe",
+            "value": 2.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333950,
+        "template": "combat_ranged_aoe_void",
+        "generatedAt": "2026-03-14T08:02:13.903Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000047",
+      "name": "Чистый Клинок",
+      "nameEn": "Чистый Клинок",
+      "description": "Чистый Клинок — площадная техника уровня 1. Редкость: rare. Урон: 10. Дальность: 10.4м. Радиус: 3.5м. Затухание: полный урон до 5м, 50% до 8м.",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "neutral",
+      "level": 1,
+      "rarity": "rare",
+      "computed": {
+        "finalDamage": 9,
+        "finalQiCost": 9,
+        "finalRange": 10,
+        "activeEffects": [
+          {
+            "type": "aoe",
+            "value": 3.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333951,
+        "template": "combat_ranged_aoe_neutral",
+        "generatedAt": "2026-03-14T08:02:13.903Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000048",
+      "name": "Взрыв вулканический",
+      "nameEn": "Взрыв Вулканический",
+      "description": "Взрыв вулканический — площадная техника элемента fire уровня 1. Редкость: common. Урон: 7. Дальность: 8м. Радиус: 2.5м. Затухание: полный урон до 4м, 50% до 6м.",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "fire",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 5,
+        "finalQiCost": 10,
+        "finalRange": 8,
+        "activeEffects": [
+          {
+            "type": "aoe",
+            "value": 2.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333952,
+        "template": "combat_ranged_aoe_fire",
+        "generatedAt": "2026-03-14T08:02:13.903Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000049",
+      "name": "Толчок морской",
+      "nameEn": "Толчок Морской",
+      "description": "Толчок морской — площадная техника элемента water уровня 1. Редкость: legendary. Урон: 16. Дальность: 11.6м. Радиус: 4.0м. Затухание: полный урон до 6м, 50% до 9м.",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "water",
+      "level": 1,
+      "rarity": "legendary",
+      "computed": {
+        "finalDamage": 16,
+        "finalQiCost": 8,
+        "finalRange": 11,
+        "activeEffects": [
+          {
+            "type": "aoe",
+            "value": 4
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333953,
+        "template": "combat_ranged_aoe_water",
+        "generatedAt": "2026-03-14T08:02:13.903Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000050",
+      "name": "Кулак тяжёлый",
+      "nameEn": "Кулак Тяжёлый",
+      "description": "Кулак тяжёлый — площадная техника элемента earth уровня 1. Редкость: common. Урон: 9. Дальность: 8м. Радиус: 2.5м. Затухание: полный урон до 4м, 50% до 6м.",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "earth",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 7,
+        "finalQiCost": 11,
+        "finalRange": 8,
+        "activeEffects": [
+          {
+            "type": "aoe",
+            "value": 2.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333954,
+        "template": "combat_ranged_aoe_earth",
+        "generatedAt": "2026-03-14T08:02:13.903Z",
+        "generatorVersion": "3.0.0"
+      }
+    }
+  ],
+  "autoGenerated": true,
+  "generatedAt": "2026-03-14T08:02:13.915Z"
+}

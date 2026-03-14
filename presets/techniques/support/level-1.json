@@ -1,0 +1,293 @@
+{
+  "version": "2.0",
+  "type": "support",
+  "subtype": null,
+  "level": 1,
+  "count": 10,
+  "techniques": [
+    {
+      "id": "SP_000071",
+      "name": "Усиление вулканический",
+      "nameEn": "Усиление Вулканический",
+      "description": "Усиление вулканический — техника поддержки уровня 1. Редкость: uncommon.",
+      "type": "support",
+      "element": "fire",
+      "level": 1,
+      "rarity": "uncommon",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 7,
+        "finalRange": 10,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 10
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333976,
+        "template": "support_fire",
+        "generatedAt": "2026-03-14T08:02:13.904Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000072",
+      "name": "Холодный Стена",
+      "nameEn": "Холодный Стена",
+      "description": "Холодный Стена — техника поддержки уровня 1. Редкость: common.",
+      "type": "support",
+      "element": "water",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333977,
+        "template": "support_water",
+        "generatedAt": "2026-03-14T08:02:13.904Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000073",
+      "name": "Защита тяжёлый",
+      "nameEn": "Защита Тяжёлый",
+      "description": "Защита тяжёлый — техника поддержки уровня 1. Редкость: rare.",
+      "type": "support",
+      "element": "earth",
+      "level": 1,
+      "rarity": "rare",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 16.9
+          },
+          {
+            "type": "buff",
+            "value": 12
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333978,
+        "template": "support_earth",
+        "generatedAt": "2026-03-14T08:02:13.904Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000074",
+      "name": "Защита штормовой",
+      "nameEn": "Защита Штормовой",
+      "description": "Защита штормовой — техника поддержки уровня 1. Редкость: common.",
+      "type": "support",
+      "element": "air",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333979,
+        "template": "support_air",
+        "generatedAt": "2026-03-14T08:02:13.904Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000075",
+      "name": "Ослепляющий Барьер",
+      "nameEn": "Ослепляющий Барьер",
+      "description": "Ослепляющий Барьер — техника поддержки уровня 1. Редкость: rare.",
+      "type": "support",
+      "element": "lightning",
+      "level": 1,
+      "rarity": "rare",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 34.4
+          },
+          {
+            "type": "buff",
+            "value": 12
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333980,
+        "template": "support_lightning",
+        "generatedAt": "2026-03-14T08:02:13.904Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000076",
+      "name": "Барьер бесплотный",
+      "nameEn": "Барьер Бесплотный",
+      "description": "Барьер бесплотный — техника поддержки уровня 1. Редкость: common.",
+      "type": "support",
+      "element": "void",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333981,
+        "template": "support_void",
+        "generatedAt": "2026-03-14T08:02:13.904Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000077",
+      "name": "Чистый Барьер",
+      "nameEn": "Чистый Барьер",
+      "description": "Чистый Барьер — техника поддержки уровня 1. Редкость: rare.",
+      "type": "support",
+      "element": "neutral",
+      "level": 1,
+      "rarity": "rare",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 7,
+        "finalRange": 10,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 12
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333982,
+        "template": "support_neutral",
+        "generatedAt": "2026-03-14T08:02:13.904Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000078",
+      "name": "Защита пылающий",
+      "nameEn": "Защита Пылающий",
+      "description": "Защита пылающий — техника поддержки уровня 1. Редкость: common.",
+      "type": "support",
+      "element": "fire",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333983,
+        "template": "support_fire",
+        "generatedAt": "2026-03-14T08:02:13.904Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000079",
+      "name": "Стена штормовой",
+      "nameEn": "Стена Штормовой",
+      "description": "Стена штормовой — техника поддержки уровня 1. Редкость: rare.",
+      "type": "support",
+      "element": "water",
+      "level": 1,
+      "rarity": "rare",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 7,
+        "finalRange": 10,
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 22.8
+          },
+          {
+            "type": "buff",
+            "value": 12
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333984,
+        "template": "support_water",
+        "generatedAt": "2026-03-14T08:02:13.904Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SP_000080",
+      "name": "Усиление неизбежный",
+      "nameEn": "Усиление Неизбежный",
+      "description": "Усиление неизбежный — техника поддержки уровня 1. Редкость: common.",
+      "type": "support",
+      "element": "earth",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 8,
+        "finalRange": 10,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333985,
+        "template": "support_earth",
+        "generatedAt": "2026-03-14T08:02:13.905Z",
+        "generatorVersion": "2.1.0"
+      }
+    }
+  ],
+  "autoGenerated": true,
+  "generatedAt": "2026-03-14T08:02:13.921Z"
+}

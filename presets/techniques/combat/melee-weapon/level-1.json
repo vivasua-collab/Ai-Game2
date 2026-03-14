@@ -1,0 +1,256 @@
+{
+  "version": "2.0",
+  "type": "combat",
+  "subtype": "melee_weapon",
+  "level": 1,
+  "count": 10,
+  "techniques": [
+    {
+      "id": "MS_000011",
+      "name": "Пылающий Кулак",
+      "nameEn": "Пылающий Кулак",
+      "description": "Пылающий Кулак — техника владения молот (одноручные дробящие) элемента fire уровня 1. Редкость: rare. Урон: 20. Дальность: 1.3м. ✦ Оглушение.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "fire",
+      "level": 1,
+      "rarity": "rare",
+      "computed": {
+        "finalDamage": 24,
+        "finalQiCost": 9,
+        "finalRange": 1,
+        "activeEffects": [
+          {
+            "type": "stun",
+            "value": 1
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333912,
+        "template": "combat_melee_weapon_one_handed_blunt_hammer_fire",
+        "generatedAt": "2026-03-14T08:02:13.900Z",
+        "generatorVersion": "3.1.0"
+      }
+    },
+    {
+      "id": "MS_000012",
+      "name": "Штормовой Удар",
+      "nameEn": "Штормовой Удар",
+      "description": "Штормовой Удар — техника владения кистень (кистевое) элемента water уровня 1. Редкость: common. Урон: 8. Дальность: 0.2м. ✦ Комбо.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "water",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 10,
+        "finalRange": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333913,
+        "template": "combat_melee_weapon_light_fist_fist_water",
+        "generatedAt": "2026-03-14T08:02:13.900Z",
+        "generatorVersion": "3.1.0"
+      }
+    },
+    {
+      "id": "MS_000013",
+      "name": "Титанический Укол",
+      "nameEn": "Титанический Укол",
+      "description": "Титанический Укол — техника владения посох (древковое) элемента earth уровня 1. Редкость: rare. Урон: 18. Дальность: 3.4м. ✦ Канал Ци.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "earth",
+      "level": 1,
+      "rarity": "rare",
+      "computed": {
+        "finalDamage": 21,
+        "finalQiCost": 9,
+        "finalRange": 3,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333914,
+        "template": "combat_melee_weapon_two_handed_polearm_staff_earth",
+        "generatedAt": "2026-03-14T08:02:13.901Z",
+        "generatorVersion": "3.1.0"
+      }
+    },
+    {
+      "id": "MS_000014",
+      "name": "Порывистый Укол",
+      "nameEn": "Порывистый Укол",
+      "description": "Порывистый Укол — техника владения кнут (экзотическое) элемента air уровня 1. Редкость: rare. Урон: 10. Дальность: 12.2м. ✦ Связывание.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "air",
+      "level": 1,
+      "rarity": "rare",
+      "computed": {
+        "finalDamage": 12,
+        "finalQiCost": 8,
+        "finalRange": 12,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333916,
+        "template": "combat_melee_weapon_exotic_whip_air",
+        "generatedAt": "2026-03-14T08:02:13.901Z",
+        "generatorVersion": "3.1.0"
+      }
+    },
+    {
+      "id": "MS_000015",
+      "name": "Ослепляющий Ладонь",
+      "nameEn": "Ослепляющий Ладонь",
+      "description": "Ослепляющий Ладонь — техника владения молот (двуручное тяжёлое) элемента lightning уровня 1. Редкость: common. Урон: 17. Дальность: 1.3м. ✦ Сокрушение.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "lightning",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 17,
+        "finalQiCost": 12,
+        "finalRange": 1,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333917,
+        "template": "combat_melee_weapon_two_handed_heavy_hammer_lightning",
+        "generatedAt": "2026-03-14T08:02:13.901Z",
+        "generatorVersion": "3.1.0"
+      }
+    },
+    {
+      "id": "MS_000016",
+      "name": "Ладонь эфирный",
+      "nameEn": "Ладонь Эфирный",
+      "description": "Ладонь эфирный — техника владения молот (одноручные дробящие) элемента void уровня 1. Редкость: legendary. Урон: 29. Дальность: 10.0м. ⚡ Волна Ци до 10м. ✦ Оглушение.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "void",
+      "level": 1,
+      "rarity": "legendary",
+      "computed": {
+        "finalDamage": 37,
+        "finalQiCost": 12,
+        "finalRange": 10,
+        "activeEffects": [
+          {
+            "type": "stun",
+            "value": 1
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333918,
+        "template": "combat_melee_weapon_one_handed_blunt_hammer_void",
+        "generatedAt": "2026-03-14T08:02:13.901Z",
+        "generatorVersion": "3.1.0"
+      }
+    },
+    {
+      "id": "MS_000017",
+      "name": "Укол базовый",
+      "nameEn": "Укол Базовый",
+      "description": "Укол базовый — техника владения топор (одноручные дробящие) уровня 1. Редкость: common. Урон: 14. Дальность: 0.9м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "neutral",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 14,
+        "finalQiCost": 10,
+        "finalRange": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333919,
+        "template": "combat_melee_weapon_one_handed_blunt_axe_neutral",
+        "generatedAt": "2026-03-14T08:02:13.901Z",
+        "generatorVersion": "3.1.0"
+      }
+    },
+    {
+      "id": "MS_000018",
+      "name": "Огненный Кулак",
+      "nameEn": "Огненный Кулак",
+      "description": "Огненный Кулак — техника владения посох (древковое) элемента fire уровня 1. Редкость: legendary. Урон: 23. Дальность: 3.6м. ✦ Канал Ци.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "fire",
+      "level": 1,
+      "rarity": "legendary",
+      "computed": {
+        "finalDamage": 29,
+        "finalQiCost": 8,
+        "finalRange": 3,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333920,
+        "template": "combat_melee_weapon_two_handed_polearm_staff_fire",
+        "generatedAt": "2026-03-14T08:02:13.901Z",
+        "generatorVersion": "3.1.0"
+      }
+    },
+    {
+      "id": "MS_000019",
+      "name": "Ледяной Удар",
+      "nameEn": "Ледяной Удар",
+      "description": "Ледяной Удар — техника владения алебарда (древковое) элемента water уровня 1. Редкость: uncommon. Урон: 21. Дальность: 6.7м. ✦ Размах.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "water",
+      "level": 1,
+      "rarity": "uncommon",
+      "computed": {
+        "finalDamage": 18,
+        "finalQiCost": 9,
+        "finalRange": 6,
+        "activeEffects": [
+          {
+            "type": "aoe",
+            "value": 1.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333921,
+        "template": "combat_melee_weapon_two_handed_polearm_halberd_water",
+        "generatedAt": "2026-03-14T08:02:13.901Z",
+        "generatorVersion": "3.1.0"
+      }
+    },
+    {
+      "id": "MS_000020",
+      "name": "Волна горный",
+      "nameEn": "Волна Горный",
+      "description": "Волна горный — техника владения кнут (экзотическое) элемента earth уровня 1. Редкость: common. Урон: 9. Дальность: 11.7м. ✦ Связывание.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "earth",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 9,
+        "finalQiCost": 11,
+        "finalRange": 11,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333922,
+        "template": "combat_melee_weapon_exotic_whip_earth",
+        "generatedAt": "2026-03-14T08:02:13.901Z",
+        "generatorVersion": "3.1.0"
+      }
+    }
+  ],
+  "autoGenerated": true,
+  "generatedAt": "2026-03-14T08:02:13.909Z"
+}

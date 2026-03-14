@@ -24,6 +24,11 @@ import {
   handleTempNPCCombat 
 } from '../../skeleton/temp-npc-combat';
 import { EVENT_TYPES } from '../../events/game-events';
+import { addStatDelta } from '../../stat-truth';
+import { 
+  generateAttackDelta,
+  calculateFatiguePenalty
+} from '../../combat-system';
 
 // ==================== КОНСТАНТЫ ====================
 
@@ -375,6 +380,38 @@ async function handleDamageDealt(
         },
       },
     ];
+    
+    // === ДОБАВЛЯЕМ ДЕЛЬТУ РАЗВИТИЯ ===
+    // После успешной атаки добавляем виртуальную дельту к силе
+    if (finalDamage > 0) {
+      try {
+        // Генерируем результат дельты
+        const deltaResult = generateAttackDelta(
+          false, // isCritical - TODO: передавать из события
+          undefined, // weaponType
+          finalMultiplier
+        );
+        
+        // Рассчитываем штраф от усталости
+        const fatiguePenalty = calculateFatiguePenalty(
+          session.character.fatigue ?? 0,
+          session.character.mentalFatigue ?? 0
+        );
+        
+        // Добавляем дельту к целевой характеристике
+        await addStatDelta(
+          event.characterId,
+          deltaResult.targetStat,
+          deltaResult.deltaGained * fatiguePenalty,
+          deltaResult.source
+        );
+        
+        context.log('info', `Added delta: +${deltaResult.deltaGained * fatiguePenalty} to ${deltaResult.targetStat}`);
+      } catch (deltaError) {
+        // Non-critical error - don't fail the combat
+        context.log('warn', `Failed to add stat delta: ${deltaError}`);
+      }
+    }
 
     return {
       success: true,
@@ -557,6 +594,33 @@ async function handleTempNPCDamageEvent(
           xp: combatResult.xp,
         },
       });
+    }
+    
+    // === ДОБАВЛЯЕМ ДЕЛЬТУ РАЗВИТИЯ ===
+    if (finalDamage > 0) {
+      try {
+        const deltaResult = generateAttackDelta(
+          false,
+          undefined,
+          finalMultiplier
+        );
+        
+        const fatiguePenalty = calculateFatiguePenalty(
+          session.character.fatigue ?? 0,
+          session.character.mentalFatigue ?? 0
+        );
+        
+        await addStatDelta(
+          event.characterId,
+          deltaResult.targetStat,
+          deltaResult.deltaGained * fatiguePenalty,
+          deltaResult.source
+        );
+        
+        context.log('info', `Added delta: +${deltaResult.deltaGained * fatiguePenalty} to ${deltaResult.targetStat}`);
+      } catch (deltaError) {
+        context.log('warn', `Failed to add stat delta: ${deltaError}`);
+      }
     }
 
     context.log('info', `TempNPC ${targetId} took ${finalDamage} damage. New HP: ${combatResult.newHealth}/${combatResult.maxHealth}. Dead: ${combatResult.isDead}`);

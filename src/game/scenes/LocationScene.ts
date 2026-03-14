@@ -19,6 +19,12 @@ import { DEPTHS } from '../constants';
 import { SpriteLoader, createDirectionalSpritesheet, angleToDirectionFrame, DIRECTION_FRAMES } from '../services/sprite-loader';
 import { getCultivationTheme } from '../config/sprites.config';
 import type { NPCMoveEvent, NPCAttackPlayerEvent } from '@/lib/game/events/game-events';
+import { 
+  calculateHandAttack, 
+  canAttack, 
+  type HandAttackResult 
+} from '@/lib/game/hand-combat';
+import { eventBusClient } from '@/lib/game/event-bus/client';
 
 // ==================== CONSTANTS ====================
 
@@ -109,6 +115,10 @@ export class LocationScene extends BaseScene {
   private cursors!: Phaser.Types.Input.Keyboard.CursorKeys;
   private wasd!: { W: Phaser.Input.Keyboard.Key; A: Phaser.Input.Keyboard.Key; S: Phaser.Input.Keyboard.Key; D: Phaser.Input.Keyboard.Key };
   
+  // Combat system
+  private lastAttackTime: number = 0;
+  private characterStats: { strength: number; agility: number } = { strength: 10, agility: 10 };
+  
   // NPCs & Targets
   private npcs: Map<string, LocationNPC> = new Map();
   private npcSprites: Map<string, Phaser.GameObjects.Container> = new Map();
@@ -137,6 +147,7 @@ export class LocationScene extends BaseScene {
     this.targets = [];
     this.damageNumbers = [];
     this.selectedNPC = null;
+    this.lastAttackTime = 0;
   }
 
   async create(): Promise<void> {
@@ -158,6 +169,7 @@ export class LocationScene extends BaseScene {
     this.createPlayer();
     this.createTrainingTargets();
     await this.loadNPCs();
+    await this.loadCharacterStats();
     this.setupInput();
     this.setupAI();
     this.createUI();
@@ -171,6 +183,37 @@ export class LocationScene extends BaseScene {
     // No longer using localStorage - return default
     // Real data should be fetched from server via GameBridge or passed in scene data
     return 1;
+  }
+
+  /**
+   * Load character stats from server via Event Bus
+   */
+  private async loadCharacterStats(): Promise<void> {
+    try {
+      // Initialize EventBusClient if we have session
+      if (this.sessionId) {
+        // Get characterId from bridge or storage
+        const characterId = localStorage.getItem('characterId');
+        if (characterId) {
+          eventBusClient.initialize(this.sessionId, characterId);
+        }
+      }
+      
+      // Try to get stats from API
+      const response = await fetch('/api/character/stats');
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.character) {
+          this.characterStats = {
+            strength: data.character.strength || 10,
+            agility: data.character.agility || 10,
+          };
+          console.log('[LocationScene] Loaded character stats:', this.characterStats);
+        }
+      }
+    } catch (error) {
+      console.warn('[LocationScene] Failed to load character stats, using defaults:', error);
+    }
   }
 
   // ==================== BACKGROUND ====================
@@ -798,13 +841,67 @@ export class LocationScene extends BaseScene {
   // ==================== COMBAT ====================
 
   private performAttack(): void {
-    const attackRange = 150, attackAngle = 60, attackDamage = 50;
+    const now = Date.now();
+    
+    // Calculate attack result with stat-based damage and cooldown
+    const attackResult = calculateHandAttack(
+      this.characterStats.strength,
+      this.characterStats.agility,
+      null, // TODO: technique from slot 1
+      0     // TODO: mastery
+    );
+    
+    // Check cooldown
+    if (!canAttack(this.lastAttackTime, attackResult.cooldown)) {
+      return; // Attack on cooldown
+    }
+    
+    this.lastAttackTime = now;
+    
+    const attackRange = 150;
+    const attackAngle = 60;
+    
+    // Apply damage to targets
     for (const target of this.targets) {
-      if (this.checkAttackHit(this.playerX, this.playerY, this.playerRotation, target.x, target.centerY, attackAngle, attackRange, target.hitboxRadius)) {
-        this.damageTarget(target, attackDamage, 'normal');
+      if (this.checkAttackHit(
+        this.playerX, 
+        this.playerY, 
+        this.playerRotation, 
+        target.x, 
+        target.centerY, 
+        attackAngle, 
+        attackRange, 
+        target.hitboxRadius
+      )) {
+        this.damageTarget(target, attackResult.damage, 'normal');
+        
+        // Report attack to server via Event Bus for delta development
+        this.reportAttackToServer(target.id, attackResult.damage);
       }
     }
+    
     this.showAttackEffect(attackRange, attackAngle);
+  }
+  
+  /**
+   * Report attack to server via Event Bus
+   * This triggers stat delta generation on the server
+   */
+  private async reportAttackToServer(targetId: string, damage: number): Promise<void> {
+    try {
+      await eventBusClient.reportDamageDealt(
+        targetId,
+        'training_target',
+        'hand_attack',
+        { x: this.playerX, y: this.playerY },
+        0, // distance
+        this.playerRotation,
+        1.0 // damageMultiplier
+      );
+    } catch (error) {
+      // Non-critical error, don't interrupt gameplay
+      console.warn('[LocationScene] Failed to report attack:', error);
+    }
   }
 
   private checkAttackHit(px: number, py: number, rot: number, tx: number, ty: number, cone: number, range: number, hitbox: number): boolean {

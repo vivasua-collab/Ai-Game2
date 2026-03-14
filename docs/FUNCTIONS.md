@@ -1,6 +1,6 @@
 # Функции и типы проекта Cultivation World Simulator
 
-**Последнее обновление:** 2026-03-05 19:45 UTC
+**Последнее обновление:** 2026-03-14 08:08 UTC
 
 ---
 
@@ -1089,7 +1089,115 @@ REQUEST_SIZE_LIMITS = {
 
 ---
 
-*Документ актуален на 2026-02-28*
+## 📈 Система развития характеристик (Stat Development)
+
+> **Файлы:** `src/lib/game/stat-threshold.ts`, `src/lib/game/stat-development.ts`, `src/lib/game/training-system.ts`
+
+### Пороги развития (stat-threshold.ts)
+
+| Функция | Описание |
+|---------|----------|
+| `calculateStatThreshold(currentStat)` | Рассчитать порог для повышения (`floor(stat/10)`, min 1.0) |
+| `advanceStat(stat, delta)` | Продвинуть стат на указанную дельту |
+| `getStatProgress(stat)` | Прогресс до следующего порога (0-1) |
+
+### Виртуальная дельта (stat-development.ts)
+
+| Функция | Описание |
+|---------|----------|
+| `addVirtualDelta(stat, amount, source)` | Добавить виртуальную дельту с указанным источником |
+| `processSleep(statsData, hours)` | Обработать сон - закрепление дельты (кап +0.20 за 8ч) |
+| `getVirtualDelta(statName)` | Получить текущую виртуальную дельту для стата |
+| `clearVirtualDelta(statName)` | Очистить виртуальную дельту |
+
+### Тренировка (training-system.ts)
+
+| Функция | Описание |
+|---------|----------|
+| `startTraining(characterId, options)` | Начать тренировку |
+| `processTrainingTick(sessionId)` | Обработать тик тренировки |
+| `completeTraining(sessionId)` | Завершить тренировку |
+| `cancelTraining(sessionId)` | Отменить тренировку |
+
+### Типы тренировок
+
+| Тип | Распределение | Множитель дельты | Риск |
+|-----|---------------|------------------|------|
+| `classical` | 50% физ / 50% мент | ×1.0 | Низкий |
+| `focused` | 70% физ / 30% мент | ×1.2 | Средний |
+| `extreme` | 95% физ / 5% мент | ×1.5 | Высокий |
+
+### Параметры TrainingOptions
+
+```typescript
+interface TrainingOptions {
+  type: 'classical' | 'focused' | 'extreme';
+  targetStat?: 'strength' | 'agility' | 'endurance' | 'perception' | 'willpower';
+  durationMinutes: number;
+  intensity?: number; // 1-10
+}
+```
+
+### Константы (STAT_DEVELOPMENT_CONSTANTS)
+
+| Константа | Значение | Описание |
+|-----------|----------|----------|
+| `ACTION_DELTA_INCREMENT` | 0.001 | Прирост за действие |
+| `SLEEP_CONSOLIDATION_CAP` | 0.20 | Макс. закрепление за 8ч сна |
+| `MIN_SLEEP_FOR_CONSOLIDATION` | 4 | Минимум часов сна для закрепления |
+| `THRESHOLD_DIVISOR` | 10 | Делитель для формулы порога |
+
+---
+
+## 🏥 Система тела (Body System)
+
+> **Файлы:** `src/lib/game/body-system.ts`, `src/lib/game/limb-attachment.ts`
+
+### Повреждения (body-system.ts)
+
+| Функция | Описание |
+|---------|----------|
+| `applyDamageToLimb(part, damage, options)` | Нанести урон части тела |
+| `getLimbStatus(part)` | Получить статус части (healthy/damaged/crippled/severed) |
+| `calculateTotalBodyHP(bodyState)` | Общее HP тела |
+| `isFatalInjury(bodyState, partId)` | Проверка смертельного повреждения |
+
+### Регенерация и приживление (limb-attachment.ts)
+
+| Функция | Описание |
+|---------|----------|
+| `attachLimb(characterId, partType, donorPart)` | Приживить конечность |
+| `regenerateLimb(characterId, partId, useFormation)` | Регенерировать конечность |
+| `calculateAttachmentSuccess(donorLevel, recipientLevel)` | Шанс успешного приживления |
+
+---
+
+## 🚌 Event Bus API
+
+> **Файлы:** `src/lib/game/event-bus/index.ts`, `src/lib/game/event-bus/handlers/`
+
+### Основные функции
+
+| Функция | Описание |
+|---------|----------|
+| `emitEvent(eventType, payload)` | Отправить событие в шину |
+| `registerHandler(eventType, handler)` | Зарегистрировать обработчик |
+| `processEvent(event)` | Обработать одно событие |
+
+### Типы событий
+
+| Событие | Файл обработчика | Описание |
+|---------|------------------|----------|
+| `technique:use` | `handlers/combat.ts` | Использование техники |
+| `body:damage` | `handlers/body.ts` | Повреждение части тела |
+| `body:heal` | `handlers/body.ts` | Лечение части тела |
+| `body:attach_limb` | `handlers/body.ts` | Приживление конечности |
+| `inventory:equip_item` | `handlers/inventory.ts` | Экипировка предмета |
+| `inventory:unequip_item` | `handlers/inventory.ts` | Снятие предмета |
+
+---
+
+*Документ обновлён: 2026-03-15*
 
 ---
 

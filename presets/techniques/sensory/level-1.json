@@ -1,0 +1,256 @@
+{
+  "version": "2.0",
+  "type": "sensory",
+  "subtype": null,
+  "level": 1,
+  "count": 10,
+  "techniques": [
+    {
+      "id": "SN_000091",
+      "name": "Анализ огненный",
+      "nameEn": "Анализ Огненный",
+      "description": "Анализ огненный — техника восприятия уровня 1. Редкость: uncommon. Радиус: 30м.",
+      "type": "sensory",
+      "element": "fire",
+      "level": 1,
+      "rarity": "uncommon",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 30,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333997,
+        "template": "sensory_fire",
+        "generatedAt": "2026-03-14T08:02:13.905Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000092",
+      "name": "Струящийся Восприятие",
+      "nameEn": "Струящийся Восприятие",
+      "description": "Струящийся Восприятие — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "type": "sensory",
+      "element": "water",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333998,
+        "template": "sensory_water",
+        "generatedAt": "2026-03-14T08:02:13.905Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000093",
+      "name": "Горный Обнаружение",
+      "nameEn": "Горный Обнаружение",
+      "description": "Горный Обнаружение — техника восприятия уровня 1. Редкость: uncommon. Радиус: 30м.",
+      "type": "sensory",
+      "element": "earth",
+      "level": 1,
+      "rarity": "uncommon",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 30,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 21.7
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333999,
+        "template": "sensory_earth",
+        "generatedAt": "2026-03-14T08:02:13.905Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000094",
+      "name": "Порывистый Взгляд",
+      "nameEn": "Порывистый Взгляд",
+      "description": "Порывистый Взгляд — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "type": "sensory",
+      "element": "air",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475334000,
+        "template": "sensory_air",
+        "generatedAt": "2026-03-14T08:02:13.905Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000095",
+      "name": "Обнаружение статический",
+      "nameEn": "Обнаружение Статический",
+      "description": "Обнаружение статический — техника восприятия уровня 1. Редкость: uncommon. Радиус: 30м.",
+      "type": "sensory",
+      "element": "lightning",
+      "level": 1,
+      "rarity": "uncommon",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 30,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 15.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334001,
+        "template": "sensory_lightning",
+        "generatedAt": "2026-03-14T08:02:13.905Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000096",
+      "name": "Анализ эфирный",
+      "nameEn": "Анализ Эфирный",
+      "description": "Анализ эфирный — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "type": "sensory",
+      "element": "void",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475334002,
+        "template": "sensory_void",
+        "generatedAt": "2026-03-14T08:02:13.905Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000097",
+      "name": "Взгляд истинный",
+      "nameEn": "Взгляд Истинный",
+      "description": "Взгляд истинный — техника восприятия уровня 1. Редкость: uncommon. Радиус: 30м.",
+      "type": "sensory",
+      "element": "neutral",
+      "level": 1,
+      "rarity": "uncommon",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 30,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 6.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334003,
+        "template": "sensory_neutral",
+        "generatedAt": "2026-03-14T08:02:13.905Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000098",
+      "name": "Огненный Чутьё",
+      "nameEn": "Огненный Чутьё",
+      "description": "Огненный Чутьё — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "type": "sensory",
+      "element": "fire",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475334004,
+        "template": "sensory_fire",
+        "generatedAt": "2026-03-14T08:02:13.905Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000099",
+      "name": "Взгляд ледяной",
+      "nameEn": "Взгляд Ледяной",
+      "description": "Взгляд ледяной — техника восприятия уровня 1. Редкость: uncommon. Радиус: 30м.",
+      "type": "sensory",
+      "element": "water",
+      "level": 1,
+      "rarity": "uncommon",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 4,
+        "finalRange": 30,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 19.7
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334005,
+        "template": "sensory_water",
+        "generatedAt": "2026-03-14T08:02:13.905Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "SN_000100",
+      "name": "Горный Обнаружение",
+      "nameEn": "Горный Обнаружение",
+      "description": "Горный Обнаружение — техника восприятия уровня 1. Редкость: common. Радиус: 24м.",
+      "type": "sensory",
+      "element": "earth",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 24,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475334006,
+        "template": "sensory_earth",
+        "generatedAt": "2026-03-14T08:02:13.906Z",
+        "generatorVersion": "2.1.0"
+      }
+    }
+  ],
+  "autoGenerated": true,
+  "generatedAt": "2026-03-14T08:02:13.923Z"
+}

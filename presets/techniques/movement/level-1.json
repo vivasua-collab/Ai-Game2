@@ -1,0 +1,256 @@
+{
+  "version": "2.0",
+  "type": "movement",
+  "subtype": null,
+  "level": 1,
+  "count": 10,
+  "techniques": [
+    {
+      "id": "MV_000081",
+      "name": "Шаг огненный",
+      "nameEn": "Шаг Огненный",
+      "description": "Шаг огненный — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "type": "movement",
+      "element": "fire",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333987,
+        "template": "movement_fire",
+        "generatedAt": "2026-03-14T08:02:13.905Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000082",
+      "name": "Рывок холодный",
+      "nameEn": "Рывок Холодный",
+      "description": "Рывок холодный — техника перемещения уровня 1. Редкость: rare. Дальность: 12м.",
+      "type": "movement",
+      "element": "water",
+      "level": 1,
+      "rarity": "rare",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 12,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 12.6
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333988,
+        "template": "movement_water",
+        "generatedAt": "2026-03-14T08:02:13.905Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000083",
+      "name": "Смещение горный",
+      "nameEn": "Смещение Горный",
+      "description": "Смещение горный — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "type": "movement",
+      "element": "earth",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333989,
+        "template": "movement_earth",
+        "generatedAt": "2026-03-14T08:02:13.905Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000084",
+      "name": "Рывок стремительный",
+      "nameEn": "Рывок Стремительный",
+      "description": "Рывок стремительный — техника перемещения уровня 1. Редкость: legendary. Дальность: 16м.",
+      "type": "movement",
+      "element": "air",
+      "level": 1,
+      "rarity": "legendary",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 16,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 15.5
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333990,
+        "template": "movement_air",
+        "generatedAt": "2026-03-14T08:02:13.905Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000085",
+      "name": "Рывок ослепляющий",
+      "nameEn": "Рывок Ослепляющий",
+      "description": "Рывок ослепляющий — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "type": "movement",
+      "element": "lightning",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333991,
+        "template": "movement_lightning",
+        "generatedAt": "2026-03-14T08:02:13.905Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000086",
+      "name": "Рывок теневой",
+      "nameEn": "Рывок Теневой",
+      "description": "Рывок теневой — техника перемещения уровня 1. Редкость: legendary. Дальность: 16м.",
+      "type": "movement",
+      "element": "void",
+      "level": 1,
+      "rarity": "legendary",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 16,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 15.1
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333992,
+        "template": "movement_void",
+        "generatedAt": "2026-03-14T08:02:13.905Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000087",
+      "name": "Прыжок концентрированный",
+      "nameEn": "Прыжок Концентрированный",
+      "description": "Прыжок концентрированный — техника перемещения уровня 1. Редкость: uncommon. Дальность: 10м.",
+      "type": "movement",
+      "element": "neutral",
+      "level": 1,
+      "rarity": "uncommon",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 10,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 29.1
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333993,
+        "template": "movement_neutral",
+        "generatedAt": "2026-03-14T08:02:13.905Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000088",
+      "name": "Раскалённый Смещение",
+      "nameEn": "Раскалённый Смещение",
+      "description": "Раскалённый Смещение — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "type": "movement",
+      "element": "fire",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333994,
+        "template": "movement_fire",
+        "generatedAt": "2026-03-14T08:02:13.905Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000089",
+      "name": "Смещение ледяной",
+      "nameEn": "Смещение Ледяной",
+      "description": "Смещение ледяной — техника перемещения уровня 1. Редкость: uncommon. Дальность: 10м.",
+      "type": "movement",
+      "element": "water",
+      "level": 1,
+      "rarity": "uncommon",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 5,
+        "finalRange": 10,
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 17.2
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475333995,
+        "template": "movement_water",
+        "generatedAt": "2026-03-14T08:02:13.905Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "MV_000090",
+      "name": "Побег титанический",
+      "nameEn": "Побег Титанический",
+      "description": "Побег титанический — техника перемещения уровня 1. Редкость: common. Дальность: 8м.",
+      "type": "movement",
+      "element": "earth",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 6,
+        "finalRange": 8,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333996,
+        "template": "movement_earth",
+        "generatedAt": "2026-03-14T08:02:13.905Z",
+        "generatorVersion": "2.1.0"
+      }
+    }
+  ],
+  "autoGenerated": true,
+  "generatedAt": "2026-03-14T08:02:13.922Z"
+}

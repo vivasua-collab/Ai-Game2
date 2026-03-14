@@ -1,0 +1,291 @@
+{
+  "version": "2.0",
+  "type": "curse",
+  "subtype": "combat",
+  "level": 1,
+  "count": 10,
+  "techniques": [
+    {
+      "id": "CR_000111",
+      "name": "Метка пылающий",
+      "nameEn": "Метка Пылающий",
+      "description": "Метка пылающий — боевое проклятие уровня 1. Эффект: weakness. Длительность: 21 сек.",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "fire",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 27,
+        "finalRange": 15,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334018,
+        "template": "curse_fire_combat",
+        "generatedAt": "2026-03-14T08:02:13.906Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000112",
+      "name": "Штормовой Оковы",
+      "nameEn": "Штормовой Оковы",
+      "description": "Штормовой Оковы — боевое проклятие уровня 1. Эффект: slowness. Длительность: 10 сек.",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "water",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 23,
+        "finalRange": 15,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334019,
+        "template": "curse_water_combat",
+        "generatedAt": "2026-03-14T08:02:13.906Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000113",
+      "name": "Титанический Скверна",
+      "nameEn": "Титанический Скверна",
+      "description": "Титанический Скверна — боевое проклятие уровня 1. Эффект: weakness. Длительность: 27 сек.",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "earth",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 32,
+        "finalRange": 15,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334020,
+        "template": "curse_earth_combat",
+        "generatedAt": "2026-03-14T08:02:13.906Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000114",
+      "name": "Печать порывистый",
+      "nameEn": "Печать Порывистый",
+      "description": "Печать порывистый — боевое проклятие уровня 1. Эффект: slowness. Длительность: 16 сек.",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "air",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 29,
+        "finalRange": 15,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334021,
+        "template": "curse_air_combat",
+        "generatedAt": "2026-03-14T08:02:13.906Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000115",
+      "name": "Искрящийся Оковы",
+      "nameEn": "Искрящийся Оковы",
+      "description": "Искрящийся Оковы — боевое проклятие уровня 1. Эффект: weakness. Длительность: 14 сек.",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "lightning",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 22,
+        "finalRange": 15,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334022,
+        "template": "curse_lightning_combat",
+        "generatedAt": "2026-03-14T08:02:13.906Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000116",
+      "name": "Бесплотный Скверна",
+      "nameEn": "Бесплотный Скверна",
+      "description": "Бесплотный Скверна — боевое проклятие уровня 1. Эффект: slowness. Длительность: 12 сек.",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "void",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 31,
+        "finalRange": 15,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334023,
+        "template": "curse_void_combat",
+        "generatedAt": "2026-03-14T08:02:13.906Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000117",
+      "name": "Метка истинный",
+      "nameEn": "Метка Истинный",
+      "description": "Метка истинный — боевое проклятие уровня 1. Эффект: weakness. Длительность: 21 сек.",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "neutral",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 28,
+        "finalRange": 15,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334024,
+        "template": "curse_neutral_combat",
+        "generatedAt": "2026-03-14T08:02:13.906Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000118",
+      "name": "Вулканический Проклятие",
+      "nameEn": "Вулканический Проклятие",
+      "description": "Вулканический Проклятие — боевое проклятие уровня 1. Эффект: slowness. Длительность: 19 сек.",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "fire",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 21,
+        "finalRange": 15,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334025,
+        "template": "curse_fire_combat",
+        "generatedAt": "2026-03-14T08:02:13.906Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000119",
+      "name": "Печать морской",
+      "nameEn": "Печать Морской",
+      "description": "Печать морской — боевое проклятие уровня 1. Эффект: weakness. Длительность: 27 сек.",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "water",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 33,
+        "finalRange": 15,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334026,
+        "template": "curse_water_combat",
+        "generatedAt": "2026-03-14T08:02:13.906Z",
+        "generatorVersion": "2.0.0"
+      }
+    },
+    {
+      "id": "CR_000120",
+      "name": "Горный Порча",
+      "nameEn": "Горный Порча",
+      "description": "Горный Порча — боевое проклятие уровня 1. Эффект: slowness. Длительность: 25 сек.",
+      "type": "curse",
+      "subtype": "combat",
+      "element": "earth",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 8,
+        "finalQiCost": 27,
+        "finalRange": 15,
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 0
+          }
+        ]
+      },
+      "meta": {
+        "seed": 1773475334027,
+        "template": "curse_earth_combat",
+        "generatedAt": "2026-03-14T08:02:13.906Z",
+        "generatorVersion": "2.0.0"
+      }
+    }
+  ],
+  "autoGenerated": true,
+  "generatedAt": "2026-03-14T08:02:13.925Z"
+}

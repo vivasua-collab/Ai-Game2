@@ -1,0 +1,241 @@
+{
+  "version": "2.0",
+  "type": "combat",
+  "subtype": "melee_strike",
+  "level": 1,
+  "count": 10,
+  "techniques": [
+    {
+      "id": "MS_000001",
+      "name": "Ладонь раскалённый",
+      "nameEn": "Ладонь Раскалённый",
+      "description": "Ладонь раскалённый — техника удара телом элемента fire уровня 1. Редкость: uncommon. Урон: 31. Дальность: 0.6м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "fire",
+      "level": 1,
+      "rarity": "uncommon",
+      "computed": {
+        "finalDamage": 34,
+        "finalQiCost": 9,
+        "finalRange": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333900,
+        "template": "combat_melee_strike_fire",
+        "generatedAt": "2026-03-14T08:02:13.899Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000002",
+      "name": "Укол штормовой",
+      "nameEn": "Укол Штормовой",
+      "description": "Укол штормовой — техника удара телом элемента water уровня 1. Редкость: uncommon. Урон: 18. Дальность: 0.6м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "water",
+      "level": 1,
+      "rarity": "uncommon",
+      "computed": {
+        "finalDamage": 19,
+        "finalQiCost": 9,
+        "finalRange": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333902,
+        "template": "combat_melee_strike_water",
+        "generatedAt": "2026-03-14T08:02:13.899Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000003",
+      "name": "Неизбежный Клинок",
+      "nameEn": "Неизбежный Клинок",
+      "description": "Неизбежный Клинок — техника удара телом элемента earth уровня 1. Редкость: common. Урон: 24. Дальность: 0.5м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "earth",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 24,
+        "finalQiCost": 11,
+        "finalRange": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333903,
+        "template": "combat_melee_strike_earth",
+        "generatedAt": "2026-03-14T08:02:13.899Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000004",
+      "name": "Волна вихревой",
+      "nameEn": "Волна Вихревой",
+      "description": "Волна вихревой — техника удара телом элемента air уровня 1. Редкость: uncommon. Урон: 20. Дальность: 0.6м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "air",
+      "level": 1,
+      "rarity": "uncommon",
+      "computed": {
+        "finalDamage": 22,
+        "finalQiCost": 8,
+        "finalRange": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333904,
+        "template": "combat_melee_strike_air",
+        "generatedAt": "2026-03-14T08:02:13.899Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000005",
+      "name": "Толчок статический",
+      "nameEn": "Толчок Статический",
+      "description": "Толчок статический — техника удара телом элемента lightning уровня 1. Редкость: common. Урон: 21. Дальность: 0.5м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "lightning",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 21,
+        "finalQiCost": 12,
+        "finalRange": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333905,
+        "template": "combat_melee_strike_lightning",
+        "generatedAt": "2026-03-14T08:02:13.899Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000006",
+      "name": "Ладонь забвенный",
+      "nameEn": "Ладонь Забвенный",
+      "description": "Ладонь забвенный — техника удара телом элемента void уровня 1. Редкость: rare. Урон: 51. Дальность: 0.7м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "void",
+      "level": 1,
+      "rarity": "rare",
+      "computed": {
+        "finalDamage": 61,
+        "finalQiCost": 13,
+        "finalRange": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333906,
+        "template": "combat_melee_strike_void",
+        "generatedAt": "2026-03-14T08:02:13.899Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000007",
+      "name": "Чистый Удар",
+      "nameEn": "Чистый Удар",
+      "description": "Чистый Удар — техника удара телом уровня 1. Редкость: common. Урон: 20. Дальность: 0.5м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "neutral",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 20,
+        "finalQiCost": 10,
+        "finalRange": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333907,
+        "template": "combat_melee_strike_neutral",
+        "generatedAt": "2026-03-14T08:02:13.899Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000008",
+      "name": "Вулканический Клинок",
+      "nameEn": "Вулканический Клинок",
+      "description": "Вулканический Клинок — техника удара телом элемента fire уровня 1. Редкость: rare. Урон: 26. Дальность: 0.7м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "fire",
+      "level": 1,
+      "rarity": "rare",
+      "computed": {
+        "finalDamage": 31,
+        "finalQiCost": 9,
+        "finalRange": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333908,
+        "template": "combat_melee_strike_fire",
+        "generatedAt": "2026-03-14T08:02:13.899Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000009",
+      "name": "Взрыв холодный",
+      "nameEn": "Взрыв Холодный",
+      "description": "Взрыв холодный — техника удара телом элемента water уровня 1. Редкость: common. Урон: 12. Дальность: 0.5м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "water",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 12,
+        "finalQiCost": 10,
+        "finalRange": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333909,
+        "template": "combat_melee_strike_water",
+        "generatedAt": "2026-03-14T08:02:13.899Z",
+        "generatorVersion": "3.0.0"
+      }
+    },
+    {
+      "id": "MS_000010",
+      "name": "Взрыв тяжёлый",
+      "nameEn": "Взрыв Тяжёлый",
+      "description": "Взрыв тяжёлый — техника удара телом элемента earth уровня 1. Редкость: rare. Урон: 35. Дальность: 0.7м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "earth",
+      "level": 1,
+      "rarity": "rare",
+      "computed": {
+        "finalDamage": 42,
+        "finalQiCost": 9,
+        "finalRange": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333910,
+        "template": "combat_melee_strike_earth",
+        "generatedAt": "2026-03-14T08:02:13.900Z",
+        "generatorVersion": "3.0.0"
+      }
+    }
+  ],
+  "autoGenerated": true,
+  "generatedAt": "2026-03-14T08:02:13.908Z"
+}

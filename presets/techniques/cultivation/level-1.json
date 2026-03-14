@@ -1,0 +1,231 @@
+{
+  "version": "2.0",
+  "type": "cultivation",
+  "subtype": null,
+  "level": 1,
+  "count": 10,
+  "techniques": [
+    {
+      "id": "CU_000061",
+      "name": "Пылающий Накопление",
+      "nameEn": "Пылающий Накопление",
+      "description": "Пылающий Накопление — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "type": "cultivation",
+      "element": "fire",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333965,
+        "template": "cultivation_fire",
+        "generatedAt": "2026-03-14T08:02:13.904Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000062",
+      "name": "Холодный Медитация",
+      "nameEn": "Холодный Медитация",
+      "description": "Холодный Медитация — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "type": "cultivation",
+      "element": "water",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333967,
+        "template": "cultivation_water",
+        "generatedAt": "2026-03-14T08:02:13.904Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000063",
+      "name": "Накопление горный",
+      "nameEn": "Накопление Горный",
+      "description": "Накопление горный — техника культивации уровня 1. Редкость: uncommon. Увеличивает поглощение Ци на 5%.",
+      "type": "cultivation",
+      "element": "earth",
+      "level": 1,
+      "rarity": "uncommon",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333968,
+        "template": "cultivation_earth",
+        "generatedAt": "2026-03-14T08:02:13.904Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000064",
+      "name": "Дыхание штормовой",
+      "nameEn": "Дыхание Штормовой",
+      "description": "Дыхание штормовой — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "type": "cultivation",
+      "element": "air",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333969,
+        "template": "cultivation_air",
+        "generatedAt": "2026-03-14T08:02:13.904Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000065",
+      "name": "Ослепляющий Медитация",
+      "nameEn": "Ослепляющий Медитация",
+      "description": "Ослепляющий Медитация — техника культивации уровня 1. Редкость: uncommon. Увеличивает поглощение Ци на 5%.",
+      "type": "cultivation",
+      "element": "lightning",
+      "level": 1,
+      "rarity": "uncommon",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333970,
+        "template": "cultivation_lightning",
+        "generatedAt": "2026-03-14T08:02:13.904Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000066",
+      "name": "Забвенный Поток",
+      "nameEn": "Забвенный Поток",
+      "description": "Забвенный Поток — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "type": "cultivation",
+      "element": "void",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333971,
+        "template": "cultivation_void",
+        "generatedAt": "2026-03-14T08:02:13.904Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000067",
+      "name": "Поток истинный",
+      "nameEn": "Поток Истинный",
+      "description": "Поток истинный — техника культивации уровня 1. Редкость: uncommon. Увеличивает поглощение Ци на 5%.",
+      "type": "cultivation",
+      "element": "neutral",
+      "level": 1,
+      "rarity": "uncommon",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333972,
+        "template": "cultivation_neutral",
+        "generatedAt": "2026-03-14T08:02:13.904Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000068",
+      "name": "Концентрация вулканический",
+      "nameEn": "Концентрация Вулканический",
+      "description": "Концентрация вулканический — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "type": "cultivation",
+      "element": "fire",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333973,
+        "template": "cultivation_fire",
+        "generatedAt": "2026-03-14T08:02:13.904Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000069",
+      "name": "Накопление холодный",
+      "nameEn": "Накопление Холодный",
+      "description": "Накопление холодный — техника культивации уровня 1. Редкость: uncommon. Увеличивает поглощение Ци на 5%.",
+      "type": "cultivation",
+      "element": "water",
+      "level": 1,
+      "rarity": "uncommon",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333974,
+        "template": "cultivation_water",
+        "generatedAt": "2026-03-14T08:02:13.904Z",
+        "generatorVersion": "2.1.0"
+      }
+    },
+    {
+      "id": "CU_000070",
+      "name": "Тяжёлый Дыхание",
+      "nameEn": "Тяжёлый Дыхание",
+      "description": "Тяжёлый Дыхание — техника культивации уровня 1. Редкость: common. Увеличивает поглощение Ци на 4%.",
+      "type": "cultivation",
+      "element": "earth",
+      "level": 1,
+      "rarity": "common",
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 0,
+        "activeEffects": []
+      },
+      "meta": {
+        "seed": 1773475333975,
+        "template": "cultivation_earth",
+        "generatedAt": "2026-03-14T08:02:13.904Z",
+        "generatorVersion": "2.1.0"
+      }
+    }
+  ],
+  "autoGenerated": true,
+  "generatedAt": "2026-03-14T08:02:13.920Z"
+}

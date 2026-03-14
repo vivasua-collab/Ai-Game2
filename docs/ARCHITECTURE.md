@@ -1,8 +1,8 @@
 # 🏗️ Архитектура Cultivation World Simulator
 
 > Подробное описание архитектуры с интеграцией Phaser 3.
-> Версия: 16 | Год: 2026
-> Обновлено: 2026-03-15 (Stat Development System)
+> Версия: 17 | Год: 2026
+> Обновлено: 2026-03-14 (Рефакторинг: перенос API функций в FUNCTIONS.md)
 
 ---
 
@@ -325,38 +325,7 @@ START SESSION                    ACTIVE SESSION                   END SESSION
 
 ### API TruthSystem
 
-```typescript
-// Загрузка сессии
-await TruthSystem.loadSession(sessionId);
-
-// Получение состояния
-const state = TruthSystem.getSessionState(sessionId);
-const character = TruthSystem.getCharacter(sessionId);
-
-// Обновление персонажа (только память)
-TruthSystem.updateCharacter(sessionId, { currentQi: 500 });
-
-// Операции с Ци
-TruthSystem.addQi(sessionId, 100);
-TruthSystem.spendQi(sessionId, 50);
-
-// Критические операции (БД + память)
-await TruthSystem.addTechnique(sessionId, techniqueData);
-await TruthSystem.addInventoryItem(sessionId, itemData);
-
-// Смена локации (БД + память)
-await TruthSystem.changeLocation(sessionId, newLocationId);
-
-// Время
-TruthSystem.advanceTime(sessionId, 60); // +60 минут
-
-// Сохранение
-await TruthSystem.saveToDatabase(sessionId);
-await TruthSystem.quickSave(sessionId);
-
-// Выгрузка
-await TruthSystem.unloadSession(sessionId);
-```
+> 📖 **Полный список функций:** [docs/FUNCTIONS.md](./FUNCTIONS.md) — раздел «Система Истинности»
 
 ### Файлы
 
@@ -599,15 +568,9 @@ interface BasePreset {
 | master | Мастерские | text-purple-400 |
 | legendary | Легендарные | text-amber-400 |
 
-### Утилиты
+### Пресеты (index.ts)
 
-```typescript
-getAllPresets()          // Все пресеты в одном массиве
-getStarterPack(id)       // Стартовый набор для персонажа
-findPresetById(id)       // Универсальный поиск
-filterByCategory(cat)    // Фильтр по категории
-filterByRarity(rarity)   // Фильтр по редкости
-```
+> 📖 **Полный список функций:** [docs/FUNCTIONS.md](./FUNCTIONS.md) — раздел «Утилиты пресетов»
 
 ---
 
@@ -975,28 +938,9 @@ const qiCost = technique.qiCost ?? 0;
 
 ### Паттерн инициализации (v14)
 
-```typescript
-// page.tsx
-useEffect(() => {
-  const initSession = async () => {
-    // 1. Получаем последнюю сессию с сервера
-    const response = await fetch('/api/game/last-session');
-    const data = await response.json();
-    
-    if (data.success && data.session) {
-      // 2. Загружаем в Zustand (memory only)
-      await loadGame(data.session.id);
-    } else {
-      // 3. Или создаём новую
-      await startGame(1, undefined, "Путник");
-    }
-    
-    setIsInitializing(false);
-  };
-  
-  initSession();
-}, []);
-```
+> 📖 **Пример кода:** [docs/FUNCTIONS.md](./FUNCTIONS.md) — раздел «API Эндпоинты»
+
+См. `/api/game/last-session` для получения последней сессии с сервера.
 
 ---
 
@@ -1088,36 +1032,11 @@ useEffect(() => {
 
 ### API системы
 
-```typescript
-// Пороги развития
-import { calculateStatThreshold, advanceStat, getStatProgress } from './stat-threshold';
-
-const threshold = calculateStatThreshold(25); // 2.0
-const progress = getStatProgress(stat); // 0-1
-
-// Виртуальная дельта
-import { addVirtualDelta, processSleep } from './stat-development';
-
-const result = addVirtualDelta(stat, 0.15, 'combat_hit');
-const sleepResult = processSleep(statsData, 8); // 8 часов сна
-
-// Тренировка
-import { startTraining, processTrainingTick, completeTraining } from './training-system';
-
-const session = startTraining(characterId, { type: 'focused', targetStat: 'strength', durationMinutes: 60 });
-```
+> 📖 **Полный список функций:** [docs/FUNCTIONS.md](./FUNCTIONS.md) — раздел «Система развития характеристик»
 
 ### Интеграция с боем
 
-Боевая система автоматически генерирует виртуальную дельту:
-
-```typescript
-// combat-system.ts
-import { generateAttackDelta, createCombatDeltaAction } from './combat-system';
-
-const delta = generateAttackDelta(isCritical, weaponType, techniqueMultiplier);
-const action = createCombatDeltaAction(delta, fatigue);
-```
+> 📖 **Подробнее:** [docs/FUNCTIONS.md](./FUNCTIONS.md) — раздел «Боевая система»
 
 ---
 
