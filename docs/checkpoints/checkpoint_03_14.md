@@ -3,7 +3,7 @@
 **Дата создания:** 2026-03-14
 **Ветка:** main2d4
 **Статус:** 🔄 В работе
-**Последнее обновление:** 2026-03-14 (проверка реализации)
+**Последнее обновление:** 2026-03-14 (Phase 15 Planning)
 
 ---
 
@@ -56,149 +56,33 @@ cooldown = max(200ms, 1000ms - (AGI-10) × 15ms)
 
 ---
 
-## 🔴 КРИТИЧЕСКИЕ БАГИ (найдены при проверке)
+### Phase 14: NPC Collision & Combat — ✅ ВЫПОЛНЕНО
+
+| Задача | Статус |
+|--------|--------|
+| Ручная проверка коллизии в `handleMovement()` | ✅ |
+| Константы `NPC_COLLISION_RADIUS = 25`, `PLAYER_COLLISION_RADIUS = 15` | ✅ |
+| Цикл по `this.npcs` в `performAttack()` | ✅ |
+| Функция `damageNPC()` с визуальным эффектом | ✅ |
+| Функция `handleNPCDeath()` с анимацией смерти | ✅ |
+| Поля LocationNPC: `hitboxRadius`, `hp`, `maxHp` | ✅ |
+| Re-export `createInitialStatsDevelopment` | ✅ |
+
+---
+
+## 🔴 КРИТИЧЕСКИЕ БАГИ — ИСПРАВЛЕНЫ
 
 ### BUG #1: NPC Collision Missing — ✅ ИСПРАВЛЕНО
 
-**Проблема:** Игрок проходит сквозь NPC, не упирается в них.
+**Проблема:** Игрок проходил сквозь NPC
 
-**Анализ кода:**
-```typescript
-// LocationScene.ts:525 - NPC создаётся как Container
-const container = this.add.container(npc.x, npc.y);
-// НЕТ physics.add.existing(container)!
+**Решение:** Ручная проверка коллизии в `handleMovement()`
 
-// LocationScene.ts:571 - setInteractive НЕ создаёт физическое тело!
-body.setInteractive({ useHandCursor: true });
-// Это только для mouse events, НЕ для collision!
-```
+### BUG #2: Attack на NPC — ✅ ИСПРАВЛЕНО
 
-**Решение:** Добавлена ручная проверка коллизии в `handleMovement()`:
-```typescript
-// Check collision with NPCs
-for (const [id, npc] of this.npcs) {
-  const distance = Math.sqrt(dx*dx + dy*dy);
-  const minDistance = PLAYER_COLLISION_RADIUS + npc.hitboxRadius;
-  if (distance < minDistance) {
-    // Push player out of NPC
-    newX += nx * overlap;
-    newY += ny * overlap;
-  }
-}
-```
+**Проблема:** Атака не наносила урон NPC
 
----
-
-### BUG #2: Attack Doesn't Hit NPCs — ✅ ИСПРАВЛЕНО
-
-**Проблема:** Атака не наносит урон NPC.
-
-**Анализ кода:**
-```typescript
-// LocationScene.ts:865 - Цикл только по training targets!
-for (const target of this.targets) {
-  if (this.checkAttackHit(...)) {
-    this.damageTarget(target, attackResult.damage, 'normal');
-  }
-}
-// НЕТ цикла по this.npcs!
-```
-
-**Решение:** Добавлен цикл по NPC в `performAttack()`:
-```typescript
-// Apply damage to NPCs
-for (const [id, npc] of this.npcs) {
-  if (this.checkAttackHit(..., npc.hitboxRadius)) {
-    this.damageNPC(npc, attackResult.damage);
-    this.reportAttackToServer(npc.id, damage, 'temp_npc');
-  }
-}
-```
-
----
-
-## 📋 План исправления критических багов
-
-### Phase 14: NPC Collision & Combat (P0) — ✅ ВЫПОЛНЕНО
-
-**Задачи:**
-
-1. **Добавить физическое тело NPC (или ручную коллизию)**
-   - [x] Вариант B: Ручная проверка в `handleMovement()`
-   - [x] Константы `NPC_COLLISION_RADIUS = 25`, `PLAYER_COLLISION_RADIUS = 15`
-
-2. **Добавить урон по NPC в атаке**
-   - [x] Добавлен цикл по `this.npcs` в `performAttack()`
-   - [x] Добавлена функция `damageNPC()` с визуальным эффектом
-   - [x] Добавлена функция `handleNPCDeath()` с анимацией смерти
-
-3. **Обновить тип LocationNPC**
-   - [x] Добавлены поля: `hitboxRadius`, `hp`, `maxHp`
-   - [x] HP рассчитывается по уровню культивации
-
-4. **Исправить экспорт**
-   - [x] Добавлен re-export `createInitialStatsDevelopment` из `stat-development.ts`
-
----
-
-## 🔍 Результаты анализа кода (исходные)
-
-### 1. Дублирующиеся функции
-
-| Функция | Файлы-дубликаты | Рекомендация |
-|---------|-----------------|--------------|
-| `getTimeOfDay` | `meditation-interruption.ts`, `time-system.ts`, `world.service.ts`, `chat/utils/time-utils.ts` | Унифицировать в `time-system.ts` |
-| `getSeason` / `getSeasonName` | `time-system.ts`, `chat/utils/time-utils.ts` | Унифицировать в `time-system.ts` |
-| `formatTime` | `qi-shared.ts`, `time-system.ts` | Разные сигнатуры - оставить обе |
-
-### 2. Система прерываний медитации
-
-**Статус:** ⚠️ Отключена (заглушка)
-
-```typescript
-// src/app/api/meditation/route.ts:297
-const MEDITATION_INTERRUPTIONS_ENABLED = false;
-```
-
-**UI:** Сообщение "⚠️ Возможны прерывания (N проверок)" в RestDialog.tsx — оставить как заглушку.
-
-**Действие:** Не трогать до отдельного распоряжения.
-
----
-
-### 3. Система коллизий NPC
-
-**Статус:** ✅ Библиотека создана, ❌ НЕ интегрирована
-
-Файл: `src/lib/game/npc-collision.ts`
-
-Функции:
-- `checkNPCCollision()` — проверка столкновения
-- `checkPositionCollision()` — проверка с позицией (ИСПОЛЬЗОВАТЬ!)
-- `applyCollisionPush()` — выталкивание
-- `calculateCollisionConfig()` — конфигурация
-- `checkPlayerInteraction()` — взаимодействие с игроком
-
-**Требуется:** Интеграция в LocationScene!
-
----
-
-### 4. Первый слот игрока (Slot 0)
-
-**Статус:** ✅ Ограничение реализовано
-
-**Расположение:** `src/app/api/technique/slot/route.ts:113-129`
-
-```typescript
-if (slotIndex === 0) {
-  if (subtype !== 'melee_strike') {
-    return NextResponse.json({ error: 'Слот 1 предназначен только для техник тела' });
-  }
-}
-```
-
-**Совместимые техники:**
-- Только `subtype: 'melee_strike'` (удары руками/ногами)
+**Решение:** Добавлен цикл по NPC в `performAttack()`
 
 ---
 
@@ -209,6 +93,7 @@ if (slotIndex === 0) {
 | P0 ✅ | Phase 14 | NPC Collision & Combat | ✅ DONE |
 | P0 ✅ | Phase 8 | Система атак руками | ✅ DONE |
 | P0 ✅ | Phase 9 | Интеграция дельты развития | ✅ DONE |
+| P1 | Phase 15 | Оружие и броня | 📋 Planning |
 | P1 | Phase 11 | Боевая система — улучшения | pending |
 | P2 ✅ | Phase 7 | UI компоненты | ✅ DONE |
 | P2 | Phase 10 | Рефакторинг дубликатов | pending |
@@ -223,9 +108,71 @@ if (slotIndex === 0) {
 | Файл | Описание | Приоритет | Статус |
 |------|----------|-----------|--------|
 | [roadmap.md](../implementation/roadmap.md) | 🗺️ Дорожная карта | — | ✅ |
-| [phase-8-attack-system.md](../implementation/phase-8-attack-system.md) | Система атак руками | P0 🔴 | ✅ DONE |
-| [phase-9-delta-integration.md](../implementation/phase-9-delta-integration.md) | Интеграция дельты | P0 🔴 | ✅ DONE |
-| [phase-7-ui.md](../implementation/phase-7-ui.md) | UI компоненты | P2 🟢 | ✅ DONE |
+| [phase-15-weapon-armor-system.md](../implementation/phase-15-weapon-armor-system.md) | Оружие и броня | P1 | 📋 NEW |
+
+---
+
+## 🆕 PHASE 15: Оружие и Броня — Теоретические изыскания
+
+### Ключевые решения для внедрения
+
+#### 1. Система прочности (Durability)
+
+**Выбор: ВАРИАНТ C (Комбинированный)**
+```
+totalLoss = baseLoss + impactLoss
+baseLoss = 0.01 × actionCount
+impactLoss = max(0, damageAbsorbed - threshold) / hardness
+```
+
+**Условия поломки:**
+- Critical (1-24%): Шанс сломаться = (1 - durability/max) × 0.1 × hitCount
+- Broken (0%): Невозможно использовать
+
+**Ремонт:** Вариант B + C (самостоятельный + Ци-ремонт)
+
+#### 2. Урон оружия
+
+**Выбор: ВАРИАНТ C (Гибридный)**
+```
+baseDamage = max(handDamage, weaponDamage × 0.5)
+bonusDamage = weaponDamage × statScaling
+totalDamage = baseDamage + bonusDamage
+```
+
+#### 3. Распределение урона по HP
+
+**Выбор: ВАРИАНТ C (Kenshi-style)**
+```
+redHP -= damage × 0.7
+blackHP -= damage × 0.3
+// При blackHP < 30% → шок, ускоренная потеря redHP
+```
+
+#### 4. Порядок расчёта урона
+
+```
+1. rawDamage = handDamage + weaponDamage + techniqueDamage
+2. hitPart = rollBodyPartHit()
+3. checkDodge() → damage = 0 if success
+4. checkBlock() → damage *= (1 - effectiveness)
+5. armor = getArmorForPart(hitPart)
+   - coverage check (80% шанс работы брони)
+   - damageReduction (% снижения)
+   - penetration check (пробитие)
+6. materialReduction (кожа/чешуя/призрак)
+7. finalDamage = max(1, floor(damage))
+8. applyDamageToBodyPart()
+```
+
+### Задачи Phase 15
+
+| Subtask | Описание | Файлы |
+|---------|----------|-------|
+| 15A | Базовая структура | `types/equipment-stats.ts`, Prisma, `durability-system.ts` |
+| 15B | Расчёт урона | `damage-calculation.ts`, `body-part-targeting.ts` |
+| 15C | Броня | `armor-system.ts`, coverage, resistances |
+| 15D | Интеграция | `LocationScene.ts`, UI инвентаря |
 
 ---
 
@@ -254,34 +201,23 @@ if (slotIndex === 0) {
 - **Создано:** `src/components/stats/` (6 файлов)
 - **Результат:** UI компоненты для отображения развития характеристик
 
----
-
-## 🔧 Проверка Event Bus
-
-### Архитектура
-
-```
-Phaser Scene → Event Bus → Handler → Truth System → Response
-```
-
-### Текущие handlers
-
-| Handler | Файл | Статус |
-|---------|------|--------|
-| Combat | `handlers/combat.ts` | ✅ |
-| Body | `handlers/body.ts` | ✅ |
-| Inventory | `handlers/inventory.ts` | ✅ |
-| Movement | `handlers/movement.ts` | ✅ |
-| Environment | `handlers/environment.ts` | ✅ |
-| Stat | `handlers/stat.ts` | ✅ |
+### Phase 14: NPC Collision & Combat
+- **Модифицировано:** `src/game/scenes/LocationScene.ts`
+- **Результат:**
+  - Игрок не проходит сквозь NPC
+  - Атаки наносят урон NPC
+  - NPC умирают с анимацией
 
 ---
 
 ## 📝 Следующие шаги
 
-1. **Phase 14 (P0)** — Исправить NPC Collision и Combat
-2. **Проверить работоспособность** — протестировать в игре
-3. **Phase 11 (P1)** — Боевая система улучшения
+1. **Phase 15 (P1)** — Оружие и броня
+   - Изучить `phase-15-weapon-armor-system.md`
+   - Выбрать финальные варианты реализации
+   - Начать с 15A (базовая структура)
+
+2. **Phase 11 (P1)** — Боевая система улучшения
 
 ---
 

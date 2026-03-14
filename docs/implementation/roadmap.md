@@ -5,55 +5,60 @@
 
 ---
 
-## ORDER
+## COMPLETED PHASES
 
 ```
-Phase 8 → Phase 9 → Phase 7
+Phase 8 → Phase 9 → Phase 14 → Phase 7
 ```
 
-| Order | Phase | File | Priority |
-|-------|-------|------|----------|
-| 1 | Hand Combat | [phase-8-attack-system.md](./phase-8-attack-system.md) | P0 |
-| 2 | Delta Integration | [phase-9-delta-integration.md](./phase-9-delta-integration.md) | P0 |
-| 3 | UI Stats | [phase-7-ui.md](./phase-7-ui.md) | P2 |
+| Phase | Description | Status | Completed |
+|-------|-------------|--------|-----------|
+| Phase 8 | Hand Combat System | ✅ DONE | 2026-03-14 |
+| Phase 9 | Delta Development Integration | ✅ DONE | 2026-03-14 |
+| Phase 14 | NPC Collision & Combat | ✅ DONE | 2026-03-14 |
+| Phase 7 | UI Stats Components | ✅ DONE | 2026-03-14 |
 
 ---
 
-## DEPENDENCIES
+## PENDING PHASES
 
 ```
-Phase 8 ──┬──▶ Phase 9 ──▶ Phase 7
-          │
-          └──▶ Phase 11
+Phase 15 → Phase 11 → Phase 10 → Phase 13
 ```
+
+| Order | Phase | File | Priority | Status |
+|-------|-------|------|----------|--------|
+| 1 | Weapon & Armor System | [phase-15-weapon-armor-system.md](./phase-15-weapon-armor-system.md) | P1 | 📋 Planning |
+| 2 | Combat Improvements | — | P1 | pending |
+| 3 | Refactoring Duplicates | — | P2 | pending |
+| 4 | Formations | — | P2 | pending |
 
 ---
 
-## REQUIRED DOCS (read before implementing)
+## PHASE 15 SUBTASKS
 
-### Phase 8 (Hand Combat)
-- [../combat-system.md](../combat-system.md) — формулы урона
-- [../technique-system.md](../technique-system.md) — типы техник
+```
+Phase 15A → Phase 15B → Phase 15C → Phase 15D
+```
 
-### Phase 9 (Delta Integration)
-- [../stat-threshold-system.md](../stat-threshold-system.md) — пороги развития
-- [../FUNCTIONS.md](../FUNCTIONS.md) — API функций
-
-### Phase 7 (UI Stats)
-- [../stat-threshold-system.md](../stat-threshold-system.md) — типы StatDevelopment
+| Subtask | Description | Priority |
+|---------|-------------|----------|
+| 15A | Базовая структура (types, prisma, durability) | P1 |
+| 15B | Расчёт урона (damage-calculation, body-part-targeting) | P1 |
+| 15C | Броня (armor-system, coverage, resistances) | P1 |
+| 15D | Интеграция (LocationScene, UI) | P1 |
 
 ---
 
-## FILES TO CREATE/MODIFY
+## REQUIRED DOCS
 
-| Phase | Action | File |
-|-------|--------|------|
-| 8 | CREATE | `src/lib/game/hand-combat.ts` |
-| 8 | MODIFY | `src/game/scenes/LocationScene.ts` |
-| 9 | MODIFY | `src/lib/game/event-bus/handlers/combat.ts` |
-| 9 | CREATE | `src/lib/game/stat-truth.ts` |
-| 9 | CREATE | `src/app/api/character/delta/route.ts` |
-| 7 | CREATE | `src/components/stats/*.tsx` (5 файлов) |
+### Phase 15 (Weapon & Armor)
+- [../equip.md](../equip.md) — Типы экипировки
+- [../body.md](../body.md) — Система тела
+- [../combat-system.md](../combat-system.md) — Боевая система
+- [../DAMAGE_FORMULAS_PROPOSAL.md](../DAMAGE_FORMULAS_PROPOSAL.md) — Формулы урона
+- [../technique-system.md](../technique-system.md) — Техники
+- [../vitality-hp-system.md](../vitality-hp-system.md) — Vitality и HP
 
 ---
 
