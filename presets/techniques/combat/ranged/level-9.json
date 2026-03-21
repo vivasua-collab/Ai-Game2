@@ -1,0 +1,429 @@
+{
+  "version": "2.0",
+  "count": 9,
+  "techniques": [
+    {
+      "id": "RG000007",
+      "name": "Пожирающий Волна",
+      "nameEn": "Пожирающий Волна",
+      "description": "Пожирающий Волна — техника ranged_projectile элемента fire уровня 9. Grade: common. Урон: 8192. Дальность: 15м.",
+      "type": "combat",
+      "subtype": "ranged_projectile",
+      "element": "fire",
+      "level": 9,
+      "grade": "common",
+      "qiCost": 8192,
+      "baseQiCost": 8192,
+      "baseDamage": 8192,
+      "baseRange": 15,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 8192,
+        "finalQiCost": 8192,
+        "finalRange": 15,
+        "formula": "8192 × 1 = 8192",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 27
+      },
+      "meta": {
+        "seed": 1774114254443,
+        "template": "combat_ranged_projectile_fire",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000008",
+      "name": "Холодный Ладонь",
+      "nameEn": "Холодный Ладонь",
+      "description": "Холодный Ладонь — техника ranged_projectile элемента water уровня 9. Grade: refined. Урон: 9830. Дальность: 15м.",
+      "type": "combat",
+      "subtype": "ranged_projectile",
+      "element": "water",
+      "level": 9,
+      "grade": "refined",
+      "qiCost": 8192,
+      "baseQiCost": 8192,
+      "baseDamage": 8192,
+      "baseRange": 15,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 9830,
+        "finalQiCost": 8192,
+        "finalRange": 15,
+        "formula": "8192 × 1.2 = 9830",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 5
+        }
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 29
+      },
+      "meta": {
+        "seed": 1774114254444,
+        "template": "combat_ranged_projectile_water",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000009",
+      "name": "Укол титанический",
+      "nameEn": "Укол Титанический",
+      "description": "Укол титанический — техника ranged_projectile элемента earth уровня 9. Grade: common. Урон: 8192. Дальность: 15м.",
+      "type": "combat",
+      "subtype": "ranged_projectile",
+      "element": "earth",
+      "level": 9,
+      "grade": "common",
+      "qiCost": 8192,
+      "baseQiCost": 8192,
+      "baseDamage": 8192,
+      "baseRange": 15,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 8192,
+        "finalQiCost": 8192,
+        "finalRange": 15,
+        "formula": "8192 × 1 = 8192",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 27
+      },
+      "meta": {
+        "seed": 1774114254445,
+        "template": "combat_ranged_projectile_earth",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000016",
+      "name": "Взрыв струящийся",
+      "nameEn": "Взрыв Струящийся",
+      "description": "Взрыв струящийся — техника ranged_beam элемента water уровня 9. Grade: refined. Урон: 9830. Дальность: 20м.",
+      "type": "combat",
+      "subtype": "ranged_beam",
+      "element": "water",
+      "level": 9,
+      "grade": "refined",
+      "qiCost": 8192,
+      "baseQiCost": 8192,
+      "baseDamage": 8192,
+      "baseRange": 20,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 9830,
+        "finalQiCost": 8192,
+        "finalRange": 20,
+        "formula": "8192 × 1.2 = 9830",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 5
+        }
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 29
+      },
+      "meta": {
+        "seed": 1774114254452,
+        "template": "combat_ranged_beam_water",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000017",
+      "name": "Ладонь неизбежный",
+      "nameEn": "Ладонь Неизбежный",
+      "description": "Ладонь неизбежный — техника ranged_beam элемента earth уровня 9. Grade: common. Урон: 8192. Дальность: 20м.",
+      "type": "combat",
+      "subtype": "ranged_beam",
+      "element": "earth",
+      "level": 9,
+      "grade": "common",
+      "qiCost": 8192,
+      "baseQiCost": 8192,
+      "baseDamage": 8192,
+      "baseRange": 20,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 8192,
+        "finalQiCost": 8192,
+        "finalRange": 20,
+        "formula": "8192 × 1 = 8192",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 27
+      },
+      "meta": {
+        "seed": 1774114254453,
+        "template": "combat_ranged_beam_earth",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000018",
+      "name": "Укол порывистый",
+      "nameEn": "Укол Порывистый",
+      "description": "Укол порывистый — техника ranged_beam элемента air уровня 9. Grade: refined. Урон: 9830. Дальность: 20м.",
+      "type": "combat",
+      "subtype": "ranged_beam",
+      "element": "air",
+      "level": 9,
+      "grade": "refined",
+      "qiCost": 8192,
+      "baseQiCost": 8192,
+      "baseDamage": 8192,
+      "baseRange": 20,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 9830,
+        "finalQiCost": 8192,
+        "finalRange": 20,
+        "formula": "8192 × 1.2 = 9830",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 5
+        }
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 29
+      },
+      "meta": {
+        "seed": 1774114254454,
+        "template": "combat_ranged_beam_air",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000025",
+      "name": "Горный Взрыв",
+      "nameEn": "Горный Взрыв",
+      "description": "Горный Взрыв — техника ranged_aoe элемента earth уровня 9. Grade: common. Урон: 8192. Дальность: 10м.",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "earth",
+      "level": 9,
+      "grade": "common",
+      "qiCost": 8192,
+      "baseQiCost": 8192,
+      "baseDamage": 8192,
+      "baseRange": 10,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 8192,
+        "finalQiCost": 8192,
+        "finalRange": 10,
+        "formula": "8192 × 1 = 8192",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 27
+      },
+      "meta": {
+        "seed": 1774114254461,
+        "template": "combat_ranged_aoe_earth",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000026",
+      "name": "Штормовой Ладонь",
+      "nameEn": "Штормовой Ладонь",
+      "description": "Штормовой Ладонь — техника ranged_aoe элемента air уровня 9. Grade: perfect. Урон: 11468. Дальность: 10м.",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "air",
+      "level": 9,
+      "grade": "perfect",
+      "qiCost": 8192,
+      "baseQiCost": 8192,
+      "baseDamage": 8192,
+      "baseRange": 10,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 11468,
+        "finalQiCost": 8192,
+        "finalRange": 10,
+        "formula": "8192 × 1.4 = 11468",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 10,
+          "critDamage": 2
+        }
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 31
+      },
+      "meta": {
+        "seed": 1774114254462,
+        "template": "combat_ranged_aoe_air",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000027",
+      "name": "Клинок статический",
+      "nameEn": "Клинок Статический",
+      "description": "Клинок статический — техника ranged_aoe элемента lightning уровня 9. Grade: common. Урон: 8192. Дальность: 10м.",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "lightning",
+      "level": 9,
+      "grade": "common",
+      "qiCost": 8192,
+      "baseQiCost": 8192,
+      "baseDamage": 8192,
+      "baseRange": 10,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 8192,
+        "finalQiCost": 8192,
+        "finalRange": 10,
+        "formula": "8192 × 1 = 8192",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 27
+      },
+      "meta": {
+        "seed": 1774114254463,
+        "template": "combat_ranged_aoe_lightning",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    }
+  ]
+}

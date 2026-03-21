@@ -1,0 +1,102 @@
+{
+  "version": "2.0",
+  "count": 2,
+  "techniques": [
+    {
+      "id": "CR000001",
+      "name": "Забвенный Оковы",
+      "nameEn": "Забвенный Оковы",
+      "description": "Забвенный Оковы — техника curse элемента void уровня 3. Grade: perfect. Урон: 224. Дальность: 5м.",
+      "type": "curse",
+      "element": "void",
+      "level": 3,
+      "grade": "perfect",
+      "qiCost": 160,
+      "baseQiCost": 160,
+      "baseDamage": 160,
+      "baseRange": 5,
+      "baseCapacity": 40,
+      "computed": {
+        "finalDamage": 224,
+        "finalQiCost": 160,
+        "finalRange": 5,
+        "formula": "160 × 1.4 = 224",
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 11,
+            "duration": 2
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "intelligence",
+          "debuffAmount": 11,
+          "debuffDuration": 2
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 2,
+      "minLevel": 2,
+      "maxLevel": 4,
+      "fatigueCost": {
+        "physical": 1,
+        "mental": 0
+      },
+      "meta": {
+        "seed": 1774114254497,
+        "template": "curse_base_void",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 3
+      }
+    },
+    {
+      "id": "CR000002",
+      "name": "Печать истинный",
+      "nameEn": "Печать Истинный",
+      "description": "Печать истинный — техника curse уровня 3. Grade: common. Урон: 160. Дальность: 5м.",
+      "type": "curse",
+      "element": "neutral",
+      "level": 3,
+      "grade": "common",
+      "qiCost": 160,
+      "baseQiCost": 160,
+      "baseDamage": 160,
+      "baseRange": 5,
+      "baseCapacity": 40,
+      "computed": {
+        "finalDamage": 160,
+        "finalQiCost": 160,
+        "finalRange": 5,
+        "formula": "160 × 1 = 160",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 2,
+      "minLevel": 2,
+      "maxLevel": 4,
+      "fatigueCost": {
+        "physical": 1,
+        "mental": 0
+      },
+      "meta": {
+        "seed": 1774114254498,
+        "template": "curse_base_neutral",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 3
+      }
+    }
+  ]
+}

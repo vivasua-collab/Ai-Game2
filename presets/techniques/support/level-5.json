@@ -1,0 +1,105 @@
+{
+  "version": "2.0",
+  "count": 2,
+  "techniques": [
+    {
+      "id": "SP000003",
+      "name": "Штормовой Усиление",
+      "nameEn": "Штормовой Усиление",
+      "description": "Штормовой Усиление — техника support элемента air уровня 5. Grade: refined. Урон: 1075. Дальность: 5м.",
+      "type": "support",
+      "element": "air",
+      "level": 5,
+      "grade": "refined",
+      "qiCost": 896,
+      "baseQiCost": 896,
+      "baseDamage": 896,
+      "baseRange": 5,
+      "baseCapacity": 56,
+      "computed": {
+        "finalDamage": 1075,
+        "finalQiCost": 896,
+        "finalRange": 5,
+        "formula": "896 × 1.2 = 1075",
+        "activeEffects": [
+          {
+            "type": "speed",
+            "value": 0
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "speed": true
+        },
+        "effectValues": {
+          "speedBonus": 40
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "intelligence": 17
+      },
+      "meta": {
+        "seed": 1774114254481,
+        "template": "support_base_air",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 4
+      }
+    },
+    {
+      "id": "SP000004",
+      "name": "Защита искрящийся",
+      "nameEn": "Защита Искрящийся",
+      "description": "Защита искрящийся — техника support элемента lightning уровня 5. Grade: common. Урон: 896. Дальность: 5м.",
+      "type": "support",
+      "element": "lightning",
+      "level": 5,
+      "grade": "common",
+      "qiCost": 896,
+      "baseQiCost": 896,
+      "baseDamage": 896,
+      "baseRange": 5,
+      "baseCapacity": 56,
+      "computed": {
+        "finalDamage": 896,
+        "finalQiCost": 896,
+        "finalRange": 5,
+        "formula": "896 × 1 = 896",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "intelligence": 15
+      },
+      "meta": {
+        "seed": 1774114254482,
+        "template": "support_base_lightning",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 4
+      }
+    }
+  ]
+}

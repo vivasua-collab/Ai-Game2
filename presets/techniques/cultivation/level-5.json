@@ -1,0 +1,52 @@
+{
+  "version": "2.0",
+  "count": 1,
+  "techniques": [
+    {
+      "id": "CU000002",
+      "name": "Концентрация чистый",
+      "nameEn": "Концентрация Чистый",
+      "description": "Концентрация чистый — техника cultivation уровня 5. Grade: common. Урон: 0. Дальность: 5м.",
+      "type": "cultivation",
+      "element": "neutral",
+      "level": 5,
+      "grade": "common",
+      "qiCost": 0,
+      "baseQiCost": 0,
+      "baseDamage": 0,
+      "baseRange": 5,
+      "baseCapacity": null,
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 5,
+        "formula": "Пассивная техника",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "intelligence": 15,
+        "conductivity": 10
+      },
+      "meta": {
+        "seed": 1774114254506,
+        "template": "cultivation_base_neutral",
+        "generatedAt": "2026-03-21T17:30:54.391Z",
+        "generatorVersion": "4.0.0",
+        "tier": 5
+      }
+    }
+  ]
+}

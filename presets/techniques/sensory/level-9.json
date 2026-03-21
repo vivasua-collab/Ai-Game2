@@ -1,0 +1,123 @@
+{
+  "version": "2.0",
+  "count": 2,
+  "techniques": [
+    {
+      "id": "SN000005",
+      "name": "Обнаружение стремительный",
+      "nameEn": "Обнаружение Стремительный",
+      "description": "Обнаружение стремительный — техника sensory элемента air уровня 9. Grade: perfect. Урон: 11468. Дальность: 5м.",
+      "type": "sensory",
+      "element": "air",
+      "level": 9,
+      "grade": "perfect",
+      "qiCost": 8192,
+      "baseQiCost": 8192,
+      "baseDamage": 8192,
+      "baseRange": 5,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 11468,
+        "finalQiCost": 8192,
+        "finalRange": 5,
+        "formula": "8192 × 1.4 = 11468",
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 32,
+            "duration": 3
+          },
+          {
+            "type": "speed",
+            "value": 0
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "buff": true,
+          "speed": true
+        },
+        "effectValues": {
+          "buffType": "speed",
+          "buffAmount": 32,
+          "buffDuration": 3,
+          "speedBonus": 59
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "intelligence": 31
+      },
+      "meta": {
+        "seed": 1774114254495,
+        "template": "sensory_base_air",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 4
+      }
+    },
+    {
+      "id": "SN000006",
+      "name": "Ослепляющий Обнаружение",
+      "nameEn": "Ослепляющий Обнаружение",
+      "description": "Ослепляющий Обнаружение — техника sensory элемента lightning уровня 9. Grade: common. Урон: 8192. Дальность: 5м.",
+      "type": "sensory",
+      "element": "lightning",
+      "level": 9,
+      "grade": "common",
+      "qiCost": 8192,
+      "baseQiCost": 8192,
+      "baseDamage": 8192,
+      "baseRange": 5,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 8192,
+        "finalQiCost": 8192,
+        "finalRange": 5,
+        "formula": "8192 × 1 = 8192",
+        "activeEffects": [
+          {
+            "type": "speed",
+            "value": 0
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "speed": true
+        },
+        "effectValues": {
+          "speedBonus": 62
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "intelligence": 27
+      },
+      "meta": {
+        "seed": 1774114254496,
+        "template": "sensory_base_lightning",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 4
+      }
+    }
+  ]
+}

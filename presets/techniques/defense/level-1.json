@@ -1,0 +1,141 @@
+{
+  "version": "2.0",
+  "count": 3,
+  "techniques": [
+    {
+      "id": "DF000001",
+      "name": "Барьер вулканический",
+      "nameEn": "Барьер Вулканический",
+      "description": "Барьер вулканический — техника defense элемента fire уровня 1. Grade: perfect. Урон: 100. Дальность: 5м.",
+      "type": "defense",
+      "element": "fire",
+      "level": 1,
+      "grade": "perfect",
+      "qiCost": 72,
+      "baseQiCost": 72,
+      "baseDamage": 72,
+      "baseRange": 5,
+      "baseCapacity": 72,
+      "computed": {
+        "finalDamage": 100,
+        "finalQiCost": 72,
+        "finalRange": 5,
+        "formula": "72 × 1.4 = 100",
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 29
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 29
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "meta": {
+        "seed": 1774114254464,
+        "template": "defense_base_fire",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 2
+      }
+    },
+    {
+      "id": "DF000002",
+      "name": "Струящийся Барьер",
+      "nameEn": "Струящийся Барьер",
+      "description": "Струящийся Барьер — техника defense элемента water уровня 1. Grade: common. Урон: 72. Дальность: 5м.",
+      "type": "defense",
+      "element": "water",
+      "level": 1,
+      "grade": "common",
+      "qiCost": 72,
+      "baseQiCost": 72,
+      "baseDamage": 72,
+      "baseRange": 5,
+      "baseCapacity": 72,
+      "computed": {
+        "finalDamage": 72,
+        "finalQiCost": 72,
+        "finalRange": 5,
+        "formula": "72 × 1 = 72",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "meta": {
+        "seed": 1774114254465,
+        "template": "defense_base_water",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 2
+      }
+    },
+    {
+      "id": "DF000003",
+      "name": "Горный Броня",
+      "nameEn": "Горный Броня",
+      "description": "Горный Броня — техника defense элемента earth уровня 1. Grade: common. Урон: 72. Дальность: 5м.",
+      "type": "defense",
+      "element": "earth",
+      "level": 1,
+      "grade": "common",
+      "qiCost": 72,
+      "baseQiCost": 72,
+      "baseDamage": 72,
+      "baseRange": 5,
+      "baseCapacity": 72,
+      "computed": {
+        "finalDamage": 72,
+        "finalQiCost": 72,
+        "finalRange": 5,
+        "formula": "72 × 1 = 72",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "meta": {
+        "seed": 1774114254466,
+        "template": "defense_base_earth",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 2
+      }
+    }
+  ]
+}

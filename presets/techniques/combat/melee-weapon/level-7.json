@@ -1,0 +1,243 @@
+{
+  "version": "2.0",
+  "count": 5,
+  "techniques": [
+    {
+      "id": "MW000016",
+      "name": "Кулак раскалённый",
+      "nameEn": "Кулак Раскалённый",
+      "description": "Кулак раскалённый — техника melee_weapon элемента fire уровня 7. Grade: perfect. Урон: 4300. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "fire",
+      "level": 7,
+      "grade": "perfect",
+      "qiCost": 3072,
+      "baseQiCost": 3072,
+      "baseDamage": 3072,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 4300,
+        "finalQiCost": 3072,
+        "finalRange": 1,
+        "formula": "3072 × 1.4 = 4300",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 10,
+          "critDamage": 2
+        }
+      },
+      "minCultivationLevel": 6,
+      "minLevel": 6,
+      "maxLevel": 8,
+      "fatigueCost": {
+        "physical": 3,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 25
+      },
+      "meta": {
+        "seed": 1774114254427,
+        "template": "combat_melee_weapon_fire",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MW000017",
+      "name": "Холодный Волна",
+      "nameEn": "Холодный Волна",
+      "description": "Холодный Волна — техника melee_weapon элемента water уровня 7. Grade: common. Урон: 3072. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "water",
+      "level": 7,
+      "grade": "common",
+      "qiCost": 3072,
+      "baseQiCost": 3072,
+      "baseDamage": 3072,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 3072,
+        "finalQiCost": 3072,
+        "finalRange": 1,
+        "formula": "3072 × 1 = 3072",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 6,
+      "minLevel": 6,
+      "maxLevel": 8,
+      "fatigueCost": {
+        "physical": 3,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 21
+      },
+      "meta": {
+        "seed": 1774114254428,
+        "template": "combat_melee_weapon_water",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MW000018",
+      "name": "Титанический Толчок",
+      "nameEn": "Титанический Толчок",
+      "description": "Титанический Толчок — техника melee_weapon элемента earth уровня 7. Grade: transcendent. Урон: 4915. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "earth",
+      "level": 7,
+      "grade": "transcendent",
+      "qiCost": 3072,
+      "baseQiCost": 3072,
+      "baseDamage": 3072,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 4915,
+        "finalQiCost": 3072,
+        "finalRange": 1,
+        "formula": "3072 × 1.6 = 4915",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 15,
+          "critDamage": 2.25,
+          "piercePercent": 30
+        }
+      },
+      "minCultivationLevel": 6,
+      "minLevel": 6,
+      "maxLevel": 8,
+      "fatigueCost": {
+        "physical": 3,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 27
+      },
+      "meta": {
+        "seed": 1774114254429,
+        "template": "combat_melee_weapon_earth",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MW000019",
+      "name": "Порывистый Удар",
+      "nameEn": "Порывистый Удар",
+      "description": "Порывистый Удар — техника melee_weapon элемента air уровня 7. Grade: common. Урон: 3072. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "air",
+      "level": 7,
+      "grade": "common",
+      "qiCost": 3072,
+      "baseQiCost": 3072,
+      "baseDamage": 3072,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 3072,
+        "finalQiCost": 3072,
+        "finalRange": 1,
+        "formula": "3072 × 1 = 3072",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 6,
+      "minLevel": 6,
+      "maxLevel": 8,
+      "fatigueCost": {
+        "physical": 3,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 21
+      },
+      "meta": {
+        "seed": 1774114254430,
+        "template": "combat_melee_weapon_air",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MW000020",
+      "name": "Взрыв молниеносный",
+      "nameEn": "Взрыв Молниеносный",
+      "description": "Взрыв молниеносный — техника melee_weapon элемента lightning уровня 7. Grade: common. Урон: 3072. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "lightning",
+      "level": 7,
+      "grade": "common",
+      "qiCost": 3072,
+      "baseQiCost": 3072,
+      "baseDamage": 3072,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 3072,
+        "finalQiCost": 3072,
+        "finalRange": 1,
+        "formula": "3072 × 1 = 3072",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 6,
+      "minLevel": 6,
+      "maxLevel": 8,
+      "fatigueCost": {
+        "physical": 3,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 21
+      },
+      "meta": {
+        "seed": 1774114254431,
+        "template": "combat_melee_weapon_lightning",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    }
+  ]
+}

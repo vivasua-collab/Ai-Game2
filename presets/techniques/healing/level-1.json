@@ -1,0 +1,107 @@
+{
+  "version": "2.0",
+  "count": 2,
+  "techniques": [
+    {
+      "id": "HL000001",
+      "name": "Восстановление истинный",
+      "nameEn": "Восстановление Истинный",
+      "description": "Восстановление истинный — техника healing уровня 1. Grade: refined. Урон: 67. Дальность: 5м.",
+      "type": "healing",
+      "element": "neutral",
+      "level": 1,
+      "grade": "refined",
+      "qiCost": 56,
+      "baseQiCost": 56,
+      "baseDamage": 56,
+      "baseRange": 5,
+      "baseCapacity": 56,
+      "computed": {
+        "finalDamage": 67,
+        "finalQiCost": 56,
+        "finalRange": 5,
+        "formula": "56 × 1.2 = 67",
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 41,
+            "duration": 6
+          },
+          {
+            "type": "heal",
+            "value": 18
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "shield": true,
+          "heal": true
+        },
+        "effectValues": {
+          "shieldHP": 41,
+          "shieldDuration": 6,
+          "healAmount": 18
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "meta": {
+        "seed": 1774114254473,
+        "template": "healing_base_neutral",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 2
+      }
+    },
+    {
+      "id": "HL000002",
+      "name": "Истинный Восстановление",
+      "nameEn": "Истинный Восстановление",
+      "description": "Истинный Восстановление — техника healing уровня 1. Grade: common. Урон: 56. Дальность: 5м.",
+      "type": "healing",
+      "element": "neutral",
+      "level": 1,
+      "grade": "common",
+      "qiCost": 56,
+      "baseQiCost": 56,
+      "baseDamage": 56,
+      "baseRange": 5,
+      "baseCapacity": 56,
+      "computed": {
+        "finalDamage": 56,
+        "finalQiCost": 56,
+        "finalRange": 5,
+        "formula": "56 × 1 = 56",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "meta": {
+        "seed": 1774114254474,
+        "template": "healing_base_neutral",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 2
+      }
+    }
+  ]
+}

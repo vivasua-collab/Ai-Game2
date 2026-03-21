@@ -1,0 +1,4044 @@
+{
+  "version": "2.0",
+  "type": "armor",
+  "count": 54,
+  "items": [
+    {
+      "id": "AR_000001",
+      "name": "Нагрудник из железо",
+      "nameEn": "Нагрудник из железо",
+      "description": "Нагрудник из железо — броня из железо уровня 1. Качество: Обычный. Защита: 9. Проводимость Ци: 10.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "common",
+      "materialId": "iron",
+      "material": {
+        "id": "iron",
+        "name": "Железо",
+        "tier": 1,
+        "category": "metal",
+        "properties": {
+          "durability": 30,
+          "qiConductivity": 10,
+          "weight": 3,
+          "hardness": 5,
+          "flexibility": 3
+        },
+        "bonuses": [],
+        "description": "Обычное железо из поверхностных руд. Низкая проводимость Ци.",
+        "rarity": 100,
+        "source": "Поверхностные рудники (0-2 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 9,
+        "qiConductivity": 10,
+        "weight": 3
+      },
+      "durability": {
+        "current": 32,
+        "max": 32,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "vitality": 1
+      },
+      "value": 370,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000002",
+      "name": "Кираса из кость",
+      "nameEn": "Кираса из кость",
+      "description": "Кираса из кость — броня из кость уровня 1. Качество: Обычный. Защита: 8. Проводимость Ци: 20.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "common",
+      "materialId": "bone",
+      "material": {
+        "id": "bone",
+        "name": "Кость",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 25,
+          "qiConductivity": 20,
+          "weight": 1.5,
+          "hardness": 4,
+          "flexibility": 3
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 3,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Обычная кость животных. Проводит Ци лучше металла.",
+        "rarity": 80,
+        "source": "Охота на животных"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 8,
+        "qiConductivity": 20,
+        "weight": 1.5
+      },
+      "durability": {
+        "current": 27,
+        "max": 27,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829941_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 28,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "vitality": 1
+      },
+      "value": 546,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000003",
+      "name": "Доспех из железо",
+      "nameEn": "Доспех из железо",
+      "description": "Доспех из железо — броня из железо уровня 1. Качество: Обычный. Защита: 10. Проводимость Ци: 10.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "common",
+      "materialId": "iron",
+      "material": {
+        "id": "iron",
+        "name": "Железо",
+        "tier": 1,
+        "category": "metal",
+        "properties": {
+          "durability": 30,
+          "qiConductivity": 10,
+          "weight": 3,
+          "hardness": 5,
+          "flexibility": 3
+        },
+        "bonuses": [],
+        "description": "Обычное железо из поверхностных руд. Низкая проводимость Ци.",
+        "rarity": 100,
+        "source": "Поверхностные рудники (0-2 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 10,
+        "qiConductivity": 10,
+        "weight": 3
+      },
+      "durability": {
+        "current": 32,
+        "max": 32,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829941_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 28,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "vitality": 2
+      },
+      "value": 390,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000004",
+      "name": "Доспех из кость",
+      "nameEn": "Доспех из кость",
+      "description": "Доспех из кость — броня из кость уровня 1. Качество: Обычный. Защита: 9. Проводимость Ци: 20.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "common",
+      "materialId": "bone",
+      "material": {
+        "id": "bone",
+        "name": "Кость",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 25,
+          "qiConductivity": 20,
+          "weight": 1.5,
+          "hardness": 4,
+          "flexibility": 3
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 3,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Обычная кость животных. Проводит Ци лучше металла.",
+        "rarity": 80,
+        "source": "Охота на животных"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 9,
+        "qiConductivity": 20,
+        "weight": 1.5
+      },
+      "durability": {
+        "current": 27,
+        "max": 27,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "vitality": 1
+      },
+      "value": 565,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000005",
+      "name": "Повреждённый броня из железо",
+      "nameEn": "Повреждённый броня из железо",
+      "description": "Повреждённый броня из железо — броня из железо уровня 1. Качество: Повреждённый. Защита: 4. Проводимость Ци: 10.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "damaged",
+      "materialId": "iron",
+      "material": {
+        "id": "iron",
+        "name": "Железо",
+        "tier": 1,
+        "category": "metal",
+        "properties": {
+          "durability": 30,
+          "qiConductivity": 10,
+          "weight": 3,
+          "hardness": 5,
+          "flexibility": 3
+        },
+        "bonuses": [],
+        "description": "Обычное железо из поверхностных руд. Низкая проводимость Ци.",
+        "rarity": 100,
+        "source": "Поверхностные рудники (0-2 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 4,
+        "qiConductivity": 10,
+        "weight": 3
+      },
+      "durability": {
+        "current": 17,
+        "max": 17,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "vitality": 0
+      },
+      "value": 218,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000006",
+      "name": "Повреждённый мантия из кость",
+      "nameEn": "Повреждённый мантия из кость",
+      "description": "Повреждённый мантия из кость — броня из кость уровня 1. Качество: Повреждённый. Защита: 5. Проводимость Ци: 20.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "damaged",
+      "materialId": "bone",
+      "material": {
+        "id": "bone",
+        "name": "Кость",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 25,
+          "qiConductivity": 20,
+          "weight": 1.5,
+          "hardness": 4,
+          "flexibility": 3
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 3,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Обычная кость животных. Проводит Ци лучше металла.",
+        "rarity": 80,
+        "source": "Охота на животных"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 5,
+        "qiConductivity": 20,
+        "weight": 1.5
+      },
+      "durability": {
+        "current": 14,
+        "max": 14,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "vitality": 1
+      },
+      "value": 390,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000007",
+      "name": "Нагрудник из железо",
+      "nameEn": "Нагрудник из железо",
+      "description": "Нагрудник из железо — броня из железо уровня 2. Качество: Обычный. Защита: 12. Проводимость Ци: 10.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "common",
+      "materialId": "iron",
+      "material": {
+        "id": "iron",
+        "name": "Железо",
+        "tier": 1,
+        "category": "metal",
+        "properties": {
+          "durability": 30,
+          "qiConductivity": 10,
+          "weight": 3,
+          "hardness": 5,
+          "flexibility": 3
+        },
+        "bonuses": [],
+        "description": "Обычное железо из поверхностных руд. Низкая проводимость Ци.",
+        "rarity": 100,
+        "source": "Поверхностные рудники (0-2 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 12,
+        "qiConductivity": 10,
+        "weight": 3
+      },
+      "durability": {
+        "current": 34,
+        "max": 34,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "vitality": 2
+      },
+      "value": 528,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000008",
+      "name": "Кираса из кость",
+      "nameEn": "Кираса из кость",
+      "description": "Кираса из кость — броня из кость уровня 2. Качество: Обычный. Защита: 11. Проводимость Ци: 20.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "common",
+      "materialId": "bone",
+      "material": {
+        "id": "bone",
+        "name": "Кость",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 25,
+          "qiConductivity": 20,
+          "weight": 1.5,
+          "hardness": 4,
+          "flexibility": 3
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 3,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Обычная кость животных. Проводит Ци лучше металла.",
+        "rarity": 80,
+        "source": "Охота на животных"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 11,
+        "qiConductivity": 20,
+        "weight": 1.5
+      },
+      "durability": {
+        "current": 29,
+        "max": 29,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829941_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 37,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "vitality": 2
+      },
+      "value": 744,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000009",
+      "name": "Доспех из железо",
+      "nameEn": "Доспех из железо",
+      "description": "Доспех из железо — броня из железо уровня 2. Качество: Обычный. Защита: 13. Проводимость Ци: 10.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "common",
+      "materialId": "iron",
+      "material": {
+        "id": "iron",
+        "name": "Железо",
+        "tier": 1,
+        "category": "metal",
+        "properties": {
+          "durability": 30,
+          "qiConductivity": 10,
+          "weight": 3,
+          "hardness": 5,
+          "flexibility": 3
+        },
+        "bonuses": [],
+        "description": "Обычное железо из поверхностных руд. Низкая проводимость Ци.",
+        "rarity": 100,
+        "source": "Поверхностные рудники (0-2 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 13,
+        "qiConductivity": 10,
+        "weight": 3
+      },
+      "durability": {
+        "current": 34,
+        "max": 34,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829941_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 38,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "vitality": 2
+      },
+      "value": 552,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000010",
+      "name": "Доспех из кость",
+      "nameEn": "Доспех из кость",
+      "description": "Доспех из кость — броня из кость уровня 2. Качество: Обычный. Защита: 12. Проводимость Ци: 20.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "common",
+      "materialId": "bone",
+      "material": {
+        "id": "bone",
+        "name": "Кость",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 25,
+          "qiConductivity": 20,
+          "weight": 1.5,
+          "hardness": 4,
+          "flexibility": 3
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 3,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Обычная кость животных. Проводит Ци лучше металла.",
+        "rarity": 80,
+        "source": "Охота на животных"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 12,
+        "qiConductivity": 20,
+        "weight": 1.5
+      },
+      "durability": {
+        "current": 29,
+        "max": 29,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "vitality": 2
+      },
+      "value": 768,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000011",
+      "name": "Повреждённый броня из железо",
+      "nameEn": "Повреждённый броня из железо",
+      "description": "Повреждённый броня из железо — броня из железо уровня 2. Качество: Повреждённый. Защита: 5. Проводимость Ци: 10.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "damaged",
+      "materialId": "iron",
+      "material": {
+        "id": "iron",
+        "name": "Железо",
+        "tier": 1,
+        "category": "metal",
+        "properties": {
+          "durability": 30,
+          "qiConductivity": 10,
+          "weight": 3,
+          "hardness": 5,
+          "flexibility": 3
+        },
+        "bonuses": [],
+        "description": "Обычное железо из поверхностных руд. Низкая проводимость Ци.",
+        "rarity": 100,
+        "source": "Поверхностные рудники (0-2 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 5,
+        "qiConductivity": 10,
+        "weight": 3
+      },
+      "durability": {
+        "current": 19,
+        "max": 19,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "vitality": 1
+      },
+      "value": 288,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000012",
+      "name": "Повреждённый мантия из кость",
+      "nameEn": "Повреждённый мантия из кость",
+      "description": "Повреждённый мантия из кость — броня из кость уровня 2. Качество: Повреждённый. Защита: 6. Проводимость Ци: 20.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "damaged",
+      "materialId": "bone",
+      "material": {
+        "id": "bone",
+        "name": "Кость",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 25,
+          "qiConductivity": 20,
+          "weight": 1.5,
+          "hardness": 4,
+          "flexibility": 3
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 3,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Обычная кость животных. Проводит Ци лучше металла.",
+        "rarity": 80,
+        "source": "Охота на животных"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 6,
+        "qiConductivity": 20,
+        "weight": 1.5
+      },
+      "durability": {
+        "current": 16,
+        "max": 16,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "vitality": 1
+      },
+      "value": 499,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000013",
+      "name": "Нагрудник из сталь",
+      "nameEn": "Нагрудник из сталь",
+      "description": "Нагрудник из сталь — броня из сталь уровня 3. Качество: Обычный. Защита: 15. Проводимость Ци: 15.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "common",
+      "materialId": "steel",
+      "material": {
+        "id": "steel",
+        "name": "Сталь",
+        "tier": 2,
+        "category": "metal",
+        "properties": {
+          "durability": 50,
+          "qiConductivity": 15,
+          "weight": 3.5,
+          "hardness": 7,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Улучшенная сталь. Прочнее железа, лучше держит заточку.",
+        "rarity": 60,
+        "source": "Глубокие шахты (2-10 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 15,
+        "qiConductivity": 15,
+        "weight": 3.5
+      },
+      "durability": {
+        "current": 56,
+        "max": 56,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "vitality": 3
+      },
+      "value": 1140,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000014",
+      "name": "Кираса из слоновая кость",
+      "nameEn": "Кираса из слоновая кость",
+      "description": "Кираса из слоновая кость — броня из слоновая кость уровня 3. Качество: Обычный. Защита: 14. Проводимость Ци: 40.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "common",
+      "materialId": "ivory",
+      "material": {
+        "id": "ivory",
+        "name": "Слоновая кость",
+        "tier": 2,
+        "category": "organic",
+        "properties": {
+          "durability": 35,
+          "qiConductivity": 40,
+          "weight": 2,
+          "hardness": 5,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 3,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Кость крупных животных. Отличная проводимость Ци.",
+        "rarity": 30,
+        "source": "Охота на крупных зверей"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 14,
+        "qiConductivity": 40,
+        "weight": 2
+      },
+      "durability": {
+        "current": 41,
+        "max": 41,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829941_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 47,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "vitality": 2
+      },
+      "value": 2052,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000015",
+      "name": "Улучшенный броня из сталь",
+      "nameEn": "Улучшенный броня из сталь",
+      "description": "Улучшенный броня из сталь — броня из сталь уровня 3. Качество: Улучшенный. Защита: 24. Проводимость Ци: 15.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "refined",
+      "materialId": "steel",
+      "material": {
+        "id": "steel",
+        "name": "Сталь",
+        "tier": 2,
+        "category": "metal",
+        "properties": {
+          "durability": 50,
+          "qiConductivity": 15,
+          "weight": 3.5,
+          "hardness": 7,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Улучшенная сталь. Прочнее железа, лучше держит заточку.",
+        "rarity": 60,
+        "source": "Глубокие шахты (2-10 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 24,
+        "qiConductivity": 15,
+        "weight": 3.5
+      },
+      "durability": {
+        "current": 81,
+        "max": 81,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829942_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 61,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_block_1773589829942_1",
+          "type": "defense_block",
+          "category": "defense",
+          "value": 7,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "vitality": 4
+      },
+      "value": 1926,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AR_000016",
+      "name": "Улучшенный кираса из слоновая кость",
+      "nameEn": "Улучшенный кираса из слоновая кость",
+      "description": "Улучшенный кираса из слоновая кость — броня из слоновая кость уровня 3. Качество: Улучшенный. Защита: 22. Проводимость Ци: 40.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "refined",
+      "materialId": "ivory",
+      "material": {
+        "id": "ivory",
+        "name": "Слоновая кость",
+        "tier": 2,
+        "category": "organic",
+        "properties": {
+          "durability": 35,
+          "qiConductivity": 40,
+          "weight": 2,
+          "hardness": 5,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 3,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Кость крупных животных. Отличная проводимость Ци.",
+        "rarity": 30,
+        "source": "Охота на крупных зверей"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 22,
+        "qiConductivity": 40,
+        "weight": 2
+      },
+      "durability": {
+        "current": 58,
+        "max": 58,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829942_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 57,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "vitality": 4
+      },
+      "value": 3062,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AR_000017",
+      "name": "Мантия из сталь",
+      "nameEn": "Мантия из сталь",
+      "description": "Мантия из сталь — броня из сталь уровня 3. Качество: Обычный. Защита: 14. Проводимость Ци: 15.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "common",
+      "materialId": "steel",
+      "material": {
+        "id": "steel",
+        "name": "Сталь",
+        "tier": 2,
+        "category": "metal",
+        "properties": {
+          "durability": 50,
+          "qiConductivity": 15,
+          "weight": 3.5,
+          "hardness": 7,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Улучшенная сталь. Прочнее железа, лучше держит заточку.",
+        "rarity": 60,
+        "source": "Глубокие шахты (2-10 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 14,
+        "qiConductivity": 15,
+        "weight": 3.5
+      },
+      "durability": {
+        "current": 56,
+        "max": 56,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_fire_1773589829942_0",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 16,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "vitality": 2
+      },
+      "value": 1102,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000018",
+      "name": "Повреждённый мантия из слоновая кость",
+      "nameEn": "Повреждённый мантия из слоновая кость",
+      "description": "Повреждённый мантия из слоновая кость — броня из слоновая кость уровня 3. Качество: Повреждённый. Защита: 8. Проводимость Ци: 40.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "damaged",
+      "materialId": "ivory",
+      "material": {
+        "id": "ivory",
+        "name": "Слоновая кость",
+        "tier": 2,
+        "category": "organic",
+        "properties": {
+          "durability": 35,
+          "qiConductivity": 40,
+          "weight": 2,
+          "hardness": 5,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 3,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Кость крупных животных. Отличная проводимость Ци.",
+        "rarity": 30,
+        "source": "Охота на крупных зверей"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 8,
+        "qiConductivity": 40,
+        "weight": 2
+      },
+      "durability": {
+        "current": 23,
+        "max": 23,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "vitality": 1
+      },
+      "value": 1459,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000019",
+      "name": "Кираса из слоновая кость",
+      "nameEn": "Кираса из слоновая кость",
+      "description": "Кираса из слоновая кость — броня из слоновая кость уровня 4. Качество: Обычный. Защита: 17. Проводимость Ци: 40.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "common",
+      "materialId": "ivory",
+      "material": {
+        "id": "ivory",
+        "name": "Слоновая кость",
+        "tier": 2,
+        "category": "organic",
+        "properties": {
+          "durability": 35,
+          "qiConductivity": 40,
+          "weight": 2,
+          "hardness": 5,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 3,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Кость крупных животных. Отличная проводимость Ци.",
+        "rarity": 30,
+        "source": "Охота на крупных зверей"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 17,
+        "qiConductivity": 40,
+        "weight": 2
+      },
+      "durability": {
+        "current": 43,
+        "max": 43,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829942_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 56,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 2,
+        "vitality": 3
+      },
+      "value": 2508,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000020",
+      "name": "Улучшенный броня из сталь",
+      "nameEn": "Улучшенный броня из сталь",
+      "description": "Улучшенный броня из сталь — броня из сталь уровня 4. Качество: Улучшенный. Защита: 28. Проводимость Ци: 15.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "refined",
+      "materialId": "steel",
+      "material": {
+        "id": "steel",
+        "name": "Сталь",
+        "tier": 2,
+        "category": "metal",
+        "properties": {
+          "durability": 50,
+          "qiConductivity": 15,
+          "weight": 3.5,
+          "hardness": 7,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Улучшенная сталь. Прочнее железа, лучше держит заточку.",
+        "rarity": 60,
+        "source": "Глубокие шахты (2-10 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 28,
+        "qiConductivity": 15,
+        "weight": 3.5
+      },
+      "durability": {
+        "current": 83,
+        "max": 83,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829942_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 74,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_block_1773589829942_1",
+          "type": "defense_block",
+          "category": "defense",
+          "value": 9,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 2,
+        "vitality": 5
+      },
+      "value": 2459,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AR_000021",
+      "name": "Улучшенный кираса из слоновая кость",
+      "nameEn": "Улучшенный кираса из слоновая кость",
+      "description": "Улучшенный кираса из слоновая кость — броня из слоновая кость уровня 4. Качество: Улучшенный. Защита: 27. Проводимость Ци: 40.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "refined",
+      "materialId": "ivory",
+      "material": {
+        "id": "ivory",
+        "name": "Слоновая кость",
+        "tier": 2,
+        "category": "organic",
+        "properties": {
+          "durability": 35,
+          "qiConductivity": 40,
+          "weight": 2,
+          "hardness": 5,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 3,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Кость крупных животных. Отличная проводимость Ци.",
+        "rarity": 30,
+        "source": "Охота на крупных зверей"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 27,
+        "qiConductivity": 40,
+        "weight": 2
+      },
+      "durability": {
+        "current": 60,
+        "max": 60,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829942_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 69,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 2,
+        "vitality": 5
+      },
+      "value": 3832,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AR_000022",
+      "name": "Мантия из сталь",
+      "nameEn": "Мантия из сталь",
+      "description": "Мантия из сталь — броня из сталь уровня 4. Качество: Обычный. Защита: 17. Проводимость Ци: 15.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "common",
+      "materialId": "steel",
+      "material": {
+        "id": "steel",
+        "name": "Сталь",
+        "tier": 2,
+        "category": "metal",
+        "properties": {
+          "durability": 50,
+          "qiConductivity": 15,
+          "weight": 3.5,
+          "hardness": 7,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Улучшенная сталь. Прочнее железа, лучше держит заточку.",
+        "rarity": 60,
+        "source": "Глубокие шахты (2-10 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 17,
+        "qiConductivity": 15,
+        "weight": 3.5
+      },
+      "durability": {
+        "current": 58,
+        "max": 58,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_fire_1773589829942_0",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 18,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 2,
+        "vitality": 3
+      },
+      "value": 1408,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000023",
+      "name": "Повреждённый мантия из слоновая кость",
+      "nameEn": "Повреждённый мантия из слоновая кость",
+      "description": "Повреждённый мантия из слоновая кость — броня из слоновая кость уровня 4. Качество: Повреждённый. Защита: 9. Проводимость Ци: 40.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "damaged",
+      "materialId": "ivory",
+      "material": {
+        "id": "ivory",
+        "name": "Слоновая кость",
+        "tier": 2,
+        "category": "organic",
+        "properties": {
+          "durability": 35,
+          "qiConductivity": 40,
+          "weight": 2,
+          "hardness": 5,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 3,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Кость крупных животных. Отличная проводимость Ци.",
+        "rarity": 30,
+        "source": "Охота на крупных зверей"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 9,
+        "qiConductivity": 40,
+        "weight": 2
+      },
+      "durability": {
+        "current": 25,
+        "max": 25,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 2,
+        "vitality": 1
+      },
+      "value": 1724,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000024",
+      "name": "Нагрудник из сталь",
+      "nameEn": "Нагрудник из сталь",
+      "description": "Нагрудник из сталь — броня из сталь уровня 4. Качество: Обычный. Защита: 18. Проводимость Ци: 15.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "common",
+      "materialId": "steel",
+      "material": {
+        "id": "steel",
+        "name": "Сталь",
+        "tier": 2,
+        "category": "metal",
+        "properties": {
+          "durability": 50,
+          "qiConductivity": 15,
+          "weight": 3.5,
+          "hardness": 7,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Улучшенная сталь. Прочнее железа, лучше держит заточку.",
+        "rarity": 60,
+        "source": "Глубокие шахты (2-10 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 18,
+        "qiConductivity": 15,
+        "weight": 3.5
+      },
+      "durability": {
+        "current": 58,
+        "max": 58,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_armor_1773589829942_0",
+          "type": "defense_armor",
+          "category": "defense",
+          "value": 9,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 2,
+        "vitality": 3
+      },
+      "value": 1452,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000025",
+      "name": "Улучшенный мантия из духовная кость",
+      "nameEn": "Улучшенный мантия из духовная кость",
+      "description": "Улучшенный мантия из духовная кость — броня из духовная кость уровня 5. Качество: Улучшенный. Защита: 30. Проводимость Ци: 65.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "refined",
+      "materialId": "spirit_bone",
+      "material": {
+        "id": "spirit_bone",
+        "name": "Духовная кость",
+        "tier": 3,
+        "category": "organic",
+        "properties": {
+          "durability": 50,
+          "qiConductivity": 65,
+          "weight": 1.8,
+          "hardness": 6,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 15,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 10,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Кость духовного зверя. Содержит сжатую Ци.",
+        "rarity": 10,
+        "source": "Охота на духовных зверей",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 30,
+        "qiConductivity": 65,
+        "weight": 1.8
+      },
+      "durability": {
+        "current": 85,
+        "max": 85,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829942_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 86,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_block_1773589829942_1",
+          "type": "defense_block",
+          "category": "defense",
+          "value": 12,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 3,
+        "vitality": 6
+      },
+      "value": 7718,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AR_000026",
+      "name": "Совершенный броня из духовное железо",
+      "nameEn": "Совершенный броня из духовное железо",
+      "description": "Совершенный броня из духовное железо — броня из духовное железо уровня 5. Качество: Совершенный. Защита: 55. Проводимость Ци: 55.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "perfect",
+      "materialId": "spirit_iron",
+      "material": {
+        "id": "spirit_iron",
+        "name": "Духовное железо",
+        "tier": 3,
+        "category": "metal",
+        "properties": {
+          "durability": 70,
+          "qiConductivity": 55,
+          "weight": 3.5,
+          "hardness": 8,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 20,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Железо, насыщенное Ци из лей-линий. Светится слабым светом.",
+        "rarity": 20,
+        "source": "Лей-линии (10-500 км глубина)",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 55,
+        "qiConductivity": 55,
+        "weight": 3.5
+      },
+      "durability": {
+        "current": 185,
+        "max": 185,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829942_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 113,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_block_1773589829942_1",
+          "type": "defense_block",
+          "category": "defense",
+          "value": 13,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_fire_1773589829942_2",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 52,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_resistance_1773589829942_3",
+          "type": "defense_resistance",
+          "category": "defense",
+          "value": 20,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 3,
+        "vitality": 11
+      },
+      "value": 11687,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "AR_000027",
+      "name": "Улучшенный кираса из духовная кость",
+      "nameEn": "Улучшенный кираса из духовная кость",
+      "description": "Улучшенный кираса из духовная кость — броня из духовная кость уровня 5. Качество: Улучшенный. Защита: 31. Проводимость Ци: 65.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "refined",
+      "materialId": "spirit_bone",
+      "material": {
+        "id": "spirit_bone",
+        "name": "Духовная кость",
+        "tier": 3,
+        "category": "organic",
+        "properties": {
+          "durability": 50,
+          "qiConductivity": 65,
+          "weight": 1.8,
+          "hardness": 6,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 15,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 10,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Кость духовного зверя. Содержит сжатую Ци.",
+        "rarity": 10,
+        "source": "Охота на духовных зверей",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 31,
+        "qiConductivity": 65,
+        "weight": 1.8
+      },
+      "durability": {
+        "current": 85,
+        "max": 85,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829942_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 81,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 3,
+        "vitality": 6
+      },
+      "value": 7800,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AR_000028",
+      "name": "Мантия из духовное железо",
+      "nameEn": "Мантия из духовное железо",
+      "description": "Мантия из духовное железо — броня из духовное железо уровня 5. Качество: Обычный. Защита: 20. Проводимость Ци: 55.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "common",
+      "materialId": "spirit_iron",
+      "material": {
+        "id": "spirit_iron",
+        "name": "Духовное железо",
+        "tier": 3,
+        "category": "metal",
+        "properties": {
+          "durability": 70,
+          "qiConductivity": 55,
+          "weight": 3.5,
+          "hardness": 8,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 20,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Железо, насыщенное Ци из лей-линий. Светится слабым светом.",
+        "rarity": 20,
+        "source": "Лей-линии (10-500 км глубина)",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 20,
+        "qiConductivity": 55,
+        "weight": 3.5
+      },
+      "durability": {
+        "current": 80,
+        "max": 80,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_fire_1773589829942_0",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 21,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 3,
+        "vitality": 4
+      },
+      "value": 4687,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000029",
+      "name": "Повреждённый мантия из духовная кость",
+      "nameEn": "Повреждённый мантия из духовная кость",
+      "description": "Повреждённый мантия из духовная кость — броня из духовная кость уровня 5. Качество: Повреждённый. Защита: 11. Проводимость Ци: 65.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "damaged",
+      "materialId": "spirit_bone",
+      "material": {
+        "id": "spirit_bone",
+        "name": "Духовная кость",
+        "tier": 3,
+        "category": "organic",
+        "properties": {
+          "durability": 50,
+          "qiConductivity": 65,
+          "weight": 1.8,
+          "hardness": 6,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 15,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 10,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Кость духовного зверя. Содержит сжатую Ци.",
+        "rarity": 10,
+        "source": "Охота на духовных зверей",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 11,
+        "qiConductivity": 65,
+        "weight": 1.8
+      },
+      "durability": {
+        "current": 35,
+        "max": 35,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 3,
+        "vitality": 2
+      },
+      "value": 3800,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000030",
+      "name": "Улучшенный нагрудник из духовное железо",
+      "nameEn": "Улучшенный нагрудник из духовное железо",
+      "description": "Улучшенный нагрудник из духовное железо — броня из духовное железо уровня 5. Качество: Улучшенный. Защита: 31. Проводимость Ци: 55.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "refined",
+      "materialId": "spirit_iron",
+      "material": {
+        "id": "spirit_iron",
+        "name": "Духовное железо",
+        "tier": 3,
+        "category": "metal",
+        "properties": {
+          "durability": 70,
+          "qiConductivity": 55,
+          "weight": 3.5,
+          "hardness": 8,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 20,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Железо, насыщенное Ци из лей-линий. Светится слабым светом.",
+        "rarity": 20,
+        "source": "Лей-линии (10-500 км глубина)",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 31,
+        "qiConductivity": 55,
+        "weight": 3.5
+      },
+      "durability": {
+        "current": 115,
+        "max": 115,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_armor_1773589829942_0",
+          "type": "defense_armor",
+          "category": "defense",
+          "value": 14,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_hp_1773589829942_1",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 85,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 3,
+        "vitality": 6
+      },
+      "value": 6987,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AR_000031",
+      "name": "Улучшенный мантия из духовная кость",
+      "nameEn": "Улучшенный мантия из духовная кость",
+      "description": "Улучшенный мантия из духовная кость — броня из духовная кость уровня 6. Качество: Улучшенный. Защита: 34. Проводимость Ци: 65.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "refined",
+      "materialId": "spirit_bone",
+      "material": {
+        "id": "spirit_bone",
+        "name": "Духовная кость",
+        "tier": 3,
+        "category": "organic",
+        "properties": {
+          "durability": 50,
+          "qiConductivity": 65,
+          "weight": 1.8,
+          "hardness": 6,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 15,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 10,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Кость духовного зверя. Содержит сжатую Ци.",
+        "rarity": 10,
+        "source": "Охота на духовных зверей",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 34,
+        "qiConductivity": 65,
+        "weight": 1.8
+      },
+      "durability": {
+        "current": 87,
+        "max": 87,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829942_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 98,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_block_1773589829942_1",
+          "type": "defense_block",
+          "category": "defense",
+          "value": 13,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 4,
+        "vitality": 6
+      },
+      "value": 9009,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AR_000032",
+      "name": "Совершенный броня из духовное железо",
+      "nameEn": "Совершенный броня из духовное железо",
+      "description": "Совершенный броня из духовное железо — броня из духовное железо уровня 6. Качество: Совершенный. Защита: 62. Проводимость Ци: 55.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "perfect",
+      "materialId": "spirit_iron",
+      "material": {
+        "id": "spirit_iron",
+        "name": "Духовное железо",
+        "tier": 3,
+        "category": "metal",
+        "properties": {
+          "durability": 70,
+          "qiConductivity": 55,
+          "weight": 3.5,
+          "hardness": 8,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 20,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Железо, насыщенное Ци из лей-линий. Светится слабым светом.",
+        "rarity": 20,
+        "source": "Лей-линии (10-500 км глубина)",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 62,
+        "qiConductivity": 55,
+        "weight": 3.5
+      },
+      "durability": {
+        "current": 187,
+        "max": 187,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829942_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 129,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_block_1773589829942_1",
+          "type": "defense_block",
+          "category": "defense",
+          "value": 15,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_fire_1773589829942_2",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 58,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_resistance_1773589829942_3",
+          "type": "defense_resistance",
+          "category": "defense",
+          "value": 23,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 4,
+        "vitality": 12
+      },
+      "value": 13923,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "AR_000033",
+      "name": "Улучшенный кираса из духовная кость",
+      "nameEn": "Улучшенный кираса из духовная кость",
+      "description": "Улучшенный кираса из духовная кость — броня из духовная кость уровня 6. Качество: Улучшенный. Защита: 36. Проводимость Ци: 65.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "refined",
+      "materialId": "spirit_bone",
+      "material": {
+        "id": "spirit_bone",
+        "name": "Духовная кость",
+        "tier": 3,
+        "category": "organic",
+        "properties": {
+          "durability": 50,
+          "qiConductivity": 65,
+          "weight": 1.8,
+          "hardness": 6,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 15,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 10,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Кость духовного зверя. Содержит сжатую Ци.",
+        "rarity": 10,
+        "source": "Охота на духовных зверей",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 36,
+        "qiConductivity": 65,
+        "weight": 1.8
+      },
+      "durability": {
+        "current": 87,
+        "max": 87,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829942_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 92,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 4,
+        "vitality": 7
+      },
+      "value": 9191,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AR_000034",
+      "name": "Мантия из духовное железо",
+      "nameEn": "Мантия из духовное железо",
+      "description": "Мантия из духовное железо — броня из духовное железо уровня 6. Качество: Обычный. Защита: 23. Проводимость Ци: 55.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "common",
+      "materialId": "spirit_iron",
+      "material": {
+        "id": "spirit_iron",
+        "name": "Духовное железо",
+        "tier": 3,
+        "category": "metal",
+        "properties": {
+          "durability": 70,
+          "qiConductivity": 55,
+          "weight": 3.5,
+          "hardness": 8,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 20,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Железо, насыщенное Ци из лей-линий. Светится слабым светом.",
+        "rarity": 20,
+        "source": "Лей-линии (10-500 км глубина)",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 23,
+        "qiConductivity": 55,
+        "weight": 3.5
+      },
+      "durability": {
+        "current": 82,
+        "max": 82,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_fire_1773589829942_0",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 23,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 4,
+        "vitality": 4
+      },
+      "value": 5460,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000035",
+      "name": "Повреждённый мантия из духовная кость",
+      "nameEn": "Повреждённый мантия из духовная кость",
+      "description": "Повреждённый мантия из духовная кость — броня из духовная кость уровня 6. Качество: Повреждённый. Защита: 12. Проводимость Ци: 65.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "damaged",
+      "materialId": "spirit_bone",
+      "material": {
+        "id": "spirit_bone",
+        "name": "Духовная кость",
+        "tier": 3,
+        "category": "organic",
+        "properties": {
+          "durability": 50,
+          "qiConductivity": 65,
+          "weight": 1.8,
+          "hardness": 6,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 15,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 10,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Кость духовного зверя. Содержит сжатую Ци.",
+        "rarity": 10,
+        "source": "Охота на духовных зверей",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 12,
+        "qiConductivity": 65,
+        "weight": 1.8
+      },
+      "durability": {
+        "current": 37,
+        "max": 37,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 4,
+        "vitality": 2
+      },
+      "value": 4312,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000036",
+      "name": "Улучшенный нагрудник из духовное железо",
+      "nameEn": "Улучшенный нагрудник из духовное железо",
+      "description": "Улучшенный нагрудник из духовное железо — броня из духовное железо уровня 6. Качество: Улучшенный. Защита: 36. Проводимость Ци: 55.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "refined",
+      "materialId": "spirit_iron",
+      "material": {
+        "id": "spirit_iron",
+        "name": "Духовное железо",
+        "tier": 3,
+        "category": "metal",
+        "properties": {
+          "durability": 70,
+          "qiConductivity": 55,
+          "weight": 3.5,
+          "hardness": 8,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 20,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Железо, насыщенное Ци из лей-линий. Светится слабым светом.",
+        "rarity": 20,
+        "source": "Лей-линии (10-500 км глубина)",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 36,
+        "qiConductivity": 55,
+        "weight": 3.5
+      },
+      "durability": {
+        "current": 117,
+        "max": 117,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_armor_1773589829942_0",
+          "type": "defense_armor",
+          "category": "defense",
+          "value": 16,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_hp_1773589829942_1",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 97,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 4,
+        "vitality": 7
+      },
+      "value": 8281,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AR_000037",
+      "name": "Улучшенный мантия из кость дракона",
+      "nameEn": "Улучшенный мантия из кость дракона",
+      "description": "Улучшенный мантия из кость дракона — броня из кость дракона уровня 7. Качество: Улучшенный. Защита: 39. Проводимость Ци: 95.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "refined",
+      "materialId": "dragon_bone",
+      "material": {
+        "id": "dragon_bone",
+        "name": "Кость дракона",
+        "tier": 4,
+        "category": "organic",
+        "properties": {
+          "durability": 85,
+          "qiConductivity": 95,
+          "weight": 2.5,
+          "hardness": 9,
+          "flexibility": 7
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 35,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 20,
+            "isMultiplier": false
+          },
+          {
+            "type": "elemental_fire",
+            "value": 20,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Кость древнего дракона. Содержит сжатую Ци тысячелетий.",
+        "rarity": 3,
+        "source": "Древние драконы (легендарные существа)",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 39,
+        "qiConductivity": 95,
+        "weight": 2.5
+      },
+      "durability": {
+        "current": 141,
+        "max": 141,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829942_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 110,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_block_1773589829942_1",
+          "type": "defense_block",
+          "category": "defense",
+          "value": 15,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 5,
+        "vitality": 7
+      },
+      "value": 16200,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AR_000038",
+      "name": "Совершенный броня из звёздный металл",
+      "nameEn": "Совершенный броня из звёздный металл",
+      "description": "Совершенный броня из звёздный металл — броня из звёздный металл уровня 7. Качество: Совершенный. Защита: 70. Проводимость Ци: 75.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "perfect",
+      "materialId": "star_metal",
+      "material": {
+        "id": "star_metal",
+        "name": "Звёздный металл",
+        "tier": 4,
+        "category": "metal",
+        "properties": {
+          "durability": 90,
+          "qiConductivity": 75,
+          "weight": 2,
+          "hardness": 10,
+          "flexibility": 6
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 40,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_armor_penetration",
+            "value": 15,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Металл с \"упавших звёзд\" — из купола мира. Редчайший материал.",
+        "rarity": 5,
+        "source": "Падения с купола мира (редчайшие события)",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 70,
+        "qiConductivity": 75,
+        "weight": 2
+      },
+      "durability": {
+        "current": 239,
+        "max": 239,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829942_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 145,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_block_1773589829942_1",
+          "type": "defense_block",
+          "category": "defense",
+          "value": 17,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_fire_1773589829942_2",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 64,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_resistance_1773589829942_3",
+          "type": "defense_resistance",
+          "category": "defense",
+          "value": 25,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 5,
+        "vitality": 14
+      },
+      "value": 22924,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "AR_000039",
+      "name": "Совершенный нагрудник из небесный шёлк",
+      "nameEn": "Совершенный нагрудник из небесный шёлк",
+      "description": "Совершенный нагрудник из небесный шёлк — броня из небесный шёлк уровня 7. Качество: Совершенный. Защита: 67. Проводимость Ци: 100.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "perfect",
+      "materialId": "heavenly_silk",
+      "material": {
+        "id": "heavenly_silk",
+        "name": "Небесный шёлк",
+        "tier": 4,
+        "category": "organic",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 100,
+          "weight": 0.05,
+          "hardness": 2,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_stealth",
+            "value": 20,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк небесных червей из вершин купола. Почти невидим.",
+        "rarity": 3,
+        "source": "Небесные черви (вершины купола)",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 67,
+        "qiConductivity": 100,
+        "weight": 0.05
+      },
+      "durability": {
+        "current": 114,
+        "max": 114,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829942_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 136,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_block_1773589829942_1",
+          "type": "defense_block",
+          "category": "defense",
+          "value": 18,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 5,
+        "vitality": 13
+      },
+      "value": 26402,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "AR_000040",
+      "name": "Мантия из звёздный металл",
+      "nameEn": "Мантия из звёздный металл",
+      "description": "Мантия из звёздный металл — броня из звёздный металл уровня 7. Качество: Обычный. Защита: 26. Проводимость Ци: 75.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "common",
+      "materialId": "star_metal",
+      "material": {
+        "id": "star_metal",
+        "name": "Звёздный металл",
+        "tier": 4,
+        "category": "metal",
+        "properties": {
+          "durability": 90,
+          "qiConductivity": 75,
+          "weight": 2,
+          "hardness": 10,
+          "flexibility": 6
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 40,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_armor_penetration",
+            "value": 15,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Металл с \"упавших звёзд\" — из купола мира. Редчайший материал.",
+        "rarity": 5,
+        "source": "Падения с купола мира (редчайшие события)",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 26,
+        "qiConductivity": 75,
+        "weight": 2
+      },
+      "durability": {
+        "current": 104,
+        "max": 104,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_fire_1773589829942_0",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 26,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 5,
+        "vitality": 5
+      },
+      "value": 9393,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000041",
+      "name": "Кираса из небесный шёлк",
+      "nameEn": "Кираса из небесный шёлк",
+      "description": "Кираса из небесный шёлк — броня из небесный шёлк уровня 7. Качество: Обычный. Защита: 28. Проводимость Ци: 100.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "common",
+      "materialId": "heavenly_silk",
+      "material": {
+        "id": "heavenly_silk",
+        "name": "Небесный шёлк",
+        "tier": 4,
+        "category": "organic",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 100,
+          "weight": 0.05,
+          "hardness": 2,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_stealth",
+            "value": 20,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк небесных червей из вершин купола. Почти невидим.",
+        "rarity": 3,
+        "source": "Небесные черви (вершины купола)",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 28,
+        "qiConductivity": 100,
+        "weight": 0.05
+      },
+      "durability": {
+        "current": 54,
+        "max": 54,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "special_thorns_1773589829942_0",
+          "type": "special_thorns",
+          "category": "special",
+          "value": 10,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 5,
+        "vitality": 5
+      },
+      "value": 11904,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000042",
+      "name": "Улучшенный нагрудник из звёздный металл",
+      "nameEn": "Улучшенный нагрудник из звёздный металл",
+      "description": "Улучшенный нагрудник из звёздный металл — броня из звёздный металл уровня 7. Качество: Улучшенный. Защита: 40. Проводимость Ци: 75.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "refined",
+      "materialId": "star_metal",
+      "material": {
+        "id": "star_metal",
+        "name": "Звёздный металл",
+        "tier": 4,
+        "category": "metal",
+        "properties": {
+          "durability": 90,
+          "qiConductivity": 75,
+          "weight": 2,
+          "hardness": 10,
+          "flexibility": 6
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 40,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_armor_penetration",
+            "value": 15,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Металл с \"упавших звёзд\" — из купола мира. Редчайший материал.",
+        "rarity": 5,
+        "source": "Падения с купола мира (редчайшие события)",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 40,
+        "qiConductivity": 75,
+        "weight": 2
+      },
+      "durability": {
+        "current": 149,
+        "max": 149,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_armor_1773589829942_0",
+          "type": "defense_armor",
+          "category": "defense",
+          "value": 18,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_hp_1773589829942_1",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 109,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 5,
+        "vitality": 8
+      },
+      "value": 13903,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AR_000043",
+      "name": "Улучшенный мантия из кость дракона",
+      "nameEn": "Улучшенный мантия из кость дракона",
+      "description": "Улучшенный мантия из кость дракона — броня из кость дракона уровня 8. Качество: Улучшенный. Защита: 43. Проводимость Ци: 95.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "refined",
+      "materialId": "dragon_bone",
+      "material": {
+        "id": "dragon_bone",
+        "name": "Кость дракона",
+        "tier": 4,
+        "category": "organic",
+        "properties": {
+          "durability": 85,
+          "qiConductivity": 95,
+          "weight": 2.5,
+          "hardness": 9,
+          "flexibility": 7
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 35,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 20,
+            "isMultiplier": false
+          },
+          {
+            "type": "elemental_fire",
+            "value": 20,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Кость древнего дракона. Содержит сжатую Ци тысячелетий.",
+        "rarity": 3,
+        "source": "Древние драконы (легендарные существа)",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 43,
+        "qiConductivity": 95,
+        "weight": 2.5
+      },
+      "durability": {
+        "current": 143,
+        "max": 143,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829942_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 123,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_block_1773589829942_1",
+          "type": "defense_block",
+          "category": "defense",
+          "value": 16,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 6,
+        "vitality": 8
+      },
+      "value": 18298,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AR_000044",
+      "name": "Совершенный броня из звёздный металл",
+      "nameEn": "Совершенный броня из звёздный металл",
+      "description": "Совершенный броня из звёздный металл — броня из звёздный металл уровня 8. Качество: Совершенный. Защита: 77. Проводимость Ци: 75.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "perfect",
+      "materialId": "star_metal",
+      "material": {
+        "id": "star_metal",
+        "name": "Звёздный металл",
+        "tier": 4,
+        "category": "metal",
+        "properties": {
+          "durability": 90,
+          "qiConductivity": 75,
+          "weight": 2,
+          "hardness": 10,
+          "flexibility": 6
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 40,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_armor_penetration",
+            "value": 15,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Металл с \"упавших звёзд\" — из купола мира. Редчайший материал.",
+        "rarity": 5,
+        "source": "Падения с купола мира (редчайшие события)",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 77,
+        "qiConductivity": 75,
+        "weight": 2
+      },
+      "durability": {
+        "current": 241,
+        "max": 241,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829942_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 161,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_block_1773589829942_1",
+          "type": "defense_block",
+          "category": "defense",
+          "value": 19,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_fire_1773589829942_2",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 70,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_resistance_1773589829942_3",
+          "type": "defense_resistance",
+          "category": "defense",
+          "value": 27,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 6,
+        "vitality": 15
+      },
+      "value": 26356,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "AR_000045",
+      "name": "Совершенный нагрудник из небесный шёлк",
+      "nameEn": "Совершенный нагрудник из небесный шёлк",
+      "description": "Совершенный нагрудник из небесный шёлк — броня из небесный шёлк уровня 8. Качество: Совершенный. Защита: 75. Проводимость Ци: 100.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "perfect",
+      "materialId": "heavenly_silk",
+      "material": {
+        "id": "heavenly_silk",
+        "name": "Небесный шёлк",
+        "tier": 4,
+        "category": "organic",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 100,
+          "weight": 0.05,
+          "hardness": 2,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_stealth",
+            "value": 20,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк небесных червей из вершин купола. Почти невидим.",
+        "rarity": 3,
+        "source": "Небесные черви (вершины купола)",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 75,
+        "qiConductivity": 100,
+        "weight": 0.05
+      },
+      "durability": {
+        "current": 116,
+        "max": 116,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829942_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 151,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_block_1773589829942_1",
+          "type": "defense_block",
+          "category": "defense",
+          "value": 20,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 6,
+        "vitality": 15
+      },
+      "value": 30345,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "AR_000046",
+      "name": "Мантия из звёздный металл",
+      "nameEn": "Мантия из звёздный металл",
+      "description": "Мантия из звёздный металл — броня из звёздный металл уровня 8. Качество: Обычный. Защита: 29. Проводимость Ци: 75.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "common",
+      "materialId": "star_metal",
+      "material": {
+        "id": "star_metal",
+        "name": "Звёздный металл",
+        "tier": 4,
+        "category": "metal",
+        "properties": {
+          "durability": 90,
+          "qiConductivity": 75,
+          "weight": 2,
+          "hardness": 10,
+          "flexibility": 6
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 40,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_armor_penetration",
+            "value": 15,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Металл с \"упавших звёзд\" — из купола мира. Редчайший материал.",
+        "rarity": 5,
+        "source": "Падения с купола мира (редчайшие события)",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 29,
+        "qiConductivity": 75,
+        "weight": 2
+      },
+      "durability": {
+        "current": 106,
+        "max": 106,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_fire_1773589829942_0",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 28,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 6,
+        "vitality": 5
+      },
+      "value": 10608,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000047",
+      "name": "Кираса из небесный шёлк",
+      "nameEn": "Кираса из небесный шёлк",
+      "description": "Кираса из небесный шёлк — броня из небесный шёлк уровня 8. Качество: Обычный. Защита: 31. Проводимость Ци: 100.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "common",
+      "materialId": "heavenly_silk",
+      "material": {
+        "id": "heavenly_silk",
+        "name": "Небесный шёлк",
+        "tier": 4,
+        "category": "organic",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 100,
+          "weight": 0.05,
+          "hardness": 2,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_stealth",
+            "value": 20,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк небесных червей из вершин купола. Почти невидим.",
+        "rarity": 3,
+        "source": "Небесные черви (вершины купола)",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 31,
+        "qiConductivity": 100,
+        "weight": 0.05
+      },
+      "durability": {
+        "current": 56,
+        "max": 56,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "special_thorns_1773589829942_0",
+          "type": "special_thorns",
+          "category": "special",
+          "value": 11,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 6,
+        "vitality": 6
+      },
+      "value": 13362,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000048",
+      "name": "Улучшенный нагрудник из звёздный металл",
+      "nameEn": "Улучшенный нагрудник из звёздный металл",
+      "description": "Улучшенный нагрудник из звёздный металл — броня из звёздный металл уровня 8. Качество: Улучшенный. Защита: 45. Проводимость Ци: 75.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "refined",
+      "materialId": "star_metal",
+      "material": {
+        "id": "star_metal",
+        "name": "Звёздный металл",
+        "tier": 4,
+        "category": "metal",
+        "properties": {
+          "durability": 90,
+          "qiConductivity": 75,
+          "weight": 2,
+          "hardness": 10,
+          "flexibility": 6
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 40,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_armor_penetration",
+            "value": 15,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Металл с \"упавших звёзд\" — из купола мира. Редчайший материал.",
+        "rarity": 5,
+        "source": "Падения с купола мира (редчайшие события)",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 45,
+        "qiConductivity": 75,
+        "weight": 2
+      },
+      "durability": {
+        "current": 151,
+        "max": 151,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_armor_1773589829942_0",
+          "type": "defense_armor",
+          "category": "defense",
+          "value": 20,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_hp_1773589829942_1",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 121,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 6,
+        "vitality": 9
+      },
+      "value": 15912,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AR_000049",
+      "name": "Улучшенный мантия из первородная эссенция",
+      "nameEn": "Улучшенный мантия из первородная эссенция",
+      "description": "Улучшенный мантия из первородная эссенция — броня из первородная эссенция уровня 9. Качество: Улучшенный. Защита: 48. Проводимость Ци: 150.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "refined",
+      "materialId": "primordial_essence",
+      "material": {
+        "id": "primordial_essence",
+        "name": "Первородная эссенция",
+        "tier": 5,
+        "category": "crystal",
+        "properties": {
+          "durability": 150,
+          "qiConductivity": 150,
+          "weight": 0.01,
+          "hardness": 10,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 150,
+            "isMultiplier": false
+          },
+          {
+            "type": "defense_all",
+            "value": 80,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 80,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_immortality",
+            "value": 1,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Эссенция творения из начала времён. Материал существовал до мира.",
+        "rarity": 0.1,
+        "source": "Начало времён (недоступно обычным путям)",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 48,
+        "qiConductivity": 150,
+        "weight": 0.01
+      },
+      "durability": {
+        "current": 243,
+        "max": 243,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829942_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 135,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_block_1773589829942_1",
+          "type": "defense_block",
+          "category": "defense",
+          "value": 18,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 7,
+        "vitality": 9
+      },
+      "value": 33333,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AR_000050",
+      "name": "Превосходящий броня из пустотная материя",
+      "nameEn": "Превосходящий броня из пустотная материя",
+      "description": "Превосходящий броня из пустотная материя — броня из пустотная материя уровня 9. Качество: Превосходящий. Защита: 296. Проводимость Ци: 100.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "transcendent",
+      "materialId": "void_matter",
+      "material": {
+        "id": "void_matter",
+        "name": "Пустотная материя",
+        "tier": 5,
+        "category": "metal",
+        "properties": {
+          "durability": 100,
+          "qiConductivity": 100,
+          "weight": 0.1,
+          "hardness": 10,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 80,
+            "isMultiplier": false
+          },
+          {
+            "type": "defense_armor",
+            "value": 40,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 40,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_void_resistance",
+            "value": 100,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Материя из глубин пустоты за куполом мира. Существует вне законов.",
+        "rarity": 1,
+        "source": "За границей купола мира",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 296,
+        "qiConductivity": 100,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 418,
+        "max": 418,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829942_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 261,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_block_1773589829942_1",
+          "type": "defense_block",
+          "category": "defense",
+          "value": 30,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_fire_1773589829942_2",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 113,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_resistance_1773589829942_3",
+          "type": "defense_resistance",
+          "category": "defense",
+          "value": 43,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_earth_1773589829942_4",
+          "type": "elemental_earth",
+          "category": "elemental",
+          "value": 76,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_armor_1773589829942_5",
+          "type": "defense_armor",
+          "category": "defense",
+          "value": 52,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 7,
+        "vitality": 59
+      },
+      "value": 128204,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "legendary"
+    },
+    {
+      "id": "AR_000051",
+      "name": "Совершенный нагрудник из первородная эссенция",
+      "nameEn": "Совершенный нагрудник из первородная эссенция",
+      "description": "Совершенный нагрудник из первородная эссенция — броня из первородная эссенция уровня 9. Качество: Совершенный. Защита: 82. Проводимость Ци: 150.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "perfect",
+      "materialId": "primordial_essence",
+      "material": {
+        "id": "primordial_essence",
+        "name": "Первородная эссенция",
+        "tier": 5,
+        "category": "crystal",
+        "properties": {
+          "durability": 150,
+          "qiConductivity": 150,
+          "weight": 0.01,
+          "hardness": 10,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 150,
+            "isMultiplier": false
+          },
+          {
+            "type": "defense_all",
+            "value": 80,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 80,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_immortality",
+            "value": 1,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Эссенция творения из начала времён. Материал существовал до мира.",
+        "rarity": 0.1,
+        "source": "Начало времён (недоступно обычным путям)",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 82,
+        "qiConductivity": 150,
+        "weight": 0.01
+      },
+      "durability": {
+        "current": 393,
+        "max": 393,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_hp_1773589829942_0",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 166,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_block_1773589829942_1",
+          "type": "defense_block",
+          "category": "defense",
+          "value": 22,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 7,
+        "vitality": 16
+      },
+      "value": 51074,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "AR_000052",
+      "name": "Улучшенный нагрудник из пустотная материя",
+      "nameEn": "Улучшенный нагрудник из пустотная материя",
+      "description": "Улучшенный нагрудник из пустотная материя — броня из пустотная материя уровня 9. Качество: Улучшенный. Защита: 108. Проводимость Ци: 100.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "refined",
+      "materialId": "void_matter",
+      "material": {
+        "id": "void_matter",
+        "name": "Пустотная материя",
+        "tier": 5,
+        "category": "metal",
+        "properties": {
+          "durability": 100,
+          "qiConductivity": 100,
+          "weight": 0.1,
+          "hardness": 10,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 80,
+            "isMultiplier": false
+          },
+          {
+            "type": "defense_armor",
+            "value": 40,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 40,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_void_resistance",
+            "value": 100,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Материя из глубин пустоты за куполом мира. Существует вне законов.",
+        "rarity": 1,
+        "source": "За границей купола мира",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 108,
+        "qiConductivity": 100,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 168,
+        "max": 168,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_fire_1773589829942_0",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 40,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "special_thorns_1773589829942_1",
+          "type": "special_thorns",
+          "category": "special",
+          "value": 16,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 7,
+        "vitality": 21
+      },
+      "value": 35016,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AR_000053",
+      "name": "Кираса из первородная эссенция",
+      "nameEn": "Кираса из первородная эссенция",
+      "description": "Кираса из первородная эссенция — броня из первородная эссенция уровня 9. Качество: Обычный. Защита: 34. Проводимость Ци: 150.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "common",
+      "materialId": "primordial_essence",
+      "material": {
+        "id": "primordial_essence",
+        "name": "Первородная эссенция",
+        "tier": 5,
+        "category": "crystal",
+        "properties": {
+          "durability": 150,
+          "qiConductivity": 150,
+          "weight": 0.01,
+          "hardness": 10,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 150,
+            "isMultiplier": false
+          },
+          {
+            "type": "defense_all",
+            "value": 80,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 80,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_immortality",
+            "value": 1,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Эссенция творения из начала времён. Материал существовал до мира.",
+        "rarity": 0.1,
+        "source": "Начало времён (недоступно обычным путям)",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 34,
+        "qiConductivity": 150,
+        "weight": 0.01
+      },
+      "durability": {
+        "current": 168,
+        "max": 168,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "special_thorns_1773589829942_0",
+          "type": "special_thorns",
+          "category": "special",
+          "value": 12,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 7,
+        "vitality": 6
+      },
+      "value": 23828,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AR_000054",
+      "name": "Совершенный доспех из пустотная материя",
+      "nameEn": "Совершенный доспех из пустотная материя",
+      "description": "Совершенный доспех из пустотная материя — броня из пустотная материя уровня 9. Качество: Совершенный. Защита: 182. Проводимость Ци: 100.",
+      "type": "armor",
+      "category": "armor",
+      "grade": "perfect",
+      "materialId": "void_matter",
+      "material": {
+        "id": "void_matter",
+        "name": "Пустотная материя",
+        "tier": 5,
+        "category": "metal",
+        "properties": {
+          "durability": 100,
+          "qiConductivity": 100,
+          "weight": 0.1,
+          "hardness": 10,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 80,
+            "isMultiplier": false
+          },
+          {
+            "type": "defense_armor",
+            "value": 40,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 40,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_void_resistance",
+            "value": 100,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Материя из глубин пустоты за куполом мира. Существует вне законов.",
+        "rarity": 1,
+        "source": "За границей купола мира",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 182,
+        "qiConductivity": 100,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 268,
+        "max": 268,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_armor_1773589829942_0",
+          "type": "defense_armor",
+          "category": "defense",
+          "value": 29,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_hp_1773589829942_1",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 174,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_evasion_1773589829942_2",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 13,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 7,
+        "vitality": 36
+      },
+      "value": 62082,
+      "icon": "🛡️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    }
+  ]
+}

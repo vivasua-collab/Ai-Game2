@@ -1,0 +1,309 @@
+{
+  "version": "2.0",
+  "type": "chaos_spawn",
+  "count": 4,
+  "npcs": [
+    {
+      "id": "NP_000108",
+      "name": "Сю",
+      "age": 45,
+      "gender": "female",
+      "speciesId": "chaos_spawn",
+      "roleId": "beggar",
+      "stats": {
+        "strength": 27,
+        "agility": 27,
+        "intelligence": 27,
+        "vitality": 27
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 8,
+        "coreCapacity": 12564,
+        "currentQi": 11005,
+        "coreQuality": 9,
+        "baseVolume": 2662,
+        "qiDensity": 2,
+        "meridianConductivity": 7.394444444444445,
+        "meridianBuffer": 36
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 110,
+            "maxFunctionalHP": 110,
+            "structuralHP": 220,
+            "maxStructuralHP": 220,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "essence": {
+            "functionalHP": 220,
+            "maxFunctionalHP": 220,
+            "structuralHP": 440,
+            "maxStructuralHP": 440,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Эксцентричность",
+          "Интеллект",
+          "Одержимость"
+        ],
+        "motivation": "открытия",
+        "dominantEmotion": "растерянность",
+        "disposition": 50
+      },
+      "techniques": [],
+      "equipment": {
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 1,
+        "contributionPoints": 23
+      },
+      "generationMeta": {
+        "seed": 1773590176320,
+        "generatedAt": "2026-03-15T15:56:16.314Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000153",
+      "name": "Юй",
+      "age": 63,
+      "gender": "female",
+      "speciesId": "chaos_spawn",
+      "roleId": "healer",
+      "stats": {
+        "strength": 31,
+        "agility": 31,
+        "intelligence": 31,
+        "vitality": 31
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 8,
+        "coreCapacity": 58718,
+        "currentQi": 41448,
+        "coreQuality": 3,
+        "baseVolume": 5657,
+        "qiDensity": 4,
+        "meridianConductivity": 15.713888888888889,
+        "meridianBuffer": 78
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 120,
+            "maxFunctionalHP": 120,
+            "structuralHP": 240,
+            "maxStructuralHP": 240,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "essence": {
+            "functionalHP": 240,
+            "maxFunctionalHP": 240,
+            "structuralHP": 480,
+            "maxStructuralHP": 480,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Сострадание",
+          "Терпение",
+          "Знание"
+        ],
+        "motivation": "исцеление",
+        "dominantEmotion": "сострадание",
+        "disposition": 70
+      },
+      "techniques": [
+        "breath_of_qi",
+        "qi_healing",
+        "mental_shield",
+        "water_shield"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 65,
+        "contributionPoints": 10
+      },
+      "generationMeta": {
+        "seed": 1773590345674,
+        "generatedAt": "2026-03-15T15:59:05.663Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000155",
+      "name": "Лань",
+      "age": 70,
+      "gender": "female",
+      "speciesId": "chaos_spawn",
+      "roleId": "traveler",
+      "stats": {
+        "strength": 25,
+        "agility": 10,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 6,
+        "coreCapacity": 7120,
+        "currentQi": 5798,
+        "coreQuality": 97,
+        "baseVolume": 4017,
+        "qiDensity": 1,
+        "meridianConductivity": 11.158333333333333,
+        "meridianBuffer": 55
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Дружелюбие",
+          "Любопытство",
+          "Авантюризм"
+        ],
+        "motivation": "приключения",
+        "dominantEmotion": "радость",
+        "disposition": 70
+      },
+      "techniques": [
+        "breath_of_qi",
+        "reinforced_strike",
+        "wind_speed"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 20,
+        "contributionPoints": 19
+      },
+      "generationMeta": {
+        "seed": 1773590345676,
+        "generatedAt": "2026-03-15T15:59:05.663Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000186",
+      "name": "Цзы",
+      "age": 108,
+      "gender": "female",
+      "speciesId": "chaos_spawn",
+      "roleId": "farmer",
+      "stats": {
+        "strength": 25,
+        "agility": 25,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 4,
+        "coreCapacity": 12897,
+        "currentQi": 9613,
+        "coreQuality": 44,
+        "baseVolume": 8808,
+        "qiDensity": 1,
+        "meridianConductivity": 24.466666666666665,
+        "meridianBuffer": 122
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Лень",
+          "Покорность",
+          "Хитрость"
+        ],
+        "motivation": "комфорт",
+        "dominantEmotion": "апатия",
+        "disposition": 55
+      },
+      "techniques": [
+        "breath_of_qi"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 12,
+        "contributionPoints": 21
+      },
+      "generationMeta": {
+        "seed": 1773590348741,
+        "generatedAt": "2026-03-15T15:59:08.736Z",
+        "version": "2.1.0-lore"
+      }
+    }
+  ]
+}

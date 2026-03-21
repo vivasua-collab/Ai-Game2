@@ -1,0 +1,895 @@
+{
+  "version": "2.0",
+  "type": "centaur",
+  "count": 6,
+  "npcs": [
+    {
+      "id": "NP_000031",
+      "name": "Лин",
+      "age": 53,
+      "gender": "male",
+      "speciesId": "centaur",
+      "roleId": "beggar",
+      "stats": {
+        "strength": 25,
+        "agility": 22,
+        "intelligence": 11,
+        "vitality": 13
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 0,
+        "coreCapacity": 3071,
+        "currentQi": 2018,
+        "coreQuality": 45,
+        "baseVolume": 1396,
+        "qiDensity": 2,
+        "meridianConductivity": 3.8777777777777778,
+        "meridianBuffer": 19
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 165,
+            "maxFunctionalHP": 165,
+            "structuralHP": 330,
+            "maxStructuralHP": 330,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 132,
+            "maxFunctionalHP": 132,
+            "structuralHP": 264,
+            "maxStructuralHP": 264,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_arm": {
+            "functionalHP": 66,
+            "maxFunctionalHP": 66,
+            "structuralHP": 132,
+            "maxStructuralHP": 132,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_arm": {
+            "functionalHP": 66,
+            "maxFunctionalHP": 66,
+            "structuralHP": 132,
+            "maxStructuralHP": 132,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_hand": {
+            "functionalHP": 33,
+            "maxFunctionalHP": 33,
+            "structuralHP": 66,
+            "maxStructuralHP": 66,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_hand": {
+            "functionalHP": 33,
+            "maxFunctionalHP": 33,
+            "structuralHP": 66,
+            "maxStructuralHP": 66,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_leg": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_leg": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_foot": {
+            "functionalHP": 33,
+            "maxFunctionalHP": 33,
+            "structuralHP": 66,
+            "maxStructuralHP": 66,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_foot": {
+            "functionalHP": 33,
+            "maxFunctionalHP": 33,
+            "structuralHP": 66,
+            "maxStructuralHP": 66,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Фанатизм",
+          "Преданность",
+          "Тайна"
+        ],
+        "motivation": "служение культу",
+        "dominantEmotion": "нетерпимость",
+        "disposition": 35
+      },
+      "techniques": [],
+      "equipment": {
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 1,
+        "contributionPoints": 23
+      },
+      "generationMeta": {
+        "seed": 1773590045647,
+        "generatedAt": "2026-03-15T15:54:05.623Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000033",
+      "name": "Ин",
+      "age": 34,
+      "gender": "female",
+      "speciesId": "centaur",
+      "roleId": "hunter",
+      "stats": {
+        "strength": 31,
+        "agility": 31,
+        "intelligence": 23,
+        "vitality": 23
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 5,
+        "coreCapacity": 17273,
+        "currentQi": 12198,
+        "coreQuality": 38,
+        "baseVolume": 2214,
+        "qiDensity": 4,
+        "meridianConductivity": 6.15,
+        "meridianBuffer": 30
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 180,
+            "maxFunctionalHP": 180,
+            "structuralHP": 360,
+            "maxStructuralHP": 360,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 144,
+            "maxFunctionalHP": 144,
+            "structuralHP": 288,
+            "maxStructuralHP": 288,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_arm": {
+            "functionalHP": 72,
+            "maxFunctionalHP": 72,
+            "structuralHP": 144,
+            "maxStructuralHP": 144,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_arm": {
+            "functionalHP": 72,
+            "maxFunctionalHP": 72,
+            "structuralHP": 144,
+            "maxStructuralHP": 144,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_hand": {
+            "functionalHP": 36,
+            "maxFunctionalHP": 36,
+            "structuralHP": 72,
+            "maxStructuralHP": 72,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_hand": {
+            "functionalHP": 36,
+            "maxFunctionalHP": 36,
+            "structuralHP": 72,
+            "maxStructuralHP": 72,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_foot": {
+            "functionalHP": 36,
+            "maxFunctionalHP": 36,
+            "structuralHP": 72,
+            "maxStructuralHP": 72,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_foot": {
+            "functionalHP": 36,
+            "maxFunctionalHP": 36,
+            "structuralHP": 72,
+            "maxStructuralHP": 72,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Дружелюбие",
+          "Любопытство",
+          "Авантюризм"
+        ],
+        "motivation": "приключения",
+        "dominantEmotion": "любопытство",
+        "disposition": 70
+      },
+      "techniques": [
+        "breath_of_qi",
+        "reinforced_strike",
+        "wind_speed",
+        "qi_bullet"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 28,
+        "contributionPoints": 13
+      },
+      "generationMeta": {
+        "seed": 1773590045649,
+        "generatedAt": "2026-03-15T15:54:05.624Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000068",
+      "name": "Хуа",
+      "age": 71,
+      "gender": "female",
+      "speciesId": "centaur",
+      "roleId": "guard_combat",
+      "stats": {
+        "strength": 22,
+        "agility": 31,
+        "intelligence": 25,
+        "vitality": 22
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 0,
+        "coreCapacity": 5372,
+        "currentQi": 4719,
+        "coreQuality": 50,
+        "baseVolume": 1110,
+        "qiDensity": 4,
+        "meridianConductivity": 3.0833333333333335,
+        "meridianBuffer": 15
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 180,
+            "maxFunctionalHP": 180,
+            "structuralHP": 360,
+            "maxStructuralHP": 360,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 144,
+            "maxFunctionalHP": 144,
+            "structuralHP": 288,
+            "maxStructuralHP": 288,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_arm": {
+            "functionalHP": 72,
+            "maxFunctionalHP": 72,
+            "structuralHP": 144,
+            "maxStructuralHP": 144,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_arm": {
+            "functionalHP": 72,
+            "maxFunctionalHP": 72,
+            "structuralHP": 144,
+            "maxStructuralHP": 144,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_hand": {
+            "functionalHP": 36,
+            "maxFunctionalHP": 36,
+            "structuralHP": 72,
+            "maxStructuralHP": 72,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_hand": {
+            "functionalHP": 36,
+            "maxFunctionalHP": 36,
+            "structuralHP": 72,
+            "maxStructuralHP": 72,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_foot": {
+            "functionalHP": 36,
+            "maxFunctionalHP": 36,
+            "structuralHP": 72,
+            "maxStructuralHP": 72,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_foot": {
+            "functionalHP": 36,
+            "maxFunctionalHP": 36,
+            "structuralHP": 72,
+            "maxStructuralHP": 72,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Безжалостность",
+          "Дисциплина",
+          "Сила"
+        ],
+        "motivation": "сила",
+        "dominantEmotion": "решимость",
+        "disposition": 35
+      },
+      "techniques": [
+        "reinforced_strike",
+        "turtle_stance",
+        "iron_wall"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 50,
+        "contributionPoints": 5
+      },
+      "generationMeta": {
+        "seed": 1773590045684,
+        "generatedAt": "2026-03-15T15:54:05.626Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000130",
+      "name": "Хао",
+      "age": 52,
+      "gender": "male",
+      "speciesId": "centaur",
+      "roleId": "scholar",
+      "stats": {
+        "strength": 25,
+        "agility": 25,
+        "intelligence": 17,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 2,
+        "coreCapacity": 1581,
+        "currentQi": 1097,
+        "coreQuality": 78,
+        "baseVolume": 1306,
+        "qiDensity": 1,
+        "meridianConductivity": 3.6277777777777778,
+        "meridianBuffer": 18
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 75,
+            "maxFunctionalHP": 75,
+            "structuralHP": 150,
+            "maxStructuralHP": 150,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 150,
+            "maxFunctionalHP": 150,
+            "structuralHP": 300,
+            "maxStructuralHP": 300,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 120,
+            "maxFunctionalHP": 120,
+            "structuralHP": 240,
+            "maxStructuralHP": 240,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_arm": {
+            "functionalHP": 60,
+            "maxFunctionalHP": 60,
+            "structuralHP": 120,
+            "maxStructuralHP": 120,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_arm": {
+            "functionalHP": 60,
+            "maxFunctionalHP": 60,
+            "structuralHP": 120,
+            "maxStructuralHP": 120,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_hand": {
+            "functionalHP": 30,
+            "maxFunctionalHP": 30,
+            "structuralHP": 60,
+            "maxStructuralHP": 60,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_hand": {
+            "functionalHP": 30,
+            "maxFunctionalHP": 30,
+            "structuralHP": 60,
+            "maxStructuralHP": 60,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_leg": {
+            "functionalHP": 75,
+            "maxFunctionalHP": 75,
+            "structuralHP": 150,
+            "maxStructuralHP": 150,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_leg": {
+            "functionalHP": 75,
+            "maxFunctionalHP": 75,
+            "structuralHP": 150,
+            "maxStructuralHP": 150,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_foot": {
+            "functionalHP": 30,
+            "maxFunctionalHP": 30,
+            "structuralHP": 60,
+            "maxStructuralHP": 60,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_foot": {
+            "functionalHP": 30,
+            "maxFunctionalHP": 30,
+            "structuralHP": 60,
+            "maxStructuralHP": 60,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Эксцентричность",
+          "Интеллект",
+          "Одержимость"
+        ],
+        "motivation": "открытия",
+        "dominantEmotion": "растерянность",
+        "disposition": 50
+      },
+      "techniques": [
+        "breath_of_qi",
+        "mental_shield",
+        "qi_healing"
+      ],
+      "equipment": {
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 10,
+        "contributionPoints": 23
+      },
+      "generationMeta": {
+        "seed": 1773590343354,
+        "generatedAt": "2026-03-15T15:59:03.348Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000141",
+      "name": "Фэн",
+      "age": 36,
+      "gender": "male",
+      "speciesId": "centaur",
+      "roleId": "guard_combat",
+      "stats": {
+        "strength": 31,
+        "agility": 31,
+        "intelligence": 22,
+        "vitality": 31
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 2,
+        "coreCapacity": 13222,
+        "currentQi": 10308,
+        "coreQuality": 16,
+        "baseVolume": 2257,
+        "qiDensity": 4,
+        "meridianConductivity": 6.269444444444445,
+        "meridianBuffer": 31
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 180,
+            "maxFunctionalHP": 180,
+            "structuralHP": 360,
+            "maxStructuralHP": 360,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 144,
+            "maxFunctionalHP": 144,
+            "structuralHP": 288,
+            "maxStructuralHP": 288,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_arm": {
+            "functionalHP": 72,
+            "maxFunctionalHP": 72,
+            "structuralHP": 144,
+            "maxStructuralHP": 144,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_arm": {
+            "functionalHP": 72,
+            "maxFunctionalHP": 72,
+            "structuralHP": 144,
+            "maxStructuralHP": 144,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_hand": {
+            "functionalHP": 36,
+            "maxFunctionalHP": 36,
+            "structuralHP": 72,
+            "maxStructuralHP": 72,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_hand": {
+            "functionalHP": 36,
+            "maxFunctionalHP": 36,
+            "structuralHP": 72,
+            "maxStructuralHP": 72,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_foot": {
+            "functionalHP": 36,
+            "maxFunctionalHP": 36,
+            "structuralHP": 72,
+            "maxStructuralHP": 72,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_foot": {
+            "functionalHP": 36,
+            "maxFunctionalHP": 36,
+            "structuralHP": 72,
+            "maxStructuralHP": 72,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Верность",
+          "Храбрость",
+          "Дисциплина"
+        ],
+        "motivation": "служение",
+        "dominantEmotion": "гордость",
+        "disposition": 65
+      },
+      "techniques": [
+        "reinforced_strike",
+        "turtle_stance",
+        "iron_wall"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 43,
+        "contributionPoints": 22
+      },
+      "generationMeta": {
+        "seed": 1773590345662,
+        "generatedAt": "2026-03-15T15:59:05.662Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000175",
+      "name": "Фэн",
+      "age": 92,
+      "gender": "male",
+      "speciesId": "centaur",
+      "roleId": "scholar",
+      "stats": {
+        "strength": 27,
+        "agility": 21,
+        "intelligence": 17,
+        "vitality": 14
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 1,
+        "coreCapacity": 481,
+        "currentQi": 271,
+        "coreQuality": 65,
+        "baseVolume": 199,
+        "qiDensity": 2,
+        "meridianConductivity": 0.5527777777777778,
+        "meridianBuffer": 2
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 165,
+            "maxFunctionalHP": 165,
+            "structuralHP": 330,
+            "maxStructuralHP": 330,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 132,
+            "maxFunctionalHP": 132,
+            "structuralHP": 264,
+            "maxStructuralHP": 264,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_arm": {
+            "functionalHP": 66,
+            "maxFunctionalHP": 66,
+            "structuralHP": 132,
+            "maxStructuralHP": 132,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_arm": {
+            "functionalHP": 66,
+            "maxFunctionalHP": 66,
+            "structuralHP": 132,
+            "maxStructuralHP": 132,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_hand": {
+            "functionalHP": 33,
+            "maxFunctionalHP": 33,
+            "structuralHP": 66,
+            "maxStructuralHP": 66,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_hand": {
+            "functionalHP": 33,
+            "maxFunctionalHP": 33,
+            "structuralHP": 66,
+            "maxStructuralHP": 66,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_leg": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_leg": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_foot": {
+            "functionalHP": 33,
+            "maxFunctionalHP": 33,
+            "structuralHP": 66,
+            "maxStructuralHP": 66,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_foot": {
+            "functionalHP": 33,
+            "maxFunctionalHP": 33,
+            "structuralHP": 66,
+            "maxStructuralHP": 66,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Эксцентричность",
+          "Интеллект",
+          "Одержимость"
+        ],
+        "motivation": "знания",
+        "dominantEmotion": "возбуждение",
+        "disposition": 50
+      },
+      "techniques": [
+        "breath_of_qi",
+        "mental_shield",
+        "qi_healing"
+      ],
+      "equipment": {
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 32,
+        "contributionPoints": 20
+      },
+      "generationMeta": {
+        "seed": 1773590347213,
+        "generatedAt": "2026-03-15T15:59:07.200Z",
+        "version": "2.1.0-lore"
+      }
+    }
+  ]
+}
