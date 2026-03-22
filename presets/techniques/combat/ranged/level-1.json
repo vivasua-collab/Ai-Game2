@@ -1,0 +1,428 @@
+{
+  "version": "2.0",
+  "count": 9,
+  "techniques": [
+    {
+      "id": "RG000001",
+      "name": "Неизбежный Взрыв",
+      "nameEn": "Неизбежный Взрыв",
+      "description": "Неизбежный Взрыв — техника ranged_projectile элемента earth уровня 1. Grade: common. Урон: 32. Дальность: 15м.",
+      "type": "combat",
+      "subtype": "ranged_projectile",
+      "element": "earth",
+      "level": 1,
+      "grade": "common",
+      "qiCost": 32,
+      "baseQiCost": 32,
+      "baseDamage": 32,
+      "baseRange": 15,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 32,
+        "finalQiCost": 32,
+        "finalRange": 15,
+        "formula": "32 × 1 = 32",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 3
+      },
+      "meta": {
+        "seed": 1774114254437,
+        "template": "combat_ranged_projectile_earth",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000002",
+      "name": "Толчок стремительный",
+      "nameEn": "Толчок Стремительный",
+      "description": "Толчок стремительный — техника ranged_projectile элемента air уровня 1. Grade: refined. Урон: 38. Дальность: 15м.",
+      "type": "combat",
+      "subtype": "ranged_projectile",
+      "element": "air",
+      "level": 1,
+      "grade": "refined",
+      "qiCost": 32,
+      "baseQiCost": 32,
+      "baseDamage": 32,
+      "baseRange": 15,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 38,
+        "finalQiCost": 32,
+        "finalRange": 15,
+        "formula": "32 × 1.2 = 38",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 5
+        }
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 5
+      },
+      "meta": {
+        "seed": 1774114254438,
+        "template": "combat_ranged_projectile_air",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000003",
+      "name": "Укол статический",
+      "nameEn": "Укол Статический",
+      "description": "Укол статический — техника ranged_projectile элемента lightning уровня 1. Grade: common. Урон: 32. Дальность: 15м.",
+      "type": "combat",
+      "subtype": "ranged_projectile",
+      "element": "lightning",
+      "level": 1,
+      "grade": "common",
+      "qiCost": 32,
+      "baseQiCost": 32,
+      "baseDamage": 32,
+      "baseRange": 15,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 32,
+        "finalQiCost": 32,
+        "finalRange": 15,
+        "formula": "32 × 1 = 32",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 3
+      },
+      "meta": {
+        "seed": 1774114254439,
+        "template": "combat_ranged_projectile_lightning",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000010",
+      "name": "Штормовой Волна",
+      "nameEn": "Штормовой Волна",
+      "description": "Штормовой Волна — техника ranged_beam элемента air уровня 1. Grade: refined. Урон: 38. Дальность: 20м.",
+      "type": "combat",
+      "subtype": "ranged_beam",
+      "element": "air",
+      "level": 1,
+      "grade": "refined",
+      "qiCost": 32,
+      "baseQiCost": 32,
+      "baseDamage": 32,
+      "baseRange": 20,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 38,
+        "finalQiCost": 32,
+        "finalRange": 20,
+        "formula": "32 × 1.2 = 38",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 5
+        }
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 5
+      },
+      "meta": {
+        "seed": 1774114254446,
+        "template": "combat_ranged_beam_air",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000011",
+      "name": "Ослепляющий Кулак",
+      "nameEn": "Ослепляющий Кулак",
+      "description": "Ослепляющий Кулак — техника ranged_beam элемента lightning уровня 1. Grade: common. Урон: 32. Дальность: 20м.",
+      "type": "combat",
+      "subtype": "ranged_beam",
+      "element": "lightning",
+      "level": 1,
+      "grade": "common",
+      "qiCost": 32,
+      "baseQiCost": 32,
+      "baseDamage": 32,
+      "baseRange": 20,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 32,
+        "finalQiCost": 32,
+        "finalRange": 20,
+        "formula": "32 × 1 = 32",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 3
+      },
+      "meta": {
+        "seed": 1774114254447,
+        "template": "combat_ranged_beam_lightning",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000012",
+      "name": "Удар бесплотный",
+      "nameEn": "Удар Бесплотный",
+      "description": "Удар бесплотный — техника ranged_beam элемента void уровня 1. Grade: refined. Урон: 38. Дальность: 20м.",
+      "type": "combat",
+      "subtype": "ranged_beam",
+      "element": "void",
+      "level": 1,
+      "grade": "refined",
+      "qiCost": 32,
+      "baseQiCost": 32,
+      "baseDamage": 32,
+      "baseRange": 20,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 38,
+        "finalQiCost": 32,
+        "finalRange": 20,
+        "formula": "32 × 1.2 = 38",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 5
+        }
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 5
+      },
+      "meta": {
+        "seed": 1774114254448,
+        "template": "combat_ranged_beam_void",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000019",
+      "name": "Молниеносный Волна",
+      "nameEn": "Молниеносный Волна",
+      "description": "Молниеносный Волна — техника ranged_aoe элемента lightning уровня 1. Grade: common. Урон: 32. Дальность: 10м.",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "lightning",
+      "level": 1,
+      "grade": "common",
+      "qiCost": 32,
+      "baseQiCost": 32,
+      "baseDamage": 32,
+      "baseRange": 10,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 32,
+        "finalQiCost": 32,
+        "finalRange": 10,
+        "formula": "32 × 1 = 32",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 3
+      },
+      "meta": {
+        "seed": 1774114254455,
+        "template": "combat_ranged_aoe_lightning",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000020",
+      "name": "Эфирный Кулак",
+      "nameEn": "Эфирный Кулак",
+      "description": "Эфирный Кулак — техника ranged_aoe элемента void уровня 1. Grade: refined. Урон: 38. Дальность: 10м.",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "void",
+      "level": 1,
+      "grade": "refined",
+      "qiCost": 32,
+      "baseQiCost": 32,
+      "baseDamage": 32,
+      "baseRange": 10,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 38,
+        "finalQiCost": 32,
+        "finalRange": 10,
+        "formula": "32 × 1.2 = 38",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 5
+        }
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 5
+      },
+      "meta": {
+        "seed": 1774114254456,
+        "template": "combat_ranged_aoe_void",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000021",
+      "name": "Сфокусированный Удар",
+      "nameEn": "Сфокусированный Удар",
+      "description": "Сфокусированный Удар — техника ranged_aoe уровня 1. Grade: common. Урон: 32. Дальность: 10м.",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "neutral",
+      "level": 1,
+      "grade": "common",
+      "qiCost": 32,
+      "baseQiCost": 32,
+      "baseDamage": 32,
+      "baseRange": 10,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 32,
+        "finalQiCost": 32,
+        "finalRange": 10,
+        "formula": "32 × 1 = 32",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 3
+      },
+      "meta": {
+        "seed": 1774114254457,
+        "template": "combat_ranged_aoe_neutral",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    }
+  ]
+}

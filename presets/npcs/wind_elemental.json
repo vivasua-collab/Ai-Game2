@@ -1,0 +1,533 @@
+{
+  "version": "2.0",
+  "type": "wind_elemental",
+  "count": 7,
+  "npcs": [
+    {
+      "id": "NP_000023",
+      "name": "Зефир",
+      "age": 101,
+      "gender": "female",
+      "speciesId": "wind_elemental",
+      "roleId": "blacksmith",
+      "stats": {
+        "strength": 21,
+        "agility": 25,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 3,
+        "coreCapacity": 2321,
+        "currentQi": 1334,
+        "coreQuality": 98,
+        "baseVolume": 1743,
+        "qiDensity": 1,
+        "meridianConductivity": 4.841666666666667,
+        "meridianBuffer": 24
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Сострадание",
+          "Терпение",
+          "Знание"
+        ],
+        "motivation": "медицинские знания",
+        "dominantEmotion": "сострадание",
+        "disposition": 70
+      },
+      "techniques": [
+        "breath_of_qi",
+        "reinforced_strike"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 83,
+        "contributionPoints": 3
+      },
+      "generationMeta": {
+        "seed": 1773590045639,
+        "generatedAt": "2026-03-15T15:54:05.622Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000025",
+      "name": "Эфир",
+      "age": 93,
+      "gender": "female",
+      "speciesId": "wind_elemental",
+      "roleId": "beggar",
+      "stats": {
+        "strength": 17,
+        "agility": 25,
+        "intelligence": 14,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 0,
+        "coreCapacity": 1574,
+        "currentQi": 1471,
+        "coreQuality": 67,
+        "baseVolume": 1574,
+        "qiDensity": 1,
+        "meridianConductivity": 4.372222222222222,
+        "meridianBuffer": 21
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Амбициозность",
+          "Упорство",
+          "Соревновательность"
+        ],
+        "motivation": "признание",
+        "dominantEmotion": "решимость",
+        "disposition": 50
+      },
+      "techniques": [],
+      "equipment": {
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 0,
+        "contributionPoints": 11
+      },
+      "generationMeta": {
+        "seed": 1773590045641,
+        "generatedAt": "2026-03-15T15:54:05.623Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000060",
+      "name": "Аква",
+      "age": 103,
+      "gender": "female",
+      "speciesId": "wind_elemental",
+      "roleId": "warrior",
+      "stats": {
+        "strength": 25,
+        "agility": 25,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 5,
+        "coreCapacity": 5271,
+        "currentQi": 4724,
+        "coreQuality": 65,
+        "baseVolume": 3271,
+        "qiDensity": 1,
+        "meridianConductivity": 9.08611111111111,
+        "meridianBuffer": 45
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Безжалостность",
+          "Дисциплина",
+          "Сила"
+        ],
+        "motivation": "победа",
+        "dominantEmotion": "презрение",
+        "disposition": 35
+      },
+      "techniques": [
+        "reinforced_strike",
+        "breath_of_qi",
+        "turtle_stance"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 41,
+        "contributionPoints": 11
+      },
+      "generationMeta": {
+        "seed": 1773590045676,
+        "generatedAt": "2026-03-15T15:54:05.626Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000095",
+      "name": "Инферно",
+      "age": 19,
+      "gender": "female",
+      "speciesId": "wind_elemental",
+      "roleId": "innkeeper",
+      "stats": {
+        "strength": 22,
+        "agility": 25,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 9,
+        "coreCapacity": 4172,
+        "currentQi": 2390,
+        "coreQuality": 57,
+        "baseVolume": 1767,
+        "qiDensity": 1,
+        "meridianConductivity": 4.908333333333333,
+        "meridianBuffer": 24
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Жадность",
+          "Хитрость",
+          "Обаяние"
+        ],
+        "motivation": "накопление богатства",
+        "dominantEmotion": "алчность",
+        "disposition": 50
+      },
+      "techniques": [
+        "breath_of_qi"
+      ],
+      "equipment": {
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 74,
+        "contributionPoints": 6
+      },
+      "generationMeta": {
+        "seed": 1773590045711,
+        "generatedAt": "2026-03-15T15:54:05.628Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000097",
+      "name": "Фламма",
+      "age": 44,
+      "gender": "female",
+      "speciesId": "wind_elemental",
+      "roleId": "guard_combat",
+      "stats": {
+        "strength": 12,
+        "agility": 25,
+        "intelligence": 22,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 6,
+        "coreCapacity": 4635,
+        "currentQi": 2618,
+        "coreQuality": 51,
+        "baseVolume": 2614,
+        "qiDensity": 1,
+        "meridianConductivity": 7.261111111111111,
+        "meridianBuffer": 36
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Верность",
+          "Храбрость",
+          "Дисциплина"
+        ],
+        "motivation": "служение",
+        "dominantEmotion": "решимость",
+        "disposition": 65
+      },
+      "techniques": [
+        "reinforced_strike",
+        "turtle_stance",
+        "iron_wall"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 26,
+        "contributionPoints": 8
+      },
+      "generationMeta": {
+        "seed": 1773590045713,
+        "generatedAt": "2026-03-15T15:54:05.628Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000122",
+      "name": "Зефир",
+      "age": 72,
+      "gender": "female",
+      "speciesId": "wind_elemental",
+      "roleId": "noble",
+      "stats": {
+        "strength": 24,
+        "agility": 25,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 7,
+        "coreCapacity": 1364,
+        "currentQi": 1340,
+        "coreQuality": 88,
+        "baseVolume": 698,
+        "qiDensity": 1,
+        "meridianConductivity": 1.9388888888888889,
+        "meridianBuffer": 9
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Гордыня",
+          "Презрение",
+          "Влиятельность"
+        ],
+        "motivation": "роскошь",
+        "dominantEmotion": "презрение",
+        "disposition": 25
+      },
+      "techniques": [
+        "breath_of_qi",
+        "mental_shield",
+        "wind_speed"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null,
+        "accessory1": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 206,
+        "contributionPoints": 20
+      },
+      "generationMeta": {
+        "seed": 1773590343346,
+        "generatedAt": "2026-03-15T15:59:03.346Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000167",
+      "name": "Зефир",
+      "age": 73,
+      "gender": "male",
+      "speciesId": "wind_elemental",
+      "roleId": "beggar",
+      "stats": {
+        "strength": 10,
+        "agility": 25,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 7,
+        "coreCapacity": 3963,
+        "currentQi": 2101,
+        "coreQuality": 95,
+        "baseVolume": 2031,
+        "qiDensity": 1,
+        "meridianConductivity": 5.641666666666667,
+        "meridianBuffer": 28
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Верность",
+          "Храбрость",
+          "Дисциплина"
+        ],
+        "motivation": "служение",
+        "dominantEmotion": "решимость",
+        "disposition": 65
+      },
+      "techniques": [],
+      "equipment": {
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 3,
+        "contributionPoints": 9
+      },
+      "generationMeta": {
+        "seed": 1773590347205,
+        "generatedAt": "2026-03-15T15:59:07.199Z",
+        "version": "2.1.0-lore"
+      }
+    }
+  ]
+}

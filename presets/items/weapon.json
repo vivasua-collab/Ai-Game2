@@ -1,0 +1,4018 @@
+{
+  "version": "2.0",
+  "type": "weapon",
+  "count": 54,
+  "items": [
+    {
+      "id": "WP_000001",
+      "name": "Катана из кожа",
+      "nameEn": "Катана из кожа",
+      "description": "Катана из кожа — оружие из кожа уровня 1. Качество: Обычный. Урон: 18. Проводимость Ци: 5.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "common",
+      "materialId": "leather",
+      "material": {
+        "id": "leather",
+        "name": "Кожа",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 20,
+          "qiConductivity": 5,
+          "weight": 0.5,
+          "hardness": 2,
+          "flexibility": 8
+        },
+        "bonuses": [],
+        "description": "Обычная кожа животных. Лёгкая, гибкая, но слабо проводит Ци.",
+        "rarity": 100,
+        "source": "Охота на обычных животных"
+      },
+      "effectiveStats": {
+        "damage": 18,
+        "defense": 0,
+        "qiConductivity": 5,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 22,
+        "max": 22,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_wind_1773589829674_0",
+          "type": "elemental_wind",
+          "category": "elemental",
+          "value": 13,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "strength": 5
+      },
+      "value": 448,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "WP_000002",
+      "name": "Сабля из камень",
+      "nameEn": "Сабля из камень",
+      "description": "Сабля из камень — оружие из камень уровня 1. Качество: Обычный. Урон: 16. Проводимость Ци: 5.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "common",
+      "materialId": "stone",
+      "material": {
+        "id": "stone",
+        "name": "Камень",
+        "tier": 1,
+        "category": "mineral",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 5,
+          "weight": 5,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [],
+        "description": "Обычный камень. Тяжёлый и прочный, но не проводит Ци.",
+        "rarity": 100,
+        "source": "Каменоломни"
+      },
+      "effectiveStats": {
+        "damage": 16,
+        "defense": 0,
+        "qiConductivity": 5,
+        "weight": 5
+      },
+      "durability": {
+        "current": 42,
+        "max": 42,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_crit_chance_1773589829674_0",
+          "type": "combat_crit_chance",
+          "category": "combat",
+          "value": 2,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "strength": 4
+      },
+      "value": 409,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "WP_000003",
+      "name": "Сломанный катана из кожа",
+      "nameEn": "Сломанный катана из кожа",
+      "description": "Сломанный катана из кожа — оружие из кожа уровня 1. Качество: Повреждённый. Урон: 15. Проводимость Ци: 5.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "damaged",
+      "materialId": "leather",
+      "material": {
+        "id": "leather",
+        "name": "Кожа",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 20,
+          "qiConductivity": 5,
+          "weight": 0.5,
+          "hardness": 2,
+          "flexibility": 8
+        },
+        "bonuses": [],
+        "description": "Обычная кожа животных. Лёгкая, гибкая, но слабо проводит Ци.",
+        "rarity": 100,
+        "source": "Охота на обычных животных"
+      },
+      "effectiveStats": {
+        "damage": 15,
+        "defense": 0,
+        "qiConductivity": 5,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 12,
+        "max": 12,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "strength": 4
+      },
+      "value": 312,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "WP_000004",
+      "name": "Клинок из камень",
+      "nameEn": "Клинок из камень",
+      "description": "Клинок из камень — оружие из камень уровня 1. Качество: Обычный. Урон: 17. Проводимость Ци: 5.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "common",
+      "materialId": "stone",
+      "material": {
+        "id": "stone",
+        "name": "Камень",
+        "tier": 1,
+        "category": "mineral",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 5,
+          "weight": 5,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [],
+        "description": "Обычный камень. Тяжёлый и прочный, но не проводит Ци.",
+        "rarity": 100,
+        "source": "Каменоломни"
+      },
+      "effectiveStats": {
+        "damage": 17,
+        "defense": 0,
+        "qiConductivity": 5,
+        "weight": 5
+      },
+      "durability": {
+        "current": 42,
+        "max": 42,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "strength": 5
+      },
+      "value": 429,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "WP_000005",
+      "name": "Сабля из кожа",
+      "nameEn": "Сабля из кожа",
+      "description": "Сабля из кожа — оружие из кожа уровня 1. Качество: Обычный. Урон: 15. Проводимость Ци: 5.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "common",
+      "materialId": "leather",
+      "material": {
+        "id": "leather",
+        "name": "Кожа",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 20,
+          "qiConductivity": 5,
+          "weight": 0.5,
+          "hardness": 2,
+          "flexibility": 8
+        },
+        "bonuses": [],
+        "description": "Обычная кожа животных. Лёгкая, гибкая, но слабо проводит Ци.",
+        "rarity": 100,
+        "source": "Охота на обычных животных"
+      },
+      "effectiveStats": {
+        "damage": 15,
+        "defense": 0,
+        "qiConductivity": 5,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 22,
+        "max": 22,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "strength": 4
+      },
+      "value": 390,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "WP_000006",
+      "name": "Улучшенный катана из камень",
+      "nameEn": "Улучшенный катана из камень",
+      "description": "Улучшенный катана из камень — оружие из камень уровня 1. Качество: Улучшенный. Урон: 24. Проводимость Ци: 5.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "refined",
+      "materialId": "stone",
+      "material": {
+        "id": "stone",
+        "name": "Камень",
+        "tier": 1,
+        "category": "mineral",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 5,
+          "weight": 5,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [],
+        "description": "Обычный камень. Тяжёлый и прочный, но не проводит Ци.",
+        "rarity": 100,
+        "source": "Каменоломни"
+      },
+      "effectiveStats": {
+        "damage": 24,
+        "defense": 0,
+        "qiConductivity": 5,
+        "weight": 5
+      },
+      "durability": {
+        "current": 62,
+        "max": 62,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_range_1773589829674_0",
+          "type": "combat_range",
+          "category": "combat",
+          "value": 8,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "strength": 7
+      },
+      "value": 735,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "WP_000007",
+      "name": "Сломанный катана из кожа",
+      "nameEn": "Сломанный катана из кожа",
+      "description": "Сломанный катана из кожа — оружие из кожа уровня 2. Качество: Повреждённый. Урон: 19. Проводимость Ци: 5.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "damaged",
+      "materialId": "leather",
+      "material": {
+        "id": "leather",
+        "name": "Кожа",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 20,
+          "qiConductivity": 5,
+          "weight": 0.5,
+          "hardness": 2,
+          "flexibility": 8
+        },
+        "bonuses": [],
+        "description": "Обычная кожа животных. Лёгкая, гибкая, но слабо проводит Ци.",
+        "rarity": 100,
+        "source": "Охота на обычных животных"
+      },
+      "effectiveStats": {
+        "damage": 19,
+        "defense": 0,
+        "qiConductivity": 5,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 14,
+        "max": 14,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "strength": 5
+      },
+      "value": 460,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "WP_000008",
+      "name": "Клинок из камень",
+      "nameEn": "Клинок из камень",
+      "description": "Клинок из камень — оружие из камень уровня 2. Качество: Обычный. Урон: 22. Проводимость Ци: 5.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "common",
+      "materialId": "stone",
+      "material": {
+        "id": "stone",
+        "name": "Камень",
+        "tier": 1,
+        "category": "mineral",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 5,
+          "weight": 5,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [],
+        "description": "Обычный камень. Тяжёлый и прочный, но не проводит Ци.",
+        "rarity": 100,
+        "source": "Каменоломни"
+      },
+      "effectiveStats": {
+        "damage": 22,
+        "defense": 0,
+        "qiConductivity": 5,
+        "weight": 5
+      },
+      "durability": {
+        "current": 44,
+        "max": 44,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "strength": 6
+      },
+      "value": 648,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "WP_000009",
+      "name": "Сабля из кожа",
+      "nameEn": "Сабля из кожа",
+      "description": "Сабля из кожа — оружие из кожа уровня 2. Качество: Обычный. Урон: 20. Проводимость Ци: 5.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "common",
+      "materialId": "leather",
+      "material": {
+        "id": "leather",
+        "name": "Кожа",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 20,
+          "qiConductivity": 5,
+          "weight": 0.5,
+          "hardness": 2,
+          "flexibility": 8
+        },
+        "bonuses": [],
+        "description": "Обычная кожа животных. Лёгкая, гибкая, но слабо проводит Ци.",
+        "rarity": 100,
+        "source": "Охота на обычных животных"
+      },
+      "effectiveStats": {
+        "damage": 20,
+        "defense": 0,
+        "qiConductivity": 5,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 24,
+        "max": 24,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "strength": 6
+      },
+      "value": 600,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "WP_000010",
+      "name": "Улучшенный катана из камень",
+      "nameEn": "Улучшенный катана из камень",
+      "description": "Улучшенный катана из камень — оружие из камень уровня 2. Качество: Улучшенный. Урон: 31. Проводимость Ци: 5.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "refined",
+      "materialId": "stone",
+      "material": {
+        "id": "stone",
+        "name": "Камень",
+        "tier": 1,
+        "category": "mineral",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 5,
+          "weight": 5,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [],
+        "description": "Обычный камень. Тяжёлый и прочный, но не проводит Ци.",
+        "rarity": 100,
+        "source": "Каменоломни"
+      },
+      "effectiveStats": {
+        "damage": 31,
+        "defense": 0,
+        "qiConductivity": 5,
+        "weight": 5
+      },
+      "durability": {
+        "current": 64,
+        "max": 64,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_range_1773589829675_0",
+          "type": "combat_range",
+          "category": "combat",
+          "value": 9,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "strength": 9
+      },
+      "value": 1123,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "WP_000011",
+      "name": "Меч из ткань",
+      "nameEn": "Меч из ткань",
+      "description": "Меч из ткань — оружие из ткань уровня 2. Качество: Обычный. Урон: 22. Проводимость Ци: 15.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "common",
+      "materialId": "cloth",
+      "material": {
+        "id": "cloth",
+        "name": "Ткань",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 10,
+          "qiConductivity": 15,
+          "weight": 0.2,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [],
+        "description": "Обычная ткань из хлопка или льна. Хорошо проводит Ци.",
+        "rarity": 100,
+        "source": "Выращивание растений"
+      },
+      "effectiveStats": {
+        "damage": 22,
+        "defense": 0,
+        "qiConductivity": 15,
+        "weight": 0.2
+      },
+      "durability": {
+        "current": 14,
+        "max": 14,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_crit_damage_1773589829675_0",
+          "type": "combat_crit_damage",
+          "category": "combat",
+          "value": 18,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "strength": 6
+      },
+      "value": 888,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "WP_000012",
+      "name": "Клинок из камень",
+      "nameEn": "Клинок из камень",
+      "description": "Клинок из камень — оружие из камень уровня 2. Качество: Обычный. Урон: 21. Проводимость Ци: 5.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "common",
+      "materialId": "stone",
+      "material": {
+        "id": "stone",
+        "name": "Камень",
+        "tier": 1,
+        "category": "mineral",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 5,
+          "weight": 5,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [],
+        "description": "Обычный камень. Тяжёлый и прочный, но не проводит Ци.",
+        "rarity": 100,
+        "source": "Каменоломни"
+      },
+      "effectiveStats": {
+        "damage": 21,
+        "defense": 0,
+        "qiConductivity": 5,
+        "weight": 5
+      },
+      "durability": {
+        "current": 44,
+        "max": 44,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_armor_penetration_1773589829675_0",
+          "type": "combat_armor_penetration",
+          "category": "combat",
+          "value": 6,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "strength": 6
+      },
+      "value": 624,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "WP_000013",
+      "name": "Катана из бронза",
+      "nameEn": "Катана из бронза",
+      "description": "Катана из бронза — оружие из бронза уровня 3. Качество: Обычный. Урон: 29. Проводимость Ци: 30.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "common",
+      "materialId": "bronze",
+      "material": {
+        "id": "bronze",
+        "name": "Бронза",
+        "tier": 2,
+        "category": "metal",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 30,
+          "weight": 4.5,
+          "hardness": 6,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 5,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Сплав меди и олова. Хорошо проводит Ци, подходит для брони.",
+        "rarity": 50,
+        "source": "Глубокие шахты (3-8 км)"
+      },
+      "effectiveStats": {
+        "damage": 29,
+        "defense": 0,
+        "qiConductivity": 30,
+        "weight": 4.5
+      },
+      "durability": {
+        "current": 46,
+        "max": 46,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "strength": 8
+      },
+      "value": 2242,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "WP_000014",
+      "name": "Улучшенный катана из мрамор",
+      "nameEn": "Улучшенный катана из мрамор",
+      "description": "Улучшенный катана из мрамор — оружие из мрамор уровня 3. Качество: Улучшенный. Урон: 35. Проводимость Ци: 15.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "refined",
+      "materialId": "marble",
+      "material": {
+        "id": "marble",
+        "name": "Мрамор",
+        "tier": 2,
+        "category": "mineral",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 15,
+          "weight": 6,
+          "hardness": 9,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Плотный мрамор из глубоких каменолен. Очень твёрдый.",
+        "rarity": 40,
+        "source": "Глубокие каменоломни (5-15 км)"
+      },
+      "effectiveStats": {
+        "damage": 35,
+        "defense": 0,
+        "qiConductivity": 15,
+        "weight": 6
+      },
+      "durability": {
+        "current": 96,
+        "max": 96,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_crit_chance_1773589829675_0",
+          "type": "combat_crit_chance",
+          "category": "combat",
+          "value": 5,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "strength": 10
+      },
+      "value": 2470,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "WP_000015",
+      "name": "Сабля из бронза",
+      "nameEn": "Сабля из бронза",
+      "description": "Сабля из бронза — оружие из бронза уровня 3. Качество: Обычный. Урон: 25. Проводимость Ци: 30.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "common",
+      "materialId": "bronze",
+      "material": {
+        "id": "bronze",
+        "name": "Бронза",
+        "tier": 2,
+        "category": "metal",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 30,
+          "weight": 4.5,
+          "hardness": 6,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 5,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Сплав меди и олова. Хорошо проводит Ци, подходит для брони.",
+        "rarity": 50,
+        "source": "Глубокие шахты (3-8 км)"
+      },
+      "effectiveStats": {
+        "damage": 25,
+        "defense": 0,
+        "qiConductivity": 30,
+        "weight": 4.5
+      },
+      "durability": {
+        "current": 46,
+        "max": 46,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "strength": 7
+      },
+      "value": 2090,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "WP_000016",
+      "name": "Совершенный сабля из мрамор",
+      "nameEn": "Совершенный сабля из мрамор",
+      "description": "Совершенный сабля из мрамор — оружие из мрамор уровня 3. Качество: Совершенный. Урон: 49. Проводимость Ци: 15.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "perfect",
+      "materialId": "marble",
+      "material": {
+        "id": "marble",
+        "name": "Мрамор",
+        "tier": 2,
+        "category": "mineral",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 15,
+          "weight": 6,
+          "hardness": 9,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Плотный мрамор из глубоких каменолен. Очень твёрдый.",
+        "rarity": 40,
+        "source": "Глубокие каменоломни (5-15 км)"
+      },
+      "effectiveStats": {
+        "damage": 49,
+        "defense": 0,
+        "qiConductivity": 15,
+        "weight": 6
+      },
+      "durability": {
+        "current": 156,
+        "max": 156,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_range_1773589829675_0",
+          "type": "combat_range",
+          "category": "combat",
+          "value": 14,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_crit_chance_1773589829675_1",
+          "type": "combat_crit_chance",
+          "category": "combat",
+          "value": 7,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_damage_1773589829675_2",
+          "type": "combat_damage",
+          "category": "combat",
+          "value": 19,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "strength": 14
+      },
+      "value": 4134,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "WP_000017",
+      "name": "Улучшенный катана из шёлк",
+      "nameEn": "Улучшенный катана из шёлк",
+      "description": "Улучшенный катана из шёлк — оружие из шёлк уровня 3. Качество: Улучшенный. Урон: 35. Проводимость Ци: 45.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "refined",
+      "materialId": "silk",
+      "material": {
+        "id": "silk",
+        "name": "Шёлк",
+        "tier": 2,
+        "category": "organic",
+        "properties": {
+          "durability": 15,
+          "qiConductivity": 45,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 5,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от особых гусениц. Отличная проводимость Ци.",
+        "rarity": 40,
+        "source": "Шёлковые фермы"
+      },
+      "effectiveStats": {
+        "damage": 35,
+        "defense": 0,
+        "qiConductivity": 45,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 28,
+        "max": 28,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_crit_damage_1773589829675_0",
+          "type": "combat_crit_damage",
+          "category": "combat",
+          "value": 29,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_attack_speed_1773589829675_1",
+          "type": "combat_attack_speed",
+          "category": "combat",
+          "value": 6,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "strength": 10
+      },
+      "value": 3952,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "WP_000018",
+      "name": "Клинок из мрамор",
+      "nameEn": "Клинок из мрамор",
+      "description": "Клинок из мрамор — оружие из мрамор уровня 3. Качество: Обычный. Урон: 26. Проводимость Ци: 15.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "common",
+      "materialId": "marble",
+      "material": {
+        "id": "marble",
+        "name": "Мрамор",
+        "tier": 2,
+        "category": "mineral",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 15,
+          "weight": 6,
+          "hardness": 9,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Плотный мрамор из глубоких каменолен. Очень твёрдый.",
+        "rarity": 40,
+        "source": "Глубокие каменоломни (5-15 км)"
+      },
+      "effectiveStats": {
+        "damage": 26,
+        "defense": 0,
+        "qiConductivity": 15,
+        "weight": 6
+      },
+      "durability": {
+        "current": 66,
+        "max": 66,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_armor_penetration_1773589829675_0",
+          "type": "combat_armor_penetration",
+          "category": "combat",
+          "value": 7,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1,
+        "strength": 7
+      },
+      "value": 1558,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "WP_000019",
+      "name": "Катана из бронза",
+      "nameEn": "Катана из бронза",
+      "description": "Катана из бронза — оружие из бронза уровня 4. Качество: Обычный. Урон: 34. Проводимость Ци: 30.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "common",
+      "materialId": "bronze",
+      "material": {
+        "id": "bronze",
+        "name": "Бронза",
+        "tier": 2,
+        "category": "metal",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 30,
+          "weight": 4.5,
+          "hardness": 6,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 5,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Сплав меди и олова. Хорошо проводит Ци, подходит для брони.",
+        "rarity": 50,
+        "source": "Глубокие шахты (3-8 км)"
+      },
+      "effectiveStats": {
+        "damage": 34,
+        "defense": 0,
+        "qiConductivity": 30,
+        "weight": 4.5
+      },
+      "durability": {
+        "current": 48,
+        "max": 48,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 2,
+        "strength": 10
+      },
+      "value": 2816,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "WP_000020",
+      "name": "Улучшенный катана из мрамор",
+      "nameEn": "Улучшенный катана из мрамор",
+      "description": "Улучшенный катана из мрамор — оружие из мрамор уровня 4. Качество: Улучшенный. Урон: 41. Проводимость Ци: 15.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "refined",
+      "materialId": "marble",
+      "material": {
+        "id": "marble",
+        "name": "Мрамор",
+        "tier": 2,
+        "category": "mineral",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 15,
+          "weight": 6,
+          "hardness": 9,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Плотный мрамор из глубоких каменолен. Очень твёрдый.",
+        "rarity": 40,
+        "source": "Глубокие каменоломни (5-15 км)"
+      },
+      "effectiveStats": {
+        "damage": 41,
+        "defense": 0,
+        "qiConductivity": 15,
+        "weight": 6
+      },
+      "durability": {
+        "current": 98,
+        "max": 98,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_crit_chance_1773589829675_0",
+          "type": "combat_crit_chance",
+          "category": "combat",
+          "value": 6,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 2,
+        "strength": 12
+      },
+      "value": 3203,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "WP_000021",
+      "name": "Сабля из бронза",
+      "nameEn": "Сабля из бронза",
+      "description": "Сабля из бронза — оружие из бронза уровня 4. Качество: Обычный. Урон: 30. Проводимость Ци: 30.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "common",
+      "materialId": "bronze",
+      "material": {
+        "id": "bronze",
+        "name": "Бронза",
+        "tier": 2,
+        "category": "metal",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 30,
+          "weight": 4.5,
+          "hardness": 6,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 5,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Сплав меди и олова. Хорошо проводит Ци, подходит для брони.",
+        "rarity": 50,
+        "source": "Глубокие шахты (3-8 км)"
+      },
+      "effectiveStats": {
+        "damage": 30,
+        "defense": 0,
+        "qiConductivity": 30,
+        "weight": 4.5
+      },
+      "durability": {
+        "current": 48,
+        "max": 48,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 2,
+        "strength": 9
+      },
+      "value": 2640,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "WP_000022",
+      "name": "Совершенный сабля из мрамор",
+      "nameEn": "Совершенный сабля из мрамор",
+      "description": "Совершенный сабля из мрамор — оружие из мрамор уровня 4. Качество: Совершенный. Урон: 57. Проводимость Ци: 15.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "perfect",
+      "materialId": "marble",
+      "material": {
+        "id": "marble",
+        "name": "Мрамор",
+        "tier": 2,
+        "category": "mineral",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 15,
+          "weight": 6,
+          "hardness": 9,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Плотный мрамор из глубоких каменолен. Очень твёрдый.",
+        "rarity": 40,
+        "source": "Глубокие каменоломни (5-15 км)"
+      },
+      "effectiveStats": {
+        "damage": 57,
+        "defense": 0,
+        "qiConductivity": 15,
+        "weight": 6
+      },
+      "durability": {
+        "current": 158,
+        "max": 158,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_range_1773589829675_0",
+          "type": "combat_range",
+          "category": "combat",
+          "value": 16,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_crit_chance_1773589829675_1",
+          "type": "combat_crit_chance",
+          "category": "combat",
+          "value": 8,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_damage_1773589829675_2",
+          "type": "combat_damage",
+          "category": "combat",
+          "value": 23,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 2,
+        "strength": 17
+      },
+      "value": 5385,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "WP_000023",
+      "name": "Улучшенный катана из шёлк",
+      "nameEn": "Улучшенный катана из шёлк",
+      "description": "Улучшенный катана из шёлк — оружие из шёлк уровня 4. Качество: Улучшенный. Урон: 41. Проводимость Ци: 45.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "refined",
+      "materialId": "silk",
+      "material": {
+        "id": "silk",
+        "name": "Шёлк",
+        "tier": 2,
+        "category": "organic",
+        "properties": {
+          "durability": 15,
+          "qiConductivity": 45,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 5,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от особых гусениц. Отличная проводимость Ци.",
+        "rarity": 40,
+        "source": "Шёлковые фермы"
+      },
+      "effectiveStats": {
+        "damage": 41,
+        "defense": 0,
+        "qiConductivity": 45,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 30,
+        "max": 30,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_crit_damage_1773589829675_0",
+          "type": "combat_crit_damage",
+          "category": "combat",
+          "value": 33,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_attack_speed_1773589829675_1",
+          "type": "combat_attack_speed",
+          "category": "combat",
+          "value": 7,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 2,
+        "strength": 12
+      },
+      "value": 4919,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "WP_000024",
+      "name": "Клинок из мрамор",
+      "nameEn": "Клинок из мрамор",
+      "description": "Клинок из мрамор — оружие из мрамор уровня 4. Качество: Обычный. Урон: 31. Проводимость Ци: 15.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "common",
+      "materialId": "marble",
+      "material": {
+        "id": "marble",
+        "name": "Мрамор",
+        "tier": 2,
+        "category": "mineral",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 15,
+          "weight": 6,
+          "hardness": 9,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Плотный мрамор из глубоких каменолен. Очень твёрдый.",
+        "rarity": 40,
+        "source": "Глубокие каменоломни (5-15 км)"
+      },
+      "effectiveStats": {
+        "damage": 31,
+        "defense": 0,
+        "qiConductivity": 15,
+        "weight": 6
+      },
+      "durability": {
+        "current": 68,
+        "max": 68,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_armor_penetration_1773589829675_0",
+          "type": "combat_armor_penetration",
+          "category": "combat",
+          "value": 8,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 2,
+        "strength": 9
+      },
+      "value": 2024,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "WP_000025",
+      "name": "Улучшенный катана из нефрит",
+      "nameEn": "Улучшенный катана из нефрит",
+      "description": "Улучшенный катана из нефрит — оружие из нефрит уровня 5. Качество: Улучшенный. Урон: 48. Проводимость Ци: 85.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "refined",
+      "materialId": "jade",
+      "material": {
+        "id": "jade",
+        "name": "Нефрит",
+        "tier": 3,
+        "category": "mineral",
+        "properties": {
+          "durability": 50,
+          "qiConductivity": 85,
+          "weight": 3,
+          "hardness": 7,
+          "flexibility": 2
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_meditation_bonus",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Нефрит из глубин. Идеален для культивации и артефактов.",
+        "rarity": 10,
+        "source": "Глубинные жилы нефрита (500-2000 км)",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 48,
+        "defense": 0,
+        "qiConductivity": 85,
+        "weight": 3
+      },
+      "durability": {
+        "current": 85,
+        "max": 85,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_crit_chance_1773589829676_0",
+          "type": "combat_crit_chance",
+          "category": "combat",
+          "value": 7,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 3,
+        "strength": 14
+      },
+      "value": 10806,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "WP_000026",
+      "name": "Улучшенный топор из духовный шёлк",
+      "nameEn": "Улучшенный топор из духовный шёлк",
+      "description": "Улучшенный топор из духовный шёлк — оружие из духовный шёлк уровня 5. Качество: Улучшенный. Урон: 45. Проводимость Ци: 75.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "refined",
+      "materialId": "spirit_silk",
+      "material": {
+        "id": "spirit_silk",
+        "name": "Духовный шёлк",
+        "tier": 3,
+        "category": "organic",
+        "properties": {
+          "durability": 25,
+          "qiConductivity": 75,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от духовных червей. Почти невесомый, отлично проводит Ци.",
+        "rarity": 15,
+        "source": "Духовные черви в местах силы",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 45,
+        "defense": 0,
+        "qiConductivity": 75,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 47,
+        "max": 47,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_damage_1773589829676_0",
+          "type": "combat_damage",
+          "category": "combat",
+          "value": 16,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 3,
+        "strength": 13
+      },
+      "value": 9750,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "WP_000027",
+      "name": "Совершенный сабля из осколок кристалла ци",
+      "nameEn": "Совершенный сабля из осколок кристалла ци",
+      "description": "Совершенный сабля из осколок кристалла ци — оружие из осколок кристалла ци уровня 5. Качество: Совершенный. Урон: 66. Проводимость Ци: 90.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "perfect",
+      "materialId": "spirit_crystal_shard",
+      "material": {
+        "id": "spirit_crystal_shard",
+        "name": "Осколок кристалла Ци",
+        "tier": 3,
+        "category": "crystal",
+        "properties": {
+          "durability": 30,
+          "qiConductivity": 90,
+          "weight": 0.5,
+          "hardness": 5,
+          "flexibility": 2
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Осколок кристалла Ци (духовного камня). Высокая проводимость.",
+        "rarity": 8,
+        "source": "Залежи кристаллов Ци",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 66,
+        "defense": 0,
+        "qiConductivity": 90,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 85,
+        "max": 85,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_range_1773589829676_0",
+          "type": "combat_range",
+          "category": "combat",
+          "value": 17,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_crit_chance_1773589829676_1",
+          "type": "combat_crit_chance",
+          "category": "combat",
+          "value": 9,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_damage_1773589829676_2",
+          "type": "combat_damage",
+          "category": "combat",
+          "value": 27,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 3,
+        "strength": 19
+      },
+      "value": 16575,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "WP_000028",
+      "name": "Совершенный клинок из духовный шёлк",
+      "nameEn": "Совершенный клинок из духовный шёлк",
+      "description": "Совершенный клинок из духовный шёлк — оружие из духовный шёлк уровня 5. Качество: Совершенный. Урон: 62. Проводимость Ци: 75.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "perfect",
+      "materialId": "spirit_silk",
+      "material": {
+        "id": "spirit_silk",
+        "name": "Духовный шёлк",
+        "tier": 3,
+        "category": "organic",
+        "properties": {
+          "durability": 25,
+          "qiConductivity": 75,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от духовных червей. Почти невесомый, отлично проводит Ци.",
+        "rarity": 15,
+        "source": "Духовные черви в местах силы",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 62,
+        "defense": 0,
+        "qiConductivity": 75,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 72,
+        "max": 72,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_crit_damage_1773589829676_0",
+          "type": "combat_crit_damage",
+          "category": "combat",
+          "value": 50,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_attack_speed_1773589829676_1",
+          "type": "combat_attack_speed",
+          "category": "combat",
+          "value": 10,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_range_1773589829676_2",
+          "type": "combat_range",
+          "category": "combat",
+          "value": 14,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 3,
+        "strength": 18
+      },
+      "value": 14556,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "WP_000029",
+      "name": "Клинок из осколок кристалла ци",
+      "nameEn": "Клинок из осколок кристалла ци",
+      "description": "Клинок из осколок кристалла ци — оружие из осколок кристалла ци уровня 5. Качество: Обычный. Урон: 36. Проводимость Ци: 90.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "common",
+      "materialId": "spirit_crystal_shard",
+      "material": {
+        "id": "spirit_crystal_shard",
+        "name": "Осколок кристалла Ци",
+        "tier": 3,
+        "category": "crystal",
+        "properties": {
+          "durability": 30,
+          "qiConductivity": 90,
+          "weight": 0.5,
+          "hardness": 5,
+          "flexibility": 2
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Осколок кристалла Ци (духовного камня). Высокая проводимость.",
+        "rarity": 8,
+        "source": "Залежи кристаллов Ци",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 36,
+        "defense": 0,
+        "qiConductivity": 90,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 40,
+        "max": 40,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_armor_penetration_1773589829676_0",
+          "type": "combat_armor_penetration",
+          "category": "combat",
+          "value": 9,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 3,
+        "strength": 10
+      },
+      "value": 7875,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "WP_000030",
+      "name": "Посох из духовный шёлк",
+      "nameEn": "Посох из духовный шёлк",
+      "description": "Посох из духовный шёлк — оружие из духовный шёлк уровня 5. Качество: Обычный. Урон: 39. Проводимость Ци: 75.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "common",
+      "materialId": "spirit_silk",
+      "material": {
+        "id": "spirit_silk",
+        "name": "Духовный шёлк",
+        "tier": 3,
+        "category": "organic",
+        "properties": {
+          "durability": 25,
+          "qiConductivity": 75,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от духовных червей. Почти невесомый, отлично проводит Ци.",
+        "rarity": 15,
+        "source": "Духовные черви в местах силы",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 39,
+        "defense": 0,
+        "qiConductivity": 75,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 35,
+        "max": 35,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 3,
+        "strength": 11
+      },
+      "value": 7125,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "WP_000031",
+      "name": "Улучшенный катана из нефрит",
+      "nameEn": "Улучшенный катана из нефрит",
+      "description": "Улучшенный катана из нефрит — оружие из нефрит уровня 6. Качество: Улучшенный. Урон: 54. Проводимость Ци: 85.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "refined",
+      "materialId": "jade",
+      "material": {
+        "id": "jade",
+        "name": "Нефрит",
+        "tier": 3,
+        "category": "mineral",
+        "properties": {
+          "durability": 50,
+          "qiConductivity": 85,
+          "weight": 3,
+          "hardness": 7,
+          "flexibility": 2
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_meditation_bonus",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Нефрит из глубин. Идеален для культивации и артефактов.",
+        "rarity": 10,
+        "source": "Глубинные жилы нефрита (500-2000 км)",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 54,
+        "defense": 0,
+        "qiConductivity": 85,
+        "weight": 3
+      },
+      "durability": {
+        "current": 87,
+        "max": 87,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_crit_chance_1773589829676_0",
+          "type": "combat_crit_chance",
+          "category": "combat",
+          "value": 8,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 4,
+        "strength": 16
+      },
+      "value": 12649,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "WP_000032",
+      "name": "Улучшенный топор из духовный шёлк",
+      "nameEn": "Улучшенный топор из духовный шёлк",
+      "description": "Улучшенный топор из духовный шёлк — оружие из духовный шёлк уровня 6. Качество: Улучшенный. Урон: 52. Проводимость Ци: 75.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "refined",
+      "materialId": "spirit_silk",
+      "material": {
+        "id": "spirit_silk",
+        "name": "Духовный шёлк",
+        "tier": 3,
+        "category": "organic",
+        "properties": {
+          "durability": 25,
+          "qiConductivity": 75,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от духовных червей. Почти невесомый, отлично проводит Ци.",
+        "rarity": 15,
+        "source": "Духовные черви в местах силы",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 52,
+        "defense": 0,
+        "qiConductivity": 75,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 49,
+        "max": 49,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_damage_1773589829676_0",
+          "type": "combat_damage",
+          "category": "combat",
+          "value": 19,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 4,
+        "strength": 15
+      },
+      "value": 11557,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "WP_000033",
+      "name": "Совершенный сабля из осколок кристалла ци",
+      "nameEn": "Совершенный сабля из осколок кристалла ци",
+      "description": "Совершенный сабля из осколок кристалла ци — оружие из осколок кристалла ци уровня 6. Качество: Совершенный. Урон: 74. Проводимость Ци: 90.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "perfect",
+      "materialId": "spirit_crystal_shard",
+      "material": {
+        "id": "spirit_crystal_shard",
+        "name": "Осколок кристалла Ци",
+        "tier": 3,
+        "category": "crystal",
+        "properties": {
+          "durability": 30,
+          "qiConductivity": 90,
+          "weight": 0.5,
+          "hardness": 5,
+          "flexibility": 2
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Осколок кристалла Ци (духовного камня). Высокая проводимость.",
+        "rarity": 8,
+        "source": "Залежи кристаллов Ци",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 74,
+        "defense": 0,
+        "qiConductivity": 90,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 87,
+        "max": 87,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_range_1773589829676_0",
+          "type": "combat_range",
+          "category": "combat",
+          "value": 19,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_crit_chance_1773589829676_1",
+          "type": "combat_crit_chance",
+          "category": "combat",
+          "value": 10,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_damage_1773589829676_2",
+          "type": "combat_damage",
+          "category": "combat",
+          "value": 30,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 4,
+        "strength": 22
+      },
+      "value": 19516,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "WP_000034",
+      "name": "Совершенный клинок из духовный шёлк",
+      "nameEn": "Совершенный клинок из духовный шёлк",
+      "description": "Совершенный клинок из духовный шёлк — оружие из духовный шёлк уровня 6. Качество: Совершенный. Урон: 71. Проводимость Ци: 75.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "perfect",
+      "materialId": "spirit_silk",
+      "material": {
+        "id": "spirit_silk",
+        "name": "Духовный шёлк",
+        "tier": 3,
+        "category": "organic",
+        "properties": {
+          "durability": 25,
+          "qiConductivity": 75,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от духовных червей. Почти невесомый, отлично проводит Ци.",
+        "rarity": 15,
+        "source": "Духовные черви в местах силы",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 71,
+        "defense": 0,
+        "qiConductivity": 75,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 74,
+        "max": 74,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_crit_damage_1773589829676_0",
+          "type": "combat_crit_damage",
+          "category": "combat",
+          "value": 56,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_attack_speed_1773589829676_1",
+          "type": "combat_attack_speed",
+          "category": "combat",
+          "value": 11,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_range_1773589829676_2",
+          "type": "combat_range",
+          "category": "combat",
+          "value": 16,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 4,
+        "strength": 21
+      },
+      "value": 17374,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "WP_000035",
+      "name": "Клинок из осколок кристалла ци",
+      "nameEn": "Клинок из осколок кристалла ци",
+      "description": "Клинок из осколок кристалла ци — оружие из осколок кристалла ци уровня 6. Качество: Обычный. Урон: 41. Проводимость Ци: 90.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "common",
+      "materialId": "spirit_crystal_shard",
+      "material": {
+        "id": "spirit_crystal_shard",
+        "name": "Осколок кристалла Ци",
+        "tier": 3,
+        "category": "crystal",
+        "properties": {
+          "durability": 30,
+          "qiConductivity": 90,
+          "weight": 0.5,
+          "hardness": 5,
+          "flexibility": 2
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Осколок кристалла Ци (духовного камня). Высокая проводимость.",
+        "rarity": 8,
+        "source": "Залежи кристаллов Ци",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 41,
+        "defense": 0,
+        "qiConductivity": 90,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 42,
+        "max": 42,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_armor_penetration_1773589829676_0",
+          "type": "combat_armor_penetration",
+          "category": "combat",
+          "value": 10,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 4,
+        "strength": 12
+      },
+      "value": 9170,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "WP_000036",
+      "name": "Посох из духовный шёлк",
+      "nameEn": "Посох из духовный шёлк",
+      "description": "Посох из духовный шёлк — оружие из духовный шёлк уровня 6. Качество: Обычный. Урон: 44. Проводимость Ци: 75.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "common",
+      "materialId": "spirit_silk",
+      "material": {
+        "id": "spirit_silk",
+        "name": "Духовный шёлк",
+        "tier": 3,
+        "category": "organic",
+        "properties": {
+          "durability": 25,
+          "qiConductivity": 75,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от духовных червей. Почти невесомый, отлично проводит Ци.",
+        "rarity": 15,
+        "source": "Духовные черви в местах силы",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 44,
+        "defense": 0,
+        "qiConductivity": 75,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 37,
+        "max": 37,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 4,
+        "strength": 13
+      },
+      "value": 8330,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "WP_000037",
+      "name": "Совершенный копьё из пустотное дерево",
+      "nameEn": "Совершенный копьё из пустотное дерево",
+      "description": "Совершенный копьё из пустотное дерево — оружие из пустотное дерево уровня 7. Качество: Совершенный. Урон: 79. Проводимость Ци: 90.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "perfect",
+      "materialId": "void_wood",
+      "material": {
+        "id": "void_wood",
+        "name": "Пустотное дерево",
+        "tier": 4,
+        "category": "wood",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 90,
+          "weight": 0.3,
+          "hardness": 8,
+          "flexibility": 8
+        },
+        "bonuses": [
+          {
+            "type": "combat_crit_chance",
+            "value": 10,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_damage",
+            "value": 35,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 20,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Дерево из пустоты между мирами. Лор: \"Дерево из пустоты между мирами\".",
+        "rarity": 3,
+        "source": "Разрывы в куполе мира",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 79,
+        "defense": 0,
+        "qiConductivity": 90,
+        "weight": 0.3
+      },
+      "durability": {
+        "current": 164,
+        "max": 164,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_crit_chance_1773589829676_0",
+          "type": "combat_crit_chance",
+          "category": "combat",
+          "value": 12,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_attack_speed_1773589829676_1",
+          "type": "combat_attack_speed",
+          "category": "combat",
+          "value": 11,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 5,
+        "strength": 23
+      },
+      "value": 26718,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "WP_000038",
+      "name": "Улучшенный топор из громовой металл",
+      "nameEn": "Улучшенный топор из громовой металл",
+      "description": "Улучшенный топор из громовой металл — оружие из громовой металл уровня 7. Качество: Улучшенный. Урон: 91. Проводимость Ци: 70.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "refined",
+      "materialId": "thunder_metal",
+      "material": {
+        "id": "thunder_metal",
+        "name": "Громовой металл",
+        "tier": 4,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 70,
+          "weight": 2.5,
+          "hardness": 9,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "elemental_lightning",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_damage",
+            "value": 25,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Металл, закалённый в грозовых бурях мест силы.",
+        "rarity": 4,
+        "source": "Грозовые места силы",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 91,
+        "defense": 0,
+        "qiConductivity": 70,
+        "weight": 2.5
+      },
+      "durability": {
+        "current": 134,
+        "max": 134,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_damage_1773589829676_0",
+          "type": "combat_damage",
+          "category": "combat",
+          "value": 21,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 5,
+        "strength": 27
+      },
+      "value": 19464,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "WP_000039",
+      "name": "Превосходящий копьё из духовный кристалл",
+      "nameEn": "Превосходящий копьё из духовный кристалл",
+      "description": "Превосходящий копьё из духовный кристалл — оружие из духовный кристалл уровня 7. Качество: Превосходящий. Урон: 122. Проводимость Ци: 100.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "transcendent",
+      "materialId": "spirit_crystal",
+      "material": {
+        "id": "spirit_crystal",
+        "name": "Духовный кристалл",
+        "tier": 4,
+        "category": "crystal",
+        "properties": {
+          "durability": 70,
+          "qiConductivity": 100,
+          "weight": 2,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 30,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_meditation_bonus",
+            "value": 40,
+            "isMultiplier": false
+          },
+          {
+            "type": "elemental_all",
+            "value": 10,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Чистый кристалл Ци. Лор: \"кристаллы Ци плотность 1024 ед/см³\".",
+        "rarity": 2,
+        "source": "Сердце мира, глубинные залежи",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 122,
+        "defense": 0,
+        "qiConductivity": 100,
+        "weight": 2
+      },
+      "durability": {
+        "current": 294,
+        "max": 294,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_range_1773589829676_0",
+          "type": "combat_range",
+          "category": "combat",
+          "value": 31,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_crit_chance_1773589829676_1",
+          "type": "combat_crit_chance",
+          "category": "combat",
+          "value": 16,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_damage_1773589829676_2",
+          "type": "combat_damage",
+          "category": "combat",
+          "value": 50,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_armor_penetration_1773589829676_3",
+          "type": "combat_armor_penetration",
+          "category": "combat",
+          "value": 32,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_attack_speed_1773589829676_4",
+          "type": "combat_attack_speed",
+          "category": "combat",
+          "value": 15,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 5,
+        "strength": 36
+      },
+      "value": 51615,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "legendary"
+    },
+    {
+      "id": "WP_000040",
+      "name": "Совершенный клинок из громовой металл",
+      "nameEn": "Совершенный клинок из громовой металл",
+      "description": "Совершенный клинок из громовой металл — оружие из громовой металл уровня 7. Качество: Совершенный. Урон: 122. Проводимость Ци: 70.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "perfect",
+      "materialId": "thunder_metal",
+      "material": {
+        "id": "thunder_metal",
+        "name": "Громовой металл",
+        "tier": 4,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 70,
+          "weight": 2.5,
+          "hardness": 9,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "elemental_lightning",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_damage",
+            "value": 25,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Металл, закалённый в грозовых бурях мест силы.",
+        "rarity": 4,
+        "source": "Грозовые места силы",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 122,
+        "defense": 0,
+        "qiConductivity": 70,
+        "weight": 2.5
+      },
+      "durability": {
+        "current": 214,
+        "max": 214,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_crit_damage_1773589829676_0",
+          "type": "combat_crit_damage",
+          "category": "combat",
+          "value": 62,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_attack_speed_1773589829676_1",
+          "type": "combat_attack_speed",
+          "category": "combat",
+          "value": 12,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_range_1773589829676_2",
+          "type": "combat_range",
+          "category": "combat",
+          "value": 17,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 5,
+        "strength": 36
+      },
+      "value": 30355,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "WP_000041",
+      "name": "Улучшенный клинок из духовный кристалл",
+      "nameEn": "Улучшенный клинок из духовный кристалл",
+      "description": "Улучшенный клинок из духовный кристалл — оружие из духовный кристалл уровня 7. Качество: Улучшенный. Урон: 59. Проводимость Ци: 100.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "refined",
+      "materialId": "spirit_crystal",
+      "material": {
+        "id": "spirit_crystal",
+        "name": "Духовный кристалл",
+        "tier": 4,
+        "category": "crystal",
+        "properties": {
+          "durability": 70,
+          "qiConductivity": 100,
+          "weight": 2,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 30,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_meditation_bonus",
+            "value": 40,
+            "isMultiplier": false
+          },
+          {
+            "type": "elemental_all",
+            "value": 10,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Чистый кристалл Ци. Лор: \"кристаллы Ци плотность 1024 ед/см³\".",
+        "rarity": 2,
+        "source": "Сердце мира, глубинные залежи",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 59,
+        "defense": 0,
+        "qiConductivity": 100,
+        "weight": 2
+      },
+      "durability": {
+        "current": 119,
+        "max": 119,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_armor_penetration_1773589829676_0",
+          "type": "combat_armor_penetration",
+          "category": "combat",
+          "value": 14,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_crit_chance_1773589829676_1",
+          "type": "combat_crit_chance",
+          "category": "combat",
+          "value": 7,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 5,
+        "strength": 17
+      },
+      "value": 19223,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "WP_000042",
+      "name": "Улучшенный топор из кость дракона",
+      "nameEn": "Улучшенный топор из кость дракона",
+      "description": "Улучшенный топор из кость дракона — оружие из кость дракона уровня 7. Качество: Улучшенный. Урон: 109. Проводимость Ци: 95.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "refined",
+      "materialId": "dragon_bone",
+      "material": {
+        "id": "dragon_bone",
+        "name": "Кость дракона",
+        "tier": 4,
+        "category": "organic",
+        "properties": {
+          "durability": 85,
+          "qiConductivity": 95,
+          "weight": 2.5,
+          "hardness": 9,
+          "flexibility": 7
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 35,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 20,
+            "isMultiplier": false
+          },
+          {
+            "type": "elemental_fire",
+            "value": 20,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Кость древнего дракона. Содержит сжатую Ци тысячелетий.",
+        "rarity": 3,
+        "source": "Древние драконы (легендарные существа)",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 109,
+        "defense": 0,
+        "qiConductivity": 95,
+        "weight": 2.5
+      },
+      "durability": {
+        "current": 141,
+        "max": 141,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_fire_1773589829676_0",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 43,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 5,
+        "strength": 32
+      },
+      "value": 24663,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "WP_000043",
+      "name": "Совершенный копьё из пустотное дерево",
+      "nameEn": "Совершенный копьё из пустотное дерево",
+      "description": "Совершенный копьё из пустотное дерево — оружие из пустотное дерево уровня 8. Качество: Совершенный. Урон: 88. Проводимость Ци: 90.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "perfect",
+      "materialId": "void_wood",
+      "material": {
+        "id": "void_wood",
+        "name": "Пустотное дерево",
+        "tier": 4,
+        "category": "wood",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 90,
+          "weight": 0.3,
+          "hardness": 8,
+          "flexibility": 8
+        },
+        "bonuses": [
+          {
+            "type": "combat_crit_chance",
+            "value": 10,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_damage",
+            "value": 35,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 20,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Дерево из пустоты между мирами. Лор: \"Дерево из пустоты между мирами\".",
+        "rarity": 3,
+        "source": "Разрывы в куполе мира",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 88,
+        "defense": 0,
+        "qiConductivity": 90,
+        "weight": 0.3
+      },
+      "durability": {
+        "current": 166,
+        "max": 166,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_crit_chance_1773589829676_0",
+          "type": "combat_crit_chance",
+          "category": "combat",
+          "value": 13,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_attack_speed_1773589829676_1",
+          "type": "combat_attack_speed",
+          "category": "combat",
+          "value": 12,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 6,
+        "strength": 26
+      },
+      "value": 30865,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "WP_000044",
+      "name": "Улучшенный топор из громовой металл",
+      "nameEn": "Улучшенный топор из громовой металл",
+      "description": "Улучшенный топор из громовой металл — оружие из громовой металл уровня 8. Качество: Улучшенный. Урон: 97. Проводимость Ци: 70.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "refined",
+      "materialId": "thunder_metal",
+      "material": {
+        "id": "thunder_metal",
+        "name": "Громовой металл",
+        "tier": 4,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 70,
+          "weight": 2.5,
+          "hardness": 9,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "elemental_lightning",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_damage",
+            "value": 25,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Металл, закалённый в грозовых бурях мест силы.",
+        "rarity": 4,
+        "source": "Грозовые места силы",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 97,
+        "defense": 0,
+        "qiConductivity": 70,
+        "weight": 2.5
+      },
+      "durability": {
+        "current": 136,
+        "max": 136,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_damage_1773589829676_0",
+          "type": "combat_damage",
+          "category": "combat",
+          "value": 23,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 6,
+        "strength": 29
+      },
+      "value": 22144,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "WP_000045",
+      "name": "Превосходящий копьё из духовный кристалл",
+      "nameEn": "Превосходящий копьё из духовный кристалл",
+      "description": "Превосходящий копьё из духовный кристалл — оружие из духовный кристалл уровня 8. Качество: Превосходящий. Урон: 135. Проводимость Ци: 100.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "transcendent",
+      "materialId": "spirit_crystal",
+      "material": {
+        "id": "spirit_crystal",
+        "name": "Духовный кристалл",
+        "tier": 4,
+        "category": "crystal",
+        "properties": {
+          "durability": 70,
+          "qiConductivity": 100,
+          "weight": 2,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 30,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_meditation_bonus",
+            "value": 40,
+            "isMultiplier": false
+          },
+          {
+            "type": "elemental_all",
+            "value": 10,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Чистый кристалл Ци. Лор: \"кристаллы Ци плотность 1024 ед/см³\".",
+        "rarity": 2,
+        "source": "Сердце мира, глубинные залежи",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 135,
+        "defense": 0,
+        "qiConductivity": 100,
+        "weight": 2
+      },
+      "durability": {
+        "current": 296,
+        "max": 296,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_range_1773589829676_0",
+          "type": "combat_range",
+          "category": "combat",
+          "value": 34,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_crit_chance_1773589829676_1",
+          "type": "combat_crit_chance",
+          "category": "combat",
+          "value": 18,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_damage_1773589829676_2",
+          "type": "combat_damage",
+          "category": "combat",
+          "value": 55,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_armor_penetration_1773589829676_3",
+          "type": "combat_armor_penetration",
+          "category": "combat",
+          "value": 34,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_attack_speed_1773589829676_4",
+          "type": "combat_attack_speed",
+          "category": "combat",
+          "value": 16,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 6,
+        "strength": 40
+      },
+      "value": 59925,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "legendary"
+    },
+    {
+      "id": "WP_000046",
+      "name": "Совершенный клинок из громовой металл",
+      "nameEn": "Совершенный клинок из громовой металл",
+      "description": "Совершенный клинок из громовой металл — оружие из громовой металл уровня 8. Качество: Совершенный. Урон: 130. Проводимость Ци: 70.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "perfect",
+      "materialId": "thunder_metal",
+      "material": {
+        "id": "thunder_metal",
+        "name": "Громовой металл",
+        "tier": 4,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 70,
+          "weight": 2.5,
+          "hardness": 9,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "elemental_lightning",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_damage",
+            "value": 25,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Металл, закалённый в грозовых бурях мест силы.",
+        "rarity": 4,
+        "source": "Грозовые места силы",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 130,
+        "defense": 0,
+        "qiConductivity": 70,
+        "weight": 2.5
+      },
+      "durability": {
+        "current": 216,
+        "max": 216,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_crit_damage_1773589829676_0",
+          "type": "combat_crit_damage",
+          "category": "combat",
+          "value": 68,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_attack_speed_1773589829676_1",
+          "type": "combat_attack_speed",
+          "category": "combat",
+          "value": 13,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_range_1773589829676_2",
+          "type": "combat_range",
+          "category": "combat",
+          "value": 18,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 6,
+        "strength": 39
+      },
+      "value": 34680,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "WP_000047",
+      "name": "Улучшенный клинок из духовный кристалл",
+      "nameEn": "Улучшенный клинок из духовный кристалл",
+      "description": "Улучшенный клинок из духовный кристалл — оружие из духовный кристалл уровня 8. Качество: Улучшенный. Урон: 66. Проводимость Ци: 100.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "refined",
+      "materialId": "spirit_crystal",
+      "material": {
+        "id": "spirit_crystal",
+        "name": "Духовный кристалл",
+        "tier": 4,
+        "category": "crystal",
+        "properties": {
+          "durability": 70,
+          "qiConductivity": 100,
+          "weight": 2,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 30,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_meditation_bonus",
+            "value": 40,
+            "isMultiplier": false
+          },
+          {
+            "type": "elemental_all",
+            "value": 10,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Чистый кристалл Ци. Лор: \"кристаллы Ци плотность 1024 ед/см³\".",
+        "rarity": 2,
+        "source": "Сердце мира, глубинные залежи",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 66,
+        "defense": 0,
+        "qiConductivity": 100,
+        "weight": 2
+      },
+      "durability": {
+        "current": 121,
+        "max": 121,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_armor_penetration_1773589829676_0",
+          "type": "combat_armor_penetration",
+          "category": "combat",
+          "value": 16,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_crit_chance_1773589829676_1",
+          "type": "combat_crit_chance",
+          "category": "combat",
+          "value": 8,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 6,
+        "strength": 19
+      },
+      "value": 22011,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "WP_000048",
+      "name": "Улучшенный топор из кость дракона",
+      "nameEn": "Улучшенный топор из кость дракона",
+      "description": "Улучшенный топор из кость дракона — оружие из кость дракона уровня 8. Качество: Улучшенный. Урон: 115. Проводимость Ци: 95.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "refined",
+      "materialId": "dragon_bone",
+      "material": {
+        "id": "dragon_bone",
+        "name": "Кость дракона",
+        "tier": 4,
+        "category": "organic",
+        "properties": {
+          "durability": 85,
+          "qiConductivity": 95,
+          "weight": 2.5,
+          "hardness": 9,
+          "flexibility": 7
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 35,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 20,
+            "isMultiplier": false
+          },
+          {
+            "type": "elemental_fire",
+            "value": 20,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Кость древнего дракона. Содержит сжатую Ци тысячелетий.",
+        "rarity": 3,
+        "source": "Древние драконы (легендарные существа)",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 115,
+        "defense": 0,
+        "qiConductivity": 95,
+        "weight": 2.5
+      },
+      "durability": {
+        "current": 143,
+        "max": 143,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_fire_1773589829676_0",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 48,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 6,
+        "strength": 34
+      },
+      "value": 27846,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "WP_000049",
+      "name": "Совершенный копьё из осколок сердца мира",
+      "nameEn": "Совершенный копьё из осколок сердца мира",
+      "description": "Совершенный копьё из осколок сердца мира — оружие из осколок сердца мира уровня 9. Качество: Совершенный. Урон: 96. Проводимость Ци: 130.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "perfect",
+      "materialId": "heart_of_world_shard",
+      "material": {
+        "id": "heart_of_world_shard",
+        "name": "Осколок Сердца Мира",
+        "tier": 5,
+        "category": "crystal",
+        "properties": {
+          "durability": 120,
+          "qiConductivity": 130,
+          "weight": 0.5,
+          "hardness": 10,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 100,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_world_connection",
+            "value": 1,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_infinite_qi_pool",
+            "value": 1,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Осколок Сердца Мира. Лор: \"Сердце Мира — портал в подпространство для хранения Ци\".",
+        "rarity": 0.2,
+        "source": "Сердце Мира (глубина 5000+ км)",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 96,
+        "defense": 0,
+        "qiConductivity": 130,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 318,
+        "max": 318,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_crit_chance_1773589829676_0",
+          "type": "combat_crit_chance",
+          "category": "combat",
+          "value": 14,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_attack_speed_1773589829676_1",
+          "type": "combat_attack_speed",
+          "category": "combat",
+          "value": 13,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 7,
+        "strength": 28
+      },
+      "value": 49753,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "WP_000050",
+      "name": "Совершенный клинок из хаотичная материя",
+      "nameEn": "Совершенный клинок из хаотичная материя",
+      "description": "Совершенный клинок из хаотичная материя — оружие из хаотичная материя уровня 9. Качество: Совершенный. Урон: 297. Проводимость Ци: 120.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "perfect",
+      "materialId": "chaos_matter",
+      "material": {
+        "id": "chaos_matter",
+        "name": "Хаотичная материя",
+        "tier": 5,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 120,
+          "weight": 5,
+          "hardness": 10,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 120,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_chance",
+            "value": 20,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_damage",
+            "value": 80,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_chaos_effect",
+            "value": 100,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Нестабильная материя хаоса. Лор: \"Хаотичная Ци имеет выше энергетический потенциал\".",
+        "rarity": 0.5,
+        "source": "Древние катаклизмы, разрывы реальности",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 297,
+        "defense": 0,
+        "qiConductivity": 120,
+        "weight": 5
+      },
+      "durability": {
+        "current": 218,
+        "max": 218,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_damage_1773589829676_0",
+          "type": "combat_damage",
+          "category": "combat",
+          "value": 33,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "special_exp_bonus_1773589829676_1",
+          "type": "special_exp_bonus",
+          "category": "special",
+          "value": 21,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 7,
+        "strength": 89
+      },
+      "value": 91802,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "WP_000051",
+      "name": "Превосходящий копьё из осколок сердца мира",
+      "nameEn": "Превосходящий копьё из осколок сердца мира",
+      "description": "Превосходящий копьё из осколок сердца мира — оружие из осколок сердца мира уровня 9. Качество: Превосходящий. Урон: 147. Проводимость Ци: 130.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "transcendent",
+      "materialId": "heart_of_world_shard",
+      "material": {
+        "id": "heart_of_world_shard",
+        "name": "Осколок Сердца Мира",
+        "tier": 5,
+        "category": "crystal",
+        "properties": {
+          "durability": 120,
+          "qiConductivity": 130,
+          "weight": 0.5,
+          "hardness": 10,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 100,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_world_connection",
+            "value": 1,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_infinite_qi_pool",
+            "value": 1,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Осколок Сердца Мира. Лор: \"Сердце Мира — портал в подпространство для хранения Ци\".",
+        "rarity": 0.2,
+        "source": "Сердце Мира (глубина 5000+ км)",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 147,
+        "defense": 0,
+        "qiConductivity": 130,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 498,
+        "max": 498,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_range_1773589829676_0",
+          "type": "combat_range",
+          "category": "combat",
+          "value": 36,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_crit_chance_1773589829676_1",
+          "type": "combat_crit_chance",
+          "category": "combat",
+          "value": 19,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_damage_1773589829676_2",
+          "type": "combat_damage",
+          "category": "combat",
+          "value": 61,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_armor_penetration_1773589829676_3",
+          "type": "combat_armor_penetration",
+          "category": "combat",
+          "value": 37,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_attack_speed_1773589829676_4",
+          "type": "combat_attack_speed",
+          "category": "combat",
+          "value": 18,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 7,
+        "strength": 44
+      },
+      "value": 89678,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "legendary"
+    },
+    {
+      "id": "WP_000052",
+      "name": "Превосходящий копьё из хаотичная материя",
+      "nameEn": "Превосходящий копьё из хаотичная материя",
+      "description": "Превосходящий копьё из хаотичная материя — оружие из хаотичная материя уровня 9. Качество: Превосходящий. Урон: 442. Проводимость Ци: 120.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "transcendent",
+      "materialId": "chaos_matter",
+      "material": {
+        "id": "chaos_matter",
+        "name": "Хаотичная материя",
+        "tier": 5,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 120,
+          "weight": 5,
+          "hardness": 10,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 120,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_chance",
+            "value": 20,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_damage",
+            "value": 80,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_chaos_effect",
+            "value": 100,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Нестабильная материя хаоса. Лор: \"Хаотичная Ци имеет выше энергетический потенциал\".",
+        "rarity": 0.5,
+        "source": "Древние катаклизмы, разрывы реальности",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 442,
+        "defense": 0,
+        "qiConductivity": 120,
+        "weight": 5
+      },
+      "durability": {
+        "current": 338,
+        "max": 338,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_crit_damage_1773589829676_0",
+          "type": "combat_crit_damage",
+          "category": "combat",
+          "value": 109,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_attack_speed_1773589829676_1",
+          "type": "combat_attack_speed",
+          "category": "combat",
+          "value": 21,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_range_1773589829676_2",
+          "type": "combat_range",
+          "category": "combat",
+          "value": 30,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_crit_chance_1773589829676_3",
+          "type": "combat_crit_chance",
+          "category": "combat",
+          "value": 18,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_wind_1773589829676_4",
+          "type": "elemental_wind",
+          "category": "elemental",
+          "value": 108,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 7,
+        "strength": 132
+      },
+      "value": 181947,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "legendary"
+    },
+    {
+      "id": "WP_000053",
+      "name": "Улучшенный клинок из осколок сердца мира",
+      "nameEn": "Улучшенный клинок из осколок сердца мира",
+      "description": "Улучшенный клинок из осколок сердца мира — оружие из осколок сердца мира уровня 9. Качество: Улучшенный. Урон: 72. Проводимость Ци: 130.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "refined",
+      "materialId": "heart_of_world_shard",
+      "material": {
+        "id": "heart_of_world_shard",
+        "name": "Осколок Сердца Мира",
+        "tier": 5,
+        "category": "crystal",
+        "properties": {
+          "durability": 120,
+          "qiConductivity": 130,
+          "weight": 0.5,
+          "hardness": 10,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 100,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_world_connection",
+            "value": 1,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_infinite_qi_pool",
+            "value": 1,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Осколок Сердца Мира. Лор: \"Сердце Мира — портал в подпространство для хранения Ци\".",
+        "rarity": 0.2,
+        "source": "Сердце Мира (глубина 5000+ км)",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 72,
+        "defense": 0,
+        "qiConductivity": 130,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 198,
+        "max": 198,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "combat_armor_penetration_1773589829676_0",
+          "type": "combat_armor_penetration",
+          "category": "combat",
+          "value": 17,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "combat_crit_chance_1773589829676_1",
+          "type": "combat_crit_chance",
+          "category": "combat",
+          "value": 9,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 7,
+        "strength": 21
+      },
+      "value": 34006,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "WP_000054",
+      "name": "Улучшенный топор из хаотичная материя",
+      "nameEn": "Улучшенный топор из хаотичная материя",
+      "description": "Улучшенный топор из хаотичная материя — оружие из хаотичная материя уровня 9. Качество: Улучшенный. Урон: 232. Проводимость Ци: 120.",
+      "type": "weapon",
+      "category": "weapon",
+      "grade": "refined",
+      "materialId": "chaos_matter",
+      "material": {
+        "id": "chaos_matter",
+        "name": "Хаотичная материя",
+        "tier": 5,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 120,
+          "weight": 5,
+          "hardness": 10,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 120,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_chance",
+            "value": 20,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_damage",
+            "value": 80,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_chaos_effect",
+            "value": 100,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Нестабильная материя хаоса. Лор: \"Хаотичная Ци имеет выше энергетический потенциал\".",
+        "rarity": 0.5,
+        "source": "Древние катаклизмы, разрывы реальности",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 232,
+        "defense": 0,
+        "qiConductivity": 120,
+        "weight": 5
+      },
+      "durability": {
+        "current": 138,
+        "max": 138,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_fire_1773589829676_0",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 52,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 7,
+        "strength": 69
+      },
+      "value": 59259,
+      "icon": "⚔️",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    }
+  ]
+}

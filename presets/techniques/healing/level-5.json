@@ -1,0 +1,110 @@
+{
+  "version": "2.0",
+  "count": 2,
+  "techniques": [
+    {
+      "id": "HL000003",
+      "name": "Концентрированный Исцеление",
+      "nameEn": "Концентрированный Исцеление",
+      "description": "Концентрированный Исцеление — техника healing уровня 5. Grade: refined. Урон: 1075. Дальность: 5м.",
+      "type": "healing",
+      "element": "neutral",
+      "level": 5,
+      "grade": "refined",
+      "qiCost": 896,
+      "baseQiCost": 896,
+      "baseDamage": 896,
+      "baseRange": 5,
+      "baseCapacity": 56,
+      "computed": {
+        "finalDamage": 1075,
+        "finalQiCost": 896,
+        "finalRange": 5,
+        "formula": "896 × 1.2 = 1075",
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 47
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 47
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "meta": {
+        "seed": 1774114254475,
+        "template": "healing_base_neutral",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 2
+      }
+    },
+    {
+      "id": "HL000004",
+      "name": "Исцеление сфокусированный",
+      "nameEn": "Исцеление Сфокусированный",
+      "description": "Исцеление сфокусированный — техника healing уровня 5. Grade: common. Урон: 896. Дальность: 5м.",
+      "type": "healing",
+      "element": "neutral",
+      "level": 5,
+      "grade": "common",
+      "qiCost": 896,
+      "baseQiCost": 896,
+      "baseDamage": 896,
+      "baseRange": 5,
+      "baseCapacity": 56,
+      "computed": {
+        "finalDamage": 896,
+        "finalQiCost": 896,
+        "finalRange": 5,
+        "formula": "896 × 1 = 896",
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 97,
+            "duration": 7
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 97,
+          "shieldDuration": 7
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "meta": {
+        "seed": 1774114254476,
+        "template": "healing_base_neutral",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 2
+      }
+    }
+  ]
+}

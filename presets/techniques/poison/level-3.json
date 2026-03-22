@@ -1,0 +1,121 @@
+{
+  "version": "2.0",
+  "count": 2,
+  "techniques": [
+    {
+      "id": "PN000001",
+      "name": "Токсичный Отрава",
+      "nameEn": "Токсичный Отрава",
+      "description": "Токсичный Отрава — техника poison элемента poison уровня 3. Grade: transcendent. Урон: 256. Дальность: 5м.",
+      "type": "poison",
+      "element": "poison",
+      "level": 3,
+      "grade": "transcendent",
+      "qiCost": 160,
+      "baseQiCost": 160,
+      "baseDamage": 160,
+      "baseRange": 5,
+      "baseCapacity": 40,
+      "computed": {
+        "finalDamage": 256,
+        "finalQiCost": 160,
+        "finalRange": 5,
+        "formula": "160 × 1.6 = 256",
+        "activeEffects": [
+          {
+            "type": "slow",
+            "value": 31,
+            "duration": 1
+          },
+          {
+            "type": "debuff",
+            "value": 11,
+            "duration": 3
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "slow": true,
+          "debuff": true
+        },
+        "effectValues": {
+          "slowPercent": 31,
+          "slowDuration": 1,
+          "debuffStat": "intelligence",
+          "debuffAmount": 11,
+          "debuffDuration": 3
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 2,
+      "minLevel": 2,
+      "maxLevel": 4,
+      "fatigueCost": {
+        "physical": 1,
+        "mental": 0
+      },
+      "meta": {
+        "seed": 1774114254501,
+        "template": "poison_base_poison",
+        "generatedAt": "2026-03-21T17:30:54.391Z",
+        "generatorVersion": "4.0.0",
+        "tier": 3
+      }
+    },
+    {
+      "id": "PN000002",
+      "name": "Губитель смертоносный",
+      "nameEn": "Губитель Смертоносный",
+      "description": "Губитель смертоносный — техника poison элемента poison уровня 3. Grade: common. Урон: 160. Дальность: 5м.",
+      "type": "poison",
+      "element": "poison",
+      "level": 3,
+      "grade": "common",
+      "qiCost": 160,
+      "baseQiCost": 160,
+      "baseDamage": 160,
+      "baseRange": 5,
+      "baseCapacity": 40,
+      "computed": {
+        "finalDamage": 160,
+        "finalQiCost": 160,
+        "finalRange": 5,
+        "formula": "160 × 1 = 160",
+        "activeEffects": [
+          {
+            "type": "slow",
+            "value": 33,
+            "duration": 3
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "slow": true
+        },
+        "effectValues": {
+          "slowPercent": 33,
+          "slowDuration": 3
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 2,
+      "minLevel": 2,
+      "maxLevel": 4,
+      "fatigueCost": {
+        "physical": 1,
+        "mental": 0
+      },
+      "meta": {
+        "seed": 1774114254502,
+        "template": "poison_base_poison",
+        "generatedAt": "2026-03-21T17:30:54.391Z",
+        "generatorVersion": "4.0.0",
+        "tier": 3
+      }
+    }
+  ]
+}

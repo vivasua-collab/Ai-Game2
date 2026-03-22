@@ -1,0 +1,634 @@
+{
+  "version": "2.0",
+  "type": "tiger",
+  "count": 5,
+  "npcs": [
+    {
+      "id": "NP_000034",
+      "name": "Тигр Тенекрад",
+      "age": 47,
+      "gender": "female",
+      "speciesId": "tiger",
+      "roleId": "guard_combat",
+      "stats": {
+        "strength": 27,
+        "agility": 27,
+        "intelligence": 11,
+        "vitality": 19
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 8,
+        "coreCapacity": 545,
+        "currentQi": 311,
+        "coreQuality": 59,
+        "baseVolume": 113,
+        "qiDensity": 2,
+        "meridianConductivity": 0.3138888888888889,
+        "meridianBuffer": 1
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 165,
+            "maxFunctionalHP": 165,
+            "structuralHP": 330,
+            "maxStructuralHP": 330,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 132,
+            "maxFunctionalHP": 132,
+            "structuralHP": 264,
+            "maxStructuralHP": 264,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_left_leg": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_right_leg": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_left_leg": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_right_leg": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 49,
+            "maxFunctionalHP": 49,
+            "structuralHP": 98,
+            "maxStructuralHP": 98,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Верность",
+          "Храбрость",
+          "Дисциплина"
+        ],
+        "motivation": "защита",
+        "dominantEmotion": "гордость",
+        "disposition": 65
+      },
+      "techniques": [
+        "reinforced_strike",
+        "turtle_stance",
+        "iron_wall"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 60,
+        "contributionPoints": 17
+      },
+      "generationMeta": {
+        "seed": 1773590045650,
+        "generatedAt": "2026-03-15T15:54:05.624Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000071",
+      "name": "Тигр Смертоносец",
+      "age": 36,
+      "gender": "female",
+      "speciesId": "tiger",
+      "roleId": "traveler",
+      "stats": {
+        "strength": 31,
+        "agility": 31,
+        "intelligence": 15,
+        "vitality": 31
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 9,
+        "coreCapacity": 15831,
+        "currentQi": 14070,
+        "coreQuality": 9,
+        "baseVolume": 1384,
+        "qiDensity": 4,
+        "meridianConductivity": 3.8444444444444446,
+        "meridianBuffer": 19
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 180,
+            "maxFunctionalHP": 180,
+            "structuralHP": 360,
+            "maxStructuralHP": 360,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 144,
+            "maxFunctionalHP": 144,
+            "structuralHP": 288,
+            "maxStructuralHP": 288,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_left_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_right_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_left_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_right_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 54,
+            "maxFunctionalHP": 54,
+            "structuralHP": 108,
+            "maxStructuralHP": 108,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Дружелюбие",
+          "Любопытство",
+          "Авантюризм"
+        ],
+        "motivation": "путешествия",
+        "dominantEmotion": "открытость",
+        "disposition": 70
+      },
+      "techniques": [
+        "breath_of_qi",
+        "reinforced_strike",
+        "wind_speed"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 24,
+        "contributionPoints": 2
+      },
+      "generationMeta": {
+        "seed": 1773590045687,
+        "generatedAt": "2026-03-15T15:54:05.626Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000133",
+      "name": "Тигр Смертоносец",
+      "age": 78,
+      "gender": "male",
+      "speciesId": "tiger",
+      "roleId": "merchant",
+      "stats": {
+        "strength": 20,
+        "agility": 25,
+        "intelligence": 10,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 9,
+        "coreCapacity": 2339,
+        "currentQi": 1931,
+        "coreQuality": 19,
+        "baseVolume": 990,
+        "qiDensity": 1,
+        "meridianConductivity": 2.75,
+        "meridianBuffer": 13
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 75,
+            "maxFunctionalHP": 75,
+            "structuralHP": 150,
+            "maxStructuralHP": 150,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 150,
+            "maxFunctionalHP": 150,
+            "structuralHP": 300,
+            "maxStructuralHP": 300,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 120,
+            "maxFunctionalHP": 120,
+            "structuralHP": 240,
+            "maxStructuralHP": 240,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_left_leg": {
+            "functionalHP": 75,
+            "maxFunctionalHP": 75,
+            "structuralHP": 150,
+            "maxStructuralHP": 150,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_right_leg": {
+            "functionalHP": 75,
+            "maxFunctionalHP": 75,
+            "structuralHP": 150,
+            "maxStructuralHP": 150,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_left_leg": {
+            "functionalHP": 75,
+            "maxFunctionalHP": 75,
+            "structuralHP": 150,
+            "maxStructuralHP": 150,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_right_leg": {
+            "functionalHP": 75,
+            "maxFunctionalHP": 75,
+            "structuralHP": 150,
+            "maxStructuralHP": 150,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 45,
+            "maxFunctionalHP": 45,
+            "structuralHP": 90,
+            "maxStructuralHP": 90,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Дружелюбие",
+          "Любопытство",
+          "Авантюризм"
+        ],
+        "motivation": "приключения",
+        "dominantEmotion": "радость",
+        "disposition": 70
+      },
+      "techniques": [
+        "breath_of_qi",
+        "mental_shield",
+        "wind_speed"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 930,
+        "contributionPoints": 19
+      },
+      "generationMeta": {
+        "seed": 1773590343357,
+        "generatedAt": "2026-03-15T15:59:03.348Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000144",
+      "name": "Тигр Смертоносец",
+      "age": 98,
+      "gender": "male",
+      "speciesId": "tiger",
+      "roleId": "warrior",
+      "stats": {
+        "strength": 26,
+        "agility": 31,
+        "intelligence": 12,
+        "vitality": 20
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 6,
+        "coreCapacity": 8634,
+        "currentQi": 5918,
+        "coreQuality": 17,
+        "baseVolume": 1005,
+        "qiDensity": 4,
+        "meridianConductivity": 2.7916666666666665,
+        "meridianBuffer": 13
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 180,
+            "maxFunctionalHP": 180,
+            "structuralHP": 360,
+            "maxStructuralHP": 360,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 144,
+            "maxFunctionalHP": 144,
+            "structuralHP": 288,
+            "maxStructuralHP": 288,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_left_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_right_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_left_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_right_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 54,
+            "maxFunctionalHP": 54,
+            "structuralHP": 108,
+            "maxStructuralHP": 108,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Безжалостность",
+          "Дисциплина",
+          "Сила"
+        ],
+        "motivation": "доминирование",
+        "dominantEmotion": "презрение",
+        "disposition": 35
+      },
+      "techniques": [
+        "reinforced_strike",
+        "breath_of_qi",
+        "iron_wall",
+        "fire_strike",
+        "turtle_stance"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 63,
+        "contributionPoints": 6
+      },
+      "generationMeta": {
+        "seed": 1773590345665,
+        "generatedAt": "2026-03-15T15:59:05.662Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000178",
+      "name": "Тигр Быстроног",
+      "age": 16,
+      "gender": "male",
+      "speciesId": "tiger",
+      "roleId": "merchant",
+      "stats": {
+        "strength": 27,
+        "agility": 16,
+        "intelligence": 18,
+        "vitality": 27
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 8,
+        "coreCapacity": 6690,
+        "currentQi": 5225,
+        "coreQuality": 59,
+        "baseVolume": 1416,
+        "qiDensity": 2,
+        "meridianConductivity": 3.933333333333333,
+        "meridianBuffer": 19
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 165,
+            "maxFunctionalHP": 165,
+            "structuralHP": 330,
+            "maxStructuralHP": 330,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 132,
+            "maxFunctionalHP": 132,
+            "structuralHP": 264,
+            "maxStructuralHP": 264,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_left_leg": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_right_leg": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_left_leg": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_right_leg": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 49,
+            "maxFunctionalHP": 49,
+            "structuralHP": 98,
+            "maxStructuralHP": 98,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Дружелюбие",
+          "Любопытство",
+          "Авантюризм"
+        ],
+        "motivation": "приключения",
+        "dominantEmotion": "радость",
+        "disposition": 70
+      },
+      "techniques": [
+        "breath_of_qi",
+        "wind_speed",
+        "mental_shield"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 466,
+        "contributionPoints": 17
+      },
+      "generationMeta": {
+        "seed": 1773590347216,
+        "generatedAt": "2026-03-15T15:59:07.200Z",
+        "version": "2.1.0-lore"
+      }
+    }
+  ]
+}

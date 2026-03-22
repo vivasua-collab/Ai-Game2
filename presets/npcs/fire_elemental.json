@@ -1,0 +1,464 @@
+{
+  "version": "2.0",
+  "type": "fire_elemental",
+  "count": 6,
+  "npcs": [
+    {
+      "id": "NP_000117",
+      "name": "Аква",
+      "age": 23,
+      "gender": "female",
+      "speciesId": "fire_elemental",
+      "roleId": "criminal",
+      "stats": {
+        "strength": 25,
+        "agility": 25,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 1,
+        "coreCapacity": 5214,
+        "currentQi": 3412,
+        "coreQuality": 79,
+        "baseVolume": 4740,
+        "qiDensity": 1,
+        "meridianConductivity": 13.166666666666666,
+        "meridianBuffer": 65
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Агрессия",
+          "Жестокость",
+          "Нетерпение"
+        ],
+        "motivation": "выживание",
+        "dominantEmotion": "гнев",
+        "disposition": 0
+      },
+      "techniques": [
+        "reinforced_strike",
+        "ghost_shadow",
+        "wind_speed"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 42,
+        "contributionPoints": 16
+      },
+      "generationMeta": {
+        "seed": 1773590176329,
+        "generatedAt": "2026-03-15T15:56:16.315Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000119",
+      "name": "Аква",
+      "age": 69,
+      "gender": "female",
+      "speciesId": "fire_elemental",
+      "roleId": "merchant",
+      "stats": {
+        "strength": 25,
+        "agility": 25,
+        "intelligence": 15,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 6,
+        "coreCapacity": 6867,
+        "currentQi": 5843,
+        "coreQuality": 53,
+        "baseVolume": 3874,
+        "qiDensity": 1,
+        "meridianConductivity": 10.761111111111111,
+        "meridianBuffer": 53
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Дружелюбие",
+          "Любопытство",
+          "Авантюризм"
+        ],
+        "motivation": "путешествия",
+        "dominantEmotion": "радость",
+        "disposition": 70
+      },
+      "techniques": [
+        "breath_of_qi",
+        "wind_speed",
+        "mental_shield"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 170,
+        "contributionPoints": 14
+      },
+      "generationMeta": {
+        "seed": 1773590176331,
+        "generatedAt": "2026-03-15T15:56:16.315Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000161",
+      "name": "Пиро",
+      "age": 69,
+      "gender": "male",
+      "speciesId": "fire_elemental",
+      "roleId": "beggar",
+      "stats": {
+        "strength": 25,
+        "agility": 25,
+        "intelligence": 16,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 7,
+        "coreCapacity": 4564,
+        "currentQi": 4318,
+        "coreQuality": 79,
+        "baseVolume": 2340,
+        "qiDensity": 1,
+        "meridianConductivity": 6.5,
+        "meridianBuffer": 32
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Фанатизм",
+          "Преданность",
+          "Тайна"
+        ],
+        "motivation": "тёмные ритуалы",
+        "dominantEmotion": "нетерпимость",
+        "disposition": 35
+      },
+      "techniques": [],
+      "equipment": {
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 2,
+        "contributionPoints": 8
+      },
+      "generationMeta": {
+        "seed": 1773590347199,
+        "generatedAt": "2026-03-15T15:59:07.199Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000163",
+      "name": "Аква",
+      "age": 82,
+      "gender": "male",
+      "speciesId": "fire_elemental",
+      "roleId": "bandit",
+      "stats": {
+        "strength": 22,
+        "agility": 25,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 4,
+        "coreCapacity": 5915,
+        "currentQi": 5762,
+        "coreQuality": 50,
+        "baseVolume": 4039,
+        "qiDensity": 1,
+        "meridianConductivity": 11.219444444444445,
+        "meridianBuffer": 56
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Агрессия",
+          "Жестокость",
+          "Нетерпение"
+        ],
+        "motivation": "выживание",
+        "dominantEmotion": "гнев",
+        "disposition": 0
+      },
+      "techniques": [
+        "reinforced_strike",
+        "dirty_trick",
+        "ghost_shadow"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 17,
+        "contributionPoints": 23
+      },
+      "generationMeta": {
+        "seed": 1773590347201,
+        "generatedAt": "2026-03-15T15:59:07.199Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000195",
+      "name": "Зефир",
+      "age": 91,
+      "gender": "female",
+      "speciesId": "fire_elemental",
+      "roleId": "traveler",
+      "stats": {
+        "strength": 25,
+        "agility": 25,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 7,
+        "coreCapacity": 5915,
+        "currentQi": 4783,
+        "coreQuality": 52,
+        "baseVolume": 3033,
+        "qiDensity": 1,
+        "meridianConductivity": 8.425,
+        "meridianBuffer": 42
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Дружелюбие",
+          "Любопытство",
+          "Авантюризм"
+        ],
+        "motivation": "новые знакомства",
+        "dominantEmotion": "открытость",
+        "disposition": 70
+      },
+      "techniques": [
+        "breath_of_qi",
+        "reinforced_strike",
+        "wind_speed"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 27,
+        "contributionPoints": 2
+      },
+      "generationMeta": {
+        "seed": 1773590348750,
+        "generatedAt": "2026-03-15T15:59:08.737Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000197",
+      "name": "Пиро",
+      "age": 53,
+      "gender": "female",
+      "speciesId": "fire_elemental",
+      "roleId": "cultist",
+      "stats": {
+        "strength": 25,
+        "agility": 23,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 4,
+        "coreCapacity": 6931,
+        "currentQi": 5799,
+        "coreQuality": 74,
+        "baseVolume": 4732,
+        "qiDensity": 1,
+        "meridianConductivity": 13.144444444444444,
+        "meridianBuffer": 65
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Агрессия",
+          "Жестокость",
+          "Нетерпение"
+        ],
+        "motivation": "доминирование",
+        "dominantEmotion": "презрение",
+        "disposition": 0
+      },
+      "techniques": [
+        "breath_of_qi",
+        "curse",
+        "mental_shield"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 42,
+        "contributionPoints": 1
+      },
+      "generationMeta": {
+        "seed": 1773590348752,
+        "generatedAt": "2026-03-15T15:59:08.737Z",
+        "version": "2.1.0-lore"
+      }
+    }
+  ]
+}

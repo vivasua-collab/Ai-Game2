@@ -1,0 +1,242 @@
+{
+  "version": "2.0",
+  "count": 5,
+  "techniques": [
+    {
+      "id": "MS000021",
+      "name": "Ослепляющий Клинок",
+      "nameEn": "Ослепляющий Клинок",
+      "description": "Ослепляющий Клинок — техника melee_strike элемента lightning уровня 9. Grade: refined. Урон: 19660. Дальность: 0.6м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "lightning",
+      "level": 9,
+      "grade": "refined",
+      "qiCost": 16384,
+      "baseQiCost": 16384,
+      "baseDamage": 16384,
+      "baseRange": 0.6,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 19660,
+        "finalQiCost": 16384,
+        "finalRange": 0.6,
+        "formula": "16384 × 1.2 = 19660",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 5
+        }
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 29
+      },
+      "meta": {
+        "seed": 1774114254407,
+        "template": "combat_melee_strike_lightning",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MS000022",
+      "name": "Бесплотный Взрыв",
+      "nameEn": "Бесплотный Взрыв",
+      "description": "Бесплотный Взрыв — техника melee_strike элемента void уровня 9. Grade: common. Урон: 16384. Дальность: 0.5м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "void",
+      "level": 9,
+      "grade": "common",
+      "qiCost": 16384,
+      "baseQiCost": 16384,
+      "baseDamage": 16384,
+      "baseRange": 0.5,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 16384,
+        "finalQiCost": 16384,
+        "finalRange": 0.5,
+        "formula": "16384 × 1 = 16384",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 27
+      },
+      "meta": {
+        "seed": 1774114254408,
+        "template": "combat_melee_strike_void",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MS000023",
+      "name": "Кулак истинный",
+      "nameEn": "Кулак Истинный",
+      "description": "Кулак истинный — техника melee_strike уровня 9. Grade: refined. Урон: 19660. Дальность: 0.6м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "neutral",
+      "level": 9,
+      "grade": "refined",
+      "qiCost": 16384,
+      "baseQiCost": 16384,
+      "baseDamage": 16384,
+      "baseRange": 0.6,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 19660,
+        "finalQiCost": 16384,
+        "finalRange": 0.6,
+        "formula": "16384 × 1.2 = 19660",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 5
+        }
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 29
+      },
+      "meta": {
+        "seed": 1774114254409,
+        "template": "combat_melee_strike_neutral",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MS000024",
+      "name": "Раскалённый Клинок",
+      "nameEn": "Раскалённый Клинок",
+      "description": "Раскалённый Клинок — техника melee_strike элемента fire уровня 9. Grade: common. Урон: 16384. Дальность: 0.5м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "fire",
+      "level": 9,
+      "grade": "common",
+      "qiCost": 16384,
+      "baseQiCost": 16384,
+      "baseDamage": 16384,
+      "baseRange": 0.5,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 16384,
+        "finalQiCost": 16384,
+        "finalRange": 0.5,
+        "formula": "16384 × 1 = 16384",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 27
+      },
+      "meta": {
+        "seed": 1774114254410,
+        "template": "combat_melee_strike_fire",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MS000025",
+      "name": "Взрыв раскалённый",
+      "nameEn": "Взрыв Раскалённый",
+      "description": "Взрыв раскалённый — техника melee_strike элемента fire уровня 9. Grade: refined. Урон: 19660. Дальность: 0.6м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "fire",
+      "level": 9,
+      "grade": "refined",
+      "qiCost": 16384,
+      "baseQiCost": 16384,
+      "baseDamage": 16384,
+      "baseRange": 0.6,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 19660,
+        "finalQiCost": 16384,
+        "finalRange": 0.6,
+        "formula": "16384 × 1.2 = 19660",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 5
+        }
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 29
+      },
+      "meta": {
+        "seed": 1774114254411,
+        "template": "combat_melee_strike_fire",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "version": "2.0",
+  "count": 1,
+  "techniques": [
+    {
+      "id": "CU000003",
+      "name": "Истинный Концентрация",
+      "nameEn": "Истинный Концентрация",
+      "description": "Истинный Концентрация — техника cultivation уровня 9. Grade: common. Урон: 0. Дальность: 5м.",
+      "type": "cultivation",
+      "element": "neutral",
+      "level": 9,
+      "grade": "common",
+      "qiCost": 0,
+      "baseQiCost": 0,
+      "baseDamage": 0,
+      "baseRange": 5,
+      "baseCapacity": null,
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 5,
+        "formula": "Пассивная техника",
+        "activeEffects": [
+          {
+            "type": "efficiency",
+            "value": 0
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "efficiency": true
+        },
+        "effectValues": {
+          "qiCostReduction": 37
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "intelligence": 27,
+        "conductivity": 18
+      },
+      "meta": {
+        "seed": 1774114254507,
+        "template": "cultivation_base_neutral",
+        "generatedAt": "2026-03-21T17:30:54.391Z",
+        "generatorVersion": "4.0.0",
+        "tier": 5
+      }
+    }
+  ]
+}

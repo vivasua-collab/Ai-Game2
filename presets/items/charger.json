@@ -1,0 +1,4150 @@
+{
+  "version": "2.0",
+  "type": "charger",
+  "count": 54,
+  "items": [
+    {
+      "id": "CH_000001",
+      "name": "Треснувший зарядник из дерево",
+      "nameEn": "Треснувший зарядник из дерево",
+      "description": "Треснувший зарядник из дерево — зарядник из дерево уровня 1. Качество: Повреждённый. Проводимость Ци: 24.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "damaged",
+      "materialId": "wood",
+      "material": {
+        "id": "wood",
+        "name": "Дерево",
+        "tier": 1,
+        "category": "wood",
+        "properties": {
+          "durability": 15,
+          "qiConductivity": 20,
+          "weight": 1,
+          "hardness": 3,
+          "flexibility": 5
+        },
+        "bonuses": [],
+        "description": "Обычное дерево из лесов. Баланс параметров.",
+        "rarity": 100,
+        "source": "Леса и рощи"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 24,
+        "weight": 1
+      },
+      "durability": {
+        "current": 9,
+        "max": 9,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [
+        "slots:0"
+      ],
+      "requirements": {
+        "level": 1,
+        "intelligence": 3
+      },
+      "value": 561,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "CH_000002",
+      "name": "Зарядник из кожа",
+      "nameEn": "Зарядник из кожа",
+      "description": "Зарядник из кожа — зарядник из кожа уровня 1. Качество: Обычный. Проводимость Ци: 6.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "common",
+      "materialId": "leather",
+      "material": {
+        "id": "leather",
+        "name": "Кожа",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 20,
+          "qiConductivity": 5,
+          "weight": 0.5,
+          "hardness": 2,
+          "flexibility": 8
+        },
+        "bonuses": [],
+        "description": "Обычная кожа животных. Лёгкая, гибкая, но слабо проводит Ци.",
+        "rarity": 100,
+        "source": "Охота на обычных животных"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 6,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 22,
+        "max": 22,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_cold_1773589830213_0",
+          "type": "elemental_cold",
+          "category": "elemental",
+          "value": 10,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:1"
+      ],
+      "requirements": {
+        "level": 1,
+        "intelligence": 3
+      },
+      "value": 175,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "CH_000003",
+      "name": "Зарядник из камень",
+      "nameEn": "Зарядник из камень",
+      "description": "Зарядник из камень — зарядник из камень уровня 1. Качество: Обычный. Проводимость Ци: 6.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "common",
+      "materialId": "stone",
+      "material": {
+        "id": "stone",
+        "name": "Камень",
+        "tier": 1,
+        "category": "mineral",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 5,
+          "weight": 5,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [],
+        "description": "Обычный камень. Тяжёлый и прочный, но не проводит Ци.",
+        "rarity": 100,
+        "source": "Каменоломни"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 6,
+        "weight": 5
+      },
+      "durability": {
+        "current": 42,
+        "max": 42,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [
+        "slots:1"
+      ],
+      "requirements": {
+        "level": 1,
+        "intelligence": 3
+      },
+      "value": 175,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "CH_000004",
+      "name": "Зарядник из кожа",
+      "nameEn": "Зарядник из кожа",
+      "description": "Зарядник из кожа — зарядник из кожа уровня 1. Качество: Обычный. Проводимость Ци: 6.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "common",
+      "materialId": "leather",
+      "material": {
+        "id": "leather",
+        "name": "Кожа",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 20,
+          "qiConductivity": 5,
+          "weight": 0.5,
+          "hardness": 2,
+          "flexibility": 8
+        },
+        "bonuses": [],
+        "description": "Обычная кожа животных. Лёгкая, гибкая, но слабо проводит Ци.",
+        "rarity": 100,
+        "source": "Охота на обычных животных"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 6,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 22,
+        "max": 22,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_conductivity_1773589830213_0",
+          "type": "qi_conductivity",
+          "category": "qi",
+          "value": 7,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:1"
+      ],
+      "requirements": {
+        "level": 1,
+        "intelligence": 3
+      },
+      "value": 175,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "CH_000005",
+      "name": "Зарядник из камень",
+      "nameEn": "Зарядник из камень",
+      "description": "Зарядник из камень — зарядник из камень уровня 1. Качество: Обычный. Проводимость Ци: 6.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "common",
+      "materialId": "stone",
+      "material": {
+        "id": "stone",
+        "name": "Камень",
+        "tier": 1,
+        "category": "mineral",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 5,
+          "weight": 5,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [],
+        "description": "Обычный камень. Тяжёлый и прочный, но не проводит Ци.",
+        "rarity": 100,
+        "source": "Каменоломни"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 6,
+        "weight": 5
+      },
+      "durability": {
+        "current": 42,
+        "max": 42,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_capacity_1773589830213_0",
+          "type": "qi_capacity",
+          "category": "qi",
+          "value": 65,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:1"
+      ],
+      "requirements": {
+        "level": 1,
+        "intelligence": 3
+      },
+      "value": 175,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "CH_000006",
+      "name": "Зарядник из кожа",
+      "nameEn": "Зарядник из кожа",
+      "description": "Зарядник из кожа — зарядник из кожа уровня 1. Качество: Обычный. Проводимость Ци: 6.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "common",
+      "materialId": "leather",
+      "material": {
+        "id": "leather",
+        "name": "Кожа",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 20,
+          "qiConductivity": 5,
+          "weight": 0.5,
+          "hardness": 2,
+          "flexibility": 8
+        },
+        "bonuses": [],
+        "description": "Обычная кожа животных. Лёгкая, гибкая, но слабо проводит Ци.",
+        "rarity": 100,
+        "source": "Охота на обычных животных"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 6,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 22,
+        "max": 22,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [
+        "slots:1"
+      ],
+      "requirements": {
+        "level": 1,
+        "intelligence": 3
+      },
+      "value": 175,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "CH_000007",
+      "name": "Треснувший зарядник из дерево",
+      "nameEn": "Треснувший зарядник из дерево",
+      "description": "Треснувший зарядник из дерево — зарядник из дерево уровня 2. Качество: Повреждённый. Проводимость Ци: 24.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "damaged",
+      "materialId": "wood",
+      "material": {
+        "id": "wood",
+        "name": "Дерево",
+        "tier": 1,
+        "category": "wood",
+        "properties": {
+          "durability": 15,
+          "qiConductivity": 20,
+          "weight": 1,
+          "hardness": 3,
+          "flexibility": 5
+        },
+        "bonuses": [],
+        "description": "Обычное дерево из лесов. Баланс параметров.",
+        "rarity": 100,
+        "source": "Леса и рощи"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 24,
+        "weight": 1
+      },
+      "durability": {
+        "current": 11,
+        "max": 11,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [
+        "slots:0"
+      ],
+      "requirements": {
+        "level": 1,
+        "intelligence": 6
+      },
+      "value": 690,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "CH_000008",
+      "name": "Зарядник из кожа",
+      "nameEn": "Зарядник из кожа",
+      "description": "Зарядник из кожа — зарядник из кожа уровня 2. Качество: Обычный. Проводимость Ци: 6.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "common",
+      "materialId": "leather",
+      "material": {
+        "id": "leather",
+        "name": "Кожа",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 20,
+          "qiConductivity": 5,
+          "weight": 0.5,
+          "hardness": 2,
+          "flexibility": 8
+        },
+        "bonuses": [],
+        "description": "Обычная кожа животных. Лёгкая, гибкая, но слабо проводит Ци.",
+        "rarity": 100,
+        "source": "Охота на обычных животных"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 6,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 24,
+        "max": 24,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_cold_1773589830213_0",
+          "type": "elemental_cold",
+          "category": "elemental",
+          "value": 13,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:1"
+      ],
+      "requirements": {
+        "level": 1,
+        "intelligence": 6
+      },
+      "value": 216,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "CH_000009",
+      "name": "Зарядник из камень",
+      "nameEn": "Зарядник из камень",
+      "description": "Зарядник из камень — зарядник из камень уровня 2. Качество: Обычный. Проводимость Ци: 6.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "common",
+      "materialId": "stone",
+      "material": {
+        "id": "stone",
+        "name": "Камень",
+        "tier": 1,
+        "category": "mineral",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 5,
+          "weight": 5,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [],
+        "description": "Обычный камень. Тяжёлый и прочный, но не проводит Ци.",
+        "rarity": 100,
+        "source": "Каменоломни"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 6,
+        "weight": 5
+      },
+      "durability": {
+        "current": 44,
+        "max": 44,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [
+        "slots:1"
+      ],
+      "requirements": {
+        "level": 1,
+        "intelligence": 6
+      },
+      "value": 216,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "CH_000010",
+      "name": "Зарядник из кожа",
+      "nameEn": "Зарядник из кожа",
+      "description": "Зарядник из кожа — зарядник из кожа уровня 2. Качество: Обычный. Проводимость Ци: 6.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "common",
+      "materialId": "leather",
+      "material": {
+        "id": "leather",
+        "name": "Кожа",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 20,
+          "qiConductivity": 5,
+          "weight": 0.5,
+          "hardness": 2,
+          "flexibility": 8
+        },
+        "bonuses": [],
+        "description": "Обычная кожа животных. Лёгкая, гибкая, но слабо проводит Ци.",
+        "rarity": 100,
+        "source": "Охота на обычных животных"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 6,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 24,
+        "max": 24,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_conductivity_1773589830213_0",
+          "type": "qi_conductivity",
+          "category": "qi",
+          "value": 10,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:1"
+      ],
+      "requirements": {
+        "level": 1,
+        "intelligence": 6
+      },
+      "value": 216,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "CH_000011",
+      "name": "Зарядник из камень",
+      "nameEn": "Зарядник из камень",
+      "description": "Зарядник из камень — зарядник из камень уровня 2. Качество: Обычный. Проводимость Ци: 6.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "common",
+      "materialId": "stone",
+      "material": {
+        "id": "stone",
+        "name": "Камень",
+        "tier": 1,
+        "category": "mineral",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 5,
+          "weight": 5,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [],
+        "description": "Обычный камень. Тяжёлый и прочный, но не проводит Ци.",
+        "rarity": 100,
+        "source": "Каменоломни"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 6,
+        "weight": 5
+      },
+      "durability": {
+        "current": 44,
+        "max": 44,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_capacity_1773589830214_0",
+          "type": "qi_capacity",
+          "category": "qi",
+          "value": 83,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:1"
+      ],
+      "requirements": {
+        "level": 1,
+        "intelligence": 6
+      },
+      "value": 216,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "CH_000012",
+      "name": "Зарядник из кожа",
+      "nameEn": "Зарядник из кожа",
+      "description": "Зарядник из кожа — зарядник из кожа уровня 2. Качество: Обычный. Проводимость Ци: 6.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "common",
+      "materialId": "leather",
+      "material": {
+        "id": "leather",
+        "name": "Кожа",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 20,
+          "qiConductivity": 5,
+          "weight": 0.5,
+          "hardness": 2,
+          "flexibility": 8
+        },
+        "bonuses": [],
+        "description": "Обычная кожа животных. Лёгкая, гибкая, но слабо проводит Ци.",
+        "rarity": 100,
+        "source": "Охота на обычных животных"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 6,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 24,
+        "max": 24,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [
+        "slots:1"
+      ],
+      "requirements": {
+        "level": 1,
+        "intelligence": 6
+      },
+      "value": 216,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "CH_000013",
+      "name": "Улучшенный зарядник из бронза",
+      "nameEn": "Улучшенный зарядник из бронза",
+      "description": "Улучшенный зарядник из бронза — зарядник из бронза уровня 3. Качество: Улучшенный. Проводимость Ци: 41.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "refined",
+      "materialId": "bronze",
+      "material": {
+        "id": "bronze",
+        "name": "Бронза",
+        "tier": 2,
+        "category": "metal",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 30,
+          "weight": 4.5,
+          "hardness": 6,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 5,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Сплав меди и олова. Хорошо проводит Ци, подходит для брони.",
+        "rarity": 50,
+        "source": "Глубокие шахты (3-8 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 41,
+        "weight": 4.5
+      },
+      "durability": {
+        "current": 66,
+        "max": 66,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_cold_1773589830214_0",
+          "type": "elemental_cold",
+          "category": "elemental",
+          "value": 20,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "qi_cost_reduction_1773589830214_1",
+          "type": "qi_cost_reduction",
+          "category": "qi",
+          "value": 11,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:2"
+      ],
+      "requirements": {
+        "level": 1,
+        "intelligence": 9
+      },
+      "value": 3037,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "CH_000014",
+      "name": "Зарядник из мрамор",
+      "nameEn": "Зарядник из мрамор",
+      "description": "Зарядник из мрамор — зарядник из мрамор уровня 3. Качество: Обычный. Проводимость Ци: 19.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "common",
+      "materialId": "marble",
+      "material": {
+        "id": "marble",
+        "name": "Мрамор",
+        "tier": 2,
+        "category": "mineral",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 15,
+          "weight": 6,
+          "hardness": 9,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Плотный мрамор из глубоких каменолен. Очень твёрдый.",
+        "rarity": 40,
+        "source": "Глубокие каменоломни (5-15 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 19,
+        "weight": 6
+      },
+      "durability": {
+        "current": 66,
+        "max": 66,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [
+        "slots:1"
+      ],
+      "requirements": {
+        "level": 1,
+        "intelligence": 9
+      },
+      "value": 1083,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "CH_000015",
+      "name": "Зарядник из бронза",
+      "nameEn": "Зарядник из бронза",
+      "description": "Зарядник из бронза — зарядник из бронза уровня 3. Качество: Обычный. Проводимость Ци: 39.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "common",
+      "materialId": "bronze",
+      "material": {
+        "id": "bronze",
+        "name": "Бронза",
+        "tier": 2,
+        "category": "metal",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 30,
+          "weight": 4.5,
+          "hardness": 6,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 5,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Сплав меди и олова. Хорошо проводит Ци, подходит для брони.",
+        "rarity": 50,
+        "source": "Глубокие шахты (3-8 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 39,
+        "weight": 4.5
+      },
+      "durability": {
+        "current": 46,
+        "max": 46,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_conductivity_1773589830214_0",
+          "type": "qi_conductivity",
+          "category": "qi",
+          "value": 12,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:1"
+      ],
+      "requirements": {
+        "level": 1,
+        "intelligence": 9
+      },
+      "value": 2223,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "CH_000016",
+      "name": "Улучшенный зарядник из мрамор",
+      "nameEn": "Улучшенный зарядник из мрамор",
+      "description": "Улучшенный зарядник из мрамор — зарядник из мрамор уровня 3. Качество: Улучшенный. Проводимость Ци: 20.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "refined",
+      "materialId": "marble",
+      "material": {
+        "id": "marble",
+        "name": "Мрамор",
+        "tier": 2,
+        "category": "mineral",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 15,
+          "weight": 6,
+          "hardness": 9,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Плотный мрамор из глубоких каменолен. Очень твёрдый.",
+        "rarity": 40,
+        "source": "Глубокие каменоломни (5-15 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 20,
+        "weight": 6
+      },
+      "durability": {
+        "current": 96,
+        "max": 96,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_capacity_1773589830214_0",
+          "type": "qi_capacity",
+          "category": "qi",
+          "value": 132,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_earth_1773589830214_1",
+          "type": "elemental_earth",
+          "category": "elemental",
+          "value": 25,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:2"
+      ],
+      "requirements": {
+        "level": 1,
+        "intelligence": 9
+      },
+      "value": 1482,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "CH_000017",
+      "name": "Улучшенный зарядник из шёлк",
+      "nameEn": "Улучшенный зарядник из шёлк",
+      "description": "Улучшенный зарядник из шёлк — зарядник из шёлк уровня 3. Качество: Улучшенный. Проводимость Ци: 62.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "refined",
+      "materialId": "silk",
+      "material": {
+        "id": "silk",
+        "name": "Шёлк",
+        "tier": 2,
+        "category": "organic",
+        "properties": {
+          "durability": 15,
+          "qiConductivity": 45,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 5,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от особых гусениц. Отличная проводимость Ци.",
+        "rarity": 40,
+        "source": "Шёлковые фермы"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 62,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 28,
+        "max": 28,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_fire_1773589830214_0",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 22,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:2"
+      ],
+      "requirements": {
+        "level": 1,
+        "intelligence": 9
+      },
+      "value": 4593,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "CH_000018",
+      "name": "Зарядник из мрамор",
+      "nameEn": "Зарядник из мрамор",
+      "description": "Зарядник из мрамор — зарядник из мрамор уровня 3. Качество: Обычный. Проводимость Ци: 19.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "common",
+      "materialId": "marble",
+      "material": {
+        "id": "marble",
+        "name": "Мрамор",
+        "tier": 2,
+        "category": "mineral",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 15,
+          "weight": 6,
+          "hardness": 9,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Плотный мрамор из глубоких каменолен. Очень твёрдый.",
+        "rarity": 40,
+        "source": "Глубокие каменоломни (5-15 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 19,
+        "weight": 6
+      },
+      "durability": {
+        "current": 66,
+        "max": 66,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [
+        "slots:1"
+      ],
+      "requirements": {
+        "level": 1,
+        "intelligence": 9
+      },
+      "value": 1083,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "CH_000019",
+      "name": "Улучшенный зарядник из бронза",
+      "nameEn": "Улучшенный зарядник из бронза",
+      "description": "Улучшенный зарядник из бронза — зарядник из бронза уровня 4. Качество: Улучшенный. Проводимость Ци: 41.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "refined",
+      "materialId": "bronze",
+      "material": {
+        "id": "bronze",
+        "name": "Бронза",
+        "tier": 2,
+        "category": "metal",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 30,
+          "weight": 4.5,
+          "hardness": 6,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 5,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Сплав меди и олова. Хорошо проводит Ци, подходит для брони.",
+        "rarity": 50,
+        "source": "Глубокие шахты (3-8 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 41,
+        "weight": 4.5
+      },
+      "durability": {
+        "current": 68,
+        "max": 68,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_cold_1773589830214_0",
+          "type": "elemental_cold",
+          "category": "elemental",
+          "value": 23,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "qi_cost_reduction_1773589830214_1",
+          "type": "qi_cost_reduction",
+          "category": "qi",
+          "value": 12,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:2"
+      ],
+      "requirements": {
+        "level": 2,
+        "intelligence": 12
+      },
+      "value": 3517,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "CH_000020",
+      "name": "Зарядник из мрамор",
+      "nameEn": "Зарядник из мрамор",
+      "description": "Зарядник из мрамор — зарядник из мрамор уровня 4. Качество: Обычный. Проводимость Ци: 19.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "common",
+      "materialId": "marble",
+      "material": {
+        "id": "marble",
+        "name": "Мрамор",
+        "tier": 2,
+        "category": "mineral",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 15,
+          "weight": 6,
+          "hardness": 9,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Плотный мрамор из глубоких каменолен. Очень твёрдый.",
+        "rarity": 40,
+        "source": "Глубокие каменоломни (5-15 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 19,
+        "weight": 6
+      },
+      "durability": {
+        "current": 68,
+        "max": 68,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [
+        "slots:1"
+      ],
+      "requirements": {
+        "level": 2,
+        "intelligence": 12
+      },
+      "value": 1254,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "CH_000021",
+      "name": "Зарядник из бронза",
+      "nameEn": "Зарядник из бронза",
+      "description": "Зарядник из бронза — зарядник из бронза уровня 4. Качество: Обычный. Проводимость Ци: 39.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "common",
+      "materialId": "bronze",
+      "material": {
+        "id": "bronze",
+        "name": "Бронза",
+        "tier": 2,
+        "category": "metal",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 30,
+          "weight": 4.5,
+          "hardness": 6,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 5,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Сплав меди и олова. Хорошо проводит Ци, подходит для брони.",
+        "rarity": 50,
+        "source": "Глубокие шахты (3-8 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 39,
+        "weight": 4.5
+      },
+      "durability": {
+        "current": 48,
+        "max": 48,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_conductivity_1773589830214_0",
+          "type": "qi_conductivity",
+          "category": "qi",
+          "value": 14,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:1"
+      ],
+      "requirements": {
+        "level": 2,
+        "intelligence": 12
+      },
+      "value": 2574,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "CH_000022",
+      "name": "Улучшенный зарядник из мрамор",
+      "nameEn": "Улучшенный зарядник из мрамор",
+      "description": "Улучшенный зарядник из мрамор — зарядник из мрамор уровня 4. Качество: Улучшенный. Проводимость Ци: 20.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "refined",
+      "materialId": "marble",
+      "material": {
+        "id": "marble",
+        "name": "Мрамор",
+        "tier": 2,
+        "category": "mineral",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 15,
+          "weight": 6,
+          "hardness": 9,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Плотный мрамор из глубоких каменолен. Очень твёрдый.",
+        "rarity": 40,
+        "source": "Глубокие каменоломни (5-15 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 20,
+        "weight": 6
+      },
+      "durability": {
+        "current": 98,
+        "max": 98,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_capacity_1773589830214_0",
+          "type": "qi_capacity",
+          "category": "qi",
+          "value": 157,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_earth_1773589830214_1",
+          "type": "elemental_earth",
+          "category": "elemental",
+          "value": 29,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:2"
+      ],
+      "requirements": {
+        "level": 2,
+        "intelligence": 12
+      },
+      "value": 1716,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "CH_000023",
+      "name": "Улучшенный зарядник из шёлк",
+      "nameEn": "Улучшенный зарядник из шёлк",
+      "description": "Улучшенный зарядник из шёлк — зарядник из шёлк уровня 4. Качество: Улучшенный. Проводимость Ци: 62.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "refined",
+      "materialId": "silk",
+      "material": {
+        "id": "silk",
+        "name": "Шёлк",
+        "tier": 2,
+        "category": "organic",
+        "properties": {
+          "durability": 15,
+          "qiConductivity": 45,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 5,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от особых гусениц. Отличная проводимость Ци.",
+        "rarity": 40,
+        "source": "Шёлковые фермы"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 62,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 30,
+        "max": 30,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_fire_1773589830214_0",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 25,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:2"
+      ],
+      "requirements": {
+        "level": 2,
+        "intelligence": 12
+      },
+      "value": 5319,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "CH_000024",
+      "name": "Зарядник из мрамор",
+      "nameEn": "Зарядник из мрамор",
+      "description": "Зарядник из мрамор — зарядник из мрамор уровня 4. Качество: Обычный. Проводимость Ци: 19.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "common",
+      "materialId": "marble",
+      "material": {
+        "id": "marble",
+        "name": "Мрамор",
+        "tier": 2,
+        "category": "mineral",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 15,
+          "weight": 6,
+          "hardness": 9,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Плотный мрамор из глубоких каменолен. Очень твёрдый.",
+        "rarity": 40,
+        "source": "Глубокие каменоломни (5-15 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 19,
+        "weight": 6
+      },
+      "durability": {
+        "current": 68,
+        "max": 68,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [
+        "slots:1"
+      ],
+      "requirements": {
+        "level": 2,
+        "intelligence": 12
+      },
+      "value": 1254,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "CH_000025",
+      "name": "Улучшенный зарядник из хладное железо",
+      "nameEn": "Улучшенный зарядник из хладное железо",
+      "description": "Улучшенный зарядник из хладное железо — зарядник из хладное железо уровня 5. Качество: Улучшенный. Проводимость Ци: 62.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "refined",
+      "materialId": "cold_iron",
+      "material": {
+        "id": "cold_iron",
+        "name": "Хладное железо",
+        "tier": 3,
+        "category": "metal",
+        "properties": {
+          "durability": 65,
+          "qiConductivity": 45,
+          "weight": 3.5,
+          "hardness": 7,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "elemental_cold",
+            "value": 15,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_damage",
+            "value": 12,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Железо из холодных недр. Наносит ледяной урон.",
+        "rarity": 15,
+        "source": "Холодные глубины (200-1000 км)",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 62,
+        "weight": 3.5
+      },
+      "durability": {
+        "current": 107,
+        "max": 107,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_cold_1773589830214_0",
+          "type": "elemental_cold",
+          "category": "elemental",
+          "value": 26,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "qi_cost_reduction_1773589830214_1",
+          "type": "qi_cost_reduction",
+          "category": "qi",
+          "value": 14,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:2"
+      ],
+      "requirements": {
+        "level": 3,
+        "intelligence": 15
+      },
+      "value": 7555,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "CH_000026",
+      "name": "Улучшенный зарядник из нефрит",
+      "nameEn": "Улучшенный зарядник из нефрит",
+      "description": "Улучшенный зарядник из нефрит — зарядник из нефрит уровня 5. Качество: Улучшенный. Проводимость Ци: 118.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "refined",
+      "materialId": "jade",
+      "material": {
+        "id": "jade",
+        "name": "Нефрит",
+        "tier": 3,
+        "category": "mineral",
+        "properties": {
+          "durability": 50,
+          "qiConductivity": 85,
+          "weight": 3,
+          "hardness": 7,
+          "flexibility": 2
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_meditation_bonus",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Нефрит из глубин. Идеален для культивации и артефактов.",
+        "rarity": 10,
+        "source": "Глубинные жилы нефрита (500-2000 км)",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 118,
+        "weight": 3
+      },
+      "durability": {
+        "current": 85,
+        "max": 85,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_conductivity_1773589830214_0",
+          "type": "qi_conductivity",
+          "category": "qi",
+          "value": 24,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:2"
+      ],
+      "requirements": {
+        "level": 3,
+        "intelligence": 15
+      },
+      "value": 14380,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "CH_000027",
+      "name": "Улучшенный зарядник из духовный шёлк",
+      "nameEn": "Улучшенный зарядник из духовный шёлк",
+      "description": "Улучшенный зарядник из духовный шёлк — зарядник из духовный шёлк уровня 5. Качество: Улучшенный. Проводимость Ци: 104.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "refined",
+      "materialId": "spirit_silk",
+      "material": {
+        "id": "spirit_silk",
+        "name": "Духовный шёлк",
+        "tier": 3,
+        "category": "organic",
+        "properties": {
+          "durability": 25,
+          "qiConductivity": 75,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от духовных червей. Почти невесомый, отлично проводит Ци.",
+        "rarity": 15,
+        "source": "Духовные черви в местах силы",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 104,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 47,
+        "max": 47,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_conductivity_1773589830214_0",
+          "type": "qi_conductivity",
+          "category": "qi",
+          "value": 21,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "qi_regeneration_1773589830214_1",
+          "type": "qi_regeneration",
+          "category": "qi",
+          "value": 7,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:2"
+      ],
+      "requirements": {
+        "level": 3,
+        "intelligence": 15
+      },
+      "value": 12675,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "CH_000028",
+      "name": "Совершенный зарядник из нефрит",
+      "nameEn": "Совершенный зарядник из нефрит",
+      "description": "Совершенный зарядник из нефрит — зарядник из нефрит уровня 5. Качество: Совершенный. Проводимость Ци: 128.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "perfect",
+      "materialId": "jade",
+      "material": {
+        "id": "jade",
+        "name": "Нефрит",
+        "tier": 3,
+        "category": "mineral",
+        "properties": {
+          "durability": 50,
+          "qiConductivity": 85,
+          "weight": 3,
+          "hardness": 7,
+          "flexibility": 2
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_meditation_bonus",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Нефрит из глубин. Идеален для культивации и артефактов.",
+        "rarity": 10,
+        "source": "Глубинные жилы нефрита (500-2000 км)",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 128,
+        "weight": 3
+      },
+      "durability": {
+        "current": 135,
+        "max": 135,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_capacity_1773589830214_0",
+          "type": "qi_capacity",
+          "category": "qi",
+          "value": 236,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_earth_1773589830214_1",
+          "type": "elemental_earth",
+          "category": "elemental",
+          "value": 43,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "special_life_steal_1773589830214_2",
+          "type": "special_life_steal",
+          "category": "special",
+          "value": 10,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_cold_1773589830214_3",
+          "type": "elemental_cold",
+          "category": "elemental",
+          "value": 39,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:3"
+      ],
+      "requirements": {
+        "level": 3,
+        "intelligence": 15
+      },
+      "value": 20400,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "CH_000029",
+      "name": "Улучшенный зарядник из духовный шёлк",
+      "nameEn": "Улучшенный зарядник из духовный шёлк",
+      "description": "Улучшенный зарядник из духовный шёлк — зарядник из духовный шёлк уровня 5. Качество: Улучшенный. Проводимость Ци: 104.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "refined",
+      "materialId": "spirit_silk",
+      "material": {
+        "id": "spirit_silk",
+        "name": "Духовный шёлк",
+        "tier": 3,
+        "category": "organic",
+        "properties": {
+          "durability": 25,
+          "qiConductivity": 75,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от духовных червей. Почти невесомый, отлично проводит Ци.",
+        "rarity": 15,
+        "source": "Духовные черви в местах силы",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 104,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 47,
+        "max": 47,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_fire_1773589830214_0",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 28,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:2"
+      ],
+      "requirements": {
+        "level": 3,
+        "intelligence": 15
+      },
+      "value": 12675,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "CH_000030",
+      "name": "Зарядник из осколок кристалла ци",
+      "nameEn": "Зарядник из осколок кристалла ци",
+      "description": "Зарядник из осколок кристалла ци — зарядник из осколок кристалла ци уровня 5. Качество: Обычный. Проводимость Ци: 117.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "common",
+      "materialId": "spirit_crystal_shard",
+      "material": {
+        "id": "spirit_crystal_shard",
+        "name": "Осколок кристалла Ци",
+        "tier": 3,
+        "category": "crystal",
+        "properties": {
+          "durability": 30,
+          "qiConductivity": 90,
+          "weight": 0.5,
+          "hardness": 5,
+          "flexibility": 2
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Осколок кристалла Ци (духовного камня). Высокая проводимость.",
+        "rarity": 8,
+        "source": "Залежи кристаллов Ци",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 117,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 40,
+        "max": 40,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [
+        "slots:1"
+      ],
+      "requirements": {
+        "level": 3,
+        "intelligence": 15
+      },
+      "value": 10968,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "CH_000031",
+      "name": "Улучшенный зарядник из хладное железо",
+      "nameEn": "Улучшенный зарядник из хладное железо",
+      "description": "Улучшенный зарядник из хладное железо — зарядник из хладное железо уровня 6. Качество: Улучшенный. Проводимость Ци: 62.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "refined",
+      "materialId": "cold_iron",
+      "material": {
+        "id": "cold_iron",
+        "name": "Хладное железо",
+        "tier": 3,
+        "category": "metal",
+        "properties": {
+          "durability": 65,
+          "qiConductivity": 45,
+          "weight": 3.5,
+          "hardness": 7,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "elemental_cold",
+            "value": 15,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_damage",
+            "value": 12,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Железо из холодных недр. Наносит ледяной урон.",
+        "rarity": 15,
+        "source": "Холодные глубины (200-1000 км)",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 62,
+        "weight": 3.5
+      },
+      "durability": {
+        "current": 109,
+        "max": 109,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_cold_1773589830214_0",
+          "type": "elemental_cold",
+          "category": "elemental",
+          "value": 29,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "qi_cost_reduction_1773589830214_1",
+          "type": "qi_cost_reduction",
+          "category": "qi",
+          "value": 15,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:2"
+      ],
+      "requirements": {
+        "level": 4,
+        "intelligence": 18
+      },
+      "value": 8463,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "CH_000032",
+      "name": "Улучшенный зарядник из нефрит",
+      "nameEn": "Улучшенный зарядник из нефрит",
+      "description": "Улучшенный зарядник из нефрит — зарядник из нефрит уровня 6. Качество: Улучшенный. Проводимость Ци: 118.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "refined",
+      "materialId": "jade",
+      "material": {
+        "id": "jade",
+        "name": "Нефрит",
+        "tier": 3,
+        "category": "mineral",
+        "properties": {
+          "durability": 50,
+          "qiConductivity": 85,
+          "weight": 3,
+          "hardness": 7,
+          "flexibility": 2
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_meditation_bonus",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Нефрит из глубин. Идеален для культивации и артефактов.",
+        "rarity": 10,
+        "source": "Глубинные жилы нефрита (500-2000 км)",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 118,
+        "weight": 3
+      },
+      "durability": {
+        "current": 87,
+        "max": 87,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_conductivity_1773589830214_0",
+          "type": "qi_conductivity",
+          "category": "qi",
+          "value": 27,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:2"
+      ],
+      "requirements": {
+        "level": 4,
+        "intelligence": 18
+      },
+      "value": 16107,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "CH_000033",
+      "name": "Улучшенный зарядник из духовный шёлк",
+      "nameEn": "Улучшенный зарядник из духовный шёлк",
+      "description": "Улучшенный зарядник из духовный шёлк — зарядник из духовный шёлк уровня 6. Качество: Улучшенный. Проводимость Ци: 104.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "refined",
+      "materialId": "spirit_silk",
+      "material": {
+        "id": "spirit_silk",
+        "name": "Духовный шёлк",
+        "tier": 3,
+        "category": "organic",
+        "properties": {
+          "durability": 25,
+          "qiConductivity": 75,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от духовных червей. Почти невесомый, отлично проводит Ци.",
+        "rarity": 15,
+        "source": "Духовные черви в местах силы",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 104,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 49,
+        "max": 49,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_conductivity_1773589830214_0",
+          "type": "qi_conductivity",
+          "category": "qi",
+          "value": 24,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "qi_regeneration_1773589830214_1",
+          "type": "qi_regeneration",
+          "category": "qi",
+          "value": 8,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:2"
+      ],
+      "requirements": {
+        "level": 4,
+        "intelligence": 18
+      },
+      "value": 14196,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "CH_000034",
+      "name": "Совершенный зарядник из нефрит",
+      "nameEn": "Совершенный зарядник из нефрит",
+      "description": "Совершенный зарядник из нефрит — зарядник из нефрит уровня 6. Качество: Совершенный. Проводимость Ци: 128.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "perfect",
+      "materialId": "jade",
+      "material": {
+        "id": "jade",
+        "name": "Нефрит",
+        "tier": 3,
+        "category": "mineral",
+        "properties": {
+          "durability": 50,
+          "qiConductivity": 85,
+          "weight": 3,
+          "hardness": 7,
+          "flexibility": 2
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_meditation_bonus",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Нефрит из глубин. Идеален для культивации и артефактов.",
+        "rarity": 10,
+        "source": "Глубинные жилы нефрита (500-2000 км)",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 128,
+        "weight": 3
+      },
+      "durability": {
+        "current": 137,
+        "max": 137,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_capacity_1773589830214_0",
+          "type": "qi_capacity",
+          "category": "qi",
+          "value": 268,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_earth_1773589830214_1",
+          "type": "elemental_earth",
+          "category": "elemental",
+          "value": 48,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "special_life_steal_1773589830214_2",
+          "type": "special_life_steal",
+          "category": "special",
+          "value": 11,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_cold_1773589830214_3",
+          "type": "elemental_cold",
+          "category": "elemental",
+          "value": 43,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:3"
+      ],
+      "requirements": {
+        "level": 4,
+        "intelligence": 18
+      },
+      "value": 22846,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "CH_000035",
+      "name": "Улучшенный зарядник из духовный шёлк",
+      "nameEn": "Улучшенный зарядник из духовный шёлк",
+      "description": "Улучшенный зарядник из духовный шёлк — зарядник из духовный шёлк уровня 6. Качество: Улучшенный. Проводимость Ци: 104.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "refined",
+      "materialId": "spirit_silk",
+      "material": {
+        "id": "spirit_silk",
+        "name": "Духовный шёлк",
+        "tier": 3,
+        "category": "organic",
+        "properties": {
+          "durability": 25,
+          "qiConductivity": 75,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от духовных червей. Почти невесомый, отлично проводит Ци.",
+        "rarity": 15,
+        "source": "Духовные черви в местах силы",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 104,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 49,
+        "max": 49,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_fire_1773589830214_0",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 32,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:2"
+      ],
+      "requirements": {
+        "level": 4,
+        "intelligence": 18
+      },
+      "value": 14196,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "CH_000036",
+      "name": "Зарядник из осколок кристалла ци",
+      "nameEn": "Зарядник из осколок кристалла ци",
+      "description": "Зарядник из осколок кристалла ци — зарядник из осколок кристалла ци уровня 6. Качество: Обычный. Проводимость Ци: 117.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "common",
+      "materialId": "spirit_crystal_shard",
+      "material": {
+        "id": "spirit_crystal_shard",
+        "name": "Осколок кристалла Ци",
+        "tier": 3,
+        "category": "crystal",
+        "properties": {
+          "durability": 30,
+          "qiConductivity": 90,
+          "weight": 0.5,
+          "hardness": 5,
+          "flexibility": 2
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Осколок кристалла Ци (духовного камня). Высокая проводимость.",
+        "rarity": 8,
+        "source": "Залежи кристаллов Ци",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 117,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 42,
+        "max": 42,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [
+        "slots:1"
+      ],
+      "requirements": {
+        "level": 4,
+        "intelligence": 18
+      },
+      "value": 12283,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "CH_000037",
+      "name": "Совершенный зарядник из громовой металл",
+      "nameEn": "Совершенный зарядник из громовой металл",
+      "description": "Совершенный зарядник из громовой металл — зарядник из громовой металл уровня 7. Качество: Совершенный. Проводимость Ци: 105.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "perfect",
+      "materialId": "thunder_metal",
+      "material": {
+        "id": "thunder_metal",
+        "name": "Громовой металл",
+        "tier": 4,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 70,
+          "weight": 2.5,
+          "hardness": 9,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "elemental_lightning",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_damage",
+            "value": 25,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Металл, закалённый в грозовых бурях мест силы.",
+        "rarity": 4,
+        "source": "Грозовые места силы",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 105,
+        "weight": 2.5
+      },
+      "durability": {
+        "current": 214,
+        "max": 214,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_cold_1773589830214_0",
+          "type": "elemental_cold",
+          "category": "elemental",
+          "value": 43,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "qi_cost_reduction_1773589830214_1",
+          "type": "qi_cost_reduction",
+          "category": "qi",
+          "value": 22,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_fire_1773589830214_2",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 61,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_lightning_1773589830214_3",
+          "type": "elemental_lightning",
+          "category": "elemental",
+          "value": 58,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:3"
+      ],
+      "requirements": {
+        "level": 5,
+        "intelligence": 21
+      },
+      "value": 24900,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "CH_000038",
+      "name": "Улучшенный зарядник из пустотное дерево",
+      "nameEn": "Улучшенный зарядник из пустотное дерево",
+      "description": "Улучшенный зарядник из пустотное дерево — зарядник из пустотное дерево уровня 7. Качество: Улучшенный. Проводимость Ци: 125.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "refined",
+      "materialId": "void_wood",
+      "material": {
+        "id": "void_wood",
+        "name": "Пустотное дерево",
+        "tier": 4,
+        "category": "wood",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 90,
+          "weight": 0.3,
+          "hardness": 8,
+          "flexibility": 8
+        },
+        "bonuses": [
+          {
+            "type": "combat_crit_chance",
+            "value": 10,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_damage",
+            "value": 35,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 20,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Дерево из пустоты между мирами. Лор: \"Дерево из пустоты между мирами\".",
+        "rarity": 3,
+        "source": "Разрывы в куполе мира",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 125,
+        "weight": 0.3
+      },
+      "durability": {
+        "current": 104,
+        "max": 104,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_conductivity_1773589830214_0",
+          "type": "qi_conductivity",
+          "category": "qi",
+          "value": 30,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:2"
+      ],
+      "requirements": {
+        "level": 5,
+        "intelligence": 21
+      },
+      "value": 22668,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "CH_000039",
+      "name": "Улучшенный зарядник из громовой металл",
+      "nameEn": "Улучшенный зарядник из громовой металл",
+      "description": "Улучшенный зарядник из громовой металл — зарядник из громовой металл уровня 7. Качество: Улучшенный. Проводимость Ци: 97.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "refined",
+      "materialId": "thunder_metal",
+      "material": {
+        "id": "thunder_metal",
+        "name": "Громовой металл",
+        "tier": 4,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 70,
+          "weight": 2.5,
+          "hardness": 9,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "elemental_lightning",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_damage",
+            "value": 25,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Металл, закалённый в грозовых бурях мест силы.",
+        "rarity": 4,
+        "source": "Грозовые места силы",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 97,
+        "weight": 2.5
+      },
+      "durability": {
+        "current": 134,
+        "max": 134,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_conductivity_1773589830214_0",
+          "type": "qi_conductivity",
+          "category": "qi",
+          "value": 27,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "qi_regeneration_1773589830214_1",
+          "type": "qi_regeneration",
+          "category": "qi",
+          "value": 9,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:2"
+      ],
+      "requirements": {
+        "level": 5,
+        "intelligence": 21
+      },
+      "value": 17590,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "CH_000040",
+      "name": "Совершенный зарядник из пустотное дерево",
+      "nameEn": "Совершенный зарядник из пустотное дерево",
+      "description": "Совершенный зарядник из пустотное дерево — зарядник из пустотное дерево уровня 7. Качество: Совершенный. Проводимость Ци: 135.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "perfect",
+      "materialId": "void_wood",
+      "material": {
+        "id": "void_wood",
+        "name": "Пустотное дерево",
+        "tier": 4,
+        "category": "wood",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 90,
+          "weight": 0.3,
+          "hardness": 8,
+          "flexibility": 8
+        },
+        "bonuses": [
+          {
+            "type": "combat_crit_chance",
+            "value": 10,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_damage",
+            "value": 35,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 20,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Дерево из пустоты между мирами. Лор: \"Дерево из пустоты между мирами\".",
+        "rarity": 3,
+        "source": "Разрывы в куполе мира",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 135,
+        "weight": 0.3
+      },
+      "durability": {
+        "current": 164,
+        "max": 164,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_capacity_1773589830214_0",
+          "type": "qi_capacity",
+          "category": "qi",
+          "value": 300,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_earth_1773589830214_1",
+          "type": "elemental_earth",
+          "category": "elemental",
+          "value": 53,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "special_life_steal_1773589830214_2",
+          "type": "special_life_steal",
+          "category": "special",
+          "value": 12,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_cold_1773589830214_3",
+          "type": "elemental_cold",
+          "category": "elemental",
+          "value": 48,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:3"
+      ],
+      "requirements": {
+        "level": 5,
+        "intelligence": 21
+      },
+      "value": 32014,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "CH_000041",
+      "name": "Совершенный зарядник из громовой металл",
+      "nameEn": "Совершенный зарядник из громовой металл",
+      "description": "Совершенный зарядник из громовой металл — зарядник из громовой металл уровня 7. Качество: Совершенный. Проводимость Ци: 105.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "perfect",
+      "materialId": "thunder_metal",
+      "material": {
+        "id": "thunder_metal",
+        "name": "Громовой металл",
+        "tier": 4,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 70,
+          "weight": 2.5,
+          "hardness": 9,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "elemental_lightning",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_damage",
+            "value": 25,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Металл, закалённый в грозовых бурях мест силы.",
+        "rarity": 4,
+        "source": "Грозовые места силы",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 105,
+        "weight": 2.5
+      },
+      "durability": {
+        "current": 214,
+        "max": 214,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_fire_1773589830214_0",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 47,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "special_thorns_1773589830214_1",
+          "type": "special_thorns",
+          "category": "special",
+          "value": 16,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:3"
+      ],
+      "requirements": {
+        "level": 5,
+        "intelligence": 21
+      },
+      "value": 24900,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "CH_000042",
+      "name": "Улучшенный зарядник из духовный кристалл",
+      "nameEn": "Улучшенный зарядник из духовный кристалл",
+      "description": "Улучшенный зарядник из духовный кристалл — зарядник из духовный кристалл уровня 7. Качество: Улучшенный. Проводимость Ци: 139.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "refined",
+      "materialId": "spirit_crystal",
+      "material": {
+        "id": "spirit_crystal",
+        "name": "Духовный кристалл",
+        "tier": 4,
+        "category": "crystal",
+        "properties": {
+          "durability": 70,
+          "qiConductivity": 100,
+          "weight": 2,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 30,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_meditation_bonus",
+            "value": 40,
+            "isMultiplier": false
+          },
+          {
+            "type": "elemental_all",
+            "value": 10,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Чистый кристалл Ци. Лор: \"кристаллы Ци плотность 1024 ед/см³\".",
+        "rarity": 2,
+        "source": "Сердце мира, глубинные залежи",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 139,
+        "weight": 2
+      },
+      "durability": {
+        "current": 119,
+        "max": 119,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_lightning_1773589830214_0",
+          "type": "elemental_lightning",
+          "category": "elemental",
+          "value": 34,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:2"
+      ],
+      "requirements": {
+        "level": 5,
+        "intelligence": 21
+      },
+      "value": 25207,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "CH_000043",
+      "name": "Совершенный зарядник из громовой металл",
+      "nameEn": "Совершенный зарядник из громовой металл",
+      "description": "Совершенный зарядник из громовой металл — зарядник из громовой металл уровня 8. Качество: Совершенный. Проводимость Ци: 105.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "perfect",
+      "materialId": "thunder_metal",
+      "material": {
+        "id": "thunder_metal",
+        "name": "Громовой металл",
+        "tier": 4,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 70,
+          "weight": 2.5,
+          "hardness": 9,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "elemental_lightning",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_damage",
+            "value": 25,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Металл, закалённый в грозовых бурях мест силы.",
+        "rarity": 4,
+        "source": "Грозовые места силы",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 105,
+        "weight": 2.5
+      },
+      "durability": {
+        "current": 216,
+        "max": 216,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_cold_1773589830214_0",
+          "type": "elemental_cold",
+          "category": "elemental",
+          "value": 47,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "qi_cost_reduction_1773589830214_1",
+          "type": "qi_cost_reduction",
+          "category": "qi",
+          "value": 24,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_fire_1773589830214_2",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 67,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_lightning_1773589830214_3",
+          "type": "elemental_lightning",
+          "category": "elemental",
+          "value": 64,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:3"
+      ],
+      "requirements": {
+        "level": 6,
+        "intelligence": 24
+      },
+      "value": 27310,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "CH_000044",
+      "name": "Улучшенный зарядник из пустотное дерево",
+      "nameEn": "Улучшенный зарядник из пустотное дерево",
+      "description": "Улучшенный зарядник из пустотное дерево — зарядник из пустотное дерево уровня 8. Качество: Улучшенный. Проводимость Ци: 125.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "refined",
+      "materialId": "void_wood",
+      "material": {
+        "id": "void_wood",
+        "name": "Пустотное дерево",
+        "tier": 4,
+        "category": "wood",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 90,
+          "weight": 0.3,
+          "hardness": 8,
+          "flexibility": 8
+        },
+        "bonuses": [
+          {
+            "type": "combat_crit_chance",
+            "value": 10,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_damage",
+            "value": 35,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 20,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Дерево из пустоты между мирами. Лор: \"Дерево из пустоты между мирами\".",
+        "rarity": 3,
+        "source": "Разрывы в куполе мира",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 125,
+        "weight": 0.3
+      },
+      "durability": {
+        "current": 106,
+        "max": 106,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_conductivity_1773589830214_0",
+          "type": "qi_conductivity",
+          "category": "qi",
+          "value": 34,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:2"
+      ],
+      "requirements": {
+        "level": 6,
+        "intelligence": 24
+      },
+      "value": 24862,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "CH_000045",
+      "name": "Улучшенный зарядник из громовой металл",
+      "nameEn": "Улучшенный зарядник из громовой металл",
+      "description": "Улучшенный зарядник из громовой металл — зарядник из громовой металл уровня 8. Качество: Улучшенный. Проводимость Ци: 97.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "refined",
+      "materialId": "thunder_metal",
+      "material": {
+        "id": "thunder_metal",
+        "name": "Громовой металл",
+        "tier": 4,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 70,
+          "weight": 2.5,
+          "hardness": 9,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "elemental_lightning",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_damage",
+            "value": 25,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Металл, закалённый в грозовых бурях мест силы.",
+        "rarity": 4,
+        "source": "Грозовые места силы",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 97,
+        "weight": 2.5
+      },
+      "durability": {
+        "current": 136,
+        "max": 136,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_conductivity_1773589830214_0",
+          "type": "qi_conductivity",
+          "category": "qi",
+          "value": 30,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "qi_regeneration_1773589830214_1",
+          "type": "qi_regeneration",
+          "category": "qi",
+          "value": 10,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:2"
+      ],
+      "requirements": {
+        "level": 6,
+        "intelligence": 24
+      },
+      "value": 19293,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "CH_000046",
+      "name": "Совершенный зарядник из пустотное дерево",
+      "nameEn": "Совершенный зарядник из пустотное дерево",
+      "description": "Совершенный зарядник из пустотное дерево — зарядник из пустотное дерево уровня 8. Качество: Совершенный. Проводимость Ци: 135.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "perfect",
+      "materialId": "void_wood",
+      "material": {
+        "id": "void_wood",
+        "name": "Пустотное дерево",
+        "tier": 4,
+        "category": "wood",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 90,
+          "weight": 0.3,
+          "hardness": 8,
+          "flexibility": 8
+        },
+        "bonuses": [
+          {
+            "type": "combat_crit_chance",
+            "value": 10,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_damage",
+            "value": 35,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 20,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Дерево из пустоты между мирами. Лор: \"Дерево из пустоты между мирами\".",
+        "rarity": 3,
+        "source": "Разрывы в куполе мира",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 135,
+        "weight": 0.3
+      },
+      "durability": {
+        "current": 166,
+        "max": 166,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_capacity_1773589830214_0",
+          "type": "qi_capacity",
+          "category": "qi",
+          "value": 331,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_earth_1773589830214_1",
+          "type": "elemental_earth",
+          "category": "elemental",
+          "value": 58,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "special_life_steal_1773589830214_2",
+          "type": "special_life_steal",
+          "category": "special",
+          "value": 13,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_cold_1773589830214_3",
+          "type": "elemental_cold",
+          "category": "elemental",
+          "value": 53,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:3"
+      ],
+      "requirements": {
+        "level": 6,
+        "intelligence": 24
+      },
+      "value": 35113,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "CH_000047",
+      "name": "Совершенный зарядник из громовой металл",
+      "nameEn": "Совершенный зарядник из громовой металл",
+      "description": "Совершенный зарядник из громовой металл — зарядник из громовой металл уровня 8. Качество: Совершенный. Проводимость Ци: 105.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "perfect",
+      "materialId": "thunder_metal",
+      "material": {
+        "id": "thunder_metal",
+        "name": "Громовой металл",
+        "tier": 4,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 70,
+          "weight": 2.5,
+          "hardness": 9,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "elemental_lightning",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_damage",
+            "value": 25,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Металл, закалённый в грозовых бурях мест силы.",
+        "rarity": 4,
+        "source": "Грозовые места силы",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 105,
+        "weight": 2.5
+      },
+      "durability": {
+        "current": 216,
+        "max": 216,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_fire_1773589830214_0",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 51,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "special_thorns_1773589830214_1",
+          "type": "special_thorns",
+          "category": "special",
+          "value": 17,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:3"
+      ],
+      "requirements": {
+        "level": 6,
+        "intelligence": 24
+      },
+      "value": 27310,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "CH_000048",
+      "name": "Улучшенный зарядник из духовный кристалл",
+      "nameEn": "Улучшенный зарядник из духовный кристалл",
+      "description": "Улучшенный зарядник из духовный кристалл — зарядник из духовный кристалл уровня 8. Качество: Улучшенный. Проводимость Ци: 139.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "refined",
+      "materialId": "spirit_crystal",
+      "material": {
+        "id": "spirit_crystal",
+        "name": "Духовный кристалл",
+        "tier": 4,
+        "category": "crystal",
+        "properties": {
+          "durability": 70,
+          "qiConductivity": 100,
+          "weight": 2,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 30,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_meditation_bonus",
+            "value": 40,
+            "isMultiplier": false
+          },
+          {
+            "type": "elemental_all",
+            "value": 10,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Чистый кристалл Ци. Лор: \"кристаллы Ци плотность 1024 ед/см³\".",
+        "rarity": 2,
+        "source": "Сердце мира, глубинные залежи",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 139,
+        "weight": 2
+      },
+      "durability": {
+        "current": 121,
+        "max": 121,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_lightning_1773589830214_0",
+          "type": "elemental_lightning",
+          "category": "elemental",
+          "value": 37,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:2"
+      ],
+      "requirements": {
+        "level": 6,
+        "intelligence": 24
+      },
+      "value": 27646,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "CH_000049",
+      "name": "Совершенный зарядник из хаотичная материя",
+      "nameEn": "Совершенный зарядник из хаотичная материя",
+      "description": "Совершенный зарядник из хаотичная материя — зарядник из хаотичная материя уровня 9. Качество: Совершенный. Проводимость Ци: 181.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "perfect",
+      "materialId": "chaos_matter",
+      "material": {
+        "id": "chaos_matter",
+        "name": "Хаотичная материя",
+        "tier": 5,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 120,
+          "weight": 5,
+          "hardness": 10,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 120,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_chance",
+            "value": 20,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_damage",
+            "value": 80,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_chaos_effect",
+            "value": 100,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Нестабильная материя хаоса. Лор: \"Хаотичная Ци имеет выше энергетический потенциал\".",
+        "rarity": 0.5,
+        "source": "Древние катаклизмы, разрывы реальности",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 181,
+        "weight": 5
+      },
+      "durability": {
+        "current": 218,
+        "max": 218,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_cold_1773589830214_0",
+          "type": "elemental_cold",
+          "category": "elemental",
+          "value": 51,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "qi_cost_reduction_1773589830214_1",
+          "type": "qi_cost_reduction",
+          "category": "qi",
+          "value": 26,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_fire_1773589830214_2",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 73,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_lightning_1773589830214_3",
+          "type": "elemental_lightning",
+          "category": "elemental",
+          "value": 69,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:3"
+      ],
+      "requirements": {
+        "level": 7,
+        "intelligence": 27
+      },
+      "value": 59770,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "CH_000050",
+      "name": "Совершенный зарядник из осколок сердца мира",
+      "nameEn": "Совершенный зарядник из осколок сердца мира",
+      "description": "Совершенный зарядник из осколок сердца мира — зарядник из осколок сердца мира уровня 9. Качество: Совершенный. Проводимость Ци: 196.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "perfect",
+      "materialId": "heart_of_world_shard",
+      "material": {
+        "id": "heart_of_world_shard",
+        "name": "Осколок Сердца Мира",
+        "tier": 5,
+        "category": "crystal",
+        "properties": {
+          "durability": 120,
+          "qiConductivity": 130,
+          "weight": 0.5,
+          "hardness": 10,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 100,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_world_connection",
+            "value": 1,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_infinite_qi_pool",
+            "value": 1,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Осколок Сердца Мира. Лор: \"Сердце Мира — портал в подпространство для хранения Ци\".",
+        "rarity": 0.2,
+        "source": "Сердце Мира (глубина 5000+ км)",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 196,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 318,
+        "max": 318,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_conductivity_1773589830214_0",
+          "type": "qi_conductivity",
+          "category": "qi",
+          "value": 48,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "qi_capacity_1773589830214_1",
+          "type": "qi_capacity",
+          "category": "qi",
+          "value": 443,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_cold_1773589830214_2",
+          "type": "elemental_cold",
+          "category": "elemental",
+          "value": 69,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:3"
+      ],
+      "requirements": {
+        "level": 7,
+        "intelligence": 27
+      },
+      "value": 64723,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "CH_000051",
+      "name": "Совершенный зарядник из хаотичная материя",
+      "nameEn": "Совершенный зарядник из хаотичная материя",
+      "description": "Совершенный зарядник из хаотичная материя — зарядник из хаотичная материя уровня 9. Качество: Совершенный. Проводимость Ци: 181.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "perfect",
+      "materialId": "chaos_matter",
+      "material": {
+        "id": "chaos_matter",
+        "name": "Хаотичная материя",
+        "tier": 5,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 120,
+          "weight": 5,
+          "hardness": 10,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 120,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_chance",
+            "value": 20,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_damage",
+            "value": 80,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_chaos_effect",
+            "value": 100,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Нестабильная материя хаоса. Лор: \"Хаотичная Ци имеет выше энергетический потенциал\".",
+        "rarity": 0.5,
+        "source": "Древние катаклизмы, разрывы реальности",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 181,
+        "weight": 5
+      },
+      "durability": {
+        "current": 218,
+        "max": 218,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_conductivity_1773589830214_0",
+          "type": "qi_conductivity",
+          "category": "qi",
+          "value": 43,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "qi_regeneration_1773589830214_1",
+          "type": "qi_regeneration",
+          "category": "qi",
+          "value": 15,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "qi_capacity_1773589830214_2",
+          "type": "qi_capacity",
+          "category": "qi",
+          "value": 429,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "qi_cost_reduction_1773589830214_3",
+          "type": "qi_cost_reduction",
+          "category": "qi",
+          "value": 23,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:3"
+      ],
+      "requirements": {
+        "level": 7,
+        "intelligence": 27
+      },
+      "value": 59770,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "CH_000052",
+      "name": "Превосходящий зарядник из осколок сердца мира",
+      "nameEn": "Превосходящий зарядник из осколок сердца мира",
+      "description": "Превосходящий зарядник из осколок сердца мира — зарядник из осколок сердца мира уровня 9. Качество: Превосходящий. Проводимость Ци: 227.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "transcendent",
+      "materialId": "heart_of_world_shard",
+      "material": {
+        "id": "heart_of_world_shard",
+        "name": "Осколок Сердца Мира",
+        "tier": 5,
+        "category": "crystal",
+        "properties": {
+          "durability": 120,
+          "qiConductivity": 130,
+          "weight": 0.5,
+          "hardness": 10,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 100,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_world_connection",
+            "value": 1,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_infinite_qi_pool",
+            "value": 1,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Осколок Сердца Мира. Лор: \"Сердце Мира — портал в подпространство для хранения Ци\".",
+        "rarity": 0.2,
+        "source": "Сердце Мира (глубина 5000+ км)",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 227,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 498,
+        "max": 498,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "qi_capacity_1773589830214_0",
+          "type": "qi_capacity",
+          "category": "qi",
+          "value": 534,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_earth_1773589830214_1",
+          "type": "elemental_earth",
+          "category": "elemental",
+          "value": 94,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "special_life_steal_1773589830214_2",
+          "type": "special_life_steal",
+          "category": "special",
+          "value": 21,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "elemental_cold_1773589830214_3",
+          "type": "elemental_cold",
+          "category": "elemental",
+          "value": 85,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "special_thorns_1773589830214_4",
+          "type": "special_thorns",
+          "category": "special",
+          "value": 32,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "qi_conductivity_1773589830214_5",
+          "type": "qi_conductivity",
+          "category": "qi",
+          "value": 57,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:4"
+      ],
+      "requirements": {
+        "level": 7,
+        "intelligence": 27
+      },
+      "value": 110236,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "legendary"
+    },
+    {
+      "id": "CH_000053",
+      "name": "Совершенный зарядник из хаотичная материя",
+      "nameEn": "Совершенный зарядник из хаотичная материя",
+      "description": "Совершенный зарядник из хаотичная материя — зарядник из хаотичная материя уровня 9. Качество: Совершенный. Проводимость Ци: 181.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "perfect",
+      "materialId": "chaos_matter",
+      "material": {
+        "id": "chaos_matter",
+        "name": "Хаотичная материя",
+        "tier": 5,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 120,
+          "weight": 5,
+          "hardness": 10,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 120,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_chance",
+            "value": 20,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_damage",
+            "value": 80,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_chaos_effect",
+            "value": 100,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Нестабильная материя хаоса. Лор: \"Хаотичная Ци имеет выше энергетический потенциал\".",
+        "rarity": 0.5,
+        "source": "Древние катаклизмы, разрывы реальности",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 181,
+        "weight": 5
+      },
+      "durability": {
+        "current": 218,
+        "max": 218,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_fire_1773589830214_0",
+          "type": "elemental_fire",
+          "category": "elemental",
+          "value": 56,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "special_thorns_1773589830214_1",
+          "type": "special_thorns",
+          "category": "special",
+          "value": 19,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:3"
+      ],
+      "requirements": {
+        "level": 7,
+        "intelligence": 27
+      },
+      "value": 59770,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "CH_000054",
+      "name": "Улучшенный зарядник из осколок сердца мира",
+      "nameEn": "Улучшенный зарядник из осколок сердца мира",
+      "description": "Улучшенный зарядник из осколок сердца мира — зарядник из осколок сердца мира уровня 9. Качество: Улучшенный. Проводимость Ци: 180.",
+      "type": "charger",
+      "category": "charger",
+      "grade": "refined",
+      "materialId": "heart_of_world_shard",
+      "material": {
+        "id": "heart_of_world_shard",
+        "name": "Осколок Сердца Мира",
+        "tier": 5,
+        "category": "crystal",
+        "properties": {
+          "durability": 120,
+          "qiConductivity": 130,
+          "weight": 0.5,
+          "hardness": 10,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 100,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_world_connection",
+            "value": 1,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_infinite_qi_pool",
+            "value": 1,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Осколок Сердца Мира. Лор: \"Сердце Мира — портал в подпространство для хранения Ци\".",
+        "rarity": 0.2,
+        "source": "Сердце Мира (глубина 5000+ км)",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 180,
+        "weight": 0.5
+      },
+      "durability": {
+        "current": 198,
+        "max": 198,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "elemental_lightning_1773589830214_0",
+          "type": "elemental_lightning",
+          "category": "elemental",
+          "value": 41,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [
+        "slots:2"
+      ],
+      "requirements": {
+        "level": 7,
+        "intelligence": 27
+      },
+      "value": 45453,
+      "icon": "⚡",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    }
+  ]
+}

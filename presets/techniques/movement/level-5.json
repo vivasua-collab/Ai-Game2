@@ -1,0 +1,114 @@
+{
+  "version": "2.0",
+  "count": 2,
+  "techniques": [
+    {
+      "id": "MV000003",
+      "name": "Каменный Прыжок",
+      "nameEn": "Каменный Прыжок",
+      "description": "Каменный Прыжок — техника movement элемента earth уровня 5. Grade: refined. Урон: 768. Дальность: 5м.",
+      "type": "movement",
+      "element": "earth",
+      "level": 5,
+      "grade": "refined",
+      "qiCost": 640,
+      "baseQiCost": 640,
+      "baseDamage": 640,
+      "baseRange": 5,
+      "baseCapacity": 40,
+      "computed": {
+        "finalDamage": 768,
+        "finalQiCost": 640,
+        "finalRange": 5,
+        "formula": "640 × 1.2 = 768",
+        "activeEffects": [
+          {
+            "type": "speed",
+            "value": 0
+          },
+          {
+            "type": "buff",
+            "value": 20,
+            "duration": 4
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "speed": true,
+          "buff": true
+        },
+        "effectValues": {
+          "speedBonus": 44,
+          "buffType": "damage_percent",
+          "buffAmount": 20,
+          "buffDuration": 4
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "agility": 17
+      },
+      "meta": {
+        "seed": 1774114254487,
+        "template": "movement_base_earth",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 4
+      }
+    },
+    {
+      "id": "MV000004",
+      "name": "Шаг невидимый",
+      "nameEn": "Шаг Невидимый",
+      "description": "Шаг невидимый — техника movement элемента air уровня 5. Grade: common. Урон: 640. Дальность: 5м.",
+      "type": "movement",
+      "element": "air",
+      "level": 5,
+      "grade": "common",
+      "qiCost": 640,
+      "baseQiCost": 640,
+      "baseDamage": 640,
+      "baseRange": 5,
+      "baseCapacity": 40,
+      "computed": {
+        "finalDamage": 640,
+        "finalQiCost": 640,
+        "finalRange": 5,
+        "formula": "640 × 1 = 640",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "agility": 15
+      },
+      "meta": {
+        "seed": 1774114254488,
+        "template": "movement_base_air",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 4
+      }
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "version": "2.0",
+  "count": 2,
+  "techniques": [
+    {
+      "id": "PN000003",
+      "name": "Токсичный Токсин",
+      "nameEn": "Токсичный Токсин",
+      "description": "Токсичный Токсин — техника poison элемента poison уровня 7. Grade: common. Урон: 2560. Дальность: 5м.",
+      "type": "poison",
+      "element": "poison",
+      "level": 7,
+      "grade": "common",
+      "qiCost": 2560,
+      "baseQiCost": 2560,
+      "baseDamage": 2560,
+      "baseRange": 5,
+      "baseCapacity": 40,
+      "computed": {
+        "finalDamage": 2560,
+        "finalQiCost": 2560,
+        "finalRange": 5,
+        "formula": "2560 × 1 = 2560",
+        "activeEffects": [
+          {
+            "type": "poison",
+            "value": 17,
+            "duration": 5
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "poison": true
+        },
+        "effectValues": {
+          "poisonDamage": 17,
+          "poisonDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 6,
+      "minLevel": 6,
+      "maxLevel": 8,
+      "fatigueCost": {
+        "physical": 3,
+        "mental": 2
+      },
+      "meta": {
+        "seed": 1774114254503,
+        "template": "poison_base_poison",
+        "generatedAt": "2026-03-21T17:30:54.391Z",
+        "generatorVersion": "4.0.0",
+        "tier": 3
+      }
+    },
+    {
+      "id": "PN000004",
+      "name": "Губитель отравляющий",
+      "nameEn": "Губитель Отравляющий",
+      "description": "Губитель отравляющий — техника poison элемента poison уровня 7. Grade: common. Урон: 2560. Дальность: 5м.",
+      "type": "poison",
+      "element": "poison",
+      "level": 7,
+      "grade": "common",
+      "qiCost": 2560,
+      "baseQiCost": 2560,
+      "baseDamage": 2560,
+      "baseRange": 5,
+      "baseCapacity": 40,
+      "computed": {
+        "finalDamage": 2560,
+        "finalQiCost": 2560,
+        "finalRange": 5,
+        "formula": "2560 × 1 = 2560",
+        "activeEffects": [
+          {
+            "type": "slow",
+            "value": 38,
+            "duration": 1
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "slow": true
+        },
+        "effectValues": {
+          "slowPercent": 38,
+          "slowDuration": 1
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 6,
+      "minLevel": 6,
+      "maxLevel": 8,
+      "fatigueCost": {
+        "physical": 3,
+        "mental": 2
+      },
+      "meta": {
+        "seed": 1774114254504,
+        "template": "poison_base_poison",
+        "generatedAt": "2026-03-21T17:30:54.391Z",
+        "generatorVersion": "4.0.0",
+        "tier": 3
+      }
+    }
+  ]
+}
