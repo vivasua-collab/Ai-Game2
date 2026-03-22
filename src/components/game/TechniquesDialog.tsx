@@ -35,6 +35,7 @@ import { TechniqueDetailDialog } from '@/components/technique/TechniqueDetailDia
 import type { TechniqueGrade } from '@/types/grade';
 import { FormationCoresTab } from '@/components/formation/FormationCoresTab';
 import { LevelSuppressionIndicator } from '@/components/game/LevelSuppressionIndicator';
+import { calculateDrainParams } from '@/lib/formations/formation-constants';
 
 interface TechniquesDialogProps {
   open: boolean;
@@ -92,6 +93,8 @@ function FormationEffectsDisplay({ technique }: { technique: Technique }) {
     setupTime?: number;
     duration?: number;
     difficulty?: number;
+    size?: string;
+    isHeavy?: boolean;
   } = {};
   
   try {
@@ -109,9 +112,14 @@ function FormationEffectsDisplay({ technique }: { technique: Technique }) {
   const formationEffects = effectsData.formationEffects || {};
   const duration = effectsData.duration || 8;
   const setupTime = effectsData.setupTime || 15;
+  const size = (effectsData.size || 'medium') as 'small' | 'medium' | 'large' | 'great' | 'heavy';
+  const isHeavy = effectsData.isHeavy || false;
   
   // Поддержка старого поля interruptionReduction
   const unnoticeability = formationEffects.unnoticeability ?? formationEffects.interruptionReduction ?? 0;
+  
+  // Расчёт утечки Ци
+  const drainPerHour = calculateDrainParams(technique.level, size, isHeavy).drainPerHour;
   
   return (
     <div className="bg-slate-700/50 rounded-lg p-3 space-y-2">
@@ -127,6 +135,19 @@ function FormationEffectsDisplay({ technique }: { technique: Technique }) {
         <span className="text-slate-400">Длительность:</span>
         <span className="text-white">{duration === 0 ? 'Постоянная' : `${duration} ч`}</span>
       </div>
+      
+      {/* Утечка Ци */}
+      <div className="flex justify-between text-sm pt-1 border-t border-slate-600">
+        <span className="text-slate-400">💧 Утечка Ци:</span>
+        <span className="text-cyan-400">{drainPerHour} Ци/час</span>
+      </div>
+      
+      {isHeavy && (
+        <div className="flex justify-between text-sm">
+          <span className="text-slate-400">⚙️ Тип:</span>
+          <span className="text-amber-400">Тяжёлая формация</span>
+        </div>
+      )}
       
       {/* Разделитель эффектов */}
       {unnoticeability > 0 && (

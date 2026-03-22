@@ -1,8 +1,25 @@
 # 🎲 Генераторы системы
 
-**Дата обновления:** 2026-03-22
-**Версия:** 6.0
+**Дата обновления:** 2026-03-22 17:30 UTC
+**Версия:** 6.1
 **Статус:** ✅ Все генераторы работают на V2
+
+---
+
+## 📊 Статус генераторов
+
+| Генератор | Версия | Статус | Описание |
+|-----------|--------|--------|----------|
+| `technique-generator.ts` | V1 | ⚠️ @deprecated | Использовать technique-generator-v2.ts |
+| `technique-generator-v2.ts` | V2 | ✅ Актуальный | Основной генератор техник (5.0.0) |
+| `formation-generator.ts` | V1 | ✅ Актуальный | Боевые формации (defensive, offensive, support, special) |
+| `formation-core-generator.ts` | V1 | ✅ Актуальный | Медитативные формации (диски, алтари) |
+| `equipment-generator.ts` | V2 | ✅ Актуальный | Bridge к equipment-generator-v2.ts |
+| `equipment-generator-v2.ts` | V2 | ✅ Актуальный | Основной генератор экипировки |
+| `consumable-generator.ts` | V1 | ✅ Актуальный | Расходники (таблетки, эликсиры) |
+| `npc-generator.ts` | V2.1 | ✅ Актуальный | Генерация базовых NPC |
+| `npc-full-generator.ts` | V2 | ✅ Актуальный | Полная генерация NPC (оркестратор) |
+| `technique-compat.ts` | V1↔V2 | ✅ Актуальный | Совместимость V1↔V2 |
 
 ---
 

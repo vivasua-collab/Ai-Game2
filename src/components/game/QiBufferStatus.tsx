@@ -32,19 +32,28 @@ export function QiBufferStatus({
   
   if (!character) return null;
   
-  const { currentQi, maxQi } = character;
+  // coreCapacity = максимальная ёмкость ядра Ци
+  const { currentQi, coreCapacity } = character;
+  const maxQi = coreCapacity; // Алиас для читаемости
   
   // 90% доступно для защиты (или 100% со щит-техникой)
   const absorptionPercent = hasShieldTechnique ? 1.0 : 0.9;
   const bufferQi = Math.floor(currentQi * absorptionPercent);
   const qiPercent = maxQi > 0 ? (bufferQi / maxQi) * 100 : 0;
   
-  // Цвет по заполненности
-  const getColor = () => {
+  // Цвет по заполненности буфера
+  const getProgressColor = () => {
     if (qiPercent >= 70) return 'bg-cyan-500';
     if (qiPercent >= 40) return 'bg-cyan-400';
     if (qiPercent >= 20) return 'bg-amber-500';
     return 'bg-red-500';
+  };
+  
+  const getTextColor = () => {
+    if (qiPercent >= 70) return 'text-cyan-400';
+    if (qiPercent >= 40) return 'text-cyan-300';
+    if (qiPercent >= 20) return 'text-amber-400';
+    return 'text-red-400';
   };
   
   if (compact) {
@@ -75,11 +84,11 @@ export function QiBufferStatus({
         </span>
       </div>
       
-      <Progress value={qiPercent} className={`h-2 ${getColor()}`} />
+      <Progress value={qiPercent} className="h-2" />
       
-      <div className="flex justify-between text-xs text-slate-500 mt-2">
-        <span>Доступно: {bufferQi.toLocaleString()} Ци</span>
-        <span>Макс: {maxQi.toLocaleString()} Ци</span>
+      <div className="flex justify-between text-xs mt-2">
+        <span className={getTextColor()}>Доступно: {bufferQi.toLocaleString()} Ци</span>
+        <span className="text-slate-500">Макс: {maxQi.toLocaleString()} Ци</span>
       </div>
       
       {hasShieldTechnique && shieldQi && shieldQi > 0 && (
