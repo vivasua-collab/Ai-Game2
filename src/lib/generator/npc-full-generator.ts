@@ -18,12 +18,22 @@ import {
   type NPCGenerationContext,
   seededRandom,
 } from './npc-generator';
+// V2 Generator (актуальный)
 import {
-  generateTechnique,
-  type GeneratedTechnique,
+  generateTechniqueV2,
+  type GeneratedTechniqueV2,
   type TechniqueType,
-  type Element,
-} from './technique-generator';
+  type TechniqueElement,
+} from './technique-generator-v2';
+
+// Совместимость V1 ↔ V2
+import { v2ToV1 } from './technique-compat';
+
+// Тип для совместимости с TempNPC
+import type { GeneratedTechnique } from './technique-generator';
+
+// Алиас для совместимости
+type Element = TechniqueElement;
 import {
   generateFormation,
   type GeneratedFormation,
@@ -181,14 +191,18 @@ export function generateFullNPC(
         const prefix = getPrefixForTechniqueType(type, 'melee_strike');
         const id = `${prefix}_${(techniqueCounter++).toString().padStart(6, '0')}`;
         
-        const technique = generateTechnique(
+        // V2: Генерируем технику через новый генератор
+        const techniqueV2 = generateTechniqueV2({
           id,
           type,
           element,
-          baseNPC.cultivation.level,
-          seed + i * 1000
-        );
+          level: baseNPC.cultivation.level,
+          seed: seed + i * 1000,
+          combatSubtype: type === 'combat' ? 'melee_strike' : undefined,
+        });
         
+        // Конвертируем V2 → V1 для совместимости с TempNPC.techniqueData
+        const technique = v2ToV1(techniqueV2);
         techniques.push(technique);
       } catch (e) {
         errors.push(`Failed to generate technique ${i}: ${e}`);

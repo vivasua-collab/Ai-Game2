@@ -1,7 +1,8 @@
 # 🎲 Генераторы системы
 
-**Дата обновления:** 2026-03-21
-**Версия:** 5.0
+**Дата обновления:** 2026-03-22
+**Версия:** 6.0
+**Статус:** ✅ Все генераторы работают на V2
 
 ---
 
@@ -21,6 +22,7 @@
 │ /api/generator/npc-full    → npc-full-generator.ts              │
 │ /api/generator/formations  → formation-generator.ts             │
 │ /api/generator/items       → preset-storage.ts                  │
+│ /api/formations/cores      → formation-core-generator.ts        │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
@@ -30,8 +32,10 @@
 │ equipment-generator-v2.ts ───┼──→ base-item-generator.ts        │
 │ npc-generator.ts ────────────┤    (seededRandom, Rarity)        │
 │ formation-generator.ts ──────┘                                   │
-│ consumable-generator.ts                                          │
-│ qi-stone-generator.ts                                            │
+│ consumable-generator.ts ────────────────────────────────────────│
+│ formation-core-generator.ts ────────────────────────────────────│
+│ qi-stone-generator.ts ──────────────────────────────────────────│
+│ technique-compat.ts ──────── V1↔V2 совместимость                │
 └─────────────────────────────────────────────────────────────────┘
                               ↓
 ┌─────────────────────────────────────────────────────────────────┐
@@ -58,7 +62,7 @@
 **Endpoint:** `/api/generator/techniques`
 **Файл:** `src/lib/generator/technique-generator-v2.ts`
 **Конфиг:** `src/lib/generator/technique-generator-config-v2.ts`
-**Версия:** 5.0.0 (требуется обновление с 4.0.0)
+**Версия:** 5.0.0
 
 ### Ключевые принципы V2
 
@@ -88,6 +92,7 @@
 │  СЛОЙ 3: БОНУСЫ                                                  │
 │  ├── Сила эффекта от Grade (0% ~ 150%)                          │
 │  ├── Эффект от стихии (по типу техники)                         │
+│  ├── isUltimate (5% шанс для transcendent)                      │
 │  └── Transcendent-эффект (только для Transcendent)              │
 │                                                                  │
 │  ИТОГ: finalDamage = capacity × gradeMult                       │
@@ -104,6 +109,27 @@
 | `specDamageMult` для подтипов | УБРАТЬ из формулы урона |
 | Эффекты в ходах | Эффекты в тиках |
 
+### Ultimate-техники (NEW!)
+
+```typescript
+// 5% шанс для transcendent техник
+const ULTIMATE_CHANCE_BY_GRADE = {
+  common: 0,
+  refined: 0,
+  perfect: 0,
+  transcendent: 0.05,
+};
+
+// Множители
+const ULTIMATE_DAMAGE_MULTIPLIER = 1.3;
+const ULTIMATE_QI_COST_MULTIPLIER = 1.5;
+
+// Маркер в названии
+if (isUltimate) {
+  name = `⚡ ${name}`;
+}
+```
+
 ### Входные параметры
 
 | Параметр | Тип | По умолчанию | Описание |
@@ -118,72 +144,6 @@
 | `combatSubtype` | `CombatSubtype` | — | Подтип боя |
 | `elements` | `TechniqueElement[]` | все | Элементы (7 стихий) |
 | `seed` | `number` | Date.now() | Seed генерации |
-
-### Структура результата (GeneratedTechniqueV2)
-
-```typescript
-interface GeneratedTechniqueV2 {
-  id: string;
-  name: string;
-  nameEn: string;
-  description: string;
-  type: TechniqueType;
-  subtype?: CombatSubtype | DefenseSubtype | CurseSubtype | PoisonSubtype;
-  element: TechniqueElement;  // 7 стихий
-  level: number;
-  grade: TechniqueGrade;
-
-  // Базовые параметры (Слой 1)
-  baseQiCost: number;
-  baseDamage: number;      // = qiCost (для справки)
-  baseRange: number;
-  baseCapacity: number | null;
-
-  // Вычисленные параметры
-  computed: {
-    capacity: number;      // Ёмкость техники
-    finalDamage: number;   // capacity × gradeMult
-    finalQiCost: number;   // = baseQiCost (×1.0)
-    finalRange: number;
-    formula: string;       // Формула для UI
-    activeEffects: Array<{ 
-      type: string; 
-      value: number; 
-      duration?: number;   // В ТИКАХ!
-    }>;
-    elementBonus?: {       // Бонус от стихии
-      type: string;
-      value: number;
-    };
-    transcendentBonus?: {  // Transcendent-эффект
-      type: string;
-      value: number;
-    };
-  };
-
-  // Модификаторы
-  modifiers: TechniqueModifiersV2;
-
-  // Требования
-  minCultivationLevel: number;
-  maxCultivationLevel: number;  // = level практики (резонанс)
-  statRequirements?: {
-    strength?: number;
-    agility?: number;
-    intelligence?: number;
-    conductivity?: number;
-  };
-
-  // Метаданные
-  meta: {
-    seed: number;
-    template: string;
-    generatedAt: string;
-    generatorVersion: string;  // "5.0.0"
-    tier: EffectTier;
-  };
-}
-```
 
 ### Формула урона (ПРАВИЛЬНАЯ)
 
@@ -231,7 +191,7 @@ finalDamage = 1024 × 1.4 = 1433 урона
 | 4 | support, movement, sensory | Баффы и утилити |
 | 5 | cultivation | Специальные эффекты |
 
-### Система стихий (7 элементов)
+### Система стихий (7 elements)
 
 | Стихия | Emoji | Характер |
 |--------|-------|----------|
@@ -244,6 +204,31 @@ finalDamage = 1024 × 1.4 = 1433 урона
 | Нейтральный | ⚪ | Чистый Ци |
 
 > **Камни Ци НЕ имеют стихийного окраса.**
+
+---
+
+## 🔄 Совместимость V1 ↔ V2
+
+**Файл:** `src/lib/generator/technique-compat.ts`
+
+### Конвертер V2 → V1
+
+```typescript
+import { v2ToV1, GRADE_TO_RARITY, RARITY_TO_GRADE } from './technique-compat';
+
+// Конвертация V2 техники в V1 формат для TempNPC.techniqueData
+const techniqueV2 = generateTechniqueV2({ ... });
+const techniqueV1 = v2ToV1(techniqueV2);
+```
+
+### Маппинг Grade ↔ Rarity
+
+| Grade (V2) | Rarity (V1) |
+|------------|-------------|
+| common | common |
+| refined | uncommon |
+| perfect | rare |
+| transcendent | legendary |
 
 ---
 
@@ -271,6 +256,39 @@ EffectiveStats = Base × MaterialProperties × GradeMultipliers
 
 ---
 
+## 🧪 Генератор расходников
+
+**Файл:** `src/lib/generator/consumable-generator.ts`
+**Версия:** 1.0
+
+### Назначение
+Процедурная генерация расходников: таблетки, эликсиры, еда, свитки.
+
+### Префикс ID
+`CS` (CS_000001, CS_000002, ...)
+
+### Типы расходников
+
+| Тип | Название | Стек | Эффекты |
+|-----|----------|------|---------|
+| pill | Таблетки | 20 | heal_hp, heal_stamina, buff_stat |
+| elixir | Эликсиры | 10 | buff_stat, buff_resistance, cure |
+| food | Еда | 50 | heal_hp, heal_stamina |
+| scroll | Свитки | 5 | special, cure, buff_stat |
+
+### Интеграция с NPC
+
+```typescript
+// equipment-generator.ts использует consumable-generator
+function generateHealingPill(level, rng): TempItem {
+  return convertConsumableToTempItem(
+    generateConsumable({ type: 'pill', effectType: 'heal_hp', level })
+  );
+}
+```
+
+---
+
 ## 👥 Генератор NPC (V2.1)
 
 **Endpoint:** `/api/generator/npc`
@@ -288,6 +306,70 @@ coreVolume = baseVolume * qiDensity;
 // Качество ядра
 coreQuality = Math.floor(meridianConductivity * 10) / 10;
 ```
+
+### Материалы тела (NEW!)
+
+| Материал | Снижение урона | Примеры |
+|----------|----------------|---------|
+| organic | 0% | Люди, эльфы |
+| scaled | 10% | Драконы, змеи |
+| chitin | 20% | Пауки, скорпионы |
+| ethereal | 70% | Призраки, духи |
+| mineral | 50% | Големы |
+| chaos | 30% | Хаотические существа |
+
+---
+
+## 🎭 Генератор полных NPC (V2 Migrated)
+
+**Endpoint:** `/api/generator/npc-full`
+**Файл:** `src/lib/generator/npc-full-generator.ts`
+**Версия:** 1.1 (Migrated to V2)
+
+### Миграция на V2 ✅
+
+```typescript
+// Было (V1):
+import { generateTechnique } from './technique-generator';
+
+// Стало (V2):
+import { generateTechniqueV2 } from './technique-generator-v2';
+import { v2ToV1 } from './technique-compat';
+
+// Генерация
+const techniqueV2 = generateTechniqueV2({
+  id, type, element, level, seed, combatSubtype
+});
+const technique = v2ToV1(techniqueV2); // для TempNPC.techniqueData
+```
+
+### Генерация компонентов
+
+| Компонент | Функция | Статус |
+|-----------|---------|--------|
+| Техники | `generateTechniqueV2()` | ✅ V2 |
+| Формации | `generateFormation()` | ✅ V1 (боевые) |
+| Экипировка | `generateFullEquipmentForNPC()` | ✅ V2 |
+| Инвентарь | `generateInventoryForNPC()` | ✅ Работает |
+| Расходники | `generateConsumable()` | ✅ Работает |
+
+---
+
+## 🏛️ Генераторы формаций
+
+### Боевые формации
+
+**Файл:** `src/lib/generator/formation-generator.ts`
+
+Типы: defensive, offensive, support, special
+
+### Медитативные формации (ядра)
+
+**Файл:** `src/lib/formations/formation-core-generator.ts`
+
+Типы ядер:
+- **Диски** (L1-L6): stone, jade, iron, spirit_iron
+- **Алтари** (L5-L9): jade, crystal, spirit_crystal, dragon_bone
 
 ---
 
@@ -339,6 +421,13 @@ presets/
 ### NPC
 - `GET /api/generator/npc?action=stats` — статистика
 - `POST /api/generator/npc` — генерация
+- `POST /api/generator/npc-full` — полная генерация
+
+### Формации
+- `GET /api/formations` — список формаций сессии
+- `POST /api/formations` — создание формации
+- `GET /api/formations/cores` — список ядер
+- `POST /api/formations/cores` — генерация ядра
 
 ---
 
@@ -359,9 +448,11 @@ presets/
 - [matryoshka-architecture.md](./matryoshka-architecture.md) — архитектура "Матрёшка"
 - [equip-v2.md](./equip-v2.md) — экипировка с Grade System
 - [generator-specs.md](./generator-specs.md) — спецификации генераторов
+- [checkpoints/checkpoint_03_22_Generator_Migration.md](./checkpoints/checkpoint_03_22_Generator_Migration.md) — Миграция V1→V2
 
 ---
 
-*Обновлено: 2026-03-21*
-*Версия генератора техник: 5.0.0 (требуется обновление)*
+*Обновлено: 2026-03-22 15:40 UTC*
+*Версия генератора техник: 5.0.0*
 *Ключевая формула: finalDamage = capacity × gradeMult*
+*Миграция V1→V2: ✅ Завершена*

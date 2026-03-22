@@ -175,3 +175,68 @@ Stage Summary:
   3. bodyMaterial не влияет на урон NPC
 - Generators.md v2.0 готов к реализации
 - План корректировки: P1 (technique + npc generator), P2 (combat integration)
+
+---
+Task ID: 7
+Agent: Main Agent
+Task: Аудит и миграция генераторов V1 → V2 согласно checkpoint_03_22_Generator_Migration.md
+
+Work Log:
+- Прочитан checkpoint_03_22_Generator_Migration.md v1.0
+- Проведён аудит реального состояния кода vs документация
+- Обнаружены расхождения:
+  - P2 "Нет инвентаря у NPC" — НЕВЕРНО! Инвентарь УЖЕ генерируется через generateFullEquipmentForNPC()
+  - generateFullEquipmentForNPC() УЖЕ вызывает generateInventoryForNPC() и addInventoryToNPC()
+  - equipment-generator-v2.ts УЖЕ существует и работает
+  - consumable-generator.ts УЖЕ существует и работает
+- Создан technique-compat.ts — утилиты совместимости V1 ↔ V2
+- Мигрирован npc-full-generator.ts:
+  - Заменён импорт generateTechnique (V1) на generateTechniqueV2
+  - Добавлена конвертация v2ToV1 для совместимости с TempNPC.techniqueData
+  - generateTechniqueV2 вызывается с корректными параметрами
+- Обновлён checkpoint_03_22_Generator_Migration.md до v1.2
+- Lint: 0 ошибок, 3 warnings (предсуществующие)
+
+Stage Summary:
+- Ключевые файлы созданы/изменены:
+  - src/lib/generator/technique-compat.ts — НОВЫЙ файл
+  - src/lib/generator/npc-full-generator.ts — миграция на V2
+  - docs/checkpoints/checkpoint_03_22_Generator_Migration.md — обновлён
+- P1 "V1 generateTechnique в NPC оркестраторе": ✅ ИСПРАВЛЕНО
+- P2 "Нет инвентаря у NPC": ✅ УЖЕ РАБОТАЛО
+- NPC теперь генерируются с V2 техниками (qiCost = baseCapacity × 2^(level-1))
+- Phase 1-2 миграции завершены, Phase 3-5 в ожидании
+
+---
+Task ID: 8
+Agent: Main Agent
+Task: Обновление generator-specs.md и интеграция consumable-generator
+
+Work Log:
+- Прочитан docs/generator-specs.md v3.0
+- Прочитан consumable-generator.ts — полностью рабочий генератор
+- Проверена интеграция:
+  - equipment-generator.ts использует generateConsumable() для NPC инвентаря
+  - ConsumableGeneratorPanel.tsx — UI панель существует и работает
+  - API /api/generator/items/route.ts — сохранение/загрузка предметов
+- Обновлён docs/generator-specs.md до v4.0:
+  - Добавлена секция 5️⃣ consumable-generator.ts с полной документацией
+  - Добавлена карта интеграции генераторов (NPC GENERATION PIPELINE)
+  - Обновлена сводная таблица со всеми генераторами
+  - Добавлена секция API Endpoints
+- Добавлена автогенерация расходников в generated-objects-loader.ts:
+  - loadObjects('consumables') теперь вызывает autoGenerateConsumables() если файлов нет
+  - Генерирует 10 расходников каждого типа (pill, elixir, food, scroll)
+  - Сохраняет в presets/items/consumable.json
+- Lint: 0 ошибок, 3 warnings (предсуществующие)
+
+Stage Summary:
+- Ключевые файлы:
+  - docs/generator-specs.md — обновлён до v4.0
+  - src/lib/generator/generated-objects-loader.ts — добавлена автогенерация
+- consumable-generator.ts УЖЕ работает и используется:
+  - NPC инвентарь: generateHealingPill/Elixir/Food()
+  - UI: ConsumableGeneratorPanel
+  - API: /api/generator/items
+- Автогенерация расходников работает при отсутствии файлов
+- P3 "Нет расходников в presets/" решён

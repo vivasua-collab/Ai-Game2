@@ -1,10 +1,20 @@
 # NPC в игровой сессии - Схема интеграции
 
-**Версия:** 2.0 | **Дата:** 2026-03-13
+**Версия:** 2.1 | **Дата:** 2026-03-22 15:40 UTC | **Статус:** ✅ Реализовано
 
 ---
 
-## 🆕 Обновления v2.0
+## 🆕 Обновления v2.1 (2026-03-22)
+
+- ✅ **V2 Generator Migration** — npc-full-generator использует V2 техники
+- ✅ **technique-compat.ts** — конвертер V2→V1 для TempNPC.techniqueData
+- ✅ **Material/Morphology** — bodyMaterial и morphology в TempBodyState
+- ✅ **Material Damage Reduction** — интегрировано в Event Bus combat handler
+- ✅ **Level Suppression** — работает для TempNPC
+- ✅ **Qi Buffer 90%** — работает для TempNPC
+- ✅ **Ultimate-техники** — 5% шанс для transcendent, маркер ⚡
+
+## 🆕 Обновления v2.0 (2026-03-13)
 
 - ✅ **SoulEntity Compatibility** — TempNPC совместим с архитектурой SoulEntity
 - ✅ **Combat Integration** — TempNPC участвуют в бою через Event Bus

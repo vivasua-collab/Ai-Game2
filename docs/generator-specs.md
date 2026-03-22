@@ -1,9 +1,9 @@
 # 📋 Характеристики генераторов
 
-**Версия:** 3.0  
+**Версия:** 5.0  
 **Создано:** 2026-03-19  
-**Обновлено:** 2026-03-21  
-**Статус:** ⚠️ V2 требует обновления до V5.0
+**Обновлено:** 2026-03-22 15:40 UTC  
+**Статус:** ✅ Все генераторы работают на V2
 
 ---
 
@@ -11,12 +11,16 @@
 
 | Генератор | Объекты | Архитектура | Версия | Статус |
 |-----------|--------|-------------|--------|--------|
-| technique-generator-v2.ts | Техники | ✅ Матрёшка V2 | 5.0.0 | ⚠️ Требует обновления |
+| technique-generator-v2.ts | Техники | ✅ Матрёшка V2 | 5.0.0 | ✅ Основной |
 | technique-generator.ts | Техники | ⚠️ Устаревшая | 3.0 | ⛔ @deprecated |
+| technique-compat.ts | V1↔V2 конвертер | ✅ Совместимость | 1.0 | ✅ Новый |
 | equipment-generator-v2.ts | Экипировка | ✅ Матрёшка | 2.0 | ✅ Основной |
-| npc-generator.ts | NPC | ✅ Оркестратор | 2.1 | ✅ Основной |
-| formation-generator.ts | Формации | ✅ Матрёшка | 1.0 | ✅ Основной |
+| equipment-generator.ts | Экипировка/Инвентарь | ✅ Bridge | 2.0 | ✅ Мост к V2 |
 | consumable-generator.ts | Расходники | ✅ Матрёшка | 1.0 | ✅ Основной |
+| npc-generator.ts | NPC | ✅ Оркестратор | 2.1 | ✅ Основной |
+| npc-full-generator.ts | Полный NPC | ✅ Оркестратор V2 | 1.1 | ✅ V2 Migrated |
+| formation-generator.ts | Боевые формации | ✅ Матрёшка | 1.0 | ✅ Основной |
+| formation-core-generator.ts | Медитативные формации | ✅ Матрёшка | 1.0 | ✅ Основной |
 | qi-stone-generator.ts | Камни Ци | ✅ Упрощённая | 1.0 | ✅ Основной |
 
 ---
@@ -39,13 +43,6 @@ finalDamage = capacity × gradeMult
 где:
   capacity = baseCapacity(type) × 2^(level-1) × masteryBonus
   gradeMult = множитель Grade (×1.0 ~ ×1.6)
-```
-
-### ❌ СТАРАЯ ФОРМУЛА (НЕВЕРНАЯ!)
-
-```
-// НЕВЕРНО! Не использовать!
-finalDamage = qiSpent × gradeMult × specMult
 ```
 
 ### Архитектура V2
@@ -77,35 +74,6 @@ finalDamage = qiSpent × gradeMult × specMult
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### Общие модули (импорты)
-
-```typescript
-// Базовые утилиты
-import { seededRandom, hashString } from './base-item-generator';
-
-// Ёмкость техник
-import { 
-  getBaseCapacity, 
-  calculateTechniqueCapacity,
-  BASE_CAPACITY_BY_COMBAT_SUBTYPE 
-} from '@/lib/constants/technique-capacity';
-
-// ID система
-import { getPrefixForTechniqueType, IdPrefix } from './id-config';
-
-// Grade система
-import { TechniqueGrade, TECHNIQUE_GRADE_ORDER } from '@/types/grade';
-
-// Эффекты по Tier
-import { 
-  generateCombatEffects,
-  generateDefenseHealingEffects,
-  generateCursePoisonEffects,
-  generateSupportUtilityEffects,
-  generateCultivationEffects,
-} from './effects';
-```
-
 ### Множители Grade (КОРРЕКТНЫЕ)
 
 ```typescript
@@ -120,34 +88,11 @@ export const GRADE_DAMAGE_MULTIPLIERS: Record<TechniqueGrade, number> = {
 // Стоимость Ци — ВСЕГДА ×1.0!
 export const GRADE_QI_COST_MULTIPLIERS: Record<TechniqueGrade, number> = {
   common: 1.0,
-  refined: 1.0,     // Было 0.95 — НЕВЕРНО!
-  perfect: 1.0,     // Было 0.9 — НЕВЕРНО!
-  transcendent: 1.0, // Было 0.85 — НЕВЕРНО!
+  refined: 1.0,
+  perfect: 1.0,
+  transcendent: 1.0,
 };
 ```
-
-### ❌ УДАЛИТЬ (НЕ ИСПОЛЬЗОВАТЬ!)
-
-```typescript
-// НЕВЕРНЫЕ множители — удалить из формулы урона!
-export const COMBAT_SUBTYPE_DAMAGE_MULTIPLIERS = {
-  melee_strike: 1.5,      // НЕ применять к урону!
-  melee_weapon: 1.0,
-  ranged_projectile: 0.9,
-  ranged_beam: 0.85,
-  ranged_aoe: 0.8,
-};
-// Эти значения влияют ТОЛЬКО на ёмкость, НЕ на урон напрямую!
-```
-
-### Система тиков
-
-> **1 тик = 1 минута игрового времени**
-
-Эффекты длительностью:
-- 3 тика = 3 минуты
-- 5 тиков = 5 минут
-- и т.д.
 
 ### Соответствие Матрёшке V2
 ✅ **Полное** — урон = capacity × gradeMult
@@ -188,7 +133,142 @@ EffectiveStats = Base × MaterialProperties × GradeMultipliers
 
 ---
 
-## 4️⃣ npc-generator.ts
+## 4️⃣ equipment-generator.ts (Bridge)
+
+### Назначение
+Мост между старой системой и V2 генераторами. Также генерирует инвентарь NPC.
+
+### Использует
+- `equipment-generator-v2.ts` — для экипировки
+- `consumable-generator.ts` — для расходников
+
+### Ключевые функции
+
+```typescript
+// Генерация экипировки NPC (V2)
+generateEquipmentForNPC(context) → TempEquipment
+
+// Генерация инвентаря NPC
+generateInventoryForNPC(context) → TempItem[]
+
+// Полная генерация (экипировка + инвентарь)
+generateFullEquipmentForNPC(npc, rng) → void  // изменяет npc.equipment и npc.quickSlots
+```
+
+### Интеграция с NPC
+
+```typescript
+// npc-full-generator.ts:233
+generateFullEquipmentForNPC(tempNPC, rng);
+  ↓
+// equipment-generator.ts:309-321
+const equipment = generateEquipmentForNPC(context);
+equipItemsToNPC(npc, equipment);
+
+const inventory = generateInventoryForNPC(context);
+addInventoryToNPC(npc, inventory);
+```
+
+---
+
+## 5️⃣ consumable-generator.ts ✅
+
+### Назначение
+Процедурная генерация расходников: таблетки, эликсиры, еда, свитки.
+
+### Префикс ID
+`CS` (CS_000001, CS_000002, ...)
+
+### ⚠️ ВАЖНО: Расходники НЕ добавляют Ци — это задача зарядников!
+
+### Типы расходников
+
+| Тип | Название | Стек | Эффекты |
+|-----|----------|------|---------|
+| pill | Таблетки | 20 | heal_hp, heal_stamina, buff_stat, buff_resistance |
+| elixir | Эликсиры | 10 | buff_stat, buff_resistance, cure, special |
+| food | Еда | 50 | heal_hp, heal_stamina |
+| scroll | Свитки | 5 | special, cure, buff_stat |
+
+### Типы эффектов
+
+| Тип | Описание | Длительность |
+|-----|----------|--------------|
+| heal_hp | Восстановление HP | — |
+| heal_stamina | Восстановление сил | — |
+| buff_stat | Усиление характеристики | 60 сек × grade |
+| buff_resistance | Усиление сопротивления | 120 сек × grade |
+| cure | Лечение статуса | — |
+| special | Особый эффект | 30 сек × grade |
+
+### Система Grade
+
+```typescript
+const CONSUMABLE_GRADE_CONFIGS = {
+  common:    { effectMultiplier: 1.0,  durationMultiplier: 1.0 },
+  refined:   { effectMultiplier: 1.2,  durationMultiplier: 1.2 },
+  perfect:   { effectMultiplier: 1.5,  durationMultiplier: 1.5 },
+  transcendent: { effectMultiplier: 2.0, durationMultiplier: 2.0 },
+};
+```
+
+### Базовые значения по уровню (heal_hp)
+
+```
+L1: 10 → L5: 80 → L9: 300
+```
+
+### Пояс (Belt System)
+
+```typescript
+const BELT_INFO = {
+  quickAccessSlots: 4,
+  hotkeys: ['CTRL+1', 'CTRL+2', 'CTRL+3', 'CTRL+4'],
+};
+```
+
+### Использование в NPC
+
+```typescript
+// equipment-generator.ts
+
+function generateHealingPill(level, rng): TempItem {
+  return convertConsumableToTempItem(
+    generateConsumable({ type: 'pill', effectType: 'heal_hp', level })
+  );
+}
+
+function generateElixir(level, rng): TempItem {
+  return convertConsumableToTempItem(
+    generateConsumable({ type: 'elixir', level })
+  );
+}
+
+function generateFood(level, rng): TempItem {
+  return convertConsumableToTempItem(
+    generateConsumable({ type: 'food', level })
+  );
+}
+```
+
+### API
+
+```typescript
+// Генерация одного расходника
+generateConsumable(options: ConsumableGenerationOptions): Consumable
+
+// Генерация нескольких
+generateConsumables(count, options): ConsumableGenerationResult
+
+// Утилиты для UI
+getConsumableTypes()      // pill, elixir, food, scroll
+getEffectTypes()          // heal_hp, buff_stat, ...
+getPossibleEffects(type)  // возможные эффекты для типа
+```
+
+---
+
+## 6️⃣ npc-generator.ts
 
 ### Назначение
 Оркестратор генерации NPC с учётом вида, роли, культивации.
@@ -206,12 +286,83 @@ coreVolume = baseVolume * qiDensity;
 coreQuality = Math.floor(meridianConductivity * 10) / 10;
 ```
 
-### Соответствие Матрёшке
-✅ **Правильный оркестратор**
+---
+
+## 7️⃣ npc-full-generator.ts (V2 Migrated) ✅
+
+### Назначение
+Полная генерация NPC со всеми компонентами: техники, формации, экипировка, инвентарь.
+
+### Миграция на V2 ✅ ЗАВЕРШЕНА (2026-03-22)
+
+```typescript
+// Было (V1):
+import { generateTechnique } from './technique-generator';
+
+// Стало (V2):
+import { generateTechniqueV2 } from './technique-generator-v2';
+import { v2ToV1 } from './technique-compat';
+
+// Генерация
+const techniqueV2 = generateTechniqueV2({
+  id, type, element, level, seed, combatSubtype
+});
+const technique = v2ToV1(techniqueV2); // для TempNPC.techniqueData
+```
+
+### Генерация компонентов
+
+| Компонент | Функция | Статус |
+|-----------|---------|--------|
+| Техники | `generateTechniqueV2()` | ✅ V2 |
+| Формации | `generateFormation()` | ✅ V1 (боевые) |
+| Экипировка | `generateFullEquipmentForNPC()` | ✅ V2 |
+| Инвентарь | `generateInventoryForNPC()` | ✅ Работает |
+| Расходники | `generateConsumable()` | ✅ Автогенерация |
 
 ---
 
-## 📁 Файлы эффектов (ТРЕБУЕТСЯ ОБНОВЛЕНИЕ!)
+## 8️⃣ technique-compat.ts (NEW!)
+
+### Назначение
+Совместимость между V1 и V2 форматами техник.
+
+### Ключевые функции
+
+```typescript
+// Конвертация V2 → V1
+export function v2ToV1(technique: GeneratedTechniqueV2): GeneratedTechnique
+
+// Маппинги Grade ↔ Rarity
+export const GRADE_TO_RARITY: Record<TechniqueGrade, string>
+export const RARITY_TO_GRADE: Record<string, TechniqueGrade>
+```
+
+### Использование
+
+```typescript
+import { v2ToV1, GRADE_TO_RARITY } from './technique-compat';
+
+// Генерация V2 техники
+const techniqueV2 = generateTechniqueV2({ level: 5, type: 'combat' });
+
+// Конвертация для TempNPC (использует V1 формат)
+const techniqueV1 = v2ToV1(techniqueV2);
+tempNPC.techniqueData = techniqueV1;
+```
+
+### Маппинг Grade ↔ Rarity
+
+| Grade (V2) | Rarity (V1) |
+|------------|-------------|
+| common | common |
+| refined | uncommon |
+| perfect | rare |
+| transcendent | legendary |
+
+---
+
+## 📁 Файлы эффектов
 
 ### Структура
 
@@ -225,18 +376,6 @@ src/lib/generator/effects/
 └── tier-5-cultivation.ts     — Cultivation
 ```
 
-### ⚠️ Необходимые обновления
-
-| Файл | Изменение |
-|------|-----------|
-| `tier-1-combat.ts` | Добавить стихийные эффекты от element |
-| `tier-2-defense-healing.ts` | Заменить ходы на тики, добавить element |
-| `tier-3-curse-poison.ts` | Заменить ходы на тики |
-| `tier-4-support-utility.ts` | Заменить ходы на тики |
-| `tier-5-cultivation.ts` | OK (без ходов) |
-| **НОВЫЙ** `element-effects.ts` | Стихийные эффекты по типу техники |
-| **НОВЫЙ** `transcendent-effects.ts` | Transcendent-бонусы по стихии |
-
 ### Стихийные эффекты (атакующие)
 
 | Стихия | Эффект | Длительность |
@@ -248,17 +387,40 @@ src/lib/generator/effects/
 | ⚡ Молния | Цепной урон 50% по 2 целям | — |
 | 🌑 Пустота | +30% пробития брони | — |
 
-### Transcendent-эффекты
+---
 
-| Стихия | Transcendent-бонус |
-|--------|-------------------|
-| 🔥 Огонь | Горение по % от макс HP (игнорирует броню) |
-| 💧 Вода | Замедление + потеря 5% Ци/тик движения |
-| 🪨 Земля | Стан пробивает иммунитет |
-| 💨 Воздух | Вихрь: 20% урона в зоне |
-| ⚡ Молния | +25% урона каждой следующей цели |
-| 🌑 Пустота | +50% урона по щитам |
-| ⚪ Нейтральный | +10% пробития брони |
+## 📊 Интеграция генераторов
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    NPC GENERATION PIPELINE                           │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  npc-full-generator.ts (ОРКЕСТРАТОР)                                 │
+│  │                                                                   │
+│  ├── 1. generateNPC() → GeneratedNPC (базовый NPC)                  │
+│  │                                                                   │
+│  ├── 2. generateTechniqueV2() × slots → techniques[] (V2!)          │
+│  │      └── technique-generator-v2.ts                               │
+│  │                                                                   │
+│  ├── 3. generateFormation() × formationSlots → formations[]        │
+│  │      └── formation-generator.ts                                  │
+│  │                                                                   │
+│  ├── 4. convertToTempNPC(base, techniques, formations) → TempNPC   │
+│  │                                                                   │
+│  └── 5. generateFullEquipmentForNPC(tempNPC, rng)                  │
+│         │                                                            │
+│         ├── generateEquipmentForNPC() → TempEquipment              │
+│         │   └── equipment-generator-v2.ts                           │
+│         │                                                            │
+│         └── generateInventoryForNPC() → TempItem[]                  │
+│             ├── generateHealingPill() → consumable-generator.ts     │
+│             ├── generateElixir() → consumable-generator.ts          │
+│             ├── generateFood() → consumable-generator.ts            │
+│             └── generateJunkItem() → хлам                            │
+│                                                                      │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
@@ -267,9 +429,24 @@ src/lib/generator/effects/
 - [generators.md](./generators.md) — Документация генераторов V5
 - [technique-system-v2.md](./technique-system-v2.md) — Система техник V2.8
 - [matryoshka-architecture.md](./matryoshka-architecture.md) — Архитектура "Матрёшка"
-- [checkpoints/checkpoint_03_21_bug-fix.md](./checkpoints/checkpoint_03_21_bug-fix.md) — План исправлений
+- [checkpoints/checkpoint_03_22_Generator_Migration.md](./checkpoints/checkpoint_03_22_Generator_Migration.md) — Миграция V1→V2
+
+---
+
+## 📝 API Endpoints
+
+| Endpoint | Назначение |
+|----------|-----------|
+| `/api/generator/techniques` | Техники (V2 по умолчанию) |
+| `/api/generator/npc` | Базовые NPC |
+| `/api/generator/npc-full` | Полные NPC |
+| `/api/generator/formations` | Боевые формации |
+| `/api/generator/equipment` | Экипировка V2 |
+| `/api/generator/items` | Расходники (сохранение/загрузка) |
 
 ---
 
 *Документ создан: 2026-03-19*
-*Обновлён: 2026-03-21 — исправлены формулы, добавлена система тиков*
+*Обновлён: 2026-03-22 15:40 UTC*
+*Добавлен technique-compat.ts, обновлён npc-full-generator (V2 Migrated)*
+*Миграция V1→V2: ✅ ЗАВЕРШЕНА*

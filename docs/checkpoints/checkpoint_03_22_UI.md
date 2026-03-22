@@ -1,174 +1,151 @@
-# 🎨 План: UI компоненты v1.0
+# 🎨 План: UI компоненты v2.1
 
-**Дата:** 2026-03-22
-**Версия:** 1.0
-**Статус:** 📋 Планирование
-**Зависимости:** Body_update, Combat, Generators, Formations
-
----
-
-## 📋 Обзор
-
-Единый план UI компонентов для всех завершённых механик:
-- Level Suppression System
-- Qi Buffer 90%
-- Damage Pipeline
-- Ultimate-техники
-- Formation Cores
-- Material Reduction
+**Дата:** 2026-03-22 16:00 UTC
+**Версия:** 2.1
+**Статус:** 🔨 Аудит завершён, план внедрения готов
+**Зависимости:** ✅ Body_update, ✅ Combat, ✅ Generators, ✅ Formations, ✅ Generator_Migration
 
 ---
 
-## 1. СВОДКА UI ЗАДАЧ ИЗ ВСЕХ ЧЕКПОИНТОВ
+## 📋 Результаты аудита
 
-### 1.1 Из Body_update.md
+### Архитектура UI
 
-| Компонент | Статус | Описание |
-|-----------|--------|----------|
-| BodyStatusPanel.tsx | ✅ Существует | HP частей тела, кровотечения |
-| BodyDoll.tsx | ✅ Существует | Визуальное отображение тела |
-| QiBufferIndicator.tsx | 🔜 Не создан | Индикатор Qi Buffer 90% |
-| LevelSuppressionIndicator.tsx | 🔜 Не создан | Индикатор подавления уровнем |
-| DamageFlowDisplay.tsx | 🔜 Не создан | Визуализация pipeline урона |
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    АРХИТЕКТУРА UI                                    │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                      │
+│  Zustand Store (game.store.ts)                                       │
+│  ├── useGameCharacter() → currentQi, maxQi                          │
+│  ├── useGameTechniques() → techniques[]                             │
+│  └── useGameInventory() → inventory[]                               │
+│                                                                      │
+│  React Components                                                    │
+│  ├── TechniquesDialog.tsx (техники, формации, слоты)                │
+│  ├── BodyStatusPanel.tsx (тело, HP, кровотечения)                  │
+│  └── FormationCoresTab.tsx ✅ (ядра - готов)                        │
+│                                                                      │
+│  Phaser Bridge                                                       │
+│  ├── Global Variables (React → Phaser)                              │
+│  │   └── globalCharacter, globalTechniques, etc.                    │
+│  └── EventBusClient (Phaser → Server)                               │
+│      └── useTechnique(), reportDamageDealt(), move()                │
+│                                                                      │
+└─────────────────────────────────────────────────────────────────────┘
+```
 
-### 1.2 Из Combat.md
+### Уже существует
 
-| Компонент | Статус | Описание |
-|-----------|--------|----------|
-| DamageFlowDisplay.tsx | 🔜 Не создан | Визуализация pipeline урона |
-| LevelSuppressionIndicator.tsx | 🔜 Не создан | Индикатор подавления |
-| QiBufferStatus.tsx | 🔜 Не создан | Статус Qi Buffer |
+| Компонент | Файл | Готовность |
+|-----------|------|------------|
+| FormationCoresTab | `src/components/formation/FormationCoresTab.tsx` | ✅ 100% |
+| BodyStatusPanel | `src/components/game/BodyStatusPanel.tsx` | ✅ 100% |
+| TechniquesDialog | `src/components/game/TechniquesDialog.tsx` | ✅ 100% |
+| EventBusClient | `src/lib/game/event-bus/client.ts` | ✅ 100% |
 
-### 1.3 Из Formations.md
+### Отсутствует
 
-| Компонент | Статус | Описание |
-|-----------|--------|----------|
-| FormationCoresTab.tsx | ✅ Создан | Управление ядрами |
-| Интеграция в TechniquesDialog | 🔜 Не выполнена | Добавить вкладку "Ядра" |
-| Обновление отображения формаций | 🔜 Не выполнена | Показывать утечку, ядро |
-| FormationVisual.ts | 🔜 Не создан | Базовая визуализация |
-| FormationVisualManager.ts | 🔜 Не создан | Менеджер визуализации |
-
-### 1.4 Из Generators.md
-
-| Компонент | Статус | Описание |
-|-----------|--------|----------|
-| UI для isUltimate | ⚠️ Частично | Маркер ⚡ уже отображается |
-| UI для material | 🔜 Не создан | Отображение материала тела |
-
----
-
-## 2. ПРИОРИТЕТЫ UI КОМПОНЕНТОВ
-
-### Приоритет 1: КРИТИЧНО (влияет на игровой процесс)
-
-| ID | Компонент | Файл | Описание |
-|----|-----------|------|----------|
-| UI-01 | Интеграция FormationCoresTab | TechniquesDialog.tsx | Добавить раздел "Ядра" в формации |
-| UI-02 | QiBufferIndicator | QiBufferStatus.tsx | Показать % Ци для защиты |
-| UI-03 | LevelSuppressionIndicator | LevelSuppressionIndicator.tsx | Показать множитель подавления |
-
-### Приоритет 2: ВАЖНО (улучшает UX)
-
-| ID | Компонент | Файл | Описание |
-|----|-----------|------|----------|
-| UI-04 | DamageFlowDisplay | DamageFlowDisplay.tsx | Анимация pipeline урона |
-| UI-05 | FormationDrainDisplay | FormationEffectsDisplay | Показать утечку Ци/час |
-| UI-06 | MaterialIndicator | BodyStatusPanel.tsx | Показать материал тела |
-
-### Приоритет 3: УЛУЧШЕНИЕ (опционально)
-
-| ID | Компонент | Файл | Описание |
-|----|-----------|------|----------|
-| UI-07 | FormationVisual | FormationVisual.ts | Базовый контур формации |
-| UI-08 | UltimateEffect | CombatUI | Эффект для ultimate-техник |
+| Компонент | Назначение |
+|-----------|------------|
+| QiBufferStatus | Индикатор Qi Buffer 90% |
+| LevelSuppressionIndicator | Индикатор подавления уровнем |
+| DamageFlowDisplay | Визуализация pipeline урона |
+| MaterialIndicator | Материал тела в BodyStatusPanel |
 
 ---
 
-## 3. ДЕТАЛЬНЫЕ СПЕЦИФИКАЦИИ
+## 1️⃣ ЭТАП 1: Критичные компоненты (2-4 часа)
 
-### 3.1 UI-01: Интеграция FormationCoresTab
+### 1.1 UI-01: Интеграция FormationCoresTab ✅ Компонент готов!
 
 **Файл:** `src/components/game/TechniquesDialog.tsx`
 
 **Изменения:**
+
 ```tsx
 // Добавить импорт
 import { FormationCoresTab } from '@/components/formation/FormationCoresTab';
 
-// В TabsContent value="formations" добавить под-вкладки:
-<Tabs defaultValue="techniques" className="w-full">
-  <TabsList className="grid grid-cols-2 bg-slate-600">
-    <TabsTrigger value="techniques">Формации</TabsTrigger>
-    <TabsTrigger value="cores">Ядра</TabsTrigger>
-  </TabsList>
-  
-  <TabsContent value="techniques">
-    {/* Существующий контент формаций */}
-  </TabsContent>
-  
-  <TabsContent value="cores">
-    <FormationCoresTab
-      characterId={character.id}
-      cultivationLevel={character.cultivationLevel}
-    />
-  </TabsContent>
-</Tabs>
+// В TabsContent value="formations" заменить на под-вкладки:
+<TabsContent value="formations" className="mt-4 space-y-4">
+  <Tabs defaultValue="techniques" className="w-full">
+    <TabsList className="grid grid-cols-2 bg-slate-600">
+      <TabsTrigger value="techniques">Формации</TabsTrigger>
+      <TabsTrigger value="cores">Ядра</TabsTrigger>
+    </TabsList>
+    
+    <TabsContent value="techniques">
+      {/* Существующий контент формаций */}
+    </TabsContent>
+    
+    <TabsContent value="cores">
+      <FormationCoresTab
+        characterId={character.id}
+        cultivationLevel={character.cultivationLevel}
+      />
+    </TabsContent>
+  </Tabs>
+</TabsContent>
 ```
 
-**Оценка:** 30-60 минут
+**Оценка:** 30 минут
 
 ---
 
-### 3.2 UI-02: QiBufferIndicator
+### 1.2 UI-02: QiBufferStatus
 
 **Файл:** `src/components/game/QiBufferStatus.tsx` (новый)
 
 **Спецификация:**
-```tsx
-interface QiBufferStatusProps {
-  currentQi: number;
-  maxQi: number;
-  hasShieldTechnique: boolean;
-  shieldQi?: number;
-}
 
-export function QiBufferStatus({ currentQi, maxQi, hasShieldTechnique, shieldQi }: QiBufferStatusProps) {
-  const bufferQi = currentQi * 0.9; // 90% доступно для буфера
-  const qiPercent = (bufferQi / maxQi) * 100;
+```tsx
+'use client';
+
+import { Progress } from '@/components/ui/progress';
+import { useGameCharacter } from '@/stores/game.store';
+
+export function QiBufferStatus() {
+  const character = useGameCharacter();
+  
+  if (!character) return null;
+  
+  const { currentQi, maxQi } = character;
+  const bufferQi = currentQi * 0.9;  // 90% для защиты
+  const qiPercent = maxQi > 0 ? (bufferQi / maxQi) * 100 : 0;
   
   return (
     <div className="bg-slate-700/50 rounded-lg p-2">
       <div className="flex items-center justify-between text-xs mb-1">
         <span className="text-cyan-400">🛡️ Qi Buffer</span>
-        <span className="text-slate-400">
-          {hasShieldTechnique ? '100%' : '90%'} absorption
-        </span>
+        <span className="text-slate-400">90% absorption</span>
       </div>
       <Progress value={qiPercent} className="h-2" />
       <div className="text-xs text-slate-500 mt-1">
-        {bufferQi.toLocaleString()} / {maxQi.toLocaleString()} Ци
+        {Math.floor(bufferQi).toLocaleString()} / {maxQi.toLocaleString()} Ци
       </div>
-      {hasShieldTechnique && shieldQi && (
-        <div className="text-xs text-green-400 mt-1">
-          ⚛️ Щит-техника: {shieldQi.toLocaleString()} Ци
-        </div>
-      )}
     </div>
   );
 }
 ```
 
+**Интеграция:** Добавить в `StatusDialog.tsx` или HUD
+
 **Оценка:** 1-2 часа
 
 ---
 
-### 3.3 UI-03: LevelSuppressionIndicator
+### 1.3 UI-03: LevelSuppressionIndicator
 
 **Файл:** `src/components/game/LevelSuppressionIndicator.tsx` (новый)
 
 **Спецификация:**
+
 ```tsx
+'use client';
+
+import { calculateLevelSuppression } from '@/lib/constants/level-suppression';
+
 interface LevelSuppressionIndicatorProps {
   attackerLevel: number;
   defenderLevel: number;
@@ -184,13 +161,10 @@ export function LevelSuppressionIndicator({
 }: LevelSuppressionIndicatorProps) {
   const levelDiff = attackerLevel - defenderLevel;
   const multiplier = calculateLevelSuppression(
-    attackerLevel,
-    defenderLevel,
-    attackType,
-    techniqueLevel
+    attackerLevel, defenderLevel, attackType, techniqueLevel
   );
   
-  // Цвет в зависимости от подавления
+  // Цвет по силе подавления
   const getColor = () => {
     if (multiplier === 0) return 'text-red-400';
     if (multiplier < 0.5) return 'text-orange-400';
@@ -198,54 +172,74 @@ export function LevelSuppressionIndicator({
     return 'text-green-400';
   };
   
-  // Текст описания
   const getDescription = () => {
-    if (multiplier === 0) return 'Иммунитет!';
+    if (multiplier === 0) return '🛡️ Иммунитет!';
     if (levelDiff >= 5) return 'Подавление уровнем';
     if (levelDiff <= -5) return 'Превосходство';
     return '';
   };
   
+  if (multiplier === 1) return null;
+  
   return (
     <div className="flex items-center gap-2">
-      {multiplier !== 1 && (
-        <>
-          <span className={`text-sm font-bold ${getColor()}`}>
-            {multiplier === 0 ? '🛡️' : `×${(multiplier * 100).toFixed(0)}%`}
-          </span>
-          <span className="text-xs text-slate-500">{getDescription()}</span>
-        </>
-      )}
+      <span className={`text-sm font-bold ${getColor()}`}>
+        {multiplier === 0 ? '🛡️' : `×${Math.round(multiplier * 100)}%`}
+      </span>
+      <span className="text-xs text-slate-500">{getDescription()}</span>
     </div>
   );
 }
 ```
 
+**Интеграция:** Combat overlay или damage popup
+
 **Оценка:** 1-2 часа
 
 ---
 
-### 3.4 UI-04: DamageFlowDisplay
+## 2️⃣ ЭТАП 2: Важные компоненты (3-4 часа)
+
+### 2.1 UI-04: DamageFlowDisplay
 
 **Файл:** `src/components/game/DamageFlowDisplay.tsx` (новый)
 
 **Спецификация:**
+
 ```tsx
-interface DamageFlowDisplayProps {
-  stages: {
-    originalDamage: number;
-    levelSuppression?: number;
-    afterSuppression: number;
-    qiBuffer?: { absorbed: number; pierced: number };
-    materialReduction?: number;
-    armorReduction?: number;
-    finalDamage: number;
-  };
+'use client';
+
+import { useState, useEffect } from 'react';
+
+interface DamageFlowStage {
+  originalDamage: number;
+  levelSuppression?: number;
+  afterSuppression: number;
+  qiBuffer?: { absorbed: number; pierced: number };
+  materialReduction?: number;
+  armorReduction?: number;
+  finalDamage: number;
 }
 
-export function DamageFlowDisplay({ stages }: DamageFlowDisplayProps) {
+export function DamageFlowDisplay() {
+  const [stages, setStages] = useState<DamageFlowStage | null>(null);
+  const [visible, setVisible] = useState(false);
+  
+  useEffect(() => {
+    const handleDamage = (e: CustomEvent) => {
+      setStages(e.detail.pipeline);
+      setVisible(true);
+      setTimeout(() => setVisible(false), 3000);
+    };
+    
+    window.addEventListener('combat:damage_flow', handleDamage as EventListener);
+    return () => window.removeEventListener('combat:damage_flow', handleDamage as EventListener);
+  }, []);
+  
+  if (!visible || !stages) return null;
+  
   return (
-    <div className="bg-slate-700/50 rounded-lg p-3 space-y-1 text-xs">
+    <div className="fixed bottom-4 right-4 bg-slate-800/90 rounded-lg p-3 space-y-1 text-xs z-50 animate-fade-in">
       <div className="flex justify-between">
         <span>Исходный урон:</span>
         <span className="text-red-400">{stages.originalDamage}</span>
@@ -253,34 +247,27 @@ export function DamageFlowDisplay({ stages }: DamageFlowDisplayProps) {
       
       {stages.levelSuppression !== undefined && stages.levelSuppression !== 1 && (
         <div className="flex justify-between text-orange-400">
-          <span>Подавление уровнем:</span>
-          <span>×{(stages.levelSuppression * 100).toFixed(0)}%</span>
+          <span>Подавление:</span>
+          <span>×{Math.round(stages.levelSuppression * 100)}%</span>
         </div>
       )}
       
       {stages.qiBuffer && (
         <div className="flex justify-between text-cyan-400">
-          <span>Qi Buffer (90%):</span>
-          <span>-{stages.qiBuffer.absorbed} (+{stages.qiBuffer.pierced} пробитие)</span>
+          <span>Qi Buffer:</span>
+          <span>-{stages.qiBuffer.absorbed} (+{stages.qiBuffer.pierced})</span>
         </div>
       )}
       
-      {stages.materialReduction && (
+      {stages.materialReduction && stages.materialReduction > 0 && (
         <div className="flex justify-between text-amber-400">
-          <span>Материал тела:</span>
-          <span>-{(stages.materialReduction * 100).toFixed(0)}%</span>
-        </div>
-      )}
-      
-      {stages.armorReduction && (
-        <div className="flex justify-between text-slate-400">
-          <span>Броня:</span>
-          <span>-{stages.armorReduction}</span>
+          <span>Материал:</span>
+          <span>-{Math.round(stages.materialReduction * 100)}%</span>
         </div>
       )}
       
       <div className="flex justify-between pt-1 border-t border-slate-600 font-bold">
-        <span>Итоговый урон:</span>
+        <span>Итог:</span>
         <span className="text-red-400">{stages.finalDamage}</span>
       </div>
     </div>
@@ -288,15 +275,18 @@ export function DamageFlowDisplay({ stages }: DamageFlowDisplayProps) {
 }
 ```
 
+**Интеграция:** Добавить в `GameContainer.tsx` или overlay
+
 **Оценка:** 2-3 часа
 
 ---
 
-### 3.5 UI-05: FormationDrainDisplay
+### 2.2 UI-05: FormationDrainDisplay
 
 **Файл:** Изменить `FormationEffectsDisplay` в TechniquesDialog.tsx
 
 **Изменения:**
+
 ```tsx
 // Добавить в FormationEffectsDisplay:
 {technique.formationDrain && (
@@ -308,7 +298,7 @@ export function DamageFlowDisplay({ stages }: DamageFlowDisplayProps) {
       </span>
     </div>
     <div className="flex justify-between text-sm">
-      <span className="text-slate-400">⏱️ Время до истощения:</span>
+      <span className="text-slate-400">⏱️ До истощения:</span>
       <span className="text-amber-400">
         {formatTimeToDepletion(technique.formationDrain)}
       </span>
@@ -330,31 +320,23 @@ export function DamageFlowDisplay({ stages }: DamageFlowDisplayProps) {
 
 ---
 
-### 3.6 UI-06: MaterialIndicator
+### 2.3 UI-06: MaterialIndicator
 
-**Файл:** Изменить `BodyStatusPanel.tsx`
+**Файл:** Изменить `src/components/game/BodyStatusPanel.tsx`
 
 **Изменения:**
+
 ```tsx
 // Добавить в BodyStatusPanelProps:
-material?: 'organic' | 'scaled' | 'chitin' | 'ethereal' | 'mineral' | 'chaos';
+interface BodyStatusPanelProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  bodyState?: BodyStructure | null;
+  material?: BodyMaterial;  // NEW
+}
 
-// Добавить отображение материала:
-{material && (
-  <div className="flex items-center gap-2 text-xs">
-    <span className="text-slate-400">Материал:</span>
-    <Badge variant="outline" className={MATERIAL_COLORS[material]}>
-      {MATERIAL_NAMES[material]}
-    </Badge>
-    {MATERIAL_DAMAGE_REDUCTION[material] > 0 && (
-      <span className="text-green-400">
-        -{(MATERIAL_DAMAGE_REDUCTION[material] * 100).toFixed(0)}% урон
-      </span>
-    )}
-  </div>
-)}
-
-const MATERIAL_NAMES = {
+// Добавить константы:
+const MATERIAL_NAMES: Record<BodyMaterial, string> = {
   organic: '🥩 Органика',
   scaled: '🐉 Чешуя',
   chitin: '🪲 Хитин',
@@ -362,100 +344,97 @@ const MATERIAL_NAMES = {
   mineral: '🪨 Минерал',
   chaos: '🌀 Хаос',
 };
+
+const MATERIAL_COLORS: Record<BodyMaterial, string> = {
+  organic: 'text-red-400 border-red-400',
+  scaled: 'text-green-400 border-green-400',
+  chitin: 'text-amber-400 border-amber-400',
+  ethereal: 'text-purple-400 border-purple-400',
+  mineral: 'text-slate-400 border-slate-400',
+  chaos: 'text-pink-400 border-pink-400',
+};
+
+const MATERIAL_DAMAGE_REDUCTION: Record<BodyMaterial, number> = {
+  organic: 0, scaled: 0.1, chitin: 0.2, 
+  ethereal: 0.7, mineral: 0.5, chaos: 0.3,
+};
+
+// Добавить отображение в начале панели:
+{material && (
+  <div className="bg-slate-700/30 rounded-lg p-3 flex items-center justify-between">
+    <span className="text-sm text-slate-400">Материал тела:</span>
+    <div className="flex items-center gap-2">
+      <Badge variant="outline" className={MATERIAL_COLORS[material]}>
+        {MATERIAL_NAMES[material]}
+      </Badge>
+      {MATERIAL_DAMAGE_REDUCTION[material] > 0 && (
+        <span className="text-xs text-green-400">
+          -{Math.round(MATERIAL_DAMAGE_REDUCTION[material] * 100)}% урон
+        </span>
+      )}
+    </div>
+  </div>
+)}
 ```
 
 **Оценка:** 30 минут
 
 ---
 
-## 4. ПОРЯДОК РЕАЛИЗАЦИИ
+## 3️⃣ ЭТАП 3: Улучшения (опционально)
 
-### Этап 1: Критичные компоненты (2-4 часа)
+### 3.1 FormationVisual
 
-1. [ ] UI-01: Интеграция FormationCoresTab в TechniquesDialog
-2. [ ] UI-02: QiBufferStatus компонент
-3. [ ] UI-03: LevelSuppressionIndicator компонент
+**Файл:** `src/game/formation/FormationVisual.ts`
 
-### Этап 2: Важные компоненты (3-4 часа)
+Базовая визуализация формации в Phaser сцене.
 
-4. [ ] UI-04: DamageFlowDisplay компонент
-5. [ ] UI-05: FormationDrainDisplay в FormationEffectsDisplay
-6. [ ] UI-06: MaterialIndicator в BodyStatusPanel
-
-### Этап 3: Улучшения (опционально, 4-6 часов)
-
-7. [ ] UI-07: FormationVisual базовый контур
-8. [ ] UI-08: UltimateEffect эффект для боевых техник
+**Оценка:** 4-6 часов
 
 ---
 
-## 5. ИНТЕГРАЦИЯ
+## 📊 Итоговый план
 
-### 5.1 Где использовать компоненты
-
-| Компонент | Место использования |
-|-----------|---------------------|
-| QiBufferStatus | GameHUD, CombatUI |
-| LevelSuppressionIndicator | CombatUI, DamagePopup |
-| DamageFlowDisplay | CombatUI (детальный лог) |
-| FormationCoresTab | TechniquesDialog |
-| MaterialIndicator | BodyStatusPanel, NPCInfo |
-
-### 5.2 Связь с Event Bus
-
-```tsx
-// Подписка на события в CombatUI
-useEffect(() => {
-  const handleDamage = (e: CustomEvent) => {
-    setDamageFlow(e.detail.pipeline);
-    setShowDamageFlow(true);
-    setTimeout(() => setShowDamageFlow(false), 3000);
-  };
-  
-  window.addEventListener('combat:damage_flow', handleDamage as EventListener);
-  return () => window.removeEventListener('combat:damage_flow', handleDamage as EventListener);
-}, []);
-```
+| Этап | Задача | Приоритет | Оценка |
+|------|--------|-----------|--------|
+| 1.1 | FormationCoresTab интеграция | P1 | 30 мин |
+| 1.2 | QiBufferStatus | P1 | 1-2 ч |
+| 1.3 | LevelSuppressionIndicator | P1 | 1-2 ч |
+| 2.1 | DamageFlowDisplay | P2 | 2-3 ч |
+| 2.2 | FormationDrainDisplay | P2 | 30 мин |
+| 2.3 | MaterialIndicator | P2 | 30 мин |
+| 3.1 | FormationVisual | P3 | 4-6 ч |
+| **Итого** | | | **9-14 часов** |
 
 ---
 
-## 6. КРИТЕРИИ ГОТОВНОСТИ
+## 📁 Файлы для изменения
 
-### Этап 1:
-- [ ] FormationCoresTab доступен через TechniquesDialog → Формации → Ядра
-- [ ] QiBufferStatus показывает корректный % Ци
-- [ ] LevelSuppressionIndicator показывает иммунитет при +5 уровнях
+| Файл | Изменения |
+|------|-----------|
+| `src/components/game/TechniquesDialog.tsx` | Добавить FormationCoresTab |
+| `src/components/game/BodyStatusPanel.tsx` | Добавить MaterialIndicator |
+| `src/components/game/StatusDialog.tsx` | Добавить QiBufferStatus |
 
-### Этап 2:
-- [ ] DamageFlowDisplay показывает все этапы pipeline
-- [ ] FormationEffectsDisplay показывает утечку Ци/час
-- [ ] BodyStatusPanel показывает материал и снижение урона
+## 📁 Файлы для создания
 
-### Этап 3:
-- [ ] Формации отображаются в игре с базовым контуром
-- [ ] Ultimate-техники имеют визуальный эффект
-
----
-
-## 7. ССЫЛКИ
-
-### Зависимости (завершены):
-- `checkpoint_03_22_Body_update.md` — Level Suppression, Qi Buffer
-- `checkpoint_03_22_Combat.md` — Damage Pipeline, Event Bus
-- `checkpoint_03_22_Generators.md` — isUltimate, material
-- `checkpoint_03_22_Formations.md` — Formation Cores, drain system
-
-### Файлы для изменения:
-- `src/components/game/TechniquesDialog.tsx`
-- `src/components/game/BodyStatusPanel.tsx`
-
-### Файлы для создания:
-- `src/components/game/QiBufferStatus.tsx`
-- `src/components/game/LevelSuppressionIndicator.tsx`
-- `src/components/game/DamageFlowDisplay.tsx`
+| Файл | Назначение |
+|------|------------|
+| `src/components/game/QiBufferStatus.tsx` | Индикатор Qi Buffer |
+| `src/components/game/LevelSuppressionIndicator.tsx` | Индикатор подавления |
+| `src/components/game/DamageFlowDisplay.tsx` | Визуализация pipeline |
 
 ---
 
-*Чекпоинт создан: 2026-03-22*
-*Версия: 1.0*
-*Статус: 📋 Планирование*
+## 🔗 Связанные документы
+
+- `docs/checkpoints/checkpoint_03_22_UI_Audit.md` — Детальный аудит UI
+- `docs/checkpoints/checkpoint_03_22_Body_update.md` — Level Suppression, Qi Buffer
+- `docs/checkpoints/checkpoint_03_22_Combat.md` — Damage Pipeline, Event Bus
+- `docs/checkpoints/checkpoint_03_22_Generator_Migration.md` — V1→V2 миграция
+
+---
+
+*Чекпоинт обновлён: 2026-03-22 16:00 UTC*
+*Версия: 2.1*
+*Статус: 🔨 Аудит завершён, план внедрения готов*

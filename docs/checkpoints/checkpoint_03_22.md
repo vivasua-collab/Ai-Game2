@@ -1,8 +1,8 @@
 # 📋 План: 22 марта 2026
 
-**Дата:** 2026-03-22 20:30 UTC
-**Версия:** 7.0
-**Статус:** ✅ Фаза 1-4 завершены | 📋 Аудит генераторов проведён
+**Дата:** 2026-03-22 22:00 UTC
+**Версия:** 8.0
+**Статус:** ✅ Фаза 1-4 завершены | ✅ Миграция V1→V2 завершена | 📋 UI внедрение
 
 ---
 
@@ -133,6 +133,18 @@
 | /api/formations/cores/route.ts | src/app/api/formations/cores/ | ✅ Создан |
 | FormationCoresTab.tsx | src/components/formation/ | ✅ Создан |
 
+### Задача 10: Миграция генераторов V1→V2 — ✅ ЗАВЕРШЕНО
+**Файл:** `docs/checkpoints/checkpoint_03_22_Generator_Migration.md`
+
+| Компонент | Файл | Статус |
+|-----------|------|--------|
+| technique-compat.ts | src/lib/generators/ | ✅ Создан |
+| v2ToV1() конвертер | technique-compat.ts | ✅ Работает |
+| npc-full-generator.ts миграция | src/lib/generators/ | ✅ V2 используется |
+| Автогенерация расходников | generated-objects-loader.ts | ✅ Добавлена |
+| P1: V1 generateTechnique | npc-full-generator.ts | ✅ Исправлено |
+| P3: Нет расходников | generated-objects-loader.ts | ✅ Исправлено |
+
 ---
 
 ## 📊 ТЕКУЩЕЕ СОСТОЯНИЕ СИСТЕМ
@@ -252,9 +264,10 @@
 | `checkpoint_03_22_Generators.md` | План генераторов | ✅ Завершён (v3.0) |
 | `checkpoint_03_22_Combat.md` | План боевой системы | ✅ Завершён (v3.0) |
 | `checkpoint_03_22_Formations.md` | План формаций | ✅ Завершён (v2.0 - Phase 1-3) |
-| `checkpoint_03_22_UI.md` | План UI обновлений | 📋 Создан (v1.0) |
-| `checkpoint_03_22_NPC_Orchestrator.md` | План оркестратора | 📋 Обновлён (v2.0) |
-| `checkpoint_03_22_Generator_Migration.md` | Аудит + План миграции V1→V2 | 📋 Создан (v1.0) |
+| `checkpoint_03_22_UI.md` | План UI обновлений | 🔨 Аудит завершён (v2.1) |
+| `checkpoint_03_22_UI_Audit.md` | Аудит UI окружения | ✅ Создан (v1.0) |
+| `checkpoint_03_22_NPC_Orchestrator.md` | План оркестратора | ✅ Обновлён (v2.0) |
+| `checkpoint_03_22_Generator_Migration.md` | Аудит + План миграции V1→V2 | ✅ Завершён (v1.3) |
 
 ---
 
@@ -414,6 +427,6 @@
 ---
 
 *План создан: 2026-03-22 06:00 UTC*
-*Обновлён: 2026-03-22 20:30 UTC*
-*Статус: ✅ Фаза 1-4 завершены | 📋 Аудит генераторов проведён*
-*Следующий шаг: Миграция NPC генератора на V2*
+*Обновлён: 2026-03-22 22:00 UTC*
+*Статус: ✅ Фаза 1-4 завершены | ✅ Миграция V1→V2 завершена | 📋 UI внедрение*
+*Следующий шаг: UI компоненты (QiBuffer, LevelSuppression, DamageFlow)*

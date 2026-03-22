@@ -1,8 +1,8 @@
 # Checkpoint: Реализация системы формаций v2
 
 **Дата:** 2026-03-22
-**Статус:** 🔄 В процессе реализации
-**Версия:** 2.0
+**Статус:** ✅ Phase 1-3 ЗАВЕРШЕНЫ | 📋 Phase 4-5 UI/Visual
+**Версия:** 2.1
 **Зависимости:** `formation_analysis.md` (v4.1), `formation_unified.md` (v4.1), `formation_drain_system.md` (v1.0), `formation_visualization.md`
 
 ---
@@ -59,13 +59,13 @@
 
 - [x] Создан `src/lib/formations/index.ts` (экспорты)
 
-### Phase 4: UI — 🔄 В ПРОЦЕССЕ
+### Phase 4: UI — 📋 ОЖИДАЕТ (см. checkpoint_03_22_UI.md)
 
-- [x] Создан `src/components/formation/FormationCoresTab.tsx`
-- [ ] Интеграция вкладки "Ядра" в TechniquesDialog
-- [ ] Обновление отображения формаций (утечка, ядро)
+- [x] Создан `src/components/formation/FormationCoresTab.tsx` — ✅ ГОТОВ
+- [ ] Интеграция вкладки "Ядра" в TechniquesDialog → UI-01 в UI чекпоинте
+- [ ] Обновление отображения формаций (утечка, ядро) → UI-05 в UI чекпоинте
 
-### Phase 5: Визуализация — ⏳ ОЖИДАЕТ
+### Phase 5: Визуализация — 📋 ОЖИДАЕТ (опционально)
 
 - [ ] Создать `src/game/formation/FormationVisual.ts`
 - [ ] Создать `src/game/formation/FormationVisualManager.ts`

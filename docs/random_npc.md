@@ -1,5 +1,9 @@
 # Система временных NPC ("Статисты")
 
+**Версия:** 2.1
+**Обновлено:** 2026-03-22 15:40 UTC
+**Статус:** ✅ Реализовано
+
 ## Концепция
 
 ### Два типа NPC
@@ -91,19 +95,30 @@
 
 ---
 
+### ✅ Реализованные компоненты (2026-03-22)
+
+| Компонент | Файл | Статус |
+|-----------|------|--------|
+| TempNPC interface | `src/types/temp-npc.ts` | ✅ Реализован |
+| SessionNPCManager | `src/lib/game/session-npc-manager.ts` | ✅ Реализован |
+| TempNPC Combat | `src/lib/game/skeleton/temp-npc-combat.ts` | ✅ Реализован |
+| Event Bus Integration | `src/lib/game/event-bus/handlers/combat.ts` | ✅ Работает |
+| NPC AI Controller | `src/lib/game/npc-ai.ts` | ✅ Реализован |
+| V2 Generator Migration | `src/lib/generator/npc-full-generator.ts` | ✅ V2 Migrated |
+| Material/Morphology | `src/types/temp-npc.ts` | ✅ Добавлены |
+
+---
+
 ## Типы данных
 
-### TempNPC Interface
+### TempNPC Interface (v2.1)
 
 ```typescript
 /**
  * Временный NPC (статист) - существует только в памяти
  * 
  * ✅ SoulEntity Compatibility (v2.0)
- * Совместим с архитектурой SoulEntity:
- * - soulType: тип души (character/creature/spirit/construct)
- * - controller: 'ai' — управляется ИИ
- * - mind: сложность разума (full/instinct/simple)
+ * ✅ Material/Morphology Support (v2.1)
  */
 interface TempNPC {
   // === Идентификация ===
@@ -145,7 +160,11 @@ interface TempNPC {
   };
   
   // === Тело (Kenshi-style) ===
-  bodyState: BodyState;
+  bodyState: TempBodyState;
+  
+  // === Материал и морфология (NEW! v2.1) ===
+  bodyMaterial?: BodyMaterial;    // organic, scaled, chitin, ethereal, mineral, chaos
+  morphology?: BodyMorphology;    // humanoid, quadruped, bird, serpentine, arthropod, amorphous
   
   // === Qi ===
   qi: {
@@ -154,13 +173,10 @@ interface TempNPC {
   };
   
   // === Генерируемые слоты ===
-  equipment: {
-    weapon?: TempItem;
-    armor?: TempItem;
-    accessory?: TempItem;
-  };
+  equipment: TempEquipment;
   quickSlots: (TempItem | null)[];       // Расходники в быстрых слотах
   techniques: string[];                   // ID техник из пула
+  techniqueData?: TechniqueData[];        // Данные техник (V1 формат)
   
   // === Личность ===
   personality: {
@@ -189,16 +205,14 @@ interface TempNPC {
 }
 
 /**
- * Species → Soul маппинг
- * Определяет soulType и mind на основе speciesType
+ * BodyMaterial - материал тела для снижения урона
  */
-const SPECIES_TO_SOUL = {
-  humanoid: { soulType: 'character', mind: 'full' },      // Люди — полный разум
-  beast: { soulType: 'creature', mind: 'instinct' },     // Звери — инстинкты
-  spirit: { soulType: 'spirit', mind: 'full' },          // Духи — полный разум
-  hybrid: { soulType: 'character', mind: 'full' },       // Гибриды — как люди
-  aberration: { soulType: 'construct', mind: 'simple' }, // Аберрации — простой разум
-};
+type BodyMaterial = 'organic' | 'scaled' | 'chitin' | 'ethereal' | 'mineral' | 'chaos';
+
+/**
+ * BodyMorphology - тип строения тела
+ */
+type BodyMorphology = 'humanoid' | 'quadruped' | 'bird' | 'serpentine' | 'arthropod' | 'amorphous';
 ```
 
 ### TempItem Interface

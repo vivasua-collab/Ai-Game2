@@ -1,12 +1,12 @@
 # 🔧 Аудит и План миграции генераторов
 
 **Дата:** 2026-03-22
-**Версия:** 1.0
-**Статус:** 📋 Аудит завершён
+**Версия:** 1.3
+**Статус:** ✅ Phase 1-3 ЗАВЕРШЕНЫ
 
 ---
 
-## 1. РЕЗУЛЬТАТЫ АУДИТА
+## 1. РЕЗУЛЬТАТЫ АУДИТА (ОБНОВЛЕНО)
 
 ### 1.1 Карта использования генераторов
 
@@ -16,7 +16,7 @@
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                  │
 │  technique-generator.ts (V1) — @deprecated                                       │
-│  ├── npc-full-generator.ts — ❌ КРИТИЧНО! Использует generateTechnique()         │
+│  ├── npc-full-generator.ts — ✅ ПЕРЕВЕДЁН на V2!                                 │
 │  ├── preset-storage.ts — ✅ Только импорт типов                                  │
 │  ├── weapon-config.ts — ✅ Только импорт CombatSubtype                           │
 │  ├── technique-config.ts — ✅ Только импорт типов                                │
@@ -27,8 +27,14 @@
 │  ├── generated-objects-loader.ts — ✅ Использует generateTechniqueV2()           │
 │  └── api/generator/techniques/route.ts — ✅ По умолчанию (DEFAULT_VERSION = 2)   │
 │                                                                                  │
+│  equipment-generator-v2.ts — АКТУАЛЬНЫЙ                                          │
+│  └── equipment-generator.ts — ✅ Bridge, вызывает generateEquipmentV2()          │
+│                                                                                  │
+│  consumable-generator.ts — АКТУАЛЬНЫЙ                                            │
+│  └── equipment-generator.ts — ✅ Использует generateConsumable()                 │
+│                                                                                  │
 │  formation-generator.ts (БОЕВЫЕ ФОРМАЦИИ)                                        │
-│  ├── npc-full-generator.ts — ⚠️ Использует для NPC (другая система)             │
+│  ├── npc-full-generator.ts — ✅ Использует для NPC (другая система)              │
 │  └── api/generator/techniques/route.ts — ⚠️ Для совместимости                  │
 │                                                                                  │
 │  formation-core-generator.ts (МЕДИТАТИВНЫЕ ФОРМАЦИИ)                             │
@@ -38,14 +44,23 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 1.2 Критические проблемы
+### 1.2 Критические проблемы (УТОЧНЕНО)
 
-| ID | Проблема | Файл | Критичность |
-|----|----------|------|-------------|
-| P1 | Использует V1 `generateTechnique()` | npc-full-generator.ts:184 | 🔴 КРИТИЧНО |
-| P2 | Нет инвентаря у NPC | npc-full-generator.ts | 🔴 КРИТИЧНО |
-| P3 | Нет расходников в presets/ | generated-objects-loader.ts | 🟠 ВЫСОКО |
-| P4 | Две системы формаций | formation-generator.ts vs formations/ | 🟡 СРЕДНЕ |
+| ID | Проблема | Файл | Критичность | Статус |
+|----|----------|------|-------------|--------|
+| P1 | Использует V1 `generateTechnique()` | npc-full-generator.ts:184 | 🔴 КРИТИЧНО | ✅ ИСПРАВЛЕНО! |
+| ~~P2~~ | ~~Нет инвентаря у NPC~~ | ~~npc-full-generator.ts~~ | ~~🔴 КРИТИЧНО~~ | ✅ УЖЕ РАБОТАЛО! |
+| P3 | Нет расходников в presets/ | generated-objects-loader.ts | 🟠 ВЫСОКО | ✅ ИСПРАВЛЕНО! |
+| P4 | Две системы формаций | formation-generator.ts vs formations/ | 🟡 СРЕДНЕ | ✅ Это нормально |
+
+**ВАЖНОЕ УТОЧНЕНИЕ ПО P2:**
+Инвентарь УЖЕ генерируется! Цепочка вызовов:
+```
+npc-full-generator.ts:233
+  → generateFullEquipmentForNPC(tempNPC, rng)
+    → equipment-generator.ts:320 generateInventoryForNPC()
+    → equipment-generator.ts:321 addInventoryToNPC(npc, inventory)
+```
 
 ### 1.3 Что УЖЕ работает корректно
 
@@ -55,6 +70,10 @@
 | Автогенерация V2 | generated-objects-loader.ts | ✅ generateTechniqueV2() |
 | Новые формации | src/lib/formations/ | ✅ Phase 1-3 завершены |
 | Preset storage | preset-storage.ts | ✅ Работает с V2 форматом |
+| **Инвентарь NPC** | **equipment-generator.ts** | **✅ РАБОТАЕТ!** |
+| **Экипировка NPC** | **equipment-generator.ts** | **✅ РАБОТАЕТ!** |
+| **Расходники** | **consumable-generator.ts** | **✅ РАБОТАЕТ!** |
+| **Автогенерация расходников** | **generated-objects-loader.ts** | **✅ ДОБАВЛЕНО!** |
 
 ---
 
@@ -323,18 +342,18 @@ NPC используют `formation-generator.ts` (боевые формации
 
 ## 3. ПОРЯДОК ВЫПОЛНЕНИЯ
 
-### Этап 1: Подготовка (30 мин)
-- [ ] Создать `technique-compat.ts`
-- [ ] Проверить совместимость типов
+### Этап 1: Подготовка (30 мин) ✅ ЗАВЕРШЁН
+- [x] Создать `technique-compat.ts` → **ВЫПОЛНЕНО**
+- [x] Проверить совместимость типов → **V2 расширяет V1**
 
-### Этап 2: Миграция NPC (1 час)
-- [ ] Заменить импорт V1 → V2 в npc-full-generator.ts
-- [ ] Заменить generateTechnique → generateTechniqueV2
-- [ ] Добавить генерацию инвентаря
+### Этап 2: Миграция NPC (1 час) ✅ ЗАВЕРШЁН
+- [x] Заменить импорт V1 → V2 в npc-full-generator.ts → **ВЫПОЛНЕНО**
+- [x] Заменить generateTechnique → generateTechniqueV2 → **ВЫПОЛНЕНО**
+- [x] Добавить генерацию инвентаря → **УЖЕ РАБОТАЛО!** (generateFullEquipmentForNPC)
 
-### Этап 3: Инвентарь (1-2 часа)
-- [ ] Добавить автогенерацию расходников
-- [ ] Интегрировать с generated-objects-loader.ts
+### Этап 3: Инвентарь (1-2 часа) ✅ ЗАВЕРШЁН
+- [x] Добавить автогенерацию расходников → **ВЫПОЛНЕНО**
+- [x] Интегрировать с generated-objects-loader.ts → **ВЫПОЛНЕНО**
 
 ### Этап 4: Очистка (30 мин)
 - [ ] Обновить JSDoc deprecated
@@ -344,15 +363,16 @@ NPC используют `formation-generator.ts` (боевые формации
 
 ## 4. КРИТЕРИИ ГОТОВНОСТИ
 
-### Phase 1-2:
-- [ ] NPC генерируются с V2 техниками
-- [ ] Lint: 0 ошибок
-- [ ] generateFullNPC() использует generateTechniqueV2
-- [ ] NPC получают инвентарь
+### Phase 1-2: ✅ ЗАВЕРШЕНЫ
+- [x] NPC генерируются с V2 техниками
+- [x] Lint: 0 ошибок (только warnings)
+- [x] generateFullNPC() использует generateTechniqueV2
+- [x] NPC получают инвентарь (generateFullEquipmentForNPC)
 
-### Phase 3:
-- [ ] loadObjects('consumables') возвращает массив
-- [ ] NPC получают расходники
+### Phase 3: ✅ ЗАВЕРШЁН
+- [x] loadObjects('consumables') возвращает массив
+- [x] NPC получают расходники (generateInventoryForNPC)
+- [x] Автогенерация при отсутствии файлов
 
 ### Phase 4:
 - [ ] Документация обновлена
@@ -386,5 +406,5 @@ NPC используют `formation-generator.ts` (боевые формации
 ---
 
 *Аудит проведён: 2026-03-22*
-*Версия: 1.0*
-*Статус: 📋 Готов к выполнению*
+*Версия: 1.3*
+*Статус: ✅ Phase 1-3 ЗАВЕРШЕНЫ (P1, P2, P3 исправлены)*
