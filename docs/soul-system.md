@@ -1,6 +1,6 @@
 # 👻 Система Объектов Мира (World Objects System)
 
-**Версия:** 4.0
+**Версия:** 4.1
 **Создано:** 2026-03-06
 **Обновлено:** 2026-03-22
 **Статус:** 📋 Единый источник истины о типах сущностей
@@ -92,6 +92,9 @@
 | Дракон | `creature` | `quadruped` | `scaled` |
 | Феникс | `creature` | `bird` | `scaled` |
 | Змея | `creature` | `serpentine` | `scaled` |
+| Паук | `creature` | `arthropod` | `chitin` |
+| Многоножка | `creature` | `arthropod` | `chitin` |
+| Скорпион | `creature` | `arthropod` | `chitin` |
 | Призрак | `spirit` | `amorphous` | `ethereal` |
 | Элементаль | `spirit` | `amorphous` | `ethereal` |
 | Небесный дух | `spirit` | `amorphous` | `ethereal` |
@@ -149,6 +152,7 @@
 export type BodyMaterial = 
   | 'organic'    // Органика (плоть) — базовый для character, creature
   | 'scaled'     // Чешуя — подтип organic для рептилий, драконов
+  | 'chitin'     // Хитин — экзоскелет для членистоногих (пауки, многоножки)
   | 'ethereal'   // Эфир — для духов, бесплотных
   | 'mineral'    // Минерал — камень, кристалл
   | 'construct'  // Конструкт — сборное тело (разные материалы)
@@ -161,6 +165,7 @@ export type BodyMaterial =
 |----------|-----------|----------------|-------------|
 | `organic` | 3 | 0% | Базовый материал |
 | `scaled` | 6 | 30% | Чешуя, защита от физики |
+| `chitin` | 5 | 20% | Экзоскелет, уязвим к дробящему |
 | `ethereal` | 1 | 70% физики | Проходит сквозь материю |
 | `mineral` | 8 | 50% | Камень, очень твёрдый |
 | `construct` | 5-8 | 30-50% | Зависит от материалов |
@@ -184,6 +189,7 @@ export type BodyMorphology =
   | 'quadruped'        // Четвероногое
   | 'bird'             // Крылатое (птица)
   | 'serpentine'       // Змееподобное
+  | 'arthropod'        // Членистоногое (экзоскелет)
   | 'amorphous'        // Бесформенное (духи)
   | 'hybrid_centaur'   // Кентавр (человеческий торс + лошадиное тело)
   | 'hybrid_mermaid'   // Русалка (человеческий торс + рыбий хвост)
@@ -196,7 +202,7 @@ export type BodyMorphology =
 | SoulType | Допустимые Morphology |
 |----------|----------------------|
 | `character` | humanoid, hybrid_* |
-| `creature` | quadruped, bird, serpentine |
+| `creature` | quadruped, bird, serpentine, arthropod |
 | `spirit` | amorphous (всегда) |
 | `artifact` | humanoid (редко), amorphous |
 | `construct` | humanoid, quadruped |
@@ -323,6 +329,7 @@ model Body {
 | 2026-03-06 | 1.0 | Создание документа |
 | 2026-03-11 | 3.0 | Добавлены категории PhysicalObject |
 | 2026-03-22 | 4.0 | **Иерархия типов:** SoulType (L1) → Morphology (L2) → Species (L3). Добавлены материалы: scaled, chaos. |
+| 2026-03-22 | 4.1 | **Добавлены:** Морфология `arthropod`, материал `chitin` для членистоногих (пауки, многоножки, скорпионы). |
 
 ---
 

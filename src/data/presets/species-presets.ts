@@ -58,6 +58,8 @@ export type BeastSubtype =
   | "bird"       // Птица
   | "aquatic"    // Водное
   | "insect"     // Насекомое
+  | "arachnid"   // Паукообразное (пауки, скорпионы)
+  | "myriapod"   // Многоногое (многоножки)
   | "dragon"     // Дракон
   | "legendary"; // Легендарный зверь
 
@@ -99,6 +101,7 @@ export type BodyTemplate =
   | "beast_quadruped"   // Четвероногое
   | "beast_bird"        // Птица
   | "beast_serpentine"  // Змееподобное
+  | "beast_arthropod"   // Членистоногое (пауки, многоножки, скорпионы)
   | "spirit";           // Бесплотное
 
 /**
@@ -822,6 +825,180 @@ const BEAST_SPECIES: SpeciesPreset[] = [
     weaknesses: ["water", "void"],
     resistances: ["fire", "mental", "regeneration"],
     icon: "🔥",
+  },
+  // Членистоногие
+  {
+    id: "spider",
+    name: "Паук",
+    nameEn: "Spider",
+    description: "Членистоногое с ядовитыми хелицерами и паутиной. Хитиновый экзоскелет.",
+    category: "basic",
+    rarity: "common",
+    type: "beast",
+    subtype: "arachnid",
+    baseStats: {
+      strength: { min: 2, max: 10 },
+      agility: { min: 8, max: 30 },
+      intelligence: { min: 1, max: 5 },
+      vitality: { min: 3, max: 15 },
+    },
+    capabilities: {
+      canCultivate: true,
+      innateQiGeneration: false,
+      speechCapable: false,
+      toolUse: false,
+      learningRate: 0.4,
+    },
+    cultivation: {
+      coreCapacityBase: { min: 20, max: 200 },
+      coreQualityRange: { min: 1, max: 30 },
+      conductivityBase: 0.5,
+      maxCultivationLevel: 3,
+    },
+    bodyTemplate: "beast_arthropod",
+    sizeClass: "small",
+    innateTechniques: [
+      { techniqueId: "bite", unlockLevel: 0, mastery: 70 },
+      { techniqueId: "web_shot", unlockLevel: 0, mastery: 50 },
+    ],
+    aging: {
+      lifespan: 5,
+      maturityAge: 1,
+      declineAge: 3,
+    },
+    weaknesses: ["fire", "crushing"],
+    resistances: ["poison"],
+    icon: "🕷️",
+  },
+  {
+    id: "giant_spider",
+    name: "Гигантский Паук",
+    nameEn: "Giant Spider",
+    description: "Огромный паук со смертельным ядом и прочной паутиной. Опасный хищник.",
+    category: "advanced",
+    rarity: "uncommon",
+    type: "beast",
+    subtype: "arachnid",
+    baseStats: {
+      strength: { min: 15, max: 50 },
+      agility: { min: 20, max: 60 },
+      intelligence: { min: 5, max: 20 },
+      vitality: { min: 20, max: 60 },
+    },
+    capabilities: {
+      canCultivate: true,
+      innateQiGeneration: false,
+      speechCapable: false,
+      toolUse: false,
+      learningRate: 0.5,
+    },
+    cultivation: {
+      coreCapacityBase: { min: 150, max: 1500 },
+      coreQualityRange: { min: 1, max: 50 },
+      conductivityBase: 0.6,
+      maxCultivationLevel: 5,
+    },
+    bodyTemplate: "beast_arthropod",
+    sizeClass: "medium",
+    innateTechniques: [
+      { techniqueId: "bite", unlockLevel: 0, mastery: 80 },
+      { techniqueId: "web_shot", unlockLevel: 0, mastery: 70 },
+      { techniqueId: "web_cage", unlockLevel: 2, mastery: 40 },
+    ],
+    aging: {
+      lifespan: 20,
+      maturityAge: 3,
+      declineAge: 15,
+    },
+    weaknesses: ["fire", "crushing"],
+    resistances: ["poison", "mental"],
+    icon: "🕷️",
+  },
+  {
+    id: "centipede",
+    name: "Многоножка",
+    nameEn: "Centipede",
+    description: "Сегментированное членистоногое с множеством ног и ядовитыми жвалами. Высокая живучесть.",
+    category: "basic",
+    rarity: "common",
+    type: "beast",
+    subtype: "myriapod",
+    baseStats: {
+      strength: { min: 3, max: 15 },
+      agility: { min: 6, max: 25 },
+      intelligence: { min: 1, max: 4 },
+      vitality: { min: 5, max: 25 },
+    },
+    capabilities: {
+      canCultivate: true,
+      innateQiGeneration: false,
+      speechCapable: false,
+      toolUse: false,
+      learningRate: 0.4,
+    },
+    cultivation: {
+      coreCapacityBase: { min: 25, max: 250 },
+      coreQualityRange: { min: 1, max: 35 },
+      conductivityBase: 0.5,
+      maxCultivationLevel: 4,
+    },
+    bodyTemplate: "beast_arthropod",
+    sizeClass: "small",
+    innateTechniques: [
+      { techniqueId: "bite", unlockLevel: 0, mastery: 60 },
+      { techniqueId: "coil", unlockLevel: 0, mastery: 40 },
+    ],
+    aging: {
+      lifespan: 10,
+      maturityAge: 2,
+      declineAge: 7,
+    },
+    weaknesses: ["fire", "crushing"],
+    resistances: ["poison", "slashing"],
+    icon: "🐛",
+  },
+  {
+    id: "scorpion",
+    name: "Скорпион",
+    nameEn: "Scorpion",
+    description: "Паукообразное с мощными клешнями и ядовитым жалом. Самый твёрдый хитин.",
+    category: "basic",
+    rarity: "uncommon",
+    type: "beast",
+    subtype: "arachnid",
+    baseStats: {
+      strength: { min: 5, max: 25 },
+      agility: { min: 5, max: 20 },
+      intelligence: { min: 1, max: 5 },
+      vitality: { min: 8, max: 30 },
+    },
+    capabilities: {
+      canCultivate: true,
+      innateQiGeneration: false,
+      speechCapable: false,
+      toolUse: false,
+      learningRate: 0.5,
+    },
+    cultivation: {
+      coreCapacityBase: { min: 40, max: 400 },
+      coreQualityRange: { min: 1, max: 40 },
+      conductivityBase: 0.6,
+      maxCultivationLevel: 4,
+    },
+    bodyTemplate: "beast_arthropod",
+    sizeClass: "small",
+    innateTechniques: [
+      { techniqueId: "sting", unlockLevel: 0, mastery: 75 },
+      { techniqueId: "claw_crush", unlockLevel: 0, mastery: 50 },
+    ],
+    aging: {
+      lifespan: 15,
+      maturityAge: 2,
+      declineAge: 10,
+    },
+    weaknesses: ["fire", "flipped"],
+    resistances: ["physical", "poison"],
+    icon: "🦂",
   },
 ];
 

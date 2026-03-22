@@ -73,6 +73,7 @@
 | `quadruped` | Четвероногое | 8 частей + сердце | Волк, Тигр, Медведь, Дракон |
 | `bird` | Крылатое | 6-7 частей | Орёл, Феникс |
 | `serpentine` | Змееподобное | 6 частей + сегменты | Змея, Ламия |
+| `arthropod` | Членистоногое | Экзоскелет | Паук, Многоножка, Скорпион |
 | `amorphous` | Бесформенное | 2 части (core + essence) | Призрак, Элементаль |
 | `hybrid_*` | Гибридные формы | Зависит от типа | Кентавр, Русалка, Гарпия |
 
@@ -82,6 +83,7 @@
 |----------|-----------|----------------|----------|
 | `organic` | 3 | 0% | character, creature |
 | `scaled` | 6 | 30% | creature (рептилии) |
+| `chitin` | 5 | 20% | creature (членистоногие) |
 | `ethereal` | 1 | 70% физики | spirit |
 | `mineral` | 8 | 50% | construct |
 | `chaos` | 5 | переменно | spirit (аномалии) |
@@ -100,6 +102,9 @@
 | Дракон | `creature` | `quadruped` | `scaled` |
 | Феникс | `creature` | `bird` | `scaled` |
 | Змея | `creature` | `serpentine` | `scaled` |
+| Паук | `creature` | `arthropod` | `chitin` |
+| Многоножка | `creature` | `arthropod` | `chitin` |
+| Скорпион | `creature` | `arthropod` | `chitin` |
 | Призрак | `spirit` | `amorphous` | `ethereal` |
 | Элементаль | `spirit` | `amorphous` | `ethereal` |
 | Небесный дух | `spirit` | `amorphous` | `ethereal` |

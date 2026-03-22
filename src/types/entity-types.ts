@@ -47,6 +47,7 @@ export type BodyMorphology =
   | 'quadruped'         // Четвероногое (8 частей + сердце)
   | 'bird'              // Крылатое (6-7 частей)
   | 'serpentine'        // Змееподобное (6 частей + сегменты)
+  | 'arthropod'         // Членистоногое (экзоскелет: пауки, многоножки, скорпионы)
   | 'amorphous'         // Бесформенное (2 части: core + essence)
   | 'hybrid_centaur'    // Кентавр (человеческий торс + лошадиное тело)
   | 'hybrid_mermaid'    // Русалка (человеческий торс + рыбий хвост)
@@ -65,6 +66,7 @@ export type BodyMorphology =
 export type BodyMaterial = 
   | 'organic'    // Органика (плоть) — базовый для character, creature
   | 'scaled'     // Чешуя — подтип organic для рептилий, драконов
+  | 'chitin'     // Хитин — экзоскелет для членистоногих (пауки, многоножки)
   | 'ethereal'   // Эфир — для духов, бесплотных
   | 'mineral'    // Минерал — камень, кристалл
   | 'construct'  // Конструкт — сборное тело (разные материалы)
@@ -87,6 +89,11 @@ export const BODY_MATERIAL_CONFIG = {
     hardness: 6,
     damageReduction: 30,
     description: 'Чешуя — защита от физики',
+  },
+  chitin: {
+    hardness: 5,
+    damageReduction: 20,
+    description: 'Хитиновый экзоскелет — уязвим к дробящему урону',
   },
   ethereal: {
     hardness: 1,
@@ -130,5 +137,6 @@ export const BODY_TEMPLATE_TO_MORPHOLOGY: Record<string, BodyMorphology> = {
   beast_quadruped: 'quadruped',
   beast_bird: 'bird',
   beast_serpentine: 'serpentine',
+  beast_arthropod: 'arthropod',
   spirit: 'amorphous',
 } as const;
