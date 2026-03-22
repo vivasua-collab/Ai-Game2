@@ -562,6 +562,9 @@ export class SessionNPCManager {
       isDead: bodyState?.isDead || false,
       isUnconscious: false,
       activeEffects: [],
+      // Материал и морфология для расчёта урона
+      material: bodyState?.material || 'organic',
+      morphology: bodyState?.morphology || 'humanoid',
     };
   }
   

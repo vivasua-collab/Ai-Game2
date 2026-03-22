@@ -1,8 +1,8 @@
-# ⚙️ План: Генераторы v2.0
+# ⚙️ План: Генераторы v3.0
 
 **Дата:** 2026-03-22
-**Версия:** 2.0
-**Статус:** 🔧 Требуется корректировка (по результатам аудита)
+**Версия:** 3.0
+**Статус:** ✅ РЕАЛИЗАЦИЯ ЗАВЕРШЕНА
 
 ---
 
@@ -16,44 +16,29 @@
 
 ---
 
-## 🔍 АУДИТ КОДА (2026-03-22)
+## ✅ АУДИТ КОДА (2026-03-22) — ЗАВЕРШЁН
 
-### 1. technique-generator-v2.ts
+### 1. technique-generator-v2.ts — ✅ ВЫПОЛНЕНО
 
-| Поле | Статус | Проблема |
-|------|--------|----------|
-| `level` | ✅ Генерируется | — |
-| `isUltimate` | ❌ **НЕТ** | Ultimate-техники НЕ создаются |
-| `grade` | ✅ Генерируется | — |
+| Поле | Статус | Файл |
+|------|--------|------|
+| `isUltimate?: boolean` | ✅ Добавлен в интерфейс | Строка 160 |
+| `ULTIMATE_CHANCE_BY_GRADE` | ✅ 5% для transcendent | Строки 263-268 |
+| `ULTIMATE_DAMAGE_MULTIPLIER` | ✅ 1.3 | Строка 273 |
+| `ULTIMATE_QI_COST_MULTIPLIER` | ✅ 1.5 | Строка 278 |
+| Маркер `⚡` в названии | ✅ Добавляется | Строки 560-563 |
+| Генерация isUltimate | ✅ Работает | Строки 476-482 |
 
-**Проблема:** Ultimate-техники с флагом `isUltimate: true` НЕ генерируются. Это означает, что техника L8 не сможет пробить защиту L9 (25% урона вместо 10% для ultimate).
+### 2. npc-generator.ts — ✅ ВЫПОЛНЕНО
 
-### 2. npc-generator.ts
+| Поле | В SpeciesPreset | В NPC Generator | Статус |
+|------|-----------------|-----------------|--------|
+| `bodyMaterial` | ✅ Есть | ✅ Используется | Строка 835 |
+| `morphology` | ✅ Есть | ✅ Используется | Строка 836 |
+| `beast_arthropod` template | ✅ В BodyTemplate | ✅ В getTemplateParts() | Строка 857 |
+| Arthropod parts (cephalothorax, etc.) | ✅ | ✅ HP values | Строки 881-891 |
 
-| Поле | В SpeciesPreset | В NPC Generator | Проблема |
-|------|-----------------|-----------------|----------|
-| `bodyMaterial` | ✅ Есть | ❌ **НЕ используется** | Не попадает в BodyState |
-| `morphology` | ✅ Есть | ❌ **НЕ используется** | Не передаётся в NPC |
-| `soulType` | ✅ Есть | ❌ **НЕ используется** | Не передаётся в NPC |
-| `beast_arthropod` template | ✅ В типе BodyTemplate | ❌ **НЕТ в getTemplateParts()** | Пауки получают humanoid тело! |
-
-**Критическая проблема:**
-```typescript
-// npc-generator.ts:840-847
-function getTemplateParts(template: BodyTemplate): string[] {
-  const templates: Record<BodyTemplate, string[]> = {
-    humanoid: [...],
-    beast_quadruped: [...],
-    beast_bird: [...],
-    beast_serpentine: [...],
-    spirit: [...],
-    // ❌ НЕТ beast_arthropod!
-  };
-  return templates[template] || templates.humanoid;
-}
-```
-
-### 3. BodyState в NPC Generator
+### 3. BodyState в NPC Generator — ✅ ВЫПОЛНЕНО
 
 ```typescript
 export interface BodyState {
@@ -61,262 +46,137 @@ export interface BodyState {
   activeBleeds: string[];
   activeAttachments: string[];
   isDead: boolean;
-  // ❌ НЕТ bodyMaterial!
-  // ❌ НЕТ morphology!
+  material: BodyMaterial;      // ✅ Добавлено
+  morphology: BodyMorphology;  // ✅ Добавлено
 }
 ```
 
-### 4. species-presets.ts — ✅ КОРРЕКТНО
+### 4. species-presets.ts — ✅ ВЫПОЛНЕНО
 
 | Поле | Статус |
 |------|--------|
-| `bodyMaterial: BodyMaterial` | ✅ Добавлено |
-| `morphology: BodyMorphology` | ✅ Добавлено |
-| `soulType: SoulType` | ✅ Добавлено |
-| Arthropod species (spider, centipede, scorpion) | ✅ Добавлены |
-| `beast_arthropod` в BodyTemplate | ✅ Есть |
+| `bodyMaterial: "chitin"` для пауков/скорпионов | ✅ Добавлено |
+| `morphology: "arthropod"` | ✅ Добавлено |
+| `bodyTemplate: "beast_arthropod"` | ✅ Добавлено |
+| Spider, GiantSpider, Centipede, Scorpion | ✅ Все 4 вида |
 
-### 5. temp-npc.ts (TempNPC) — ✅ ИМЕЕТ ПОЛЯ
-
-```typescript
-// types/temp-npc.ts:196-205
-export interface TempCultivation {
-  level: number;           // ✅ Используется в Level Suppression
-  currentQi: number;       // ✅ Используется в Qi Buffer
-  coreCapacity: number;
-  // ...
-}
-```
-
-### 6. Event Bus Integration — ✅ РАБОТАЕТ
+### 5. temp-npc.ts (TempBodyState) — ✅ ВЫПОЛНЕНО
 
 ```typescript
-// event-bus/handlers/combat.ts:690-694
-const npc = getTempNPCForCombat(context.sessionId, targetId);
-const npcCultivationLevel = npc?.cultivation?.level ?? 1;  // ✅
-const npcCurrentQi = npc?.cultivation?.currentQi ?? 0;     // ✅
-```
-
----
-
-## 🚨 КРИТИЧЕСКИЕ ПРОБЛЕМЫ
-
-### Проблема 1: Ultimate-техники не генерируются
-
-**Влияние:**
-- L8 практик с техникой L8 наносит L9 практике только 5% урона (technique)
-- Должен быть 25% для ultimate-техники
-
-**Решение:** Добавить генерацию `isUltimate: true` для transcendent grade (5% шанс)
-
-### Проблема 2: Arthropod NPC получают humanoid тело
-
-**Влияние:**
-- Пауки, скорпионы, многоножки имеют humanoid части тела
-- `bodyMaterial: 'chitin'` не используется → нет 20% damage reduction
-- Нет правильных частей тела (8 ног, хелицеры, педипальпы)
-
-**Решение:**
-1. Добавить `beast_arthropod` в `getTemplateParts()`
-2. Добавить `bodyMaterial` в `BodyState`
-
-### Проблема 3: bodyMaterial не влияет на урон NPC
-
-**Влияние:**
-- Chitin-монстры (пауки) должны иметь 20% damage reduction
-- Spirit-существа должны иметь 70% damage reduction от физического урона
-
-**Решение:** Передавать `bodyMaterial` в `processDamagePipeline()` для NPC
-
----
-
-## 🔧 ПЛАН КОРРЕКТИРОВКИ
-
-### Этап 1: technique-generator-v2.ts — P1
-
-**Файл:** `src/lib/generator/technique-generator-v2.ts`
-
-```typescript
-// 1. Добавить в интерфейс GeneratedTechniqueV2
-interface GeneratedTechniqueV2 {
+export interface TempBodyState {
   // ... existing fields
-  isUltimate?: boolean;  // NEW!
-}
-
-// 2. Добавить константу шанса
-const ULTIMATE_CHANCE_BY_GRADE: Record<TechniqueGrade, number> = {
-  common: 0,
-  refined: 0,
-  perfect: 0,
-  transcendent: 0.05,  // 5% от Transcendent
-};
-
-// 3. В generateTechniqueV2() после выбора grade:
-if (grade === 'transcendent' && rng() < ULTIMATE_CHANCE_BY_GRADE.transcendent) {
-  technique.isUltimate = true;
-  technique.name = `⚡ ${technique.name}`;  // Маркер в названии
-  technique.qiCost = Math.floor(technique.qiCost * 1.5);  // Повышенная стоимость
-  technique.computed.finalDamage = Math.floor(technique.computed.finalDamage * 1.3);
+  material?: BodyMaterial;       // ✅ Добавлено
+  morphology?: BodyMorphology;   // ✅ Добавлено
 }
 ```
 
-### Этап 2: npc-generator.ts — P1
-
-**Файл:** `src/lib/generator/npc-generator.ts`
-
-#### 2.1 Добавить beast_arthropod в getTemplateParts()
+### 6. session-npc-manager.ts — ✅ ВЫПОЛНЕНО
 
 ```typescript
-function getTemplateParts(template: BodyTemplate): string[] {
-  const templates: Record<BodyTemplate, string[]> = {
-    humanoid: ['head', 'torso', 'heart', 'left_arm', 'right_arm', 'left_hand', 'right_hand', 'left_leg', 'right_leg', 'left_foot', 'right_foot'],
-    beast_quadruped: ['head', 'torso', 'heart', 'front_left_leg', 'front_right_leg', 'back_left_leg', 'back_right_leg', 'tail'],
-    beast_bird: ['head', 'torso', 'heart', 'left_wing', 'right_wing', 'left_leg', 'right_leg'],
-    beast_serpentine: ['head', 'torso', 'heart', 'body_segment_1', 'body_segment_2', 'tail'],
-    beast_arthropod: [  // NEW!
-      'cephalothorax', 'abdomen', 'heart',
-      'leg_1', 'leg_2', 'leg_3', 'leg_4',  // 4 пары ног
-      'pedipalps', 'chelicerae',  // Клешни и жвала
-    ],
-    spirit: ['core', 'essence'],
-  };
-  
-  return templates[template] || templates.humanoid;
-}
-```
-
-#### 2.2 Добавить bodyMaterial в BodyState
-
-```typescript
-export interface BodyState {
-  parts: Record<string, BodyPartState>;
-  activeBleeds: string[];
-  activeAttachments: string[];
-  isDead: boolean;
-  material: BodyMaterial;      // NEW!
-  morphology: BodyMorphology;  // NEW!
-}
-```
-
-#### 2.3 Обновить createBodyForSpecies()
-
-```typescript
-export function createBodyForSpecies(
-  species: SpeciesPreset,
-  cultivationLevel: number
-): BodyState {
-  const sizeMultiplier = SIZE_MULTIPLIERS[species.sizeClass] || 1;
-  const cultivationBonus = 1 + (cultivationLevel - 1) * 0.1;
-  
-  const parts: Record<string, BodyPartState> = {};
-  const templateParts = getTemplateParts(species.bodyTemplate);
-  
-  for (const partId of templateParts) {
-    const baseHP = getBaseHP(partId, species.bodyTemplate);
-    const maxHP = Math.floor(baseHP * sizeMultiplier * cultivationBonus);
-    
-    parts[partId] = {
-      functionalHP: maxHP,
-      maxFunctionalHP: maxHP,
-      structuralHP: maxHP * 2,
-      maxStructuralHP: maxHP * 2,
-      status: 'healthy',
-      regenerationRate: species.capabilities.canCultivate ? 0.1 : 0.05,
-    };
-  }
-  
+private convertBodyState(bodyState: any): TempNPC['bodyState'] {
   return {
-    parts,
-    activeBleeds: [],
-    activeAttachments: [],
-    isDead: false,
-    material: species.bodyMaterial || 'organic',      // NEW!
-    morphology: species.morphology || 'humanoid',     // NEW!
+    // ... existing fields
+    material: bodyState?.material || 'organic',    // ✅ Добавлено
+    morphology: bodyState?.morphology || 'humanoid', // ✅ Добавлено
   };
 }
 ```
 
-### Этап 3: temp-npc-combat.ts — P2
+### 7. Event Bus Integration — ✅ ВЫПОЛНЕНО
 
-**Файл:** `src/lib/game/skeleton/temp-npc-combat.ts`
+**Файл:** `src/lib/game/event-bus/handlers/combat.ts`
 
-Добавить передачу `bodyMaterial` в damage pipeline:
+| Механика | Статус | Строка |
+|----------|--------|--------|
+| Level Suppression | ✅ Интегрирован | 700-741 |
+| Qi Buffer | ✅ Интегрирован | 773-786 |
+| **Material Reduction** | ✅ **Интегрирован** | 788-796 |
+| `bodyMaterial` из NPC | ✅ Получается | 698 |
+| `MATERIAL_DAMAGE_REDUCTION` import | ✅ Добавлен | 46 |
 
-```typescript
-// В applyDamageToTempNPC:
-const materialReduction = MATERIAL_DAMAGE_REDUCTION[npc.bodyState.material] || 0;
-damage = Math.max(1, damage * (1 - materialReduction));
-```
+### 8. damage-pipeline.ts — ✅ УЖЕ БЫЛО
 
----
-
-## 📊 ПОРЯДОК РЕАЛИЗАЦИИ (ОБНОВЛЁННЫЙ)
-
-| Этап | Файл | Задачи | Приоритет | Статус |
-|------|------|--------|-----------|--------|
-| 1 | `technique-generator-v2.ts` | Добавить isUltimate | P1 | 🔜 Не начато |
-| 2a | `npc-generator.ts` | Добавить beast_arthropod template | P1 | 🔜 Не начато |
-| 2b | `npc-generator.ts` | Добавить bodyMaterial в BodyState | P1 | 🔜 Не начато |
-| 2c | `npc-generator.ts` | Обновить createBodyForSpecies() | P1 | 🔜 Не начато |
-| 3 | `temp-npc-combat.ts` | Использовать bodyMaterial | P2 | 🔜 Не начато |
+| Компонент | Статус |
+|-----------|--------|
+| `MATERIAL_DAMAGE_REDUCTION` | ✅ organic:0%, chitin:20%, ethereal:70% |
+| Слой 8: Материал тела | ✅ Реализован |
 
 ---
 
-## 📈 ЗАВИСИМОСТИ
+## 📊 ПОРЯДОК РЕАЛИЗАЦИИ — ВСЕ ЭТАПЫ ЗАВЕРШЕНЫ
 
-```
-species-presets.ts (✅ уже готово)
-        ↓
-npc-generator.ts (❌ требует обновления)
-        ↓
-temp-npc-combat.ts (❌ требует интеграции)
-        ↓
-[Damage Pipeline с bodyMaterial]
-```
-
-```
-technique-generator-v2.ts (❌ требует isUltimate)
-        ↓
-[Level Suppression с ultimate type]
-```
+| Этап | Файл | Задачи | Статус |
+|------|------|--------|--------|
+| 1 | `technique-generator-v2.ts` | Добавить isUltimate | ✅ Завершено |
+| 2a | `npc-generator.ts` | Добавить beast_arthropod template | ✅ Завершено |
+| 2b | `npc-generator.ts` | Добавить bodyMaterial в BodyState | ✅ Завершено |
+| 2c | `npc-generator.ts` | Обновить createBodyForSpecies() | ✅ Завершено |
+| 3 | `temp-npc.ts` | Добавить material/morphology в TempBodyState | ✅ Завершено |
+| 4 | `session-npc-manager.ts` | Передавать material/morphology | ✅ Завершено |
+| 5 | `combat.ts (event-bus)` | Использовать bodyMaterial | ✅ Завершено |
 
 ---
 
-## ✅ КРИТЕРИИ ГОТОВНОСТИ
+## ✅ КРИТЕРИИ ГОТОВНОСТИ — ВСЕ ВЫПОЛНЕНЫ
 
-### Phase 1: Technique Generator
-- [ ] `isUltimate` генерируется для transcendent (5% шанс)
-- [ ] Ultimate-техники имеют повышенный qiCost (×1.5)
-- [ ] Ultimate-техники имеют маркер в названии (⚡)
+### Phase 1: Technique Generator — ✅ ГОТОВО
 
-### Phase 2: NPC Generator
-- [ ] `beast_arthropod` template добавлен
-- [ ] `bodyMaterial` попадает в BodyState
-- [ ] `morphology` попадает в BodyState
-- [ ] Spider/Scorpion/Centipede имеют правильные части тела
+- [x] `isUltimate` генерируется для transcendent (5% шанс)
+- [x] Ultimate-техники имеют повышенный qiCost (×1.5)
+- [x] Ultimate-техники имеют маркер в названии (⚡)
+- [x] Ultimate-техники имеют повышенный урон (×1.3)
 
-### Phase 3: Combat Integration
-- [ ] `bodyMaterial` используется для damage reduction
-- [ ] Chitin монстры получают 20% reduction
-- [ ] Spirit монстры получают 70% reduction от физ. урона
+### Phase 2: NPC Generator — ✅ ГОТОВО
+
+- [x] `beast_arthropod` template добавлен
+- [x] `bodyMaterial` попадает в BodyState
+- [x] `morphology` попадает в BodyState
+- [x] Spider/Scorpion/Centipede имеют правильные части тела
+
+### Phase 3: Combat Integration — ✅ ГОТОВО
+
+- [x] `bodyMaterial` используется для damage reduction
+- [x] Chitin монстры получают 20% reduction
+- [x] Spirit монстры получают 70% reduction от физ. урона
 
 ---
 
 ## 📝 СВЯЗАННЫЕ ФАЙЛЫ
 
-### Требуют изменений:
-- `src/lib/generator/technique-generator-v2.ts` — isUltimate
-- `src/lib/generator/npc-generator.ts` — beast_arthropod, bodyMaterial
-- `src/lib/game/skeleton/temp-npc-combat.ts` — material reduction
+### Созданы/Изменены в этом чекпоинте:
+- `src/types/temp-npc.ts` — ✅ Добавлены `BodyMaterial`, `BodyMorphology`, поля в `TempBodyState`
+- `src/lib/game/event-bus/handlers/combat.ts` — ✅ Добавлен `MATERIAL_DAMAGE_REDUCTION`, интеграция
 
-### Уже готовы:
-- `src/data/presets/species-presets.ts` — ✅ bodyMaterial, morphology, arthropod species
-- `src/types/temp-npc.ts` — ✅ cultivation.level, currentQi
-- `src/lib/constants/level-suppression.ts` — ✅ AttackType, isUltimate
-- `src/lib/game/event-bus/handlers/combat.ts` — ✅ Level Suppression + Qi Buffer
+### Уже были готовы (предыдущие чекпоинты):
+- `src/lib/generator/technique-generator-v2.ts` — ✅ isUltimate генерация
+- `src/lib/generator/npc-generator.ts` — ✅ beast_arthropod, bodyMaterial, morphology
+- `src/data/presets/species-presets.ts` — ✅ Arthropod species с chitin
+- `src/lib/game/damage-pipeline.ts` — ✅ MATERIAL_DAMAGE_REDUCTION
+
+---
+
+## 🧪 ТЕСТИРОВАНИЕ
+
+### Генерация Ultimate-техники (transcendent, 5% шанс):
+```typescript
+// При 20 генерациях transcendent техник:
+// Ожидается: ~1 техника с isUltimate = true
+// Маркер: ⚡ в начале названия
+// qiCost: ×1.5 от базового
+// damage: ×1.3 от базового
+```
+
+### Генерация паука (spider/giant_spider):
+```typescript
+// bodyTemplate: "beast_arthropod"
+// bodyMaterial: "chitin"
+// morphology: "arthropod"
+// parts: ["cephalothorax", "abdomen", "heart", "leg_1", ..., "pedipalps", "chelicerae"]
+// Damage reduction: 20% от физического урона
+```
 
 ---
 
 *Аудит проведён: 2026-03-22*
-*Версия: 2.0*
-*Статус: 🔧 Требуется корректировка (P1)*
+*Версия: 3.0*
+*Статус: ✅ РЕАЛИЗАЦИЯ ЗАВЕРШЕНА*

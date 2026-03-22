@@ -36,6 +36,7 @@ import {
   type SizeClass,
   type Range,
 } from '@/data/presets';
+import type { BodyMaterial, BodyMorphology } from '@/types/entity-types';
 import {
   getQiDensity,
   calculateCoreCapacity,
@@ -157,6 +158,10 @@ export interface BodyState {
   activeBleeds: string[];
   activeAttachments: string[];
   isDead: boolean;
+  /** Материал тела (organic, chitin, ethereal, etc.) */
+  material: BodyMaterial;
+  /** Морфология тела (humanoid, arthropod, etc.) */
+  morphology: BodyMorphology;
 }
 
 /**
@@ -826,11 +831,17 @@ export function createBodyForSpecies(
     };
   }
   
+  // Получаем материал и морфологию из пресета вида
+  const material: BodyMaterial = species.bodyMaterial || 'organic';
+  const morphology: BodyMorphology = species.morphology || 'humanoid';
+  
   return {
     parts,
     activeBleeds: [],
     activeAttachments: [],
     isDead: false,
+    material,
+    morphology,
   };
 }
 
@@ -843,6 +854,7 @@ function getTemplateParts(template: BodyTemplate): string[] {
     beast_quadruped: ['head', 'torso', 'heart', 'front_left_leg', 'front_right_leg', 'back_left_leg', 'back_right_leg', 'tail'],
     beast_bird: ['head', 'torso', 'heart', 'left_wing', 'right_wing', 'left_leg', 'right_leg'],
     beast_serpentine: ['head', 'torso', 'heart', 'body_segment_1', 'body_segment_2', 'tail'],
+    beast_arthropod: ['cephalothorax', 'abdomen', 'heart', 'leg_1', 'leg_2', 'leg_3', 'leg_4', 'pedipalps', 'chelicerae'],
     spirit: ['core', 'essence'],
   };
   
@@ -865,8 +877,20 @@ function getBaseHP(partId: string, template: BodyTemplate): number {
     tail: 30,
     core: 100,
     essence: 200,
+    // Arthropod parts
+    cephalothorax: 80,  // Головогрудь (аналог торса)
+    abdomen: 70,        // Брюшко
+    pedipalps: 25,      // Педипальпы (клешни)
+    chelicerae: 30,     // Хелицеры (жвала)
   };
   
+  // Arthropod-specific mappings
+  if (partId === 'cephalothorax') return baseHP.cephalothorax;
+  if (partId === 'abdomen') return baseHP.abdomen;
+  if (partId === 'pedipalps') return baseHP.pedipalps;
+  if (partId === 'chelicerae') return baseHP.chelicerae;
+  
+  // Generic mappings
   if (partId.includes('arm') || partId.includes('wing')) return baseHP.arm;
   if (partId.includes('hand') || partId.includes('foot')) return baseHP.hand;
   if (partId.includes('leg')) return baseHP.leg;

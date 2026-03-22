@@ -156,6 +156,8 @@ export interface GeneratedTechniqueV2 {
   element: TechniqueElement;
   level: number;
   grade: TechniqueGrade;
+  /** Является ли техника Ultimate (пробивает +4 уровня) */
+  isUltimate?: boolean;
 
   // Базовые параметры (Слой 1)
   /** Затраты Ци = baseCapacity × 2^(level-1) */
@@ -253,6 +255,27 @@ function roundTo(value: number, decimals: number): number {
 }
 
 // ==================== ГЕНЕРАЦИЯ GRADE ====================
+
+/**
+ * Шанс генерации Ultimate-техники по Grade
+ * Ultimate-техники получают 25% множитель вместо 5% для technique при Level Suppression
+ */
+const ULTIMATE_CHANCE_BY_GRADE: Record<TechniqueGrade, number> = {
+  common: 0,
+  refined: 0,
+  perfect: 0,
+  transcendent: 0.05,  // 5% шанс для Transcendent
+};
+
+/**
+ * Множитель урона для Ultimate-техник
+ */
+const ULTIMATE_DAMAGE_MULTIPLIER = 1.3;
+
+/**
+ * Множитель стоимости Ци для Ultimate-техник
+ */
+const ULTIMATE_QI_COST_MULTIPLIER = 1.5;
 
 /**
  * Выбор Grade по распределению
@@ -450,6 +473,14 @@ export function generateTechniqueV2(options: {
   const gradeDamageMult = GRADE_DAMAGE_MULTIPLIERS[grade];
   const gradeIndex = TECHNIQUE_GRADE_ORDER.indexOf(grade);
 
+  // === ULTIMATE-ГЕНЕРАЦИЯ ===
+  // 5% шанс для transcendent grade стать Ultimate-техникой
+  let isUltimate = false;
+  const ultimateChance = ULTIMATE_CHANCE_BY_GRADE[grade];
+  if (ultimateChance > 0 && rng() < ultimateChance) {
+    isUltimate = true;
+  }
+
   // === СЛОЙ 3: СПЕЦИАЛИЗАЦИЯ ===
   let baseRange = 5; // Базовая дальность
 
@@ -483,11 +514,21 @@ export function generateTechniqueV2(options: {
   
   if (capacity !== null) {
     finalDamage = calculateDamage(capacity, gradeDamageMult);
-    formula = `${capacity} × ${gradeDamageMult} = ${finalDamage}`;
+    
+    // Ultimate-техники имеют повышенный урон
+    if (isUltimate) {
+      finalDamage = Math.floor(finalDamage * ULTIMATE_DAMAGE_MULTIPLIER);
+      formula = `${capacity} × ${gradeDamageMult} × ${ULTIMATE_DAMAGE_MULTIPLIER}(ult) = ${finalDamage}`;
+    } else {
+      formula = `${capacity} × ${gradeDamageMult} = ${finalDamage}`;
+    }
   }
 
-  // qiCost НЕ зависит от Grade
-  const finalQiCost = baseQiCost;
+  // qiCost НЕ зависит от Grade, НО Ultimate-техники требуют больше Ци
+  let finalQiCost = baseQiCost;
+  if (isUltimate) {
+    finalQiCost = Math.floor(baseQiCost * ULTIMATE_QI_COST_MULTIPLIER);
+  }
   const finalRange = roundTo(baseRange, 1);
 
   // === ЭФФЕКТЫ ===
@@ -513,10 +554,17 @@ export function generateTechniqueV2(options: {
   }
 
   // === НАЗВАНИЕ И ОПИСАНИЕ ===
-  const { name, nameEn } = generateName(type, validElement, level, rng);
+  let { name, nameEn } = generateName(type, validElement, level, rng);
+  
+  // Ultimate-техники получают маркер в названии
+  if (isUltimate) {
+    name = `⚡ ${name}`;
+    nameEn = `⚡ ${nameEn}`;
+  }
+  
   const description = `${name} — техника ${type === 'combat' ? actualSubtype : type} ` +
     `${validElement === 'neutral' ? '' : `элемента ${validElement} `}уровня ${level}. ` +
-    `Grade: ${grade}. Урон: ${finalDamage}. Дальность: ${finalRange}м.`;
+    `Grade: ${grade}.${isUltimate ? ' ULTIMATE!' : ''} Урон: ${finalDamage}. Дальность: ${finalRange}м.`;
 
   // === ТРЕБОВАНИЯ ===
   const minCultivationLevel = Math.max(1, level - 1);
@@ -547,6 +595,7 @@ export function generateTechniqueV2(options: {
     element: validElement,
     level,
     grade,
+    isUltimate: isUltimate || undefined,
     qiCost: finalQiCost,
     baseQiCost,
     baseDamage,

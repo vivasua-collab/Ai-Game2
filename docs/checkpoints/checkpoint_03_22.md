@@ -1,8 +1,8 @@
 # 📋 План: 22 марта 2026
 
-**Дата:** 2026-03-22 10:03 UTC
-**Версия:** 4.0
-**Статус:** ✅ Фаза 1 (Body_update) завершена, Фаза 2 (Combat) завершена
+**Дата:** 2026-03-22 14:30 UTC
+**Версия:** 5.0
+**Статус:** ✅ Фаза 1-3 завершены (Body_update, Combat, Generators)
 
 ---
 
@@ -39,10 +39,11 @@
 | isTargetImmune() | ✅ Проверка иммунитета |
 
 ### Задача 3: Ultimate-техники
-**Статус:** ✅ ЗАВЕРШЕНО (Документация + Код)
+**Статус:** ✅ ЗАВЕРШЕНО (Документация + Код + Генератор)
 **Файлы:** 
 - Документация: `docs/technique-system-v2.md`
 - Код: `src/types/technique-types.ts`, `src/types/game.ts`
+- Генератор: `src/lib/generator/technique-generator-v2.ts`
 
 | Компонент | Описание |
 |-----------|----------|
@@ -51,6 +52,10 @@
 | Иммунитет | Только при +5 уровнях разницы |
 | isUltimateTechnique() | ✅ Функция реализована |
 | determineAttackType() | ✅ Определение типа атаки |
+| ULTIMATE_CHANCE_BY_GRADE | ✅ 5% шанс для transcendent |
+| ULTIMATE_DAMAGE_MULTIPLIER | ✅ ×1.3 урон |
+| ULTIMATE_QI_COST_MULTIPLIER | ✅ ×1.5 стоимость |
+| Маркер ⚡ в названии | ✅ Добавляется |
 
 ### Задача 4: Qi Buffer 90%
 **Статус:** ✅ ЗАВЕРШЕНО (Документация + Код)
@@ -99,6 +104,21 @@
 | Qi Buffer 90% | ✅ Интегрировано |
 | meridianBuffer deprecated | ✅ Только для физ. атак |
 
+### Задача 8: Генераторы (Фаза 3) — ✅ ЗАВЕРШЕНО
+**Файл:** `docs/checkpoints/checkpoint_03_22_Generators.md`
+
+| Компонент | Файл | Статус |
+|-----------|------|--------|
+| isUltimate генерация | technique-generator-v2.ts | ✅ 5% для transcendent |
+| beast_arthropod template | npc-generator.ts | ✅ Добавлен |
+| bodyMaterial в BodyState | npc-generator.ts | ✅ Добавлен |
+| morphology в BodyState | npc-generator.ts | ✅ Добавлен |
+| Arthropod parts HP | npc-generator.ts | ✅ Определены |
+| material в TempBodyState | temp-npc.ts | ✅ Добавлен |
+| morphology в TempBodyState | temp-npc.ts | ✅ Добавлен |
+| Material в convertBodyState | session-npc-manager.ts | ✅ Передаётся |
+| MATERIAL_DAMAGE_REDUCTION в combat | event-bus/handlers/combat.ts | ✅ Интегрирован |
+
 ---
 
 ## 📊 ТЕКУЩЕЕ СОСТОЯНИЕ СИСТЕМ
@@ -142,6 +162,8 @@
 | Qi Buffer 90% | ✅ Реализовано | body_review + body_armor + код |
 | Level Suppression | ✅ Реализовано | body_armor + technique-system-v2 + NPC + код |
 | Core Capacity | ✅ Согласовано | 1000 × 1.1^totalLevels |
+| Ultimate генерация | ✅ Реализовано | 5% для transcendent |
+| Arthropod NPC | ✅ Реализовано | chitin материал, 20% reduction |
 
 ---
 
@@ -173,10 +195,13 @@
 │  ├── Qi Buffer                 — ✅ Работает в Event Bus             │
 │  └── UI компоненты             — 🔜 Не начато                        │
 │                                                                      │
-│  ФАЗА 3: GENERATORS — 🔜 НЕ НАЧАТО                                   │
-│  ├── body-generator.ts         — Генерация тел по Species           │
-│  ├── npc-body-generator.ts     — Генерация тел NPC                  │
-│  └── monster-body-generator.ts — Генерация тел монстров             │
+│  ФАЗА 3: GENERATORS — ✅ ЗАВЕРШЕНО                                   │
+│  ├── technique-generator-v2.ts — ✅ isUltimate генерация             │
+│  ├── npc-generator.ts          — ✅ beast_arthropod, bodyMaterial    │
+│  ├── species-presets.ts        — ✅ Arthropod species (spider, etc.) │
+│  ├── temp-npc.ts               — ✅ material, morphology поля        │
+│  ├── session-npc-manager.ts    — ✅ Передача material/morphology     │
+│  └── combat.ts (event-bus)     — ✅ Material reduction интегрирован  │
 │                                                                      │
 │  ФАЗА 4: UI — 🔜 НЕ НАЧАТО                                           │
 │  ├── BodyDoll-v2.tsx           — Обновлённый UI тела               │
@@ -194,7 +219,7 @@
 |------|------------|--------|
 | `checkpoint_03_22.md` | Общий план (этот файл) | ✅ Обновлён |
 | `checkpoint_03_22_Body_update.md` | Детальный план систем тела | ✅ Завершён |
-| `checkpoint_03_22_Generators.md` | План генераторов | 📋 Создать |
+| `checkpoint_03_22_Generators.md` | План генераторов | ✅ Завершён (v3.0) |
 | `checkpoint_03_22_Combat.md` | План боевой системы | ✅ Завершён (v3.0) |
 | `checkpoint_03_22_UI.md` | План UI обновлений | 📋 Создать |
 
@@ -230,6 +255,11 @@
 | `src/lib/game/npc-damage-calculator.ts` | Level Suppression + Qi Buffer | ✅ Изменён |
 | `src/types/technique-types.ts` | AttackType, isUltimate | ✅ Изменён |
 | `src/types/game.ts` | isUltimate в Technique | ✅ Изменён |
+| `src/types/temp-npc.ts` | BodyMaterial, BodyMorphology | ✅ Изменён |
+| `src/lib/generator/technique-generator-v2.ts` | Ultimate генерация | ✅ Изменён |
+| `src/lib/generator/npc-generator.ts` | beast_arthropod, material | ✅ Изменён |
+| `src/lib/game/session-npc-manager.ts` | material/morphology передача | ✅ Изменён |
+| `src/lib/game/event-bus/handlers/combat.ts` | Material reduction | ✅ Изменён |
 
 ---
 
@@ -250,8 +280,9 @@
 2. Уклонение (50% кап) — не получить удар
 3. Щит-техника (100%) — 0 урона в HP
 4. Сырая Ци (90%) — ✅ снижение урона, 10% пробитие
-5. Броня (DR%) — дополнительное снижение
-6. HP тела — последний рубеж
+5. Материал тела — ✅ chitin 20%, ethereal 70%
+6. Броня (DR%) — дополнительное снижение
+7. HP тела — последний рубеж
 ```
 
 ---
@@ -275,7 +306,10 @@
    - ✅ Qi Buffer 90% смягчает проблему
 
 2. **Ultimate-техники** — могут быть слишком сильными
-   - ✅ Редкость генерации, высокая стоимость Ци
+   - ✅ Редкость генерации (5%), высокая стоимость Ци (×1.5)
+
+3. **Arthropod (chitin)** — 20% reduction может быть слабым
+   - ✅ Дополнительно: ethereal 70%, mineral 50%
 
 ---
 
@@ -293,6 +327,10 @@
 | 10:00 | Интеграция npc-damage-calculator.ts | ✅ Завершено |
 | 10:03 | Аудит и интеграция Event Bus | ✅ Завершено |
 | 10:15 | Обновление чекпоинтов | ✅ Завершено |
+| 14:00 | Аудит Generators чекпоинта | ✅ Завершено |
+| 14:15 | Добавление material в TempBodyState | ✅ Завершено |
+| 14:20 | Интеграция MATERIAL_DAMAGE_REDUCTION | ✅ Завершено |
+| 14:30 | Обновление чекпоинтов | ✅ Завершено |
 | --:-- | UI компоненты | ⏳ Ожидание |
 
 ---
@@ -303,11 +341,12 @@
 |----------|--------|-----------|
 | `checkpoint_03_22_Body_update.md` | ✅ ЗАВЕРШЁН | Phase 1-5 |
 | `checkpoint_03_22_Combat.md` | ✅ ЗАВЕРШЁН | Phase 1-8 (Event Bus интегрирован) |
+| `checkpoint_03_22_Generators.md` | ✅ ЗАВЕРШЁН | Все 5 этапов |
 
 ### Lint статус: ✅ 0 ошибок, 3 warnings (предсуществующие)
 
 ---
 
 *План создан: 2026-03-22 06:00 UTC*
-*Обновлён: 2026-03-22 10:30 UTC*
-*Статус: ✅ Фаза 1 (Body_update) завершена*
+*Обновлён: 2026-03-22 14:30 UTC*
+*Статус: ✅ Фаза 1-3 завершены (Body_update, Combat, Generators)*

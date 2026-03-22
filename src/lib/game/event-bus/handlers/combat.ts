@@ -42,6 +42,9 @@ import {
   processQiDamage,
   type QiDamageResult,
 } from '@/lib/game/qi-buffer';
+import {
+  MATERIAL_DAMAGE_REDUCTION,
+} from '@/lib/game/damage-pipeline';
 import { determineAttackType } from '@/types/technique-types';
 
 // ==================== ИМПОРТ КОНСТАНТ ====================
@@ -692,6 +695,7 @@ async function handleTempNPCDamageEvent(
     const npcCultivationLevel = npc?.cultivation?.level ?? 1;
     const npcCurrentQi = npc?.cultivation?.currentQi ?? 0;
     const npcMaxQi = npc?.cultivation?.coreCapacity ?? 100;
+    const npcBodyMaterial = npc?.bodyState?.material ?? 'organic';
     
     // === LEVEL SUPPRESSION ===
     const playerCultivationLevel = session.character.cultivationLevel ?? 1;
@@ -779,6 +783,16 @@ async function handleTempNPCDamageEvent(
       
       // TODO: Обновить Ци NPC через sessionNPCManager
       context.log('info', `NPC Qi Buffer: absorbed ${qiBufferResult.absorbedDamage}, remaining ${damage}`);
+    }
+    
+    // === МАТЕРИАЛ ТЕЛА NPC ===
+    // Chitin (пауки, скорпионы) - 20% снижение
+    // Ethereal (духи) - 70% снижение физического урона
+    const materialReduction = MATERIAL_DAMAGE_REDUCTION[npcBodyMaterial] || 0;
+    if (materialReduction > 0 && damage > 0) {
+      const reducedDamage = Math.floor(damage * (1 - materialReduction));
+      context.log('info', `Material reduction (${npcBodyMaterial}): ${damage} -> ${reducedDamage} (-${Math.round(materialReduction * 100)}%)`);
+      damage = Math.max(1, reducedDamage);
     }
     
     const finalDamage = Math.floor(damage);
@@ -882,6 +896,9 @@ async function handleTempNPCDamageEvent(
     if (qiBufferResult && qiBufferResult.bufferActivated) {
       damageMessage += ` [Ци: -${Math.floor(qiBufferResult.qiConsumed)}]`;
     }
+    if (materialReduction > 0) {
+      damageMessage += ` [${npcBodyMaterial}: -${Math.round(materialReduction * 100)}%]`;
+    }
 
     return {
       success: true,
@@ -900,6 +917,9 @@ async function handleTempNPCDamageEvent(
         levelSuppression: suppressionResult,
         // Данные о Qi Buffer
         qiBuffer: qiBufferResult,
+        // Данные о материале тела
+        bodyMaterial: npcBodyMaterial,
+        materialReduction,
       },
       message: combatResult.isDead 
         ? `${targetId} уничтожен! XP: ${combatResult.xp}`

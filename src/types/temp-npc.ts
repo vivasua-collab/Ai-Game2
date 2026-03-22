@@ -205,6 +205,16 @@ export interface TempCultivation {
 }
 
 /**
+ * Материал тела (для снижения урона)
+ */
+export type BodyMaterial = 'organic' | 'scaled' | 'chitin' | 'ethereal' | 'mineral' | 'chaos';
+
+/**
+ * Морфология тела
+ */
+export type BodyMorphology = 'humanoid' | 'quadruped' | 'bird' | 'serpentine' | 'arthropod' | 'amorphous';
+
+/**
  * Состояние тела (упрощённое для статистов)
  */
 export interface TempBodyState {
@@ -221,6 +231,10 @@ export interface TempBodyState {
   
   // Активные эффекты
   activeEffects: TempActiveEffect[];
+  
+  // Материал и морфология (для расчёта урона)
+  material?: BodyMaterial;       // organic, chitin, ethereal, etc.
+  morphology?: BodyMorphology;   // humanoid, arthropod, etc.
 }
 
 export interface TempBodyPart {

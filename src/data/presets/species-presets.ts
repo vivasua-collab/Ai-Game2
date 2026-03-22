@@ -835,7 +835,10 @@ const BEAST_SPECIES: SpeciesPreset[] = [
     category: "basic",
     rarity: "common",
     type: "beast",
+    soulType: "creature",
+    morphology: "arthropod",
     subtype: "arachnid",
+    bodyMaterial: "chitin",
     baseStats: {
       strength: { min: 2, max: 10 },
       agility: { min: 8, max: 30 },
@@ -878,7 +881,10 @@ const BEAST_SPECIES: SpeciesPreset[] = [
     category: "advanced",
     rarity: "uncommon",
     type: "beast",
+    soulType: "creature",
+    morphology: "arthropod",
     subtype: "arachnid",
+    bodyMaterial: "chitin",
     baseStats: {
       strength: { min: 15, max: 50 },
       agility: { min: 20, max: 60 },
@@ -922,7 +928,10 @@ const BEAST_SPECIES: SpeciesPreset[] = [
     category: "basic",
     rarity: "common",
     type: "beast",
+    soulType: "creature",
+    morphology: "arthropod",
     subtype: "myriapod",
+    bodyMaterial: "chitin",
     baseStats: {
       strength: { min: 3, max: 15 },
       agility: { min: 6, max: 25 },
@@ -965,7 +974,10 @@ const BEAST_SPECIES: SpeciesPreset[] = [
     category: "basic",
     rarity: "uncommon",
     type: "beast",
+    soulType: "creature",
+    morphology: "arthropod",
     subtype: "arachnid",
+    bodyMaterial: "chitin",
     baseStats: {
       strength: { min: 5, max: 25 },
       agility: { min: 5, max: 20 },
