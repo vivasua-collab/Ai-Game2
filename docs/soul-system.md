@@ -1,9 +1,19 @@
 # 👻 Система Объектов Мира (World Objects System)
 
-**Версия:** 3.0
+**Версия:** 4.0
 **Создано:** 2026-03-06
-**Обновлено:** 2026-03-11
-**Статус:** 🔄 В процессе внедрения
+**Обновлено:** 2026-03-22
+**Статус:** 📋 Единый источник истины о типах сущностей
+
+---
+
+## ⚠️ ВАЖНОЕ ПРАВИЛО
+
+> **Этот документ — ЕДИНСТВЕННЫЙ источник истины о типах сущностей.**
+> 
+> Все остальные документы (body_review, body_monsters) должны соответствовать этой классификации.
+> 
+> **Иерархия:** SoulType (первичный) → Morphology (вторичный) → Species (конкретный)
 
 ---
 
@@ -37,9 +47,65 @@
 
 ---
 
-## 1️⃣ SoulEntity (Живые объекты)
+## 1️⃣ Иерархия Типов Сущностей
 
-### Архитектура
+### 1.1 Трёхуровневая система
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    ИЕРАРХИЯ ТИПОВ СУЩНОСТЕЙ                             │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                         │
+│  УРОВЕНЬ 1: SoulType (soul-system.md) — ПЕРВИЧНЫЙ                       │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │ Определяет: Структура сущности (Body + Qi + Mind)               │   │
+│  │ Значения: character | creature | spirit | artifact | construct  │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                              │                                          │
+│                              ▼                                          │
+│  УРОВЕНЬ 2: Morphology (body_review.md) — ВТОРИЧНЫЙ                     │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │ Определяет: Внешняя форма тела                                   │   │
+│  │ Значения: humanoid | quadruped | bird | serpentine | amorphous  │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                              │                                          │
+│                              ▼                                          │
+│  УРОВЕНЬ 3: Species (species-presets.ts) — КОНКРЕТНЫЙ                   │
+│  ┌─────────────────────────────────────────────────────────────────┐   │
+│  │ Определяет: Конкретный вид с уникальными характеристиками        │   │
+│  │ Значения: human | elf | wolf | dragon | ghost | golem | ...     │   │
+│  └─────────────────────────────────────────────────────────────────┘   │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+### 1.2 Примеры классификации
+
+| Species | SoulType (L1) | Morphology (L2) | Material |
+|---------|---------------|-----------------|----------|
+| Человек | `character` | `humanoid` | `organic` |
+| Эльф | `character` | `humanoid` | `organic` |
+| Демон | `character` | `humanoid` | `organic` |
+| Великан | `character` | `humanoid` | `organic` |
+| Волк | `creature` | `quadruped` | `organic` |
+| Тигр | `creature` | `quadruped` | `organic` |
+| Дракон | `creature` | `quadruped` | `scaled` |
+| Феникс | `creature` | `bird` | `scaled` |
+| Змея | `creature` | `serpentine` | `scaled` |
+| Призрак | `spirit` | `amorphous` | `ethereal` |
+| Элементаль | `spirit` | `amorphous` | `ethereal` |
+| Небесный дух | `spirit` | `amorphous` | `ethereal` |
+| Голем | `construct` | `humanoid` | `mineral` |
+| Кентавр | `character` | `hybrid_centaur` | `organic` |
+| Русалка | `character` | `hybrid_mermaid` | `organic` |
+| Оборотень | `character` | `humanoid` | `organic` |
+| Хаос | `spirit` | `amorphous` | `chaos` |
+
+---
+
+## 2️⃣ SoulEntity (Живые объекты)
+
+### 2.1 Архитектура
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -62,31 +128,84 @@
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Типы живых объектов
+### 2.2 Типы SoulType (УРОВЕНЬ 1)
 
-| Тип | Body | Qi | Mind | Примеры |
-|-----|------|-----|------|---------|
-| `character` | ✅ organic | ✅ core | ✅ full | Игрок, NPC |
-| `creature` | ✅ organic | ✅ core | ⚠️ instinct | Монстры |
-| `spirit` | ❌/ethereal | ✅ reservoir | ✅ full | Духи, призраки |
-| `artifact` | ✅ mineral | ✅ reservoir | ⚠️ simple | Разумный меч |
-| `construct` | ✅ construct | ✅ reservoir | ⚠️ simple | Голем |
+| SoulType | Body | Qi | Mind | Описание | Примеры |
+|----------|------|-----|------|----------|---------|
+| `character` | ✅ organic | ✅ core | ✅ full | Разумные существа | Игрок, NPC, Эльф, Демон |
+| `creature` | ✅ organic/scaled | ✅ core | ⚠️ instinct | Животные, звери | Волк, Тигр, Дракон |
+| `spirit` | ❌ / ethereal | ✅ reservoir | ✅ full | Бесплотные сущности | Призрак, Элементаль |
+| `artifact` | ✅ mineral | ✅ reservoir | ⚠️ simple | Разумные предметы | Разумный меч |
+| `construct` | ✅ construct/mineral | ✅ reservoir | ⚠️ simple | Искусственные создания | Голем |
 
-### Реализация
+### 2.3 Материалы тела
 
-**Файлы:**
-- `src/types/soul-entity.ts` — TypeScript интерфейсы
-- `src/lib/game/soul-factory.ts` — Фабрика создания
-- `src/lib/game/controller-service.ts` — Управление контроллером
+```typescript
+/**
+ * Материал тела сущности
+ * 
+ * Определяет физические свойства и уязвимости.
+ */
+export type BodyMaterial = 
+  | 'organic'    // Органика (плоть) — базовый для character, creature
+  | 'scaled'     // Чешуя — подтип organic для рептилий, драконов
+  | 'ethereal'   // Эфир — для духов, бесплотных
+  | 'mineral'    // Минерал — камень, кристалл
+  | 'construct'  // Конструкт — сборное тело (разные материалы)
+  | 'chaos';     // Хаос — аномалии, нестабильная материя
+```
 
-**База данных:**
-- `prisma/schema.prisma` → модель `SoulEntity`
+#### Характеристики материалов
+
+| Материал | Твёрдость | Снижение урона | Особенности |
+|----------|-----------|----------------|-------------|
+| `organic` | 3 | 0% | Базовый материал |
+| `scaled` | 6 | 30% | Чешуя, защита от физики |
+| `ethereal` | 1 | 70% физики | Проходит сквозь материю |
+| `mineral` | 8 | 50% | Камень, очень твёрдый |
+| `construct` | 5-8 | 30-50% | Зависит от материалов |
+| `chaos` | 5 | переменно | Непредсказуемые свойства |
 
 ---
 
-## 2️⃣ PhysicalObject (Неживые объекты)
+## 3️⃣ Morphology (УРОВЕНЬ 2)
 
-### Архитектура
+### 3.1 Типы морфологии
+
+```typescript
+/**
+ * Морфология тела — внешняя форма
+ * 
+ * ВТОРИЧНЫЙ уровень классификации после SoulType.
+ * Определяет структуру частей тела.
+ */
+export type BodyMorphology = 
+  | 'humanoid'         // Двурукое двуногое
+  | 'quadruped'        // Четвероногое
+  | 'bird'             // Крылатое (птица)
+  | 'serpentine'       // Змееподобное
+  | 'amorphous'        // Бесформенное (духи)
+  | 'hybrid_centaur'   // Кентавр (человеческий торс + лошадиное тело)
+  | 'hybrid_mermaid'   // Русалка (человеческий торс + рыбий хвост)
+  | 'hybrid_harpy'     // Гарпия (крылья вместо рук)
+  | 'hybrid_lamia';    // Ламия (человеческий торс + змеиное тело)
+```
+
+### 3.2 Соответствие SoulType → Morphology
+
+| SoulType | Допустимые Morphology |
+|----------|----------------------|
+| `character` | humanoid, hybrid_* |
+| `creature` | quadruped, bird, serpentine |
+| `spirit` | amorphous (всегда) |
+| `artifact` | humanoid (редко), amorphous |
+| `construct` | humanoid, quadruped |
+
+---
+
+## 4️⃣ PhysicalObject (Неживые объекты)
+
+### 4.1 Архитектура
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -109,7 +228,7 @@
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-### Категории
+### 4.2 Категории
 
 | Категория | Взаимодействие | Примеры |
 |-----------|----------------|---------|
@@ -119,18 +238,9 @@
 | `decoration` | - | Камни, статуи |
 | `item` | use | Предметы |
 
-### Реализация
-
-**Файлы:**
-- `src/types/physical-object.ts` — TypeScript интерфейсы
-- `src/lib/game/physical-object-factory.ts` — Фабрика создания
-
-**База данных:**
-- `prisma/schema.prisma` → модель `PhysicalObject`
-
 ---
 
-## 3️⃣ Сравнение систем
+## 5️⃣ Сравнение систем
 
 | Критерий | SoulEntity | PhysicalObject |
 |----------|------------|----------------|
@@ -144,40 +254,76 @@
 
 ---
 
-## 4️⃣ План миграции
+## 6️⃣ Реализация в коде
 
-### Фазы внедрения
+### 6.1 Файлы
 
-| Фаза | Описание | Длительность |
-|------|----------|--------------|
-| **1. Типы** | Создать TypeScript интерфейсы | 1-2 дня |
-| **2. Prisma** | Обновить схему БД | 2-3 дня |
-| **3. Сервисы** | SoulFactory, PhysicalObjectFactory | 3-4 дня |
-| **4. API** | Новые endpoints | 2-3 дня |
-| **5. UI** | Обновить компоненты | 2-3 дня |
-| **6. Данные** | Миграция существующих данных | 1-2 дня |
+| Файл | Назначение |
+|------|------------|
+| `src/types/soul-entity.ts` | Интерфейсы SoulEntity |
+| `src/types/physical-object.ts` | Интерфейсы PhysicalObject |
+| `src/types/entity-types.ts` | SoulType, Morphology, BodyMaterial |
+| `src/data/presets/species-presets.ts` | Конкретные виды (Level 3) |
+| `src/lib/game/soul-factory.ts` | Фабрика создания |
+| `src/lib/game/controller-service.ts` | Управление контроллером |
 
-**Итого:** 11-17 дней
+### 6.2 База данных
 
-### Ключевые файлы для создания
+```prisma
+// prisma/schema.prisma
 
-```
-src/types/world-object.ts        — Базовый интерфейс
-src/types/soul-entity.ts         — Интерфейсы живых
-src/types/physical-object.ts     — Интерфейсы неживых
-src/lib/game/soul-factory.ts     — Фабрика живых
-src/lib/game/physical-object-factory.ts — Фабрика неживых
-src/lib/game/controller-service.ts — Сервис управления
+model SoulEntity {
+  id          String   @id
+  soulType    String   // character, creature, spirit, artifact, construct
+  controller  String   // player, ai
+  status      String   // alive, dead, unconscious
+  
+  // Body (опционально)
+  bodyId      String?
+  body        Body?
+  
+  // Qi (обязательно)
+  qiId        String
+  qi          QiCore
+  
+  // Mind (опционально)
+  mindType    String?  // full, instinct, simple
+  
+  // Связи
+  speciesId   String?  // ID вида из species-presets
+  techniques  Technique[]
+  inventory   Item[]
+  effects     Effect[]
+}
+
+model Body {
+  id           String   @id
+  morphology   String   // humanoid, quadruped, etc.
+  material     String   // organic, scaled, ethereal, etc.
+  parts        BodyPart[]
+}
 ```
 
 ---
 
-## 🔗 Связанные документы
+## 🔗 Связанные Документы
 
 - **[body.md](./body.md)** — Система тела (Kenshi-style)
+- **[body_review.md](./body_review.md)** — Анализ системы тела (Морфология — Уровень 2)
+- **[body_monsters.md](./body_monsters.md)** — Виды монстров (Species — Уровень 3)
 - **[start_lore.md](./start_lore.md)** — Лор мира культивации
 - **[inventory-system.md](./inventory-system.md)** — Система инвентаря
 
 ---
 
-*Документ объединяет системы живых и неживых объектов.*
+## 🔄 История изменений
+
+| Дата | Версия | Изменение |
+|------|--------|-----------|
+| 2026-03-06 | 1.0 | Создание документа |
+| 2026-03-11 | 3.0 | Добавлены категории PhysicalObject |
+| 2026-03-22 | 4.0 | **Иерархия типов:** SoulType (L1) → Morphology (L2) → Species (L3). Добавлены материалы: scaled, chaos. |
+
+---
+
+*Документ — ЕДИНЫЙ ИСТОЧНИК ИСТИНЫ о типах сущностей.*

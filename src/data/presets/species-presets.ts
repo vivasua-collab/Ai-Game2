@@ -3,24 +3,25 @@
  * ПРЕСЕТЫ ВИДОВ (Species Presets)
  * ============================================================================
  * 
- * Виды определяют фундаментальную природу существа:
- * - humanoid: Человекоподобные (человек, эльф, демон-гуманоид)
- * - beast: Звери (волк, медведь, дракон)
- * - spirit: Духи (призрак, элементаль, божество)
- * - hybrid: Гибриды (кентавр, русалка, оборотень)
- * - aberration: Аберрации (хтонь, мутанты, порождения хаоса)
+ * ИЕРАРХИЯ ТИПОВ (см. docs/soul-system.md):
+ * 
+ * УРОВЕНЬ 1: SoulType (ПЕРВИЧНЫЙ) — character, creature, spirit, construct
+ * УРОВЕНЬ 2: Morphology (ВТОРИЧНЫЙ) — humanoid, quadruped, bird, serpentine
+ * УРОВЕНЬ 3: Species (КОНКРЕТНЫЙ) — human, elf, wolf, dragon
  * 
  * Каждый вид влияет на:
  * - Базовые характеристики (сила, ловкость, интеллект, жизнеспособность)
  * - Способности (культивация, речь, использование инструментов)
  * - Культивацию (ёмкость ядра, максимальный уровень)
- * - Тело (шаблон, размер)
+ * - Тело (шаблон, размер, материал)
  * - Врождённые техники
+ * - Слабости и сопротивления
  * 
  * ============================================================================
  */
 
 import type { BasePreset } from "./base-preset";
+import type { SoulType, BodyMorphology, BodyMaterial } from "@/types/entity-types";
 
 // ============================================
 // ТИПЫ
@@ -160,11 +161,27 @@ export interface InnateTechnique {
 
 /**
  * Интерфейс пресета вида
+ * 
+ * @see docs/soul-system.md — документация иерархии
  */
 export interface SpeciesPreset extends BasePreset {
-  // === ТИП ВИДА ===
-  type: SpeciesType;
+  // === ИЕРАРХИЯ ТИПОВ ===
+  /** УРОВЕНЬ 1: Тип души (ПЕРВИЧНЫЙ) */
+  soulType: SoulType;
+  /** УРОВЕНЬ 2: Морфология тела (ВТОРИЧНЫЙ) */
+  morphology: BodyMorphology;
+  /** УРОВЕНЬ 3: Подтип вида */
   subtype: string;
+  
+  // === УСТАРЕВШИЕ ПОЛЯ (для обратной совместимости) ===
+  /** @deprecated Используйте soulType и morphology */
+  type: SpeciesType;
+  /** @deprecated Используйте morphology */
+  bodyTemplate: BodyTemplate;
+  
+  // === МАТЕРИАЛ ТЕЛА ===
+  /** Материал тела (organic, scaled, ethereal, mineral, chaos) */
+  bodyMaterial: BodyMaterial;
   
   // === ХАРАКТЕРИСТИКИ ===
   baseStats: SpeciesBaseStats;
@@ -175,8 +192,7 @@ export interface SpeciesPreset extends BasePreset {
   // === КУЛЬТИВАЦИЯ ===
   cultivation: SpeciesCultivation;
   
-  // === ТЕЛО ===
-  bodyTemplate: BodyTemplate;
+  // === РАЗМЕР ===
   sizeClass: SizeClass;
   
   // === ВРОЖДЁННЫЕ ТЕХНИКИ ===

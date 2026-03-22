@@ -1,8 +1,19 @@
 # 🐉 Система Тел Монстров и Существ
 
-**Версия:** 1.0
+**Версия:** 1.2
 **Создано:** 2026-03-22
+**Обновлено:** 2026-03-22
 **Статус:** 📋 Аудит пресетов и кода
+
+---
+
+## ⚠️ ВАЖНОЕ ЗАМЕЧАНИЕ
+
+> **Этот документ — УРОВЕНЬ 3 в иерархии (Species).**
+> 
+> - **Уровень 1:** SoulType (character, creature, spirit, construct) — [soul-system.md](./soul-system.md)
+> - **Уровень 2:** Morphology (humanoid, quadruped, bird) — [body_review.md](./body_review.md)
+> - **Уровень 3:** Species (human, elf, wolf, dragon) — этот документ
 
 ---
 
@@ -12,6 +23,7 @@
 - `src/data/presets/species-presets.ts` — определения видов
 - `presets/npcs/*.json` — сгенерированные NPC с bodyState
 - `src/types/body.ts` — типы и константы HP
+- `src/types/entity-types.ts` — SoulType, Morphology, BodyMaterial
 
 ---
 
@@ -1014,33 +1026,58 @@
 
 ---
 
-## 7️⃣ Сводная Таблица Видов
+## 7️⃣ Сводная Таблица Видов (Иерархия)
 
-| Вид | Тип | Шаблон | Размер | HP (L1) | Ци Max Lvl | Генерация Ци |
-|-----|-----|--------|--------|---------|------------|--------------|
-| Человек | humanoid | humanoid | medium | 580 | 9 | Нет |
-| Эльф | humanoid | humanoid | medium | 580 | 8 | Нет |
-| Демон | humanoid | humanoid | medium | 580 | 9 | **ДА** |
-| Великан | humanoid | humanoid | huge | 870 | 6 | Нет |
-| Зверолюд | humanoid | humanoid | medium | 580 | 8 | Нет |
-| Волк | beast | quadruped | medium | 540 | 6 | Нет |
-| Тигр | beast | quadruped | large | 810 | 7 | Нет |
-| Медведь | beast | quadruped | large | 960 | 6 | Нет |
-| Дракон | beast | quadruped | huge | 1,020 | 9 | **ДА** |
-| Феникс | beast | bird | large | 516 | 9 | **ДА** |
-| Змея | beast | serpentine | small | 298 | 5 | Нет |
-| Орёл | beast | bird | small | ~250 | 5 | Нет |
-| Призрак | spirit | spirit | medium | 300 | 0 | Нет |
-| Элементаль | spirit | spirit | medium | 450-900 | 0 | **ДА** |
-| Небесный дух | spirit | spirit | medium | 600 | 9 | **ДА** |
-| Кентавр | hybrid | humanoid | large | 907 | 7 | Нет |
-| Русалка | hybrid | humanoid | medium | ~616 | 7 | Нет |
-| Оборотень | hybrid | humanoid | medium | 580 | 7 | Нет |
-| Гарпия | hybrid | humanoid | medium | 605 | 6 | Нет |
-| Ламия | hybrid | serpentine | medium | 594 | 7 | Нет |
-| Голем | aberration | humanoid | medium | 855 | 0 | Нет |
-| Chaos Spawn | aberration | spirit | medium | ~300 | 8 | **ДА** |
-| Хтонь | aberration | spirit | large | ~600 | 7 | **ДА** |
+| Species | SoulType (L1) | Morphology (L2) | Material | Размер | HP (L1) | Max Lvl | Qi Gen |
+|---------|---------------|-----------------|----------|--------|---------|---------|--------|
+| Человек | `character` | `humanoid` | `organic` | medium | 580 | 9 | Нет |
+| Эльф | `character` | `humanoid` | `organic` | medium | 580 | 8 | Нет |
+| Демон | `character` | `humanoid` | `organic` | medium | 580 | 9 | **ДА** |
+| Великан | `character` | `humanoid` | `organic` | huge | 870 | 6 | Нет |
+| Зверолюд | `character` | `humanoid` | `organic` | medium | 580 | 8 | Нет |
+| Волк | `creature` | `quadruped` | `organic` | medium | 540 | 6 | Нет |
+| Тигр | `creature` | `quadruped` | `organic` | large | 810 | 7 | Нет |
+| Медведь | `creature` | `quadruped` | `organic` | large | 960 | 6 | Нет |
+| Дракон | `creature` | `quadruped` | `scaled` | huge | 1,020 | 9 | **ДА** |
+| Феникс | `creature` | `bird` | `scaled` | large | 516 | 9 | **ДА** |
+| Змея | `creature` | `serpentine` | `scaled` | small | 298 | 5 | Нет |
+| Орёл | `creature` | `bird` | `organic` | small | ~250 | 5 | Нет |
+| Призрак | `spirit` | `amorphous` | `ethereal` | medium | 300 | 0 | Нет |
+| Элементаль | `spirit` | `amorphous` | `ethereal` | medium | 450-900 | 0 | **ДА** |
+| Небесный дух | `spirit` | `amorphous` | `ethereal` | medium | 600 | 9 | **ДА** |
+| Голем | `construct` | `humanoid` | `mineral` | large | 855 | 0 | Нет |
+| Кентавр | `character` | `hybrid_centaur` | `organic` | large | 907 | 7 | Нет |
+| Русалка | `character` | `hybrid_mermaid` | `organic` | medium | ~616 | 7 | Нет |
+| Оборотень | `character` | `humanoid` | `organic` | medium | 580 | 7 | Нет |
+| Гарпия | `character` | `hybrid_harpy` | `organic` | medium | 605 | 6 | Нет |
+| Ламия | `character` | `hybrid_lamia` | `scaled` | medium | 594 | 7 | Нет |
+| Chaos Spawn | `spirit` | `amorphous` | `chaos` | medium | ~300 | 8 | **ДА** |
+| Хтонь | `spirit` | `amorphous` | `chaos` | large | ~600 | 7 | **ДА** |
+
+---
+
+## 8️⃣ Соответствие старой и новой классификации
+
+### 8.1 SpeciesType → SoulType
+
+| Старый (SpeciesType) | Новый (SoulType) | Обоснование |
+|---------------------|------------------|-------------|
+| `humanoid` | `character` | Разумные гуманоиды |
+| `beast` | `creature` | Животные с инстинктами |
+| `spirit` | `spirit` | Бесплотные сущности |
+| `hybrid` | `character` | Разумные гибриды |
+| `aberration` | `spirit` | Хаотичные сущности |
+| `construct` | `construct` | Искусственные создания |
+
+### 8.2 BodyTemplate → Morphology
+
+| Старый (BodyTemplate) | Новый (Morphology) | Изменения |
+|----------------------|--------------------|-----------| 
+| `humanoid` | `humanoid` | Без изменений |
+| `beast_quadruped` | `quadruped` | Убран префикс beast_ |
+| `beast_bird` | `bird` | Убран префикс beast_ |
+| `beast_serpentine` | `serpentine` | Убран префикс beast_ |
+| `spirit` | `amorphous` | Более точное название |
 
 ---
 
@@ -1078,8 +1115,9 @@
 
 ## 🔗 Связанные Документы
 
-- **[body.md](./body.md)** — Базовая система тела
-- **[body_review.md](./body_review.md)** — Анализ и баланс (v4.1)
+- **[soul-system.md](./soul-system.md)** — УРОВЕНЬ 1: SoulType (ПЕРВИЧНЫЙ)
+- **[body_review.md](./body_review.md)** — УРОВЕНЬ 2: Morphology (ВТОРИЧНЫЙ)
+- **[body.md](./body.md)** — Базовая система тела (Kenshi-style)
 - **[body_armor.md](./body_armor.md)** — Броня и защита (v3.0)
 
 ---
@@ -1088,16 +1126,17 @@
 
 | Файл | Назначение |
 |------|------------|
+| `src/types/entity-types.ts` | SoulType, Morphology, BodyMaterial |
 | `src/data/presets/species-presets.ts` | Определения видов |
 | `src/types/body.ts` | Типы частей тела и HP |
 | `src/lib/game/body-system.ts` | Логика создания тел |
-| `presets/npcs/*.json` | Сгенерированные NPC |
+| `src/data/weakness-registry.ts` | Слабости и сопротивления |
 
 ---
 
 *Документ создан: 2026-03-22*
-*Версия: 1.1*
-*Статус: Аудит пресетов + расчёты HP + система слабостей*
+*Версия: 1.2*
+*Статус: Аудит пресетов + иерархия типов + система слабостей*
 
 ---
 
