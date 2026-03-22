@@ -464,7 +464,63 @@ export function calculateNPCQiSpent(
 }
 ```
 
-### 2.3 Система агрессии NPC — 🔜 ПОДГОТОВКА ВАРИАНТОВ
+### 2.3 ⭐ Подавление уровнем для NPC
+
+**Применяется к обеим сторонам: Игрок → NPC и NPC → Игрок.**
+
+#### 2.3.1 Таблица подавления
+
+```typescript
+// src/lib/constants/level-suppression.ts
+
+export const LEVEL_SUPPRESSION_TABLE = {
+  0: { normal: 1.0, technique: 1.0, ultimate: 1.0 },
+  1: { normal: 0.5, technique: 0.75, ultimate: 1.0 },
+  2: { normal: 0.1, technique: 0.25, ultimate: 0.5 },
+  3: { normal: 0.0, technique: 0.05, ultimate: 0.25 },
+  4: { normal: 0.0, technique: 0.0, ultimate: 0.1 },
+  5: { normal: 0.0, technique: 0.0, ultimate: 0.0 },
+};
+```
+
+#### 2.3.2 Примеры боя
+
+| Сценарий | Уровень атакующего | Уровень защитника | Тип | Множитель |
+|----------|-------------------|-------------------|-----|-----------|
+| Игрок атакует слабого NPC | L7 | L3 | technique | 1.0 |
+| Слабый NPC атакует игрока | L3 | L7 | normal | 0.0 |
+| Игрок атакует равного NPC | L5 | L5 | technique | 1.0 |
+| NPC босс атакует игрока | L9 | L7 | technique | 1.0 |
+| Игрок атакует босса | L7 | L9 | ultimate | 0.1 |
+
+#### 2.3.3 Интеграция в calculateDamageFromNPC
+
+```typescript
+export function calculateDamageFromNPC(params: {
+  npc: GeneratedNPC;
+  technique: Technique | null;
+  // ... rest
+}): { /* ... */ } {
+  const { npc, technique, qiSpent, target } = params;
+  
+  // ... existing damage calculation ...
+  
+  // ⭐ НОВОЕ: Подавление уровнем
+  const attackType = technique?.isUltimate ? 'ultimate' : 
+                     technique ? 'technique' : 'normal';
+  const suppression = calculateLevelSuppression(
+    npc.cultivation.level,
+    target.cultivationLevel,  // Уровень игрока
+    attackType,
+    technique?.level
+  );
+  finalDamage *= suppression;
+  
+  return { damage: Math.floor(finalDamage), /* ... */ };
+}
+```
+
+### 2.4 Система агрессии NPC — 🔜 ПОДГОТОВКА ВАРИАНТОВ
 
 **Внедрение после отработки основных механик боя.**
 

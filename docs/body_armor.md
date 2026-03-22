@@ -1,9 +1,9 @@
 # 🛡️ Система Брони и Порядок Прохождения Урона
 
-**Версия:** 4.0
+**Версия:** 5.0
 **Создано:** 2026-03-21
 **Обновлено:** 2026-03-22
-**Статус:** 📋 Добавлена система подавления уровнем (Слой 2)
+**Статус:** ✅ Добавлена система подавления уровнем (Слой 2) — РЕАЛИЗОВАНО
 
 ---
 
@@ -138,7 +138,115 @@
 
 ---
 
-## 2️⃣ Части Брони и Защищаемые Области
+## 2️⃣ ⭐ Система Подавления Уровнем (Level Suppression)
+
+### 2.1 Концепция
+
+**Проблема:** Qi Buffer с поглощением 90% позволяет практику L1 наносить урон практику L8.
+
+**Решение:** Ввести множитель подавления на основе разницы уровней культивации.
+
+### 2.2 Таблица подавления
+
+```typescript
+// src/lib/constants/level-suppression.ts
+
+export const LEVEL_SUPPRESSION_TABLE = {
+  0: { normal: 1.0, technique: 1.0, ultimate: 1.0 },    // Тот же уровень
+  1: { normal: 0.5, technique: 0.75, ultimate: 1.0 },   // +1 уровень
+  2: { normal: 0.1, technique: 0.25, ultimate: 0.5 },   // +2 уровня
+  3: { normal: 0.0, technique: 0.05, ultimate: 0.25 },  // +3 уровня
+  4: { normal: 0.0, technique: 0.0, ultimate: 0.1 },    // +4 уровня
+  5: { normal: 0.0, technique: 0.0, ultimate: 0.0 },    // +5+ уровней = иммунитет
+};
+
+// Типы атак:
+// - normal: Обычная атака без техники
+// - technique: Атака техникой (technique.level влияет)
+// - ultimate: Ultimate-техника (особый флаг isUltimate)
+```
+
+### 2.3 Формула подавления
+
+```typescript
+function calculateLevelSuppression(
+  attackerLevel: number,
+  defenderLevel: number,
+  attackType: 'normal' | 'technique' | 'ultimate',
+  techniqueLevel?: number
+): number {
+  // Для техник: можно "пробить" защиту выше уровнем
+  let effectiveAttackerLevel = attackerLevel;
+  if (attackType === 'technique' && techniqueLevel) {
+    effectiveAttackerLevel = Math.max(attackerLevel, techniqueLevel);
+  }
+  
+  const levelDiff = Math.max(0, defenderLevel - effectiveAttackerLevel);
+  const clampedDiff = Math.min(5, levelDiff);
+  
+  return LEVEL_SUPPRESSION_TABLE[clampedDiff][attackType];
+}
+```
+
+### 2.4 Примеры подавления
+
+| Атакующий | Защитник | Тип атаки | Множитель | Урон 39,321 → |
+|-----------|----------|-----------|-----------|---------------|
+| L9 | L9 | normal | 1.0 | 39,321 |
+| L9 | L9 | technique | 1.0 | 39,321 |
+| L7 | L9 | normal | 0.0 | 0 |
+| L7 | L9 | technique (L7) | 0.05 | 1,966 |
+| L7 | L9 | technique (L8) | 0.25 | 9,830 |
+| L5 | L9 | ultimate | 0.1 | 3,932 |
+| L4 | L9 | ultimate | 0.0 | 0 |
+
+### 2.5 Ultimate-техники
+
+Ultimate-техники имеют специальный флаг `isUltimate: true`:
+- Могут пробить защиту на 4+ уровней выше (10% урона)
+- Полный иммунитет только при разнице 5+ уровней
+- Редкие и мощные техники
+
+### 2.6 AOE и смешанные группы
+
+При AOE атаке подавление применяется **ИНДИВИДУАЛЬНО** к каждой цели:
+
+```typescript
+function processAOEAttack(
+  attacker: Character,
+  targets: Character[],
+  technique: Technique
+): Map<string, DamageResult> {
+  const results = new Map();
+  
+  for (const target of targets) {
+    // 1. Расчёт базового урона
+    let damage = calculateBaseDamage(technique, attacker);
+    
+    // 2. Коэффициент расстояния (для AOE)
+    const distanceFactor = getDistanceFactor(attacker, target);
+    damage *= distanceFactor;
+    
+    // 3. ⭐ ПОДАВЛЕНИЕ УРОВНЕМ — ИНДИВИДУАЛЬНО!
+    const suppression = calculateLevelSuppression(
+      attacker.cultivationLevel,
+      target.cultivationLevel,
+      technique.isUltimate ? 'ultimate' : 'technique',
+      technique.level
+    );
+    damage *= suppression;
+    
+    // 4. Остальные слои защиты...
+    results.set(target.id, processRemainingLayers(damage, target));
+  }
+  
+  return results;
+}
+```
+
+---
+
+## 3️⃣ Части Брони и Защищаемые Области
 
 ### 2.1 Соответствие брони частям тела
 

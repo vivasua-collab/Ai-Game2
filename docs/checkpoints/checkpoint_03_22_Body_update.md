@@ -1,22 +1,23 @@
-# 🦴 Детальный план: Система Тела v2.0
+# 🦴 Детальный план: Система Тела v5.0
 
 **Дата:** 2026-03-22
-**Версия:** 1.0 Draft
-**Статус:** 📋 Планирование
+**Версия:** 2.0
+**Статус:** ✅ Теория завершена — ГОТОВО К РЕАЛИЗАЦИИ
 
 ---
 
 ## 📋 Обзор
 
-Документ описывает план доработки системы тела до логической завершённости на основе:
-- `body_review.md` v4.1 — механика Qi Buffer 90%
-- `body_armor.md` v3.0 — новая роль брони
+Документ описывает план реализации системы тела на основе:
+- `body_review.md` v5.0 — Qi Buffer 90%, Core Capacity
+- `body_armor.md` v5.0 — Level Suppression, 10 слоёв защиты
+- `soul-system.md` v4.1 — Иерархия типов
 
 ---
 
 ## 1️⃣ КЛЮЧЕВЫЕ ИЗМЕНЕНИЯ
 
-### 1.1 Qi Buffer 90% (НОВАЯ МЕХАНИКА)
+### 1.1 Qi Buffer 90% (РЕАЛИЗОВАТЬ)
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -33,425 +34,275 @@
 │  • Пробитие: 0%                                                 │
 │  • Соотношение: 1 урон = 1 Ци                                   │
 │                                                                  │
-│  КЛЮЧЕВАЯ РАЗНИЦА:                                              │
-│  • Сырая Ци: 3,932 урона за удар L9 → паралич за 1-2 удара     │
-│  • Щит-техника: 0 урона → полная неуязвимость                  │
-│                                                                  │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 1.2 Обновлённый порядок защиты
+### 1.2 Level Suppression (РЕАЛИЗОВАТЬ)
 
 ```typescript
-// ПОРЯДОК ПРОХОЖДЕНИЯ УРОНА (10 СЛОЁВ)
-const DAMAGE_LAYERS = [
-  'LAYER_1_RAW_DAMAGE',      // Исходный урон техники
-  'LAYER_2_BODY_PART',       // Определение части тела
-  'LAYER_3_ACTIVE_DEFENSE',  // Уклонение/Парирование/Блок
-  'LAYER_4_QI_BUFFER',       // ⭐ Qi Buffer (90% или 100%)
-  'LAYER_5_ARMOR_COVERAGE',  // Покрытие брони
-  'LAYER_6_ARMOR_REDUCTION', // Снижение урона бронёй
-  'LAYER_7_BODY_MATERIAL',   // Материал тела (scales и т.д.)
-  'LAYER_8_FINAL_DAMAGE',    // Итоговый урон
-  'LAYER_9_HP_DISTRIBUTION', // Распределение по HP
-  'LAYER_10_CONSEQUENCES',   // Кровотечение, шок, смерть
-];
+export const LEVEL_SUPPRESSION_TABLE = {
+  0: { normal: 1.0, technique: 1.0, ultimate: 1.0 },
+  1: { normal: 0.5, technique: 0.75, ultimate: 1.0 },
+  2: { normal: 0.1, technique: 0.25, ultimate: 0.5 },
+  3: { normal: 0.0, technique: 0.05, ultimate: 0.25 },
+  4: { normal: 0.0, technique: 0.0, ultimate: 0.1 },
+  5: { normal: 0.0, technique: 0.0, ultimate: 0.0 },
+};
+```
+
+### 1.3 Обновлённый порядок защиты (10 СЛОЁВ)
+
+```
+СЛОЙ 1:  Исходный урон (techniqueDamage × qiDensity × gradeMult)
+СЛОЙ 2:  ⭐ Level Suppression (по разнице уровней) — NEW!
+СЛОЙ 3:  Определение части тела (rollBodyPart)
+СЛОЙ 4:  Активная защита (dodge/parry/block)
+СЛОЙ 5:  ⭐ Qi Buffer (90% или 100%)
+СЛОЙ 6:  Покрытие брони (coverage check)
+СЛОЙ 7:  Снижение бронёй (DR + penetration)
+СЛОЙ 8:  Материал тела (scales, chitin, etc.)
+СЛОЙ 9:  Распределение по HP (Kenshi-style)
+СЛОЙ 10: Последствия (bleed, shock, death)
 ```
 
 ---
 
-## 2️⃣ ТЕКУЩИЙ КОД
+## 2️⃣ ФАЙЛЫ ДЛЯ РЕАЛИЗАЦИИ
 
-### 2.1 Существующие файлы
+### 2.1 Новые файлы
 
-| Файл | Назначение | Строк |
-|------|------------|-------|
-| `src/types/body.ts` | Типы HP, частей тела | ~550 |
-| `src/lib/game/body-system.ts` | Базовая система | ~700 |
-| `src/lib/game/bleeding-system.ts` | Кровотечения | ~200 |
-| `src/lib/game/limb-attachment.ts` | Приживление | ~300 |
+| Файл | Назначение | Приоритет |
+|------|------------|-----------|
+| `src/lib/constants/level-suppression.ts` | Таблица подавления | P0 |
+| `src/lib/game/qi-buffer.ts` | Механика Qi Buffer | P0 |
+| `src/lib/game/damage-pipeline.ts` | Полный pipeline | P0 |
 
-### 2.2 Функции урона (ТЕКУЩИЕ)
+### 2.2 Файлы для обновления
+
+| Файл | Изменения | Приоритет |
+|------|-----------|-----------|
+| `src/lib/game/body-system.ts` | Интеграция pipeline | P0 |
+| `src/lib/game/combat-system.ts` | Level Suppression | P0 |
+| `src/lib/game/npc-damage-calculator.ts` | Level Suppression для NPC | P0 |
+
+---
+
+## 3️⃣ ПОШАГОВЫЙ ПЛАН РЕАЛИЗАЦИИ
+
+### Этап 1: Level Suppression (P0)
+
+**Файл:** `src/lib/constants/level-suppression.ts`
 
 ```typescript
-// body-system.ts:318
-function applyDamageToLimb(
-  part: BodyPart,
-  damage: number,
-  options?: {
-    armor?: number;
-    penetration?: number;
-    isHeart?: boolean;
+// Шаг 1: Создать константы
+export const LEVEL_SUPPRESSION_TABLE: Record<number, SuppressionValues> = {
+  0: { normal: 1.0, technique: 1.0, ultimate: 1.0 },
+  1: { normal: 0.5, technique: 0.75, ultimate: 1.0 },
+  2: { normal: 0.1, technique: 0.25, ultimate: 0.5 },
+  3: { normal: 0.0, technique: 0.05, ultimate: 0.25 },
+  4: { normal: 0.0, technique: 0.0, ultimate: 0.1 },
+  5: { normal: 0.0, technique: 0.0, ultimate: 0.0 },
+};
+
+// Шаг 2: Функция расчёта
+export function calculateLevelSuppression(
+  attackerLevel: number,
+  defenderLevel: number,
+  attackType: 'normal' | 'technique' | 'ultimate',
+  techniqueLevel?: number
+): number {
+  let effectiveLevel = attackerLevel;
+  if (attackType === 'technique' && techniqueLevel) {
+    effectiveLevel = Math.max(attackerLevel, techniqueLevel);
   }
-): DamageResult
+  
+  const diff = Math.max(0, defenderLevel - effectiveLevel);
+  const clamped = Math.min(5, diff);
+  
+  return LEVEL_SUPPRESSION_TABLE[clamped][attackType];
+}
 ```
 
-**Проблема:** Нет Qi Buffer, нет деления на слои, нет механики 90%.
+### Этап 2: Qi Buffer (P0)
 
-### 2.3 Что нужно добавить
-
-```typescript
-// НОВАЯ ФУНКЦИЯ: Qi Buffer
-function processQiDamage(
-  incomingDamage: number,
-  currentQi: number,
-  maxQi: number,
-  hasShieldTechnique: boolean,
-  config: QiBufferConfig
-): {
-  qiConsumed: number;
-  absorbedDamage: number;
-  remainingDamage: number;  // 10% или 0
-}
-
-// НОВАЯ ФУНКЦИЯ: Полный расчёт урона
-function processFullDamagePipeline(
-  rawDamage: number,
-  attacker: AttackerStats,
-  defender: DefenderStats,
-  technique: TechniqueData
-): DamagePipelineResult
-```
-
----
-
-## 3️⃣ ПЛАН РЕАЛИЗАЦИИ
-
-### Этап 1: Qi Buffer (P0)
-
-#### 1.1 Создать qi-buffer.ts
+**Файл:** `src/lib/game/qi-buffer.ts`
 
 ```typescript
-// src/lib/game/qi-buffer.ts
-
-export interface QiBufferConfig {
-  // Множитель для сырой Ци
-  baseQiAbsorptionRatio: 3.0;  // 1 урон = 3 Ци
-  
-  // Процент поглощения сырой Ци
-  rawQiAbsorptionPercent: 0.90;  // 90%
-  
-  // Щитовая техника
-  shieldTechniqueMultiplier: 1.0;  // 1 урон = 1 Ци
-  shieldAbsorptionPercent: 1.0;    // 100%
-  
-  // Минимум Ци для активации
-  minQiForBuffer: 10;
-}
+export const QI_BUFFER_CONFIG = {
+  baseQiAbsorptionRatio: 3.0,      // 1 урон = 3 Ци (raw)
+  rawQiAbsorptionPercent: 0.90,    // 90% поглощение
+  shieldTechniqueMultiplier: 1.0,  // 1 урон = 1 Ци (shield)
+  shieldAbsorptionPercent: 1.0,    // 100% поглощение
+  minQiForBuffer: 10,
+};
 
 export function processQiDamage(
   incomingDamage: number,
   currentQi: number,
   maxQi: number,
   hasShieldTechnique: boolean,
-  config: QiBufferConfig
+  config: typeof QI_BUFFER_CONFIG
 ): QiDamageResult {
   // Реализация механики 90% vs 100%
+  // См. body_review.md секция 3.2
 }
 ```
 
-#### 1.2 Конфигурация щитовых техник
+### Этап 3: Damage Pipeline (P0)
+
+**Файл:** `src/lib/game/damage-pipeline.ts`
 
 ```typescript
-// src/lib/constants/shield-techniques.ts
-
-export const SHIELD_TECHNIQUE_CONFIGS = {
-  'qi_barrier': {
-    qiCostPerDamage: 1.5,
-    qiCostPerSecond: 1,
-    absorptionPercent: 1.0,
-  },
-  'protective_dome': {
-    qiCostPerDamage: 1.0,
-    qiCostPerSecond: 3,
-    absorptionPercent: 1.0,
-    damageReduction: 0.2,
-  },
-  'elemental_shield': {
-    qiCostPerDamage: 1.0,
-    qiCostPerSecond: 2,
-    absorptionPercent: 1.0,
-    elementalResistance: { fire: 0.5, water: 0.5 },
-  },
-};
-```
-
-### Этап 2: Интеграция с боевой системой (P0)
-
-#### 2.1 Обновить combat-utils.ts
-
-```typescript
-// Добавить функцию полного пайплайна
-export function processDamagePipeline(
-  rawDamage: number,
-  attacker: NPC | Player,
-  defender: NPC | Player,
-  technique: Technique
-): DamagePipelineResult {
+export function processDamagePipeline(params: {
+  rawDamage: number;
+  attacker: AttackerStats;
+  defender: DefenderStats;
+  technique: Technique | null;
+}): DamagePipelineResult {
+  let damage = params.rawDamage;
   
-  // Слой 3: Активная защита
-  if (tryDodge(defender)) return { avoided: 'dodge' };
-  if (tryParry(defender)) rawDamage *= (1 - blockPercent);
+  // СЛОЙ 2: Level Suppression
+  const attackType = params.technique?.isUltimate ? 'ultimate' :
+                     params.technique ? 'technique' : 'normal';
+  damage *= calculateLevelSuppression(
+    params.attacker.cultivationLevel,
+    params.defender.cultivationLevel,
+    attackType,
+    params.technique?.level
+  );
   
-  // Слой 4: Qi Buffer ⭐ НОВОЕ
+  // СЛОЙ 4: Активная защита
+  if (tryDodge(params.defender)) return { avoided: 'dodge' };
+  if (tryParry(params.defender)) damage *= (1 - blockPercent);
+  
+  // СЛОЙ 5: Qi Buffer
   const qiResult = processQiDamage(
-    rawDamage,
-    defender.currentQi,
-    defender.maxQi,
-    defender.hasActiveShieldTechnique,
+    damage,
+    params.defender.currentQi,
+    params.defender.maxQi,
+    params.defender.hasActiveShieldTechnique,
     QI_BUFFER_CONFIG
   );
-  rawDamage = qiResult.remainingDamage;  // 10% или 0
+  damage = qiResult.remainingDamage;
   
-  // Слой 5-6: Броня
-  if (defender.armor && checkCoverage(defender.armor)) {
-    rawDamage = applyArmorReduction(rawDamage, defender.armor);
-  }
+  // СЛОЙ 6-7: Броня
+  // ...
   
-  // Слой 7: Материал тела
-  rawDamage = applyBodyMaterialReduction(rawDamage, defender.bodyMaterial);
+  // СЛОЙ 8: Материал тела
+  // ...
   
-  // Слой 9: HP
-  return applyDamageToLimb(part, rawDamage);
+  // СЛОЙ 9: HP
+  return applyDamageToLimb(part, damage);
 }
-```
-
-#### 2.2 Обновить типы техник
-
-```typescript
-// Добавить флаг isQiTechnique
-interface Technique {
-  // ... existing fields
-  isQiTechnique: boolean;  // true = активирует Qi Buffer
-  bypassesQiBuffer?: boolean;  // специальные техники
-}
-```
-
-### Этап 3: Prisma схема (P1)
-
-#### 3.1 Модель BodyStructure
-
-```prisma
-model BodyStructure {
-  id          String   @id @default(cuid())
-  characterId String   @unique
-  character   Character @relation(fields: [characterId], references: [id])
-  
-  // Сериализованные части тела
-  partsJson   String   // JSON Map<string, BodyPart>
-  
-  // Сердце
-  heartCurrentHp Int
-  heartMaxHp    Int
-  heartEfficiency Int @default(100)
-  
-  // Общее состояние
-  overallHealth Int @default(100)
-  isDead       Boolean @default(false)
-  deathReason  String?
-  
-  // Временные метки
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-}
-
-model ActiveBleed {
-  id          String   @id @default(cuid())
-  bodyId      String
-  body        BodyStructure @relation(fields: [bodyId], references: [id])
-  
-  partId      String
-  type        String   // minor, moderate, severe, critical, arterial
-  damagePerTick Int
-  remainingDuration Int
-  startedAt   Int      // ТИК начала
-  
-  createdAt   DateTime @default(now())
-}
-
-model ActiveAttachment {
-  id          String   @id @default(cuid())
-  bodyId      String
-  body        BodyStructure @relation(fields: [bodyId], references: [id])
-  
-  partId      String
-  startedAt   Int
-  duration    Int
-  progress    Int      @default(0)
-  stage       String   // attaching, adapting, strengthening, complete
-  
-  // Информация о доноре
-  donorId     String?
-  donorCultivationLevel Int
-  donorCultivationStep Int
-  
-  createdAt   DateTime @default(now())
-}
-```
-
-### Этап 4: UI обновления (P2)
-
-#### 4.1 Обновить BodyStatusPanel
-
-```tsx
-// Добавить отображение Qi Buffer
-<QiBufferIndicator 
-  currentQi={character.currentQi}
-  maxQi={character.maxQi}
-  absorptionPercent={hasShieldTechnique ? 100 : 90}
-  penetrationDamage={calculatePenetration(rawDamage)}
-/>
-```
-
-#### 4.2 Добавить DamageFlow визуализацию
-
-```tsx
-// Показать прохождение урона по слоям
-<DamageFlowDisplay>
-  <Layer name="Raw Damage" value={39321} />
-  <Layer name="Dodge" result="failed" />
-  <Layer name="Qi Buffer" absorbed={35389} penetrated={3932} />
-  <Layer name="Armor" absorbed={1770} passed={2162} />
-  <Layer name="HP" damage={2162} />
-</DamageFlowDisplay>
 ```
 
 ---
 
-## 4️⃣ ТЕСТИРОВАНИЕ
+## 4️⃣ КРИТЕРИИ ГОТОВНОСТИ
 
-### 4.1 Unit тесты
+### Phase 1: Core Implementation
+
+- [ ] `level-suppression.ts` создан
+- [ ] `calculateLevelSuppression()` работает
+- [ ] Unit тесты для Level Suppression проходят
+
+### Phase 2: Qi Buffer
+
+- [ ] `qi-buffer.ts` создан
+- [ ] `processQiDamage()` работает с 90% механикой
+- [ ] Щитовые техники дают 100% поглощение
+- [ ] Unit тесты для Qi Buffer проходят
+
+### Phase 3: Integration
+
+- [ ] `damage-pipeline.ts` создан
+- [ ] Интеграция с combat-system.ts
+- [ ] Интеграция с npc-damage-calculator.ts
+- [ ] Интеграционные тесты проходят
+
+### Phase 4: UI
+
+- [ ] BodyDoll отображает Qi Buffer
+- [ ] DamageFlowDisplay показывает все слои
+- [ ] QiBufferIndicator работает
+
+---
+
+## 5️⃣ ТЕСТИРОВАНИЕ
+
+### Unit тесты
 
 ```typescript
-// __tests__/qi-buffer.test.ts
-
-describe('Qi Buffer v3.0', () => {
-  test('raw Qi absorbs 90%, penetrates 10%', () => {
-    const result = processQiDamage(1000, 5000, 10000, false, CONFIG);
-    expect(result.absorbedDamage).toBe(900);  // 90%
-    expect(result.remainingDamage).toBe(100); // 10%
-    expect(result.qiConsumed).toBe(2700);     // 900 × 3
+describe('Level Suppression', () => {
+  test('L7 vs L9 normal = 0', () => {
+    expect(calculateLevelSuppression(7, 9, 'normal')).toBe(0.0);
   });
   
-  test('shield technique absorbs 100%', () => {
+  test('L7 vs L9 technique = 0.05', () => {
+    expect(calculateLevelSuppression(7, 9, 'technique')).toBe(0.05);
+  });
+  
+  test('technique.level пробивает защиту', () => {
+    expect(calculateLevelSuppression(7, 9, 'technique', 8)).toBe(0.25);
+  });
+});
+
+describe('Qi Buffer 90%', () => {
+  test('Raw Qi absorbs 90%, penetrates 10%', () => {
+    const result = processQiDamage(1000, 5000, 10000, false, CONFIG);
+    expect(result.absorbedDamage).toBe(900);
+    expect(result.remainingDamage).toBe(100);
+  });
+  
+  test('Shield absorbs 100%', () => {
     const result = processQiDamage(1000, 5000, 10000, true, CONFIG);
     expect(result.absorbedDamage).toBe(1000);
     expect(result.remainingDamage).toBe(0);
-    expect(result.qiConsumed).toBe(1000);      // 1000 × 1
-  });
-  
-  test('L8 vs L9 technique scenario', () => {
-    // Удар L9 (39,321 урона) по L8 (789,750 Ци)
-    const result = processQiDamage(39321, 600000, 789750, false, CONFIG);
-    expect(result.absorbedDamage).toBeCloseTo(35389, 0);
-    expect(result.remainingDamage).toBeCloseTo(3932, 0);
   });
 });
 ```
 
-### 4.2 Интеграционные тесты
+### Интеграционные тесты
 
 ```typescript
-// __tests__/combat/damage-pipeline.test.ts
-
 describe('Full Damage Pipeline', () => {
   test('L9 technique vs L8 practitioner with armor', async () => {
-    const attacker = createTestNPC({ level: 9 });
-    const defender = createTestPlayer({ 
-      level: 8, 
-      qi: 600000,
-      armor: { defense: 119, damageReduction: 0.45 }
-    });
-    const technique = createTestTechnique({ level: 9, damage: 39321 });
-    
-    const result = await processDamagePipeline(
-      technique.damage,
-      attacker,
-      defender,
-      technique
-    );
-    
-    // 10% пробитие: 3932
-    // Броня DR 45%: 3932 * 0.55 = 2162
-    expect(result.finalDamage).toBeCloseTo(2162, 0);
-    expect(result.qiConsumed).toBeCloseTo(106167, 0);
+    // Полный сценарий из body_armor.md
   });
 });
 ```
 
 ---
 
-## 5️⃣ МИГРАЦИЯ
-
-### 5.1 Существующие персонажи
-
-1. Добавить поле `currentQi` если отсутствует
-2. Рассчитать `maxQi` по формуле ядра
-3. Установить `hasShieldTechnique` на основе изученных техник
-
-### 5.2 Совместимость
-
-```typescript
-// Флаг для старой механики (100% поглощение)
-const LEGACY_QI_ABSORPTION = process.env.LEGACY_QI_BUFFER === 'true';
-
-function processQiDamage(...args) {
-  if (LEGACY_QI_ABSORPTION) {
-    // Старая логика: 100% поглощение сырой Ци
-    return legacyProcessQiDamage(...args);
-  }
-  // Новая логика: 90%
-  return newProcessQiDamage(...args);
-}
-```
-
----
-
-## 6️⃣ РИСКИ И РЕШЕНИЯ
-
-### 6.1 Технические риски
-
-| Риск | Решение |
-|------|---------|
-| Циклические зависимости | Разделить на слои, использовать event bus |
-| Производительность | Кэшировать промежуточные расчёты |
-| Синхронизация состояния | Server-authoritative, клиент только отображает |
-
-### 6.2 Баланс
-
-| Риск | Решение |
-|------|---------|
-| L8-9 слишком слабы | Плавный переход, буфф Qi регенерации |
-| Щитовые техники имба | Qi drain per second, cooldown |
-| PvP дисбаланс | Тестирование на dev сервере |
-
----
-
-## 7️⃣ ВРЕМЕННЫЕ РАМКИ
+## 6️⃣ ВРЕМЕННЫЕ РАМКИ
 
 | Этап | Задачи | Оценка |
 |------|--------|--------|
-| 1 | Qi Buffer реализация | 2-3 часа |
-| 2 | Интеграция с боем | 3-4 часа |
-| 3 | Prisma схема | 1-2 часа |
+| 1 | Level Suppression | 1-2 часа |
+| 2 | Qi Buffer | 2-3 часа |
+| 3 | Damage Pipeline | 3-4 часа |
 | 4 | UI обновления | 2-3 часа |
 | 5 | Тестирование | 2 часа |
 | **Итого** | | **10-14 часов** |
 
 ---
 
-## 8️⃣ КРИТЕРИИ ГОТОВНОСТИ
+## 7️⃣ ЗАВИСИМОСТИ
 
-- [ ] Qi Buffer работает с механикой 90%
-- [ ] Щитовые техники дают 100% поглощение
-- [ ] Броня снижает пробитие
-- [ ] Unit тесты проходят
-- [ ] Интеграционные тесты проходят
-- [ ] UI отображает Qi Buffer статус
-- [ ] Документация обновлена
+```
+level-suppression.ts (нет зависимостей)
+        ↓
+qi-buffer.ts (нет зависимостей)
+        ↓
+damage-pipeline.ts
+    ├── level-suppression.ts
+    ├── qi-buffer.ts
+    ├── body-system.ts
+    └── combat-system.ts
+```
 
 ---
 
 *План создан: 2026-03-22*
-*Версия: 1.0 Draft*
-*Статус: Ожидает начала реализации*
+*Версия: 2.0*
+*Статус: ✅ Теория завершена — готово к реализации*

@@ -894,6 +894,91 @@ export const ELEMENT_MULTIPLIERS: Record<TechniqueElement, number> = {
 
 ---
 
+## 1️⃣4️⃣ ⭐ ПОДАВЛЕНИЕ УРОВНЕМ (Level Suppression)
+
+### 14.1 Проблема
+
+Qi Buffer с поглощением 90% позволяет практике L1 наносить урон практике L8 (10% от урона проходит).
+
+### 14.2 Решение
+
+Множитель подавления на основе разницы уровней культивации:
+
+```typescript
+// src/lib/constants/level-suppression.ts
+
+export const LEVEL_SUPPRESSION_TABLE = {
+  0: { normal: 1.0, technique: 1.0, ultimate: 1.0 },    // Тот же уровень
+  1: { normal: 0.5, technique: 0.75, ultimate: 1.0 },   // +1 уровень
+  2: { normal: 0.1, technique: 0.25, ultimate: 0.5 },   // +2 уровня
+  3: { normal: 0.0, technique: 0.05, ultimate: 0.25 },  // +3 уровня
+  4: { normal: 0.0, technique: 0.0, ultimate: 0.1 },    // +4 уровня
+  5: { normal: 0.0, technique: 0.0, ultimate: 0.0 },    // +5+ уровней
+};
+```
+
+### 14.3 Типы атак
+
+| Тип | Описание | Пробитие |
+|-----|----------|----------|
+| `normal` | Обычная атака без техники | Минимальное |
+| `technique` | Атака техникой | `technique.level` влияет |
+| `ultimate` | Ultimate-техника (`isUltimate: true`) | Максимальное |
+
+### 14.4 Формула
+
+```typescript
+function calculateLevelSuppression(
+  attackerLevel: number,
+  defenderLevel: number,
+  attackType: 'normal' | 'technique' | 'ultimate',
+  techniqueLevel?: number
+): number {
+  // Для техник: можно использовать technique.level для пробития
+  let effectiveAttackerLevel = attackerLevel;
+  if (attackType === 'technique' && techniqueLevel) {
+    effectiveAttackerLevel = Math.max(attackerLevel, techniqueLevel);
+  }
+  
+  const levelDiff = Math.max(0, defenderLevel - effectiveAttackerLevel);
+  const clampedDiff = Math.min(5, levelDiff);
+  
+  return LEVEL_SUPPRESSION_TABLE[clampedDiff][attackType];
+}
+```
+
+### 14.5 Примеры
+
+| Атакующий | Защитник | Тип атаки | Множитель | Урон 39,321 → |
+|-----------|----------|-----------|-----------|---------------|
+| L9 | L9 | technique | 1.0 | 39,321 |
+| L7 | L9 | normal | 0.0 | 0 |
+| L7 | L9 | technique (L7) | 0.05 | 1,966 |
+| L7 | L9 | technique (L8) | 0.25 | 9,830 |
+| L5 | L9 | ultimate | 0.1 | 3,932 |
+
+### 14.6 AOE атаки
+
+При AOE атаке подавление применяется **ИНДИВИДУАЛЬНО** к каждой цели.
+
+---
+
+## 1️⃣5️⃣ ⭐ ULTIMATE-ТЕХНИКИ
+
+### 15.1 Определение
+
+Ultimate-техники — редкие и мощные техники с флагом `isUltimate: true`.
+
+### 15.2 Особенности
+
+| Характеристика | Ultimate | Обычная техника |
+|----------------|----------|-----------------|
+| Пробитие уровней | до +4 (10% урона) | до +2 (25% урона) |
+| Иммунитет | только +5 уровней | +3 уровня |
+| Редкость | ~1% от всех техник | — |
+
+---
+
 ## 📁 ФАЙЛЫ СИСТЕМЫ
 
 | Файл | Назначение |
