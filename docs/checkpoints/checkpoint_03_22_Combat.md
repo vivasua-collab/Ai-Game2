@@ -147,11 +147,13 @@
 - ✅ Проверка дестабилизации
 - ✅ Обработка урона по TempNPC
 - ✅ Визуальные команды (show_damage, show_effect)
+- ✅ **Level Suppression** — интегрирован (v3.3.0)
+- ✅ **Qi Buffer 90%** — интегрирован (v3.3.0)
+- ✅ **Иммунитет** при подавлении
 
-**Чего НЕ делает (TODO):**
-- ❌ Level Suppression не интегрирован в Event Bus handler
-- ❌ Qi Buffer 90% не интегрирован в Event Bus handler
-- ❌ processDamagePipeline() не используется
+**TODO (P2):**
+- 🔜 processDamagePipeline() не используется (опционально)
+- 🔜 Тестирование Event Bus
 
 ### 3.2 UI компоненты — ⚠️ ЧАСТИЧНО СУЩЕСТВУЮТ
 
@@ -369,5 +371,5 @@ describe('Combat System with Level Suppression', () => {
 ---
 
 *План создан: 2026-03-22*
-*Версия: 2.1*
-*Статус: ✅ Этап 1-3 завершены, Event Bus интеграция (P0) в планах*
+*Версия: 3.0*
+*Статус: ✅ Все этапы завершены (UI компоненты — P1)*
