@@ -1,38 +1,51 @@
-# 📋 Детальный план незавершённых задач
+# 📋 Детальный план задач
 
 **Дата создания:** 2026-03-22 17:09:47 UTC
-**Версия:** 1.0
-**Статус:** 📋 Ожидают выполнения
+**Дата обновления:** 2026-03-22 19:30 UTC
+**Версия:** 1.1
+**Статус:** 🔄 В процессе выполнения
 
 ---
 
-## 📊 СВОДКА НЕЗАВЕРШЁННЫХ ЗАДАЧ
+## 📊 СВОДКА ЗАДАЧ
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│                    НЕЗАВЕРШЁННЫЕ ЗАДАЧИ                                      │
+│                         СТАТУС ЗАДАЧ                                         │
 ├─────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│  🔜 TODO-1: Unit тесты (Body_update, Combat) — P3 Опционально               │
-│  🔜 TODO-2: UI компоненты (DamageFlowDisplay и др.) — P2 Важно              │
-│  🔜 TODO-3: Formations Phase 4-5 (UI/Visual) — P2 Важно                     │
-│  🔜 TODO-4: Generator Migration Phase 4 (Docs) — P3 Опционально             │
-│  🔜 TODO-5: Combat AOE/Testing — P3 Опционально                             │
+│  ✅ TODO-1: Unit тесты — Частично (technique-capacity.test.ts)              │
+│  ✅ TODO-2: UI компоненты — ВЫПОЛНЕНО                                        │
+│  🔄 TODO-3: Formations Phase 4-5 — Phase 4 выполнена, Phase 5 ожидает       │
+│  ✅ TODO-4: Generator Migration Phase 4 — ВЫПОЛНЕНО                          │
+│  🔜 TODO-5: Combat AOE/Testing — Ожидает выполнения                          │
 │                                                                              │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🔜 TODO-1: Unit тесты
+## ✅ TODO-1: Unit тесты
 
 **Приоритет:** P3 (Опционально)
 **Источники:** checkpoint_03_22_Body_update.md, checkpoint_03_22_Combat.md
 **Оценка:** 4-6 часов
+**Статус:** 🔄 Частично выполнено
+
+### 1.0 Подплан: technique-capacity.test.ts
+
+**Файл:** `src/lib/constants/technique-capacity.test.ts`
+**Статус:** ✅ ВЫПОЛНЕНО
+
+**Критерии готовности:**
+- [x] Все тесты проходят
+- [x] Coverage ≥ 80%
+- [x] Edge cases покрыты
 
 ### 1.1 Подплан: level-suppression.test.ts
 
 **Файл:** `src/lib/constants/level-suppression.test.ts`
+**Статус:** 🔜 Ожидает создания
 
 **Тесты:**
 ```typescript
@@ -91,6 +104,7 @@ describe('Level Suppression', () => {
 ### 1.2 Подплан: qi-buffer.test.ts
 
 **Файл:** `src/lib/game/qi-buffer.test.ts`
+**Статус:** 🔜 Ожидает создания
 
 **Тесты:**
 ```typescript
@@ -167,6 +181,7 @@ describe('Qi Buffer 90%', () => {
 ### 1.3 Подплан: Интеграционные тесты
 
 **Файл:** `src/lib/game/damage-pipeline.test.ts`
+**Статус:** 🔜 Ожидает создания
 
 **Тесты:**
 ```typescript
@@ -205,177 +220,79 @@ describe('Damage Pipeline', () => {
 
 ---
 
-## 🔜 TODO-2: UI компоненты
+## ✅ TODO-2: UI компоненты
 
 **Приоритет:** P2 (Важно)
 **Источники:** checkpoint_03_22_Combat.md, checkpoint_03_22_UI_Audit.md
 **Оценка:** 6-8 часов
+**Статус:** ✅ ВЫПОЛНЕНО
 
 ### 2.1 Подплан: DamageFlowDisplay.tsx
 
 **Файл:** `src/components/game/DamageFlowDisplay.tsx`
-
-**Описание:** Визуализация pipeline урона с анимацией слоёв защиты
-
-**Структура:**
-```tsx
-interface DamageFlowDisplayProps {
-  open: boolean;
-  onClose: () => void;
-  pipeline: DamagePipelineResult;
-}
-
-// Слои для отображения:
-// 1. Raw Damage (исходный урон)
-// 2. Level Suppression (множитель)
-// 3. Qi Buffer (90% поглощение)
-// 4. Material Reduction (chitin 20%, etc.)
-// 5. Armor DR
-// 6. Final Damage
-```
-
-**Компоненты:**
-```
-src/components/game/DamageFlowDisplay.tsx
-├── DamageFlowDisplay.tsx (основной компонент)
-├── DamageLayerCard.tsx (карточка слоя)
-└── DamageFlowAnimation.tsx (анимация)
-```
+**Статус:** ✅ ВЫПОЛНЕНО
 
 **Критерии готовности:**
-- [ ] Компонент создан
-- [ ] Анимация слоёв работает
-- [ ] Интеграция с Event Bus
+- [x] Компонент создан
+- [x] Анимация слоёв работает
+- [x] Интеграция с Event Bus
 
 ### 2.2 Подплан: QiBufferStatus.tsx
 
 **Файл:** `src/components/game/QiBufferStatus.tsx`
-
-**Описание:** Индикатор Qi Buffer 90%
-
-**Структура:**
-```tsx
-interface QiBufferStatusProps {
-  currentQi: number;
-  maxQi: number;
-  hasShieldTechnique: boolean;
-}
-
-// Отображение:
-// - Прогресс-бар Ци
-// - Индикатор 90% буфера
-// - Статус щит-техники
-```
-
-**Данные из store:**
-```typescript
-const character = useGameCharacter();
-// currentQi, maxQi из store
-```
-
-**Место размещения:** StatusDialog.tsx, вкладка "Культивация"
+**Статус:** ✅ ВЫПОЛНЕНО
 
 **Критерии готовности:**
-- [ ] Компонент создан
-- [ ] Интегрирован в StatusDialog
-- [ ] Обновляется в реальном времени
+- [x] Компонент создан
+- [x] Интегрирован в StatusDialog
+- [x] Обновляется в реальном времени
 
 ### 2.3 Подплан: LevelSuppressionIndicator.tsx
 
 **Файл:** `src/components/game/LevelSuppressionIndicator.tsx`
-
-**Описание:** Индикатор подавления уровней
-
-**Структура:**
-```tsx
-interface LevelSuppressionIndicatorProps {
-  attackerLevel: number;
-  defenderLevel: number;
-  attackType: AttackType;
-  techniqueLevel?: number;
-}
-
-// Отображение:
-// - Разница уровней
-// - Множитель подавления
-// - Иконка типа атаки (normal/technique/ultimate)
-// - Цветовая индикация (зелёный/жёлтый/красный)
-```
-
-**Интеграция:** 
-- Event Bus response содержит levelSuppression
-- Или рассчитывается локально
+**Статус:** ✅ ВЫПОЛНЕНО
 
 **Критерии готовности:**
-- [ ] Компонент создан
-- [ ] Интегрирован в TechniquesDialog
-- [ ] Цветовая индикация работает
+- [x] Компонент создан
+- [x] Интегрирован в TechniquesDialog
+- [x] Цветовая индикация работает
 
 ### 2.4 Подплан: FormationDrainDisplay
 
 **Файл:** Изменения в `src/components/game/TechniquesDialog.tsx`
-
-**Описание:** Отображение утечки Ци/час для формаций
-
-**Изменения:**
-```tsx
-// В FormationEffectsDisplay добавить:
-<div className="text-xs text-muted-foreground">
-  Утечка: {formation.drainPerHour} Ци/час
-  {formation.isHeavy && ' | Тяжёлая формация'}
-</div>
-```
+**Статус:** ✅ ВЫПОЛНЕНО (интегрировано)
 
 **Критерии готовности:**
-- [ ] Утечка отображается
-- [ ] Форматирование корректное
+- [x] Утечка отображается
+- [x] Форматирование корректное
 
 ---
 
-## 🔜 TODO-3: Formations Phase 4-5
+## 🔄 TODO-3: Formations Phase 4-5
 
 **Приоритет:** P2 (Важно)
 **Источники:** checkpoint_03_22_Formations.md
 **Оценка:** 6-10 часов
+**Статус:** 🔄 Phase 4 выполнена, Phase 5 ожидает
 
 ### 3.1 Подплан: UI интеграция (Phase 4)
 
 **Задача:** Интегрировать FormationCoresTab в TechniquesDialog
+**Статус:** ✅ ВЫПОЛНЕНО
 
-**Файл:** `src/components/game/TechniquesDialog.tsx`
-
-**Изменения:**
-```tsx
-// В вкладку "formations" добавить под-вкладки:
-<TabsContent value="formations" className="mt-4 space-y-4">
-  <Tabs defaultValue="techniques" className="w-full">
-    <TabsList className="grid grid-cols-2 bg-slate-600">
-      <TabsTrigger value="techniques">Формации</TabsTrigger>
-      <TabsTrigger value="cores">Ядра</TabsTrigger>
-    </TabsList>
-    
-    <TabsContent value="techniques">
-      {/* Существующий контент */}
-    </TabsContent>
-    
-    <TabsContent value="cores">
-      <FormationCoresTab
-        characterId={character.id}
-        cultivationLevel={character.cultivationLevel}
-      />
-    </TabsContent>
-  </Tabs>
-</TabsContent>
-```
+**Файлы:**
+- `src/components/game/TechniquesDialog.tsx` — интегрирован
+- `src/components/formation/FormationCoresTab.tsx` — создан
 
 **Критерии готовности:**
-- [ ] Под-вкладки работают
-- [ ] FormationCoresTab интегрирован
-- [ ] Навигация работает
+- [x] Под-вкладки работают
+- [x] FormationCoresTab интегрирован
+- [x] Навигация работает
 
 ### 3.2 Подплан: Визуализация формаций (Phase 5)
 
 **Задача:** Создать визуальное отображение формаций в игре
+**Статус:** 🔜 Ожидает выполнения
 
 **Файловая структура:**
 ```
@@ -467,46 +384,44 @@ update(time: number, delta: number) {
 
 ---
 
-## 🔜 TODO-4: Generator Migration Phase 4
+## ✅ TODO-4: Generator Migration Phase 4
 
 **Приоритет:** P3 (Опционально)
 **Источники:** checkpoint_03_22_Generator_Migration.md
 **Оценка:** 30 минут
+**Статус:** ✅ ВЫПОЛНЕНО
 
 ### 4.1 Подплан: Обновить JSDoc deprecated
 
 **Файл:** `src/lib/generator/technique-generator.ts`
-
-**Текущий (уже есть):**
-```typescript
-/**
- * @deprecated Используйте technique-generator-v2.ts
- */
-```
-
-**Без изменений - уже помечен.**
+**Статус:** ✅ Уже помечен @deprecated
 
 ### 4.2 Подплан: Обновить документацию
 
 **Файл:** `docs/generators.md`
+**Статус:** ✅ ВЫПОЛНЕНО
 
-**Добавить секцию:**
+**Добавлена секция:**
 ```markdown
-## Статус генераторов
+## 📊 Статус генераторов
 
-| Генератор | Версия | Статус |
-|-----------|--------|--------|
-| technique-generator.ts | V1 | @deprecated - использовать V2 |
-| technique-generator-v2.ts | V2 | ✅ Актуальный |
-| formation-generator.ts | V1 | ✅ Актуальный (боевые формации) |
-| formation-core-generator.ts | V1 | ✅ Актуальный (медитативные) |
-| equipment-generator.ts | V2 | ✅ Актуальный |
-| consumable-generator.ts | V1 | ✅ Актуальный |
+| Генератор | Версия | Статус | Описание |
+|-----------|--------|--------|----------|
+| `technique-generator.ts` | V1 | ⚠️ @deprecated | Использовать technique-generator-v2.ts |
+| `technique-generator-v2.ts` | V2 | ✅ Актуальный | Основной генератор техник (5.0.0) |
+| `formation-generator.ts` | V1 | ✅ Актуальный | Боевые формации |
+| `formation-core-generator.ts` | V1 | ✅ Актуальный | Медитативные формации |
+| `equipment-generator.ts` | V2 | ✅ Актуальный | Bridge к equipment-generator-v2.ts |
+| `equipment-generator-v2.ts` | V2 | ✅ Актуальный | Основной генератор экипировки |
+| `consumable-generator.ts` | V1 | ✅ Актуальный | Расходники |
+| `npc-generator.ts` | V2.1 | ✅ Актуальный | Генерация базовых NPC |
+| `npc-full-generator.ts` | V2 | ✅ Актуальный | Полная генерация NPC |
+| `technique-compat.ts` | V1↔V2 | ✅ Актуальный | Совместимость V1↔V2 |
 ```
 
 **Критерии готовности:**
-- [ ] Документация обновлена
-- [ ] Таблица статусов добавлена
+- [x] Документация обновлена
+- [x] Таблица статусов добавлена
 
 ---
 
@@ -515,10 +430,12 @@ update(time: number, delta: number) {
 **Приоритет:** P3 (Опционально)
 **Источники:** checkpoint_03_22_Combat.md
 **Оценка:** 2-3 часа
+**Статус:** 🔜 Ожидает выполнения
 
 ### 5.1 Подплан: processAOEAttack()
 
 **Файл:** `src/lib/game/damage-pipeline.ts`
+**Статус:** 🔜 Ожидает создания
 
 **Описание:** Специализированная функция для AOE атак
 
@@ -579,6 +496,7 @@ export function processAOEAttack(params: AOEAttackParams): AOEAttackResult {
 ### 5.2 Подплан: Event Bus тестирование
 
 **Файл:** `src/lib/game/event-bus/handlers/combat.test.ts`
+**Статус:** 🔜 Ожидает создания
 
 **Тесты:**
 ```typescript
@@ -609,38 +527,32 @@ describe('Combat Event Bus Handler', () => {
 
 ## 📊 ИТОГОВАЯ ОЦЕНКА
 
-| TODO | Приоритет | Оценка | Зависимости |
-|------|-----------|--------|-------------|
-| TODO-1: Unit тесты | P3 | 4-6 ч | Нет |
-| TODO-2: UI компоненты | P2 | 6-8 ч | TODO-1 (частично) |
-| TODO-3: Formations Phase 4-5 | P2 | 6-10 ч | Нет |
-| TODO-4: Generator Docs | P3 | 30 мин | Нет |
-| TODO-5: Combat AOE/Tests | P3 | 2-3 ч | TODO-1 |
-
-**Общая оценка:** 18-27 часов
+| TODO | Приоритет | Статус | Выполнено |
+|------|-----------|--------|-----------|
+| TODO-1: Unit тесты | P3 | 🔄 Частично | technique-capacity.test.ts |
+| TODO-2: UI компоненты | P2 | ✅ Выполнено | 4/4 компонента |
+| TODO-3: Formations | P2 | 🔄 Частично | Phase 4 |
+| TODO-4: Generator Docs | P3 | ✅ Выполнено | 100% |
+| TODO-5: Combat AOE | P3 | 🔜 Ожидает | 0% |
 
 ---
 
-## 🎯 РЕКОМЕНДАЦИИ ПО ВЫПОЛНЕНИЮ
+## 🎯 ОСТАВШИЕСЯ ЗАДАЧИ
 
-### Порядок выполнения (рекомендуемый):
+### Приоритет 1: Unit тесты (TODO-1)
+1. `level-suppression.test.ts` — ~30 мин
+2. `qi-buffer.test.ts` — ~30 мин
+3. `damage-pipeline.test.ts` — ~1 час
 
-1. **TODO-4** (30 мин) — Быстрая победа, документация
-2. **TODO-2.2-2.3** (2-3 ч) — QiBufferStatus, LevelSuppressionIndicator
-3. **TODO-3.1** (1-2 ч) — UI интеграция формаций
-4. **TODO-1** (4-6 ч) — Unit тесты
-5. **TODO-2.1** (2-3 ч) — DamageFlowDisplay
-6. **TODO-3.2** (4-6 ч) — Визуализация формаций
-7. **TODO-5** (2-3 ч) — AOE и тесты Event Bus
+### Приоритет 2: Визуализация формаций (TODO-3.2)
+- FormationVisual + FormationVisualManager — ~4-6 часов
 
-### Критичные зависимости:
-
-- **TODO-2** может выполняться параллельно с **TODO-1**
-- **TODO-3.1** независим от **TODO-3.2**
-- **TODO-5** зависит от **TODO-1** (тесты)
+### Приоритет 3: Combat AOE (TODO-5)
+- processAOEAttack + тесты — ~2-3 часа
 
 ---
 
 *Файл создан: 2026-03-22 17:09:47 UTC*
-*Версия: 1.0*
-*Статус: 📋 Ожидают выполнения*
+*Обновлён: 2026-03-22 19:30 UTC*
+*Версия: 1.1*
+*Статус: 🔄 В процессе выполнения*

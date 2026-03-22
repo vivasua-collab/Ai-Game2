@@ -220,22 +220,22 @@ export function getSuppressionDescription(result: LevelSuppressionResult): strin
 /**
  * Примеры подавления (для документации и тестов)
  * 
- * | Атакующий | Защитник | Тип атаки | Уровень техники | Множитель |
- * |-----------|----------|-----------|-----------------|-----------|
- * | L9        | L9       | normal    | -               | 1.0       |
- * | L9        | L9       | technique | -               | 1.0       |
- * | L7        | L9       | normal    | -               | 0.0       |
- * | L7        | L9       | technique | L7              | 0.05      |
- * | L7        | L9       | technique | L8              | 0.25      |
- * | L5        | L9       | ultimate  | -               | 0.1       |
- * | L4        | L9       | ultimate  | -               | 0.0       |
+ * | Атакующий | Защитник | Тип атаки | Уровень техники | Разница | Множитель |
+ * |-----------|----------|-----------|-----------------|---------|-----------|
+ * | L9        | L9       | normal    | -               | 0       | 1.0       |
+ * | L9        | L9       | technique | -               | 0       | 1.0       |
+ * | L7        | L9       | normal    | -               | 2       | 0.1       |
+ * | L7        | L9       | technique | L7              | 2       | 0.25      |
+ * | L7        | L9       | technique | L8              | 1       | 0.75      |
+ * | L5        | L9       | ultimate  | -               | 4       | 0.1       |
+ * | L4        | L9       | ultimate  | -               | 5       | 0.0       |
  */
 export const SUPPRESSION_EXAMPLES = [
   { attackerLevel: 9, defenderLevel: 9, attackType: 'normal' as AttackType, expected: 1.0 },
   { attackerLevel: 9, defenderLevel: 9, attackType: 'technique' as AttackType, expected: 1.0 },
-  { attackerLevel: 7, defenderLevel: 9, attackType: 'normal' as AttackType, expected: 0.0 },
-  { attackerLevel: 7, defenderLevel: 9, attackType: 'technique' as AttackType, techniqueLevel: 7, expected: 0.05 },
-  { attackerLevel: 7, defenderLevel: 9, attackType: 'technique' as AttackType, techniqueLevel: 8, expected: 0.25 },
-  { attackerLevel: 5, defenderLevel: 9, attackType: 'ultimate' as AttackType, expected: 0.1 },
-  { attackerLevel: 4, defenderLevel: 9, attackType: 'ultimate' as AttackType, expected: 0.0 },
+  { attackerLevel: 7, defenderLevel: 9, attackType: 'normal' as AttackType, expected: 0.1 },  // разница 2
+  { attackerLevel: 7, defenderLevel: 9, attackType: 'technique' as AttackType, techniqueLevel: 7, expected: 0.25 },  // разница 2
+  { attackerLevel: 7, defenderLevel: 9, attackType: 'technique' as AttackType, techniqueLevel: 8, expected: 0.75 },  // разница 1
+  { attackerLevel: 5, defenderLevel: 9, attackType: 'ultimate' as AttackType, expected: 0.1 },  // разница 4
+  { attackerLevel: 4, defenderLevel: 9, attackType: 'ultimate' as AttackType, expected: 0.0 },  // разница 5+
 ];
