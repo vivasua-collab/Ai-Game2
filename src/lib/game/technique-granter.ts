@@ -144,18 +144,29 @@ export async function checkAndGrantTechnique(
   // Проверяем номер медитации
   const nextMeditationNumber = meditationCount + 1;
   
+  console.log(`[TechniqueGranter] checkAndGrantTechnique called: meditationCount=${meditationCount}, nextMeditationNumber=${nextMeditationNumber}`);
+  
   // Выдаём техники только на 1-й и 2-й медитации
   if (nextMeditationNumber > 2) {
+    console.log(`[TechniqueGranter] Meditation number ${nextMeditationNumber} > 2, skipping`);
     return { granted: false, meditationNumber: nextMeditationNumber };
   }
   
   // Загружаем техники
   const { objects: allTechniques } = await generatedObjectsLoader.loadTechniques();
   
+  console.log(`[TechniqueGranter] Loaded ${allTechniques.length} techniques`);
+  
   if (allTechniques.length === 0) {
     await logWarn("GAME", "No techniques available for granting");
     return { granted: false, meditationNumber: nextMeditationNumber };
   }
+  
+  // Логируем доступные combat техники для отладки
+  const combatTechniques = allTechniques.filter(t => t.type === 'combat');
+  console.log(`[TechniqueGranter] Combat techniques: ${combatTechniques.length}`);
+  const subtypes = [...new Set(combatTechniques.map(t => t.subtype))];
+  console.log(`[TechniqueGranter] Combat subtypes available: ${JSON.stringify(subtypes)}`);
   
   // Выбираем технику в зависимости от номера медитации
   let selectedTechnique: GeneratedTechnique | null = null;
@@ -164,15 +175,20 @@ export async function checkAndGrantTechnique(
   if (nextMeditationNumber === 1) {
     selectedTechnique = selectMeleeStrikeTechnique(allTechniques);
     techniqueType = "ближнего безоружного боя";
+    console.log(`[TechniqueGranter] Looking for melee_strike techniques...`);
   } else if (nextMeditationNumber === 2) {
     selectedTechnique = selectRangedTechnique(allTechniques);
     techniqueType = "дистанционную";
+    console.log(`[TechniqueGranter] Looking for ranged techniques...`);
   }
   
   if (!selectedTechnique) {
     await logWarn("GAME", `No ${techniqueType} technique found for granting`);
+    console.log(`[TechniqueGranter] No ${techniqueType} technique found!`);
     return { granted: false, meditationNumber: nextMeditationNumber };
   }
+  
+  console.log(`[TechniqueGranter] Selected technique: ${selectedTechnique.name} (${selectedTechnique.id})`);
   
   try {
     // Проверяем, существует ли уже такая техника в БД

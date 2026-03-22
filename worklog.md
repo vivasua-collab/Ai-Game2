@@ -240,3 +240,66 @@ Stage Summary:
   - API: /api/generator/items
 - Автогенерация расходников работает при отсутствии файлов
 - P3 "Нет расходников в presets/" решён
+
+---
+Task ID: 9
+Agent: Main Agent
+Task: Исправление JSON parse ошибки в NPC Viewer при нажатии "Пересоздать"
+
+Work Log:
+- Проанализирован поток выполнения при нажатии "Пересоздать":
+  - handleRespawnSessionNPCs() → POST /api/npc/spawn → loadAllNPCs()
+  - loadAllNPCs() делает 3 параллельных запроса
+  - Один из запросов возвращал не-JSON ответ
+- Найдена корневая причина:
+  - В loadAllNPCs() отсутствовала проверка content-type перед .json()
+  - При ошибке сервера (HTML страница) или пустом ответе падал JSON.parse
+- Реализовано исправление:
+  - Добавлена функция safeParseJson() с проверкой content-type
+  - Добавлены проверки на null для данных (genData?, presetData?, sessionData?)
+  - Добавлено логирование в консоль для диагностики
+- Создана документация: docs/checkpoints/checkpoint_03_22_UI_fix.md
+- Lint: 0 ошибок, 3 warnings (предсуществующие)
+
+Stage Summary:
+- Ключевые файлы изменены:
+  - src/components/game/NPCViewerDialog.tsx — добавлен safeParseJson()
+- Документация:
+  - docs/checkpoints/checkpoint_03_22_UI_fix.md — НОВЫЙ файл
+- Проблема: JSON.parse error при "Пересоздать" — ✅ ИСПРАВЛЕНО
+- Решение: Проверка content-type + безопасный парсинг + null checks
+
+---
+Task ID: 10
+Agent: Main Agent
+Task: Обновление главного чекпоинта checkpoint_03_22.md на основе выполненных задач
+
+Work Log:
+- Прочитаны все чекпоинты:
+  - checkpoint_03_22_Body_update.md (v3.1) — ✅ ЗАВЕРШЁН
+  - checkpoint_03_22_Combat.md (v3.0) — ✅ ЗАВЕРШЁН
+  - checkpoint_03_22_Formations.md (v2.1) — ✅ Phase 1-3 ЗАВЕРШЕНЫ
+  - checkpoint_03_22_Generator_Migration.md (v1.3) — ✅ Phase 1-3 ЗАВЕРШЕНЫ
+  - checkpoint_03_22_Generators.md (v3.0) — ✅ ЗАВЕРШЁН
+  - checkpoint_03_22_NPC_Orchestrator.md (v2.0) — ✅ Проблемы исправлены
+  - checkpoint_03_22_UI_Audit.md (v1.0) — ✅ ЗАВЕРШЁН
+  - checkpoint_03_22_UI.md (v3.0) — ✅ ЗАВЕРШЁН
+  - checkpoint_03_22_UI_fix.md (v1.0) — ✅ ЗАВЕРШЁН
+- Обновлён checkpoint_03_22.md до v9.0:
+  - Добавлена сводка выполненных работ
+  - Добавлен статус всех чекпоинтов
+  - Обновлён дневник
+  - Обновлены метрики
+- Создан checkpoint_03_22_todo.md:
+  - UI-04: DamageFlowDisplay (P3)
+  - UI-05: FormationDrainDisplay (P3)
+  - Unit тесты (P3)
+  - Документация deprecated (P3)
+  - Phaser визуализация (P3)
+  - Очистка кода (P4)
+
+Stage Summary:
+- checkpoint_03_22.md — обновлён до v9.0
+- checkpoint_03_22_todo.md — создан v1.0
+- Статус: ✅ ВСЕ ОСНОВНЫЕ ЗАДАЧИ ЗАВЕРШЕНЫ
+- Опциональные улучшения: P3-P4 (тесты, визуализация, документация)

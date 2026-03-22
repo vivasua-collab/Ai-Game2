@@ -177,14 +177,30 @@ export function NPCViewerDialog({ open, onOpenChange }: NPCViewerDialogProps) {
           : Promise.resolve(new Response(JSON.stringify({ success: false, npcs: [] }))),
       ]);
       
-      const genData = await genRes.json();
-      const presetData = await presetRes.json();
-      const sessionData = await sessionRes.json();
+      // Безопасный парсинг JSON с проверкой content-type
+      const safeParseJson = async (res: Response, name: string) => {
+        const contentType = res.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+          const text = await res.text();
+          console.error(`[NPCViewer] ${name} returned non-JSON:`, text.substring(0, 200));
+          return null;
+        }
+        try {
+          return await res.json();
+        } catch (e) {
+          console.error(`[NPCViewer] ${name} JSON parse error:`, e);
+          return null;
+        }
+      };
+      
+      const genData = await safeParseJson(genRes, 'generator/npc');
+      const presetData = await safeParseJson(presetRes, 'npc/spawn/presets');
+      const sessionData = await safeParseJson(sessionRes, 'npc/spawn/list');
       
       console.log('[NPCViewer] Session data:', sessionData);
       
       // Generated NPCs
-      if (genData.success && genData.npcs) {
+      if (genData?.success && genData.npcs) {
         const uniqueNPCs = genData.npcs.reduce((acc: GeneratedNPC[], npc: GeneratedNPC) => {
           if (!acc.find(n => n.id === npc.id)) acc.push(npc);
           return acc;
@@ -193,7 +209,7 @@ export function NPCViewerDialog({ open, onOpenChange }: NPCViewerDialogProps) {
       }
       
       // Preset NPCs
-      if (presetData.success && presetData.presets) {
+      if (presetData?.success && presetData.presets) {
         const presetConverted: GeneratedNPC[] = presetData.presets.map((p: any) => ({
           id: p.id,
           name: p.name,
@@ -236,7 +252,7 @@ export function NPCViewerDialog({ open, onOpenChange }: NPCViewerDialogProps) {
       }
       
       // Session NPCs - ВСЕ, без фильтрации
-      if (sessionData.success && sessionData.npcs) {
+      if (sessionData?.success && sessionData.npcs) {
         console.log('[NPCViewer] Session NPCs count:', sessionData.npcs.length);
         
         const sessionConverted: GeneratedNPC[] = sessionData.npcs.map((n: any) => ({
@@ -326,13 +342,24 @@ export function NPCViewerDialog({ open, onOpenChange }: NPCViewerDialogProps) {
     
     setRespawning(true);
     try {
-      const sessionRes = await fetch(`/api/game/session?id=${sessionId}`);
-      const sessionData = await sessionRes.json();
+      // Используем текущую локацию или дефолтную
       let locationId = currentLocationId || 'loc_default';
       
-      if (sessionData.success && sessionData.session?.locations?.length > 0) {
-        locationId = sessionData.session.locations[0].id;
+      // Если нет локации, пытаемся получить из текущей сессии
+      if (!currentLocationId) {
+        try {
+          const stateRes = await fetch(`/api/game/state?sessionId=${sessionId}`);
+          const stateData = await stateRes.json();
+          if (stateData.success && stateData.session?.character?.currentLocation) {
+            locationId = stateData.session.character.currentLocation;
+          }
+        } catch {
+          // Игнорируем ошибку, используем дефолтную локацию
+          console.log('[NPCViewer] Could not fetch location, using default');
+        }
       }
+      
+      console.log('[NPCViewer] Respawning NPCs with:', { sessionId, locationId });
       
       const res = await fetch('/api/npc/spawn', {
         method: 'POST',
@@ -344,12 +371,24 @@ export function NPCViewerDialog({ open, onOpenChange }: NPCViewerDialogProps) {
         }),
       });
       
+      // Проверяем content-type перед парсингом
+      const contentType = res.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await res.text();
+        console.error('[NPCViewer] Non-JSON response:', text.substring(0, 200));
+        throw new Error('Server returned non-JSON response');
+      }
+      
       const data = await res.json();
+      console.log('[NPCViewer] Respawn result:', data);
+      
       if (data.success) {
         await loadAllNPCs();
+      } else {
+        console.error('[NPCViewer] Respawn failed:', data.error);
       }
     } catch (error) {
-      console.error('Failed to respawn NPCs:', error);
+      console.error('[NPCViewer] Failed to respawn NPCs:', error);
     } finally {
       setRespawning(false);
     }

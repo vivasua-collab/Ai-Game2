@@ -714,16 +714,23 @@ export async function POST(request: NextRequest) {
       
       // === СЧЁТЧИК МЕДИТАЦИЙ И ВЫДАЧА ТЕХНИК ===
       // Инкрементируем счётчик медитаций (передаём duration для учёта длинных медитаций >= 4 часов)
+      console.log(`[Meditation] Duration: ${actualDurationMinutes} minutes (threshold: 240)`);
       const meditationCountResult = truthSystem.incrementMeditationCount(sessionId, actualDurationMinutes);
       const currentMeditationCount = meditationCountResult.data?.meditationCount || character.meditationCount || 0;
       const currentLongMeditationCount = meditationCountResult.data?.longMeditationCount || character.longMeditationCount || 0;
       
+      console.log(`[Meditation] Meditation count: ${currentMeditationCount}, Long meditation count: ${currentLongMeditationCount}`);
+      
       // Проверяем выдачу техник (1-я и 2-я ДЛИННАЯ медитация >= 4 часов)
       let techniqueGrant: { granted: boolean; technique?: { id: string; name: string; type: string }; message?: string } = { granted: false };
-      if (currentLongMeditationCount >= 1 && currentLongMeditationCount <= 2) {
+      const shouldGrantTechnique = currentLongMeditationCount >= 1 && currentLongMeditationCount <= 2;
+      console.log(`[Meditation] Should grant technique: ${shouldGrantTechnique} (longMeditationCount=${currentLongMeditationCount})`);
+      
+      if (shouldGrantTechnique) {
         // Импорт динамический чтобы избежать циклических зависимостей
         const { checkAndGrantTechnique } = await import('@/lib/game/technique-granter');
         techniqueGrant = await checkAndGrantTechnique(character.id, currentLongMeditationCount - 1);
+        console.log(`[Meditation] Technique grant result:`, JSON.stringify(techniqueGrant));
       }
       
       // Increase technique mastery (КРИТИЧЕСКАЯ ОПЕРАЦИЯ - в БД)

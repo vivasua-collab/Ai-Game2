@@ -465,12 +465,15 @@ class GeneratedObjectsLoader {
           const data = safeJsonParse<{ techniques?: GeneratedTechnique[] }>(content, {}, fullPath);
 
           if (data.techniques && Array.isArray(data.techniques)) {
+            console.log(`[GeneratedObjectsLoader] Loaded ${data.techniques.length} techniques from ${fullPath}`);
             techniques.push(...data.techniques);
+          } else {
+            console.log(`[GeneratedObjectsLoader] No techniques array in ${fullPath}, keys: ${Object.keys(data).join(', ')}`);
           }
         }
       }
-    } catch {
-      // Директория не существует
+    } catch (error) {
+      console.error(`[GeneratedObjectsLoader] Error reading directory ${dirPath}:`, error);
     }
   }
 

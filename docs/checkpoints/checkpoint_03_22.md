@@ -1,155 +1,148 @@
 # 📋 План: 22 марта 2026
 
-**Дата:** 2026-03-22 22:00 UTC
-**Версия:** 8.0
-**Статус:** ✅ Фаза 1-4 завершены | ✅ Миграция V1→V2 завершена | 📋 UI внедрение
+**Дата:** 2026-03-22 17:09:47 UTC
+**Версия:** 10.0
+**Статус:** ✅ ВСЕ ОСНОВНЫЕ ЗАДАЧИ ЗАВЕРШЕНЫ
 
 ---
 
-## ✅ ЗАВЕРШЁННЫЕ ЗАДАЧИ
+## 📊 СВОДКА ВЫПОЛНЕННЫХ РАБОТ
 
-### Задача 1: Документация структуры тел монстров
-**Статус:** ✅ ЗАВЕРШЕНО
-**Файл:** `docs/body_monsters.md`
-
-| Компонент | Описание |
-|-----------|----------|
-| Шаблоны тела | humanoid, quadruped, bird, serpentine, arthropod, spirit |
-| Гуманоиды (5) | человек, эльф, демон, великан, зверолюд |
-| Звери (6) | волк, тигр, медведь, дракон, феникс, змея |
-| Членистоногие (3) | паук, многоножка, скорпион |
-| Духи (5) | призрак, 3 элементаля, небесный дух |
-| Гибриды (5) | кентавр, русалка, оборотень, гарпия, ламия |
-| Аберрации (3) | голем, chaos spawn, хтонь |
-
-### Задача 2: Система подавления уровнем
-**Статус:** ✅ ЗАВЕРШЕНО (Документация + Код)
-**Файлы:** 
-- Документация: `docs/body_armor.md`, `docs/technique-system-v2.md`, `docs/NPC_COMBAT_INTERACTIONS.md`
-- Код: `src/lib/constants/level-suppression.ts`
-
-| Компонент | Описание |
-|-----------|----------|
-| LEVEL_SUPPRESSION_TABLE | Таблица множителей по разнице уровней |
-| Типы атак | normal, technique, ultimate |
-| technique.level | Пробитие защиты выше уровнем |
-| AOE обработка | Индивидуальное подавление для каждой цели |
-| calculateLevelSuppression() | ✅ Функция реализована |
-| calculateLevelSuppressionFull() | ✅ Полный результат с деталями |
-| isTargetImmune() | ✅ Проверка иммунитета |
-
-### Задача 3: Ultimate-техники
-**Статус:** ✅ ЗАВЕРШЕНО (Документация + Код + Генератор)
-**Файлы:** 
-- Документация: `docs/technique-system-v2.md`
-- Код: `src/types/technique-types.ts`, `src/types/game.ts`
-- Генератор: `src/lib/generator/technique-generator-v2.ts`
-
-| Компонент | Описание |
-|-----------|----------|
-| Флаг isUltimate | ✅ Добавлен в Technique интерфейс |
-| Пробитие +4 уровней | 10% урона проходит |
-| Иммунитет | Только при +5 уровнях разницы |
-| isUltimateTechnique() | ✅ Функция реализована |
-| determineAttackType() | ✅ Определение типа атаки |
-| ULTIMATE_CHANCE_BY_GRADE | ✅ 5% шанс для transcendent |
-| ULTIMATE_DAMAGE_MULTIPLIER | ✅ ×1.3 урон |
-| ULTIMATE_QI_COST_MULTIPLIER | ✅ ×1.5 стоимость |
-| Маркер ⚡ в названии | ✅ Добавляется |
-
-### Задача 4: Qi Buffer 90%
-**Статус:** ✅ ЗАВЕРШЕНО (Документация + Код)
-**Файлы:**
-- Документация: `docs/body_review.md`
-- Код: `src/lib/constants/qi-buffer-config.ts`, `src/lib/game/qi-buffer.ts`
-
-| Компонент | Описание |
-|-----------|----------|
-| QI_BUFFER_CONFIG | ✅ Константы (90% absorption, 10% piercing) |
-| processQiDamage() | ✅ Основная функция |
-| Щитовая техника 100% | ✅ 1:1 соотношение |
-| Сырая Ци 90% | ✅ 10% ВСЕГДА пробивает |
-
-### Задача 5: Damage Pipeline
-**Статус:** ✅ ЗАВЕРШЕНО
-**Файл:** `src/lib/game/damage-pipeline.ts`
-
-| Компонент | Описание |
-|-----------|----------|
-| processDamagePipeline() | ✅ Полный pipeline 10 слоёв |
-| calculateFinalDamageQuick() | ✅ Упрощённый расчёт |
-| canDamageTarget() | ✅ Проверка возможности урона |
-| MATERIAL_DAMAGE_REDUCTION | ✅ Снижение от материала тела |
-
-### Задача 6: Интеграция combat-system.ts
-**Статус:** ✅ ЗАВЕРШЕНО
-**Файл:** `src/lib/game/combat-system.ts`
-
-| Изменение | Описание |
-|-----------|----------|
-| defenderLevel параметр | ✅ Опциональный параметр |
-| levelSuppression в результате | ✅ Добавлено |
-| damageAfterSuppression | ✅ Добавлено |
-| Обратная совместимость | ✅ Сохранена |
-
-### Задача 7: Интеграция npc-damage-calculator.ts
-**Статус:** ✅ ЗАВЕРШЕНО
-**Файл:** `src/lib/game/npc-damage-calculator.ts`
-
-| Изменение | Описание |
-|-----------|----------|
-| cultivationLevel в PlayerDefenseStats | ✅ Добавлено |
-| currentQi, maxQi, hasShieldTechnique | ✅ Добавлено |
-| Level Suppression | ✅ Интегрировано |
-| Qi Buffer 90% | ✅ Интегрировано |
-| meridianBuffer deprecated | ✅ Только для физ. атак |
-
-### Задача 8: Генераторы (Фаза 3) — ✅ ЗАВЕРШЕНО
-**Файл:** `docs/checkpoints/checkpoint_03_22_Generators.md`
-
-| Компонент | Файл | Статус |
-|-----------|------|--------|
-| isUltimate генерация | technique-generator-v2.ts | ✅ 5% для transcendent |
-| beast_arthropod template | npc-generator.ts | ✅ Добавлен |
-| bodyMaterial в BodyState | npc-generator.ts | ✅ Добавлен |
-| morphology в BodyState | npc-generator.ts | ✅ Добавлен |
-| Arthropod parts HP | npc-generator.ts | ✅ Определены |
-| material в TempBodyState | temp-npc.ts | ✅ Добавлен |
-| morphology в TempBodyState | temp-npc.ts | ✅ Добавлен |
-| Material в convertBodyState | session-npc-manager.ts | ✅ Передаётся |
-| MATERIAL_DAMAGE_REDUCTION в combat | event-bus/handlers/combat.ts | ✅ Интегрирован |
-
-### Задача 9: Формации (Фаза 1-3) — ✅ ЗАВЕРШЕНО
-**Файл:** `docs/checkpoints/checkpoint_03_22_Formations.md`
-
-| Компонент | Файл | Статус |
-|-----------|------|--------|
-| FormationCore model | prisma/schema.prisma | ✅ Создана |
-| ActiveFormation model | prisma/schema.prisma | ✅ Создана |
-| formation-constants.ts | src/lib/formations/ | ✅ Создан |
-| formation-core-generator.ts | src/lib/formations/ | ✅ Создан |
-| formation-manager.ts | src/lib/formations/ | ✅ Создан |
-| /api/formations/route.ts | src/app/api/formations/ | ✅ Создан |
-| /api/formations/cores/route.ts | src/app/api/formations/cores/ | ✅ Создан |
-| FormationCoresTab.tsx | src/components/formation/ | ✅ Создан |
-
-### Задача 10: Миграция генераторов V1→V2 — ✅ ЗАВЕРШЕНО
-**Файл:** `docs/checkpoints/checkpoint_03_22_Generator_Migration.md`
-
-| Компонент | Файл | Статус |
-|-----------|------|--------|
-| technique-compat.ts | src/lib/generators/ | ✅ Создан |
-| v2ToV1() конвертер | technique-compat.ts | ✅ Работает |
-| npc-full-generator.ts миграция | src/lib/generators/ | ✅ V2 используется |
-| Автогенерация расходников | generated-objects-loader.ts | ✅ Добавлена |
-| P1: V1 generateTechnique | npc-full-generator.ts | ✅ Исправлено |
-| P3: Нет расходников | generated-objects-loader.ts | ✅ Исправлено |
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    СТАТУС ВЫПОЛНЕНИЯ                                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                              │
+│  ✅ Body_update      — Level Suppression, Qi Buffer, Damage Pipeline        │
+│  ✅ Combat           — Event Bus интеграция, Material Reduction             │
+│  ✅ Generators       — Ultimate-техники, Arthropod NPC, bodyMaterial        │
+│  ✅ Formations       — DB models, API, Manager, FormationCoresTab UI        │
+│  ✅ Generator_Migration — V1→V2 миграция, technique-compat, расходники       │
+│  ✅ UI               — QiBufferStatus, LevelSuppression, MaterialIndicator  │
+│  ✅ UI_fix           — NPC Viewer JSON parse error исправлен                │
+│  ✅ NPC_Orchestrator — Проблемы P1-P3 исправлены                            │
+│                                                                              │
+│  📋 Опционально: Unit тесты, DamageFlowDisplay, документация                │
+│                                                                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
 
 ---
 
-## 📊 ТЕКУЩЕЕ СОСТОЯНИЕ СИСТЕМ
+## ✅ ЗАВЕРШЁННЫЕ ЧЕКПОИНТЫ
 
-### Иерархия документации
+### 1. checkpoint_03_22_Body_update.md — ✅ ЗАВЕРШЁН (v3.1)
+
+**Реализовано:**
+- `level-suppression.ts` — Таблица подавления по уровням
+- `qi-buffer-config.ts` — Конфигурация 90% поглощения
+- `qi-buffer.ts` — processQiDamage()
+- `damage-pipeline.ts` — 10 слоёв защиты
+- `isUltimate` флаг в техниках
+- `AttackType` тип (normal, technique, ultimate)
+
+**Интеграции:**
+- combat-system.ts — Level Suppression
+- npc-damage-calculator.ts — Level Suppression + Qi Buffer
+
+### 2. checkpoint_03_22_Combat.md — ✅ ЗАВЕРШЁН (v3.0)
+
+**Реализовано:**
+- Event Bus handler combat.ts v3.3.0
+- Level Suppression в handleTempNPCDamageEvent()
+- Qi Buffer 90% для NPC
+- Material Reduction (chitin 20%, ethereal 70%)
+- Иммунитет при подавлении (multiplier = 0)
+
+**UI (существующее):**
+- BodyStatusPanel.tsx — HP частей тела, кровотечения
+- BodyDoll.tsx — визуализация тела
+
+### 3. checkpoint_03_22_Generators.md — ✅ ЗАВЕРШЁН (v3.0)
+
+**Реализовано:**
+- technique-generator-v2.ts — isUltimate генерация (5% для transcendent)
+- npc-generator.ts:
+  - `beast_arthropod` template
+  - `bodyMaterial` в BodyState
+  - `morphology` в BodyState
+  - Arthropod parts HP (cephalothorax, abdomen, pedipalps, chelicerae)
+- species-presets.ts — Spider, Scorpion, Centipede с chitin
+- temp-npc.ts — material, morphology поля
+- session-npc-manager.ts — передача material/morphology
+
+### 4. checkpoint_03_22_Formations.md — ✅ Phase 1-3 ЗАВЕРШЕНЫ (v2.1)
+
+**Реализовано:**
+- `prisma/schema.prisma`:
+  - FormationCore model (диски L1-L6, алтари L5-L9)
+  - ActiveFormation model (барьеры, ловушки, усиление)
+- `formation-constants.ts`:
+  - CONTOUR_QI_BY_LEVEL
+  - CAPACITY_MULTIPLIER_BY_SIZE
+  - DRAIN_INTERVAL_BY_LEVEL
+  - DRAIN_AMOUNT_BY_SIZE
+- `formation-core-generator.ts`:
+  - generateFormationCore()
+  - getAvailableCoresForLevel()
+- `formation-manager.ts`:
+  - createFormationWithoutCore()
+  - createFormationWithCore()
+  - checkFormationDrain()
+- `/api/formations/route.ts` — CRUD для формаций
+- `/api/formations/cores/route.ts` — CRUD для ядер
+- `FormationCoresTab.tsx` — UI для управления ядрами
+
+### 5. checkpoint_03_22_Generator_Migration.md — ✅ Phase 1-3 ЗАВЕРШЕНЫ (v1.3)
+
+**Реализовано:**
+- `technique-compat.ts` — v2ToV1() конвертер
+- npc-full-generator.ts миграция на V2:
+  - generateTechniqueV2() вместо generateTechnique()
+  - Корректные параметры генерации
+- generated-objects-loader.ts:
+  - Автогенерация расходников
+  - loadObjects('consumables') работает
+
+**Исправленные проблемы:**
+- P1: V1 generateTechnique → ✅ Исправлено
+- P2: Нет инвентаря → ✅ УЖЕ работало!
+- P3: Нет расходников → ✅ Автогенерация добавлена
+
+### 6. checkpoint_03_22_UI.md — ✅ ЗАВЕРШЁН (v3.0)
+
+**Интегрировано:**
+- QiBufferStatus → StatusDialog.tsx (вкладка Культивация)
+- LevelSuppressionIndicator → TechniquesDialog.tsx (детали техники)
+- MaterialIndicator → BodyStatusPanel.tsx (начало панели)
+- FormationCoresTab → TechniquesDialog.tsx (вкладка Формации)
+
+### 7. checkpoint_03_22_UI_Audit.md — ✅ ЗАВЕРШЁН (v1.0)
+
+**Выполнено:**
+- Полный аудит архитектуры UI
+- Карта компонентов и их ответственности
+- Архитектура передачи данных React ↔ Phaser
+- Event Bus flow документация
+
+### 8. checkpoint_03_22_UI_fix.md — ✅ ЗАВЕРШЁН
+
+**Исправлено:**
+- NPC Viewer JSON parse error
+- Добавлена функция safeParseJson()
+- Проверки content-type перед парсингом
+- Null checks для данных
+
+### 9. checkpoint_03_22_NPC_Orchestrator.md — ✅ ПРОБЛЕМЫ ИСПРАВЛЕНЫ
+
+**Статус:**
+- P1: V1 generateTechnique → ✅ Исправлено в Generator_Migration
+- P2: Инвентарь не вызывается → ✅ УЖЕ работало
+- P3: Нет расходников → ✅ Исправлено в Generator_Migration
+
+---
+
+## 📁 ИЕРАРХИЯ ДОКУМЕНТАЦИИ
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -184,150 +177,61 @@
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-### Проверка противоречий
-
-| Проверка | Результат | Примечание |
-|----------|-----------|------------|
-| SoulType ↔ Morphology | ✅ Согласовано | 3 уровня иерархии |
-| Materials | ✅ Согласовано | organic, scaled, chitin, ethereal, mineral, chaos |
-| Qi Buffer 90% | ✅ Реализовано | body_review + body_armor + код |
-| Level Suppression | ✅ Реализовано | body_armor + technique-system-v2 + NPC + код |
-| Core Capacity | ✅ Согласовано | 1000 × 1.1^totalLevels |
-| Ultimate генерация | ✅ Реализовано | 5% для transcendent |
-| Arthropod NPC | ✅ Реализовано | chitin материал, 20% reduction |
-| Formation Drain | ✅ Реализовано | interval-based, discrete Qi |
-
 ---
 
-## 🎯 ПОРЯДОК ВНЕДРЕНИЯ (IMPLEMENTATION ROADMAP)
+## 📁 СОЗДАННЫЙ КОД
 
-### Принцип: Документация → Генераторы → Механики → Отображение
+### Новые файлы
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                    ПОРЯДОК ВНЕДРЕНИЯ                                 │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
-│  ФАЗА 1: BODY_UPDATE — ✅ ЗАВЕРШЕНО                                  │
-│  ├── level-suppression.ts      — ✅ Создан                           │
-│  ├── qi-buffer-config.ts       — ✅ Создан                           │
-│  ├── qi-buffer.ts              — ✅ Создан                           │
-│  ├── damage-pipeline.ts        — ✅ Создан                           │
-│  ├── combat-system.ts          — ✅ Интегрирован                     │
-│  └── npc-damage-calculator.ts  — ✅ Интегрирован                     │
-│                                                                      │
-│  ФАЗА 2: COMBAT — ✅ ЗАВЕРШЕНО                                      │
-│  ├── level-suppression.ts      — ✅ Создан                           │
-│  ├── qi-buffer-config.ts       — ✅ Создан                           │
-│  ├── combat-system.ts          — ✅ Интегрирован                     │
-│  ├── npc-damage-calculator.ts  — ✅ Интегрирован                     │
-│  ├── damage-pipeline.ts        — ✅ Создан                           │
-│  ├── event-bus/handlers/combat.ts — ✅ Интегрирован (v3.3.0)         │
-│  ├── Level Suppression         — ✅ Работает в Event Bus             │
-│  ├── Qi Buffer                 — ✅ Работает в Event Bus             │
-│  └── Material Reduction        — ✅ Работает в Event Bus             │
-│                                                                      │
-│  ФАЗА 3: GENERATORS — ✅ ЗАВЕРШЕНО                                   │
-│  ├── technique-generator-v2.ts — ✅ isUltimate генерация             │
-│  ├── npc-generator.ts          — ✅ beast_arthropod, bodyMaterial    │
-│  ├── species-presets.ts        — ✅ Arthropod species (spider, etc.) │
-│  ├── temp-npc.ts               — ✅ material, morphology поля        │
-│  ├── session-npc-manager.ts    — ✅ Передача material/morphology     │
-│  └── combat.ts (event-bus)     — ✅ Material reduction интегрирован  │
-│                                                                      │
-│  ФАЗА 4: FORMATIONS (CORE) — ✅ ЗАВЕРШЕНО                            │
-│  ├── prisma/schema.prisma      — ✅ FormationCore, ActiveFormation   │
-│  ├── formation-constants.ts    — ✅ Drain, capacity, radius          │
-│  ├── formation-core-generator.ts — ✅ Disks, Altars                  │
-│  ├── formation-manager.ts      — ✅ CRUD + drain check               │
-│  ├── /api/formations/          — ✅ REST API                         │
-│  └── FormationCoresTab.tsx     — ✅ UI для ядер                      │
-│                                                                      │
-│  ФАЗА 5: UI — 📋 ЗАПЛАНИРОВАНО                                       │
-│  ├── QiBufferStatus.tsx        — Индикатор Qi Buffer               │
-│  ├── LevelSuppressionIndicator.tsx — Индикатор подавления           │
-│  ├── DamageFlowDisplay.tsx     — Визуализация урона                │
-│  ├── FormationCoresTab интеграция — В TechniquesDialog             │
-│  └── FormationVisual.ts        — Базовая визуализация              │
-│                                                                      │
-└─────────────────────────────────────────────────────────────────────┘
-```
+| Файл | Назначение |
+|------|------------|
+| `src/lib/constants/level-suppression.ts` | Таблица подавления уровней |
+| `src/lib/constants/qi-buffer-config.ts` | Конфигурация Qi Buffer 90% |
+| `src/lib/game/qi-buffer.ts` | Функции обработки Ци урона |
+| `src/lib/game/damage-pipeline.ts` | Pipeline 10 слоёв защиты |
+| `src/lib/formations/formation-constants.ts` | Константы формаций |
+| `src/lib/formations/formation-core-generator.ts` | Генератор ядер |
+| `src/lib/formations/formation-manager.ts` | Менеджер формаций |
+| `src/lib/formations/index.ts` | Экспорты |
+| `src/lib/generator/technique-compat.ts` | Совместимость V1↔V2 |
+| `src/app/api/formations/route.ts` | API формаций |
+| `src/app/api/formations/cores/route.ts` | API ядер |
+| `src/components/formation/FormationCoresTab.tsx` | UI ядер |
+| `src/components/game/QiBufferStatus.tsx` | Индикатор Qi Buffer |
+| `src/components/game/LevelSuppressionIndicator.tsx` | Индикатор подавления |
 
----
+### Изменённые файлы
 
-## 📁 ФАЙЛЫ ПЛАНОВ
-
-| Файл | Назначение | Статус |
-|------|------------|--------|
-| `checkpoint_03_22.md` | Общий план (этот файл) | ✅ Обновлён |
-| `checkpoint_03_22_Body_update.md` | Детальный план систем тела | ✅ Завершён |
-| `checkpoint_03_22_Generators.md` | План генераторов | ✅ Завершён (v3.0) |
-| `checkpoint_03_22_Combat.md` | План боевой системы | ✅ Завершён (v3.0) |
-| `checkpoint_03_22_Formations.md` | План формаций | ✅ Завершён (v2.0 - Phase 1-3) |
-| `checkpoint_03_22_UI.md` | План UI обновлений | 🔨 Аудит завершён (v2.1) |
-| `checkpoint_03_22_UI_Audit.md` | Аудит UI окружения | ✅ Создан (v1.0) |
-| `checkpoint_03_22_NPC_Orchestrator.md` | План оркестратора | ✅ Обновлён (v2.0) |
-| `checkpoint_03_22_Generator_Migration.md` | Аудит + План миграции V1→V2 | ✅ Завершён (v1.3) |
-
----
-
-## 🔗 СВЯЗАННЫЕ ДОКУМЕНТЫ
-
-### Обновлённая документация (v5.0+)
-
-| Документ | Версия | Ключевые изменения |
-|----------|--------|-------------------|
-| `soul-system.md` | v4.1 | Иерархия типов, материалы (chitin) |
-| `body_review.md` | v5.0 | Qi Buffer 90%, Core Capacity |
-| `body_armor.md` | v5.0 | Level Suppression System |
-| `body_monsters.md` | v1.3 | Членистоногие (arthropod) |
-| `technique-system-v2.md` | v3.0 | Level Suppression + Ultimate |
-| `NPC_COMBAT_INTERACTIONS.md` | v3.0 | Level Suppression для NPC |
-| `formation_unified.md` | v4.1 | Drain system |
-| `formation_drain_system.md` | v1.0 | Interval-based drain |
-| `formation_analysis.md` | v4.1 | Пересчёт с drain |
-
-### Созданный код
-
-| Файл | Назначение | Статус |
-|------|------------|--------|
-| `src/lib/constants/level-suppression.ts` | Таблица подавления | ✅ Создан |
-| `src/lib/constants/qi-buffer-config.ts` | Конфигурация Qi Buffer | ✅ Создан |
-| `src/lib/game/qi-buffer.ts` | Функции обработки Ци | ✅ Создан |
-| `src/lib/game/damage-pipeline.ts` | Pipeline урона | ✅ Создан |
-| `src/lib/formations/formation-constants.ts` | Константы формаций | ✅ Создан |
-| `src/lib/formations/formation-core-generator.ts` | Генератор ядер | ✅ Создан |
-| `src/lib/formations/formation-manager.ts` | Менеджер формаций | ✅ Создан |
-| `src/app/api/formations/route.ts` | API формаций | ✅ Создан |
-| `src/app/api/formations/cores/route.ts` | API ядер | ✅ Создан |
-| `src/components/formation/FormationCoresTab.tsx` | UI ядер | ✅ Создан |
-
-### Изменённый код
-
-| Файл | Изменения | Статус |
-|------|-----------|--------|
-| `src/lib/game/combat-system.ts` | Level Suppression интеграция | ✅ Изменён |
-| `src/lib/game/npc-damage-calculator.ts` | Level Suppression + Qi Buffer | ✅ Изменён |
-| `src/types/technique-types.ts` | AttackType, isUltimate | ✅ Изменён |
-| `src/types/game.ts` | isUltimate в Technique | ✅ Изменён |
-| `src/types/temp-npc.ts` | BodyMaterial, BodyMorphology | ✅ Изменён |
-| `src/lib/generator/technique-generator-v2.ts` | Ultimate генерация | ✅ Изменён |
-| `src/lib/generator/npc-generator.ts` | beast_arthropod, material | ✅ Изменён |
-| `src/lib/game/session-npc-manager.ts` | material/morphology передача | ✅ Изменён |
-| `src/lib/game/event-bus/handlers/combat.ts` | Material reduction | ✅ Изменён |
-| `prisma/schema.prisma` | FormationCore, ActiveFormation | ✅ Изменён |
+| Файл | Изменения |
+|------|-----------|
+| `src/lib/game/combat-system.ts` | Level Suppression интеграция |
+| `src/lib/game/npc-damage-calculator.ts` | Level Suppression + Qi Buffer |
+| `src/lib/game/event-bus/handlers/combat.ts` | v3.3.0 — Material Reduction |
+| `src/types/technique-types.ts` | AttackType, isUltimate |
+| `src/types/game.ts` | isUltimate в Technique |
+| `src/types/temp-npc.ts` | BodyMaterial, BodyMorphology |
+| `src/lib/generator/technique-generator-v2.ts` | Ultimate генерация |
+| `src/lib/generator/npc-generator.ts` | beast_arthropod, material |
+| `src/lib/generator/npc-full-generator.ts` | V2 миграция |
+| `src/lib/generator/generated-objects-loader.ts` | Автогенерация расходников |
+| `src/lib/game/session-npc-manager.ts` | material/morphology передача |
+| `prisma/schema.prisma` | FormationCore, ActiveFormation |
+| `src/components/game/StatusDialog.tsx` | QiBufferStatus |
+| `src/components/game/TechniquesDialog.tsx` | LevelSuppressionIndicator, FormationCoresTab |
+| `src/components/game/BodyStatusPanel.tsx` | MaterialIndicator |
+| `src/components/game/NPCViewerDialog.tsx` | safeParseJson fix |
 
 ---
 
 ## 📈 КЛЮЧЕВЫЕ МЕТРИКИ
 
-### Баланс (L8 vs L9 техника) — С ПОДАВЛЕНИЕМ
+### Баланс (с Level Suppression)
 
-| Метрика | Без подавления | С подавлением |
-|---------|----------------|---------------|
-| L7 атакует L9 (normal) | 10% × урон | 0 урона |
-| L7 атакует L9 (technique) | 10% × урон | 5% × урон |
-| L7 атакует L9 (ultimate) | 10% × урон | 25% × урон |
+| Сценарий | Без подавления | С подавлением |
+|----------|----------------|---------------|
+| L7 атакует L9 (normal) | 10% × урон | **0 урона** |
+| L7 атакует L9 (technique) | 10% × урон | **5% × урон** |
+| L7 атакует L9 (ultimate) | 10% × урон | **25% × урон** |
 
 ### Иерархия защиты (реализовано)
 
@@ -351,82 +255,27 @@
 | Great | ×1000 | 1,280,000 Ци |
 | Heavy | ×10000 | 12,800,000 Ци (L6+) |
 
----
-
-## 🚧 БЛОКЕРЫ И РИСКИ
-
-### Технические — РЕШЕНЫ ✅
-
-1. **Циклические зависимости** — body ↔ combat ↔ technique
-   - ✅ Решение: Разделение на слои, импорт только констант
-   
-2. **Изменение сигнатур функций**
-   - ✅ Решение: Опциональные параметры
-
-3. **Обратная совместимость**
-   - ✅ Решение: Существующие вызовы работают
-
-### Баланс — УЧТЁНО ✅
-
-1. **L8-9 без брони** — теперь уязвимы
-   - ✅ Qi Buffer 90% смягчает проблему
-
-2. **Ultimate-техники** — могут быть слишком сильными
-   - ✅ Редкость генерации (5%), высокая стоимость Ци (×1.5)
-
-3. **Arthropod (chitin)** — 20% reduction может быть слабым
-   - ✅ Дополнительно: ethereal 70%, mineral 50%
-
-4. **Heavy формации** — огромная ёмкость
-   - ✅ Требует L6+, только с ядром
+### Lint статус: ✅ 0 ошибок, 3 warnings (pre-existing)
 
 ---
 
-## 📝 ДНЕВНИК
+## 📋 СВОДКА ЧЕКПОИНТОВ
 
-| Время | Задача | Статус |
-|-------|--------|--------|
-| 06:00 | Создание плана | ✅ Завершено |
-| 06:30 | Документация body_monsters.md | ✅ Завершено |
-| 07:00 | Добавление Level Suppression | ✅ Завершено |
-| 07:30 | Проверка противоречий | ✅ Завершено |
-| 08:00 | Создание checkpoint файлов | ✅ Завершено |
-| 09:00 | Реализация Body_update (Phase 1-5) | ✅ Завершено |
-| 09:30 | Интеграция combat-system.ts | ✅ Завершено |
-| 10:00 | Интеграция npc-damage-calculator.ts | ✅ Завершено |
-| 10:03 | Аудит и интеграция Event Bus | ✅ Завершено |
-| 10:15 | Обновление чекпоинтов | ✅ Завершено |
-| 14:00 | Аудит Generators чекпоинта | ✅ Завершено |
-| 14:15 | Добавление material в TempBodyState | ✅ Завершено |
-| 14:20 | Интеграция MATERIAL_DAMAGE_REDUCTION | ✅ Завершено |
-| 15:00 | Формации: DB + Constants + Generator | ✅ Завершено |
-| 16:00 | Формации: Manager + API | ✅ Завершено |
-| 16:30 | Формации: FormationCoresTab UI | ✅ Завершено |
-| 18:00 | Комплексный аудит + UI чекпоинт | ✅ Завершено |
-| 20:00 | Аудит генераторов V1 vs V2 | ✅ Завершено |
-| 20:30 | Создание плана миграции | ✅ Завершено |
-| --:-- | Миграция NPC на V2 | 📋 Запланировано |
-| --:-- | UI компоненты | 📋 Запланировано |
+| Чекпоинт | Статус | Версия |
+|----------|--------|--------|
+| `checkpoint_03_22_Body_update.md` | ✅ ЗАВЕРШЁН | v3.1 |
+| `checkpoint_03_22_Combat.md` | ✅ ЗАВЕРШЁН | v3.0 |
+| `checkpoint_03_22_Generators.md` | ✅ ЗАВЕРШЁН | v3.0 |
+| `checkpoint_03_22_Formations.md` | ✅ Phase 1-3 ЗАВЕРШЕНЫ | v2.1 |
+| `checkpoint_03_22_Generator_Migration.md` | ✅ Phase 1-3 ЗАВЕРШЕНЫ | v1.3 |
+| `checkpoint_03_22_UI.md` | ✅ ЗАВЕРШЁН | v3.0 |
+| `checkpoint_03_22_UI_Audit.md` | ✅ ЗАВЕРШЁН | v1.0 |
+| `checkpoint_03_22_UI_fix.md` | ✅ ЗАВЕРШЁН | v1.0 |
+| `checkpoint_03_22_NPC_Orchestrator.md` | ✅ Проблемы исправлены | v2.0 |
 
 ---
 
-## 📊 СВОДКА ВЫПОЛНЕННЫХ ЗАДАЧ
-
-| Чекпоинт | Статус | Завершено |
-|----------|--------|-----------|
-| `checkpoint_03_22_Body_update.md` | ✅ ЗАВЕРШЁН | Phase 1-5 |
-| `checkpoint_03_22_Combat.md` | ✅ ЗАВЕРШЁН | Phase 1-8 (Event Bus интегрирован) |
-| `checkpoint_03_22_Generators.md` | ✅ ЗАВЕРШЁН | Все 5 этапов |
-| `checkpoint_03_22_Formations.md` | ✅ ЗАВЕРШЁН | Phase 1-3 (Core + API) |
-| `checkpoint_03_22_UI.md` | 📋 СОЗДАН | Планирование |
-| `checkpoint_03_22_NPC_Orchestrator.md` | 📋 ОБНОВЛЁН | Аудит завершён, Phase 1 pending |
-| `checkpoint_03_22_Generator_Migration.md` | 📋 СОЗДАН | Аудит + План миграции |
-
-### Lint статус: ✅ 0 ошибок
-
----
-
-*План создан: 2026-03-22 06:00 UTC*
-*Обновлён: 2026-03-22 22:00 UTC*
-*Статус: ✅ Фаза 1-4 завершены | ✅ Миграция V1→V2 завершена | 📋 UI внедрение*
-*Следующий шаг: UI компоненты (QiBuffer, LevelSuppression, DamageFlow)*
+*Версия: 10.0*
+*Дата обновления: 2026-03-22 17:09:47 UTC*
+*Статус: ✅ ВСЕ ОСНОВНЫЕ ЗАДАЧИ ЗАВЕРШЕНЫ*
+*Следующий шаг: Опциональные улучшения (см. checkpoint_03_22_todo.md)*
