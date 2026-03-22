@@ -15,16 +15,38 @@
  * - statMultiplier = от характеристик NPC
  * - masteryMultiplier = до +30% при мастерстве
  * 
+ * v1.1.0 Обновления:
+ * - Добавлена система Level Suppression
+ * - Qi Buffer 90% заменяет meridianBuffer 30% для техник Ци
+ * 
  * @see docs/NPC_COMBAT_INTERACTIONS.md - Фаза 2.2
  * @see docs/combat-system-v2.md - Формулы урона
+ * @see docs/body_armor.md - Level Suppression
+ * @see docs/body_review.md - Qi Buffer 90%
  * 
- * Версия: 1.0.0
+ * Версия: 1.1.0
  */
 
 import {
   calculateStatScalingByType,
 } from './combat-system';
-import type { CombatTechniqueType } from '@/types/game';
+import type { CombatTechniqueType, AttackType } from '@/types/game';
+
+// Импорт системы Level Suppression
+import {
+  calculateLevelSuppression,
+  calculateLevelSuppressionFull,
+  type LevelSuppressionResult,
+} from '@/lib/constants/level-suppression';
+
+// Импорт системы Qi Buffer
+import {
+  processQiDamage,
+  type QiDamageResult,
+} from './qi-buffer';
+
+// Импорт определения типа атаки
+import { determineAttackType } from '@/types/technique-types';
 
 // ==================== ТИПЫ ====================
 
@@ -51,7 +73,14 @@ export interface PlayerDefenseStats {
   conductivity: number;
   health: number;
   maxHealth: number;
-  // Буфер меридианов - поглощает до 30% урона
+  // === Level Suppression (v1.1.0) ===
+  cultivationLevel: number;
+  // === Qi Buffer (v1.1.0) ===
+  currentQi: number;
+  maxQi: number;
+  hasShieldTechnique?: boolean;
+  // Буфер меридианов - поглощает до 30% урона (ТОЛЬКО для физ. атак!)
+  // @deprecated - используйте Qi Buffer для техник Ци
   meridianBuffer?: number;
   // Сопротивления
   resistances?: {
@@ -77,6 +106,12 @@ export interface DamageResult {
   bufferAbsorbed: number;
   isCritical?: boolean;
   damageType: string;
+  // === Level Suppression (v1.1.0) ===
+  levelSuppression?: LevelSuppressionResult;
+  // === Qi Buffer (v1.1.0) ===
+  qiBuffer?: QiDamageResult;
+  /** Урон до применения Qi Buffer */
+  damageBeforeQiBuffer?: number;
 }
 
 export interface NPCAttackParams {
@@ -109,7 +144,8 @@ const CONDUCTIVITY_BONUS_CAP = 0.20;
 const ARMOR_ABSORPTION_RATE = 0.5;
 
 /**
- * Максимальное поглощение буфера меридианов (%)
+ * Поглощение буфера меридианов (%)
+ * @deprecated - используется только для физических атак
  */
 const MERIDIAN_BUFFER_RATE = 0.30;
 
@@ -123,8 +159,10 @@ const MERIDIAN_BUFFER_RATE = 0.30;
  * 2. statMultiplier от характеристик
  * 3. masteryMultiplier до +30%
  * 4. conductivityBonus до +20%
- * 5. armorReduction
- * 6. meridianBuffer
+ * 5. ⭐ Level Suppression (v1.1.0)
+ * 6. ⭐ Qi Buffer 90% (v1.1.0)
+ * 7. armorReduction
+ * 8. meridianBuffer (только для физ. атак)
  */
 export function calculateDamageFromNPC(params: NPCAttackParams): DamageResult {
   const { npc, technique, target, isCritical = false } = params;
@@ -185,21 +223,82 @@ export function calculateDamageFromNPC(params: NPCAttackParams): DamageResult {
     effect *= 1.5;
   }
   
-  // === 9. ПОГЛОЩЕНИЕ БРОНЁЙ ===
+  // ========================================
+  // === 9. ⭐ LEVEL SUPPRESSION (v1.1.0) ===
+  // ========================================
+  let levelSuppression: LevelSuppressionResult | undefined;
+  
+  // Определяем тип атаки
+  const attackType: AttackType = technique
+    ? (technique as any).isUltimate
+      ? 'ultimate'
+      : 'technique'
+    : 'normal';
+  
+  // Рассчитываем подавление
+  levelSuppression = calculateLevelSuppressionFull(
+    npc.cultivationLevel,
+    target.cultivationLevel,
+    attackType,
+    technique?.baseDamage ? undefined : undefined // technique level не известен
+  );
+  
+  // Применяем множитель подавления
+  effect *= levelSuppression.multiplier;
+  
+  // Если иммунитет — возвращаем нулевой урон
+  if (levelSuppression.multiplier === 0) {
+    return {
+      damage: 0,
+      qiSpent,
+      effectiveQi,
+      qiDensity,
+      statMultiplier,
+      masteryMultiplier,
+      conductivityBonus,
+      armorReduction: 0,
+      bufferAbsorbed: 0,
+      isCritical,
+      damageType: technique?.element ?? 'physical',
+      levelSuppression,
+    };
+  }
+  
+  // ========================================
+  // === 10. ⭐ QI BUFFER 90% (v1.1.0) ===
+  // ========================================
+  let qiBuffer: QiDamageResult | undefined;
+  let damageBeforeQiBuffer = effect;
+  
+  // Qi Buffer применяется только для техник Ци
+  const isQiAttack = technique !== null;
+  
+  if (isQiAttack && target.currentQi > 0) {
+    qiBuffer = processQiDamage({
+      incomingDamage: effect,
+      currentQi: target.currentQi,
+      maxQi: target.maxQi,
+      hasShieldTechnique: target.hasShieldTechnique || false,
+    });
+    
+    effect = qiBuffer.remainingDamage;
+  }
+  
+  // === 11. ПОГЛОЩЕНИЕ БРОНЁЙ ===
   // armorReduction = armor × 50%
   const armorReduction = target.armor * ARMOR_ABSORPTION_RATE;
   let finalDamage = Math.max(1, effect - armorReduction);
   
-  // === 10. БУФЕР МЕРИДИАНОВ ===
-  // До 30% урона может быть поглощено
+  // === 12. БУФЕР МЕРИДИАНОВ ===
+  // ТОЛЬКО для физических атак! (deprecated для Qi атак)
   let bufferAbsorbed = 0;
-  if (target.meridianBuffer && target.meridianBuffer > 0) {
+  if (!isQiAttack && target.meridianBuffer && target.meridianBuffer > 0) {
     const maxAbsorb = finalDamage * MERIDIAN_BUFFER_RATE;
     bufferAbsorbed = Math.min(target.meridianBuffer, maxAbsorb);
     finalDamage -= bufferAbsorbed;
   }
   
-  // === 11. СОПРОТИВЛЕНИЯ ===
+  // === 13. СОПРОТИВЛЕНИЯ ===
   // Элементальные сопротивления
   if (technique?.element && target.resistances) {
     const resistance = target.resistances[technique.element as keyof typeof target.resistances] ?? 0;
@@ -218,6 +317,9 @@ export function calculateDamageFromNPC(params: NPCAttackParams): DamageResult {
     bufferAbsorbed,
     isCritical,
     damageType: technique?.element ?? 'physical',
+    levelSuppression,
+    qiBuffer,
+    damageBeforeQiBuffer,
   };
 }
 

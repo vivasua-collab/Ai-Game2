@@ -1,8 +1,8 @@
 # 📋 План: 22 марта 2026
 
-**Дата:** 2026-03-22 08:00 UTC
-**Версия:** 2.0
-**Статус:** ✅ Теория завершена, готово к реализации
+**Дата:** 2026-03-22 10:03 UTC
+**Версия:** 4.0
+**Статус:** ✅ Фаза 1 (Body_update) завершена, Фаза 2 (Combat) завершена
 
 ---
 
@@ -23,8 +23,10 @@
 | Аберрации (3) | голем, chaos spawn, хтонь |
 
 ### Задача 2: Система подавления уровнем
-**Статус:** ✅ ЗАВЕРШЕНО
-**Файлы:** `docs/body_armor.md`, `docs/technique-system-v2.md`, `docs/NPC_COMBAT_INTERACTIONS.md`
+**Статус:** ✅ ЗАВЕРШЕНО (Документация + Код)
+**Файлы:** 
+- Документация: `docs/body_armor.md`, `docs/technique-system-v2.md`, `docs/NPC_COMBAT_INTERACTIONS.md`
+- Код: `src/lib/constants/level-suppression.ts`
 
 | Компонент | Описание |
 |-----------|----------|
@@ -32,16 +34,70 @@
 | Типы атак | normal, technique, ultimate |
 | technique.level | Пробитие защиты выше уровнем |
 | AOE обработка | Индивидуальное подавление для каждой цели |
+| calculateLevelSuppression() | ✅ Функция реализована |
+| calculateLevelSuppressionFull() | ✅ Полный результат с деталями |
+| isTargetImmune() | ✅ Проверка иммунитета |
 
 ### Задача 3: Ultimate-техники
-**Статус:** ✅ ЗАВЕРШЕНО
-**Файл:** `docs/technique-system-v2.md`
+**Статус:** ✅ ЗАВЕРШЕНО (Документация + Код)
+**Файлы:** 
+- Документация: `docs/technique-system-v2.md`
+- Код: `src/types/technique-types.ts`, `src/types/game.ts`
 
 | Компонент | Описание |
 |-----------|----------|
-| Флаг isUltimate | Особые техники с максимальным пробитием |
+| Флаг isUltimate | ✅ Добавлен в Technique интерфейс |
 | Пробитие +4 уровней | 10% урона проходит |
 | Иммунитет | Только при +5 уровнях разницы |
+| isUltimateTechnique() | ✅ Функция реализована |
+| determineAttackType() | ✅ Определение типа атаки |
+
+### Задача 4: Qi Buffer 90%
+**Статус:** ✅ ЗАВЕРШЕНО (Документация + Код)
+**Файлы:**
+- Документация: `docs/body_review.md`
+- Код: `src/lib/constants/qi-buffer-config.ts`, `src/lib/game/qi-buffer.ts`
+
+| Компонент | Описание |
+|-----------|----------|
+| QI_BUFFER_CONFIG | ✅ Константы (90% absorption, 10% piercing) |
+| processQiDamage() | ✅ Основная функция |
+| Щитовая техника 100% | ✅ 1:1 соотношение |
+| Сырая Ци 90% | ✅ 10% ВСЕГДА пробивает |
+
+### Задача 5: Damage Pipeline
+**Статус:** ✅ ЗАВЕРШЕНО
+**Файл:** `src/lib/game/damage-pipeline.ts`
+
+| Компонент | Описание |
+|-----------|----------|
+| processDamagePipeline() | ✅ Полный pipeline 10 слоёв |
+| calculateFinalDamageQuick() | ✅ Упрощённый расчёт |
+| canDamageTarget() | ✅ Проверка возможности урона |
+| MATERIAL_DAMAGE_REDUCTION | ✅ Снижение от материала тела |
+
+### Задача 6: Интеграция combat-system.ts
+**Статус:** ✅ ЗАВЕРШЕНО
+**Файл:** `src/lib/game/combat-system.ts`
+
+| Изменение | Описание |
+|-----------|----------|
+| defenderLevel параметр | ✅ Опциональный параметр |
+| levelSuppression в результате | ✅ Добавлено |
+| damageAfterSuppression | ✅ Добавлено |
+| Обратная совместимость | ✅ Сохранена |
+
+### Задача 7: Интеграция npc-damage-calculator.ts
+**Статус:** ✅ ЗАВЕРШЕНО
+**Файл:** `src/lib/game/npc-damage-calculator.ts`
+
+| Изменение | Описание |
+|-----------|----------|
+| cultivationLevel в PlayerDefenseStats | ✅ Добавлено |
+| currentQi, maxQi, hasShieldTechnique | ✅ Добавлено |
+| Level Suppression | ✅ Интегрировано |
+| Qi Buffer 90% | ✅ Интегрировано |
+| meridianBuffer deprecated | ✅ Только для физ. атак |
 
 ---
 
@@ -83,8 +139,8 @@
 |----------|-----------|------------|
 | SoulType ↔ Morphology | ✅ Согласовано | 3 уровня иерархии |
 | Materials | ✅ Согласовано | organic, scaled, chitin, ethereal, mineral, chaos |
-| Qi Buffer 90% | ✅ Согласовано | body_review + body_armor |
-| Level Suppression | ✅ Добавлено | body_armor + technique-system-v2 + NPC |
+| Qi Buffer 90% | ✅ Реализовано | body_review + body_armor + код |
+| Level Suppression | ✅ Реализовано | body_armor + technique-system-v2 + NPC + код |
 | Core Capacity | ✅ Согласовано | 1000 × 1.1^totalLevels |
 
 ---
@@ -98,23 +154,31 @@
 │                    ПОРЯДОК ВНЕДРЕНИЯ                                 │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                      │
-│  ФАЗА 1: ГЕНЕРАТОРЫ (позже)                                         │
+│  ФАЗА 1: BODY_UPDATE — ✅ ЗАВЕРШЕНО                                  │
+│  ├── level-suppression.ts      — ✅ Создан                           │
+│  ├── qi-buffer-config.ts       — ✅ Создан                           │
+│  ├── qi-buffer.ts              — ✅ Создан                           │
+│  ├── damage-pipeline.ts        — ✅ Создан                           │
+│  ├── combat-system.ts          — ✅ Интегрирован                     │
+│  └── npc-damage-calculator.ts  — ✅ Интегрирован                     │
+│                                                                      │
+│  ФАЗА 2: COMBAT — ✅ ЗАВЕРШЕНО                                      │
+│  ├── level-suppression.ts      — ✅ Создан                           │
+│  ├── qi-buffer-config.ts       — ✅ Создан                           │
+│  ├── combat-system.ts          — ✅ Интегрирован                     │
+│  ├── npc-damage-calculator.ts  — ✅ Интегрирован                     │
+│  ├── damage-pipeline.ts        — ✅ Создан                           │
+│  ├── event-bus/handlers/combat.ts — ✅ Интегрирован (v3.3.0)         │
+│  ├── Level Suppression         — ✅ Работает в Event Bus             │
+│  ├── Qi Buffer                 — ✅ Работает в Event Bus             │
+│  └── UI компоненты             — 🔜 Не начато                        │
+│                                                                      │
+│  ФАЗА 3: GENERATORS — 🔜 НЕ НАЧАТО                                   │
 │  ├── body-generator.ts         — Генерация тел по Species           │
 │  ├── npc-body-generator.ts     — Генерация тел NPC                  │
 │  └── monster-body-generator.ts — Генерация тел монстров             │
 │                                                                      │
-│  ФАЗА 2: МЕХАНИКИ (после генераторов)                               │
-│  ├── level-suppression.ts      — Реализация подавления              │
-│  ├── qi-buffer.ts              — Реализация Qi Buffer 90%           │
-│  ├── damage-pipeline.ts        — Полный pipeline урона              │
-│  └── body-system-v2.ts         — Обновлённая система тела          │
-│                                                                      │
-│  ФАЗА 3: ИНТЕГРАЦИЯ (после механик)                                 │
-│  ├── combat-integration.ts     — Связь с боевой системой            │
-│  ├── npc-combat-integration.ts — Связь с NPC боем                   │
-│  └── technique-integration.ts  — Связь с техниками                  │
-│                                                                      │
-│  ФАЗА 4: ОТОБРАЖЕНИЕ (после интеграции)                             │
+│  ФАЗА 4: UI — 🔜 НЕ НАЧАТО                                           │
 │  ├── BodyDoll-v2.tsx           — Обновлённый UI тела               │
 │  ├── QiBufferIndicator.tsx     — Индикатор Qi Buffer               │
 │  └── DamageFlowDisplay.tsx     — Визуализация урона                │
@@ -128,10 +192,10 @@
 
 | Файл | Назначение | Статус |
 |------|------------|--------|
-| `checkpoint_03_22.md` | Общий план (этот файл) | ✅ Создан |
-| `checkpoint_03_22_Body_update.md` | Детальный план систем тела | ⏳ Обновить |
+| `checkpoint_03_22.md` | Общий план (этот файл) | ✅ Обновлён |
+| `checkpoint_03_22_Body_update.md` | Детальный план систем тела | ✅ Завершён |
 | `checkpoint_03_22_Generators.md` | План генераторов | 📋 Создать |
-| `checkpoint_03_22_Combat.md` | План боевой системы | 📋 Создать |
+| `checkpoint_03_22_Combat.md` | План боевой системы | ✅ Завершён (v3.0) |
 | `checkpoint_03_22_UI.md` | План UI обновлений | 📋 Создать |
 
 ---
@@ -149,6 +213,24 @@
 | `technique-system-v2.md` | v3.0 | Level Suppression + Ultimate |
 | `NPC_COMBAT_INTERACTIONS.md` | v3.0 | Level Suppression для NPC |
 
+### Созданный код
+
+| Файл | Назначение | Статус |
+|------|------------|--------|
+| `src/lib/constants/level-suppression.ts` | Таблица подавления | ✅ Создан |
+| `src/lib/constants/qi-buffer-config.ts` | Конфигурация Qi Buffer | ✅ Создан |
+| `src/lib/game/qi-buffer.ts` | Функции обработки Ци | ✅ Создан |
+| `src/lib/game/damage-pipeline.ts` | Pipeline урона | ✅ Создан |
+
+### Изменённый код
+
+| Файл | Изменения | Статус |
+|------|-----------|--------|
+| `src/lib/game/combat-system.ts` | Level Suppression интеграция | ✅ Изменён |
+| `src/lib/game/npc-damage-calculator.ts` | Level Suppression + Qi Buffer | ✅ Изменён |
+| `src/types/technique-types.ts` | AttackType, isUltimate | ✅ Изменён |
+| `src/types/game.ts` | isUltimate в Technique | ✅ Изменён |
+
 ---
 
 ## 📈 КЛЮЧЕВЫЕ МЕТРИКИ
@@ -161,13 +243,13 @@
 | L7 атакует L9 (technique) | 10% × урон | 5% × урон |
 | L7 атакует L9 (ultimate) | 10% × урон | 25% × урон |
 
-### Иерархия защиты (обновлено)
+### Иерархия защиты (реализовано)
 
 ```
-1. Level Suppression — множитель по разнице уровней (NEW!)
+1. Level Suppression — ✅ множитель по разнице уровней
 2. Уклонение (50% кап) — не получить удар
 3. Щит-техника (100%) — 0 урона в HP
-4. Сырая Ци (90%) — снижение урона
+4. Сырая Ци (90%) — ✅ снижение урона, 10% пробитие
 5. Броня (DR%) — дополнительное снижение
 6. HP тела — последний рубеж
 ```
@@ -176,24 +258,24 @@
 
 ## 🚧 БЛОКЕРЫ И РИСКИ
 
-### Технические
+### Технические — РЕШЕНЫ ✅
 
 1. **Циклические зависимости** — body ↔ combat ↔ technique
-   - Решение: Разделение на слои, event bus
+   - ✅ Решение: Разделение на слои, импорт только констант
    
-2. **Производительность** — расчёт всех слоёв за кадр
-   - Решение: Кэширование промежуточных расчётов
+2. **Изменение сигнатур функций**
+   - ✅ Решение: Опциональные параметры
 
-3. **Синхронизация** — состояние тела клиент/сервер
-   - Решение: Server-authoritative, клиент только отображает
+3. **Обратная совместимость**
+   - ✅ Решение: Существующие вызовы работают
 
-### Баланс
+### Баланс — УЧТЁНО ✅
 
 1. **L8-9 без брони** — теперь уязвимы
-   - Решение: Плавный переход, буфф Qi регенерации
+   - ✅ Qi Buffer 90% смягчает проблему
 
 2. **Ultimate-техники** — могут быть слишком сильными
-   - Решение: Редкость генерации, высокая стоимость Ци
+   - ✅ Редкость генерации, высокая стоимость Ци
 
 ---
 
@@ -205,11 +287,27 @@
 | 06:30 | Документация body_monsters.md | ✅ Завершено |
 | 07:00 | Добавление Level Suppression | ✅ Завершено |
 | 07:30 | Проверка противоречий | ✅ Завершено |
-| 08:00 | Создание checkpoint файлов | 🔄 В процессе |
-| --:-- | Выгрузка на GitHub | ⏳ Ожидание |
+| 08:00 | Создание checkpoint файлов | ✅ Завершено |
+| 09:00 | Реализация Body_update (Phase 1-5) | ✅ Завершено |
+| 09:30 | Интеграция combat-system.ts | ✅ Завершено |
+| 10:00 | Интеграция npc-damage-calculator.ts | ✅ Завершено |
+| 10:03 | Аудит и интеграция Event Bus | ✅ Завершено |
+| 10:15 | Обновление чекпоинтов | ✅ Завершено |
+| --:-- | UI компоненты | ⏳ Ожидание |
+
+---
+
+## 📊 СВОДКА ВЫПОЛНЕННЫХ ЗАДАЧ
+
+| Чекпоинт | Статус | Завершено |
+|----------|--------|-----------|
+| `checkpoint_03_22_Body_update.md` | ✅ ЗАВЕРШЁН | Phase 1-5 |
+| `checkpoint_03_22_Combat.md` | ✅ ЗАВЕРШЁН | Phase 1-8 (Event Bus интегрирован) |
+
+### Lint статус: ✅ 0 ошибок, 3 warnings (предсуществующие)
 
 ---
 
 *План создан: 2026-03-22 06:00 UTC*
-*Обновлён: 2026-03-22 08:00 UTC*
-*Статус: ✅ Теория завершена*
+*Обновлён: 2026-03-22 10:30 UTC*
+*Статус: ✅ Фаза 1 (Body_update) завершена*

@@ -11,7 +11,7 @@
  * 
  * ВНИМАНИЕ: Все взаимодействия с TempNPC через Event Bus!
  * 
- * Версия: 3.2.0 (рефакторинг констант)
+ * Версия: 3.3.0 (Level Suppression + Qi Buffer интеграция)
  */
 
 import type { GameEvent } from '../../events/game-events';
@@ -21,7 +21,8 @@ import { db } from '@/lib/db';
 import { calculateTotalConductivity } from '../../conductivity-system';
 import { 
   isTempNPCId, 
-  handleTempNPCCombat 
+  handleTempNPCCombat,
+  getTempNPCForCombat,
 } from '../../skeleton/temp-npc-combat';
 import { EVENT_TYPES } from '../../events/game-events';
 import { addStatDelta, calculateFatiguePenaltyForDevelopment } from '../../stat-truth';
@@ -29,6 +30,19 @@ import {
   generateAttackDelta,
 } from '../../combat-system';
 import { logDestabilization } from '@/lib/logger/qi-logger';
+
+// ==================== ИМПОРТ LEVEL SUPPRESSION И QI BUFFER ====================
+import {
+  calculateLevelSuppression,
+  calculateLevelSuppressionFull,
+  isTargetImmune,
+  type LevelSuppressionResult,
+} from '@/lib/constants/level-suppression';
+import {
+  processQiDamage,
+  type QiDamageResult,
+} from '@/lib/game/qi-buffer';
+import { determineAttackType } from '@/types/technique-types';
 
 // ==================== ИМПОРТ КОНСТАНТ ====================
 
@@ -642,6 +656,8 @@ function createErrorResult(eventId: string, error: string): EventResult {
  * Обработка урона по TempNPC через Event Bus
  * 
  * Все взаимодействия с системой истинности через шину!
+ * 
+ * Версия 3.3.0: Добавлена интеграция Level Suppression и Qi Buffer
  */
 async function handleTempNPCDamageEvent(
   event: GameEvent,
@@ -671,6 +687,59 @@ async function handleTempNPCDamageEvent(
       return createErrorResult(context.eventId, 'Technique not found');
     }
 
+    // === ПОЛУЧАЕМ ДАННЫЕ NPC ДЛЯ LEVEL SUPPRESSION ===
+    const npc = getTempNPCForCombat(context.sessionId, targetId);
+    const npcCultivationLevel = npc?.cultivation?.level ?? 1;
+    const npcCurrentQi = npc?.cultivation?.currentQi ?? 0;
+    const npcMaxQi = npc?.cultivation?.coreCapacity ?? 100;
+    
+    // === LEVEL SUPPRESSION ===
+    const playerCultivationLevel = session.character.cultivationLevel ?? 1;
+    const techniqueLevel = technique.level ?? 1;
+    const isUltimate = (technique as Record<string, unknown>).isUltimate === true;
+    
+    // Определяем тип атаки
+    const attackType = determineAttackType(true, {
+      level: techniqueLevel,
+      isUltimate,
+    });
+    
+    // Рассчитываем подавление
+    const suppressionResult = calculateLevelSuppressionFull(
+      playerCultivationLevel,
+      npcCultivationLevel,
+      attackType,
+      techniqueLevel
+    );
+    
+    // Проверяем иммунитет
+    if (suppressionResult.multiplier === 0) {
+      context.log('info', `Target ${targetId} is immune (level difference: +${suppressionResult.levelDifference})`);
+      return {
+        success: true,
+        eventId: context.eventId,
+        commands: [{
+          type: 'visual:show_damage',
+          timestamp: Date.now(),
+          data: {
+            targetId,
+            x: targetPosition.x,
+            y: targetPosition.y,
+            damage: 0,
+            element: technique.element ?? 'neutral',
+            isImmune: true,
+            message: `Иммунитет (+${suppressionResult.levelDifference} ур.)`,
+          },
+        }],
+        data: {
+          damage: 0,
+          isImmune: true,
+          levelSuppression: suppressionResult,
+        },
+        message: `Цель иммунна к атаке (+${suppressionResult.levelDifference} уровней)`,
+      };
+    }
+    
     // Базовый урон техники
     const baseDamage = (technique.effects as Record<string, unknown>)?.damage ?? 25;
     const element = technique.element ?? 'neutral';
@@ -693,7 +762,26 @@ async function handleTempNPCDamageEvent(
       rangeMultiplier = 0;
     }
     
-    const finalDamage = Math.floor(baseDamage as number * finalMultiplier * rangeMultiplier);
+    // === ПРИМЕНЯЕМ LEVEL SUPPRESSION ===
+    let damage = baseDamage as number * finalMultiplier * rangeMultiplier;
+    damage *= suppressionResult.multiplier;
+    
+    // === QI BUFFER NPC (если у NPC есть Ци) ===
+    let qiBufferResult: QiDamageResult | null = null;
+    if (npcCurrentQi > 0 && damage > 0) {
+      qiBufferResult = processQiDamage({
+        incomingDamage: damage,
+        currentQi: npcCurrentQi,
+        maxQi: npcMaxQi,
+        hasShieldTechnique: false, // NPC обычно без щитовых техник
+      });
+      damage = qiBufferResult.remainingDamage;
+      
+      // TODO: Обновить Ци NPC через sessionNPCManager
+      context.log('info', `NPC Qi Buffer: absorbed ${qiBufferResult.absorbedDamage}, remaining ${damage}`);
+    }
+    
+    const finalDamage = Math.floor(damage);
 
     // Обрабатываем урон через TempNPC combat систему
     const combatResult = await handleTempNPCCombat({
@@ -786,6 +874,15 @@ async function handleTempNPCDamageEvent(
 
     context.log('info', `TempNPC ${targetId} took ${finalDamage} damage. New HP: ${combatResult.newHealth}/${combatResult.maxHealth}. Dead: ${combatResult.isDead}`);
 
+    // Формируем сообщение с учётом подавления
+    let damageMessage = `${finalDamage} урона`;
+    if (suppressionResult.wasSuppressed) {
+      damageMessage += ` (подавление: ${Math.round(suppressionResult.multiplier * 100)}%)`;
+    }
+    if (qiBufferResult && qiBufferResult.bufferActivated) {
+      damageMessage += ` [Ци: -${Math.floor(qiBufferResult.qiConsumed)}]`;
+    }
+
     return {
       success: true,
       eventId: context.eventId,
@@ -799,10 +896,14 @@ async function handleTempNPCDamageEvent(
         isUnconscious: combatResult.isUnconscious,
         loot: combatResult.loot,
         xp: combatResult.xp,
+        // Данные о подавлении уровнем
+        levelSuppression: suppressionResult,
+        // Данные о Qi Buffer
+        qiBuffer: qiBufferResult,
       },
       message: combatResult.isDead 
         ? `${targetId} уничтожен! XP: ${combatResult.xp}`
-        : `Нанесено ${finalDamage} урона ${targetId}`,
+        : `Нанесено ${damageMessage} ${targetId}`,
     };
 
   } catch (error) {

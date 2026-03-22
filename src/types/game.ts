@@ -274,6 +274,7 @@ export type {
   TechniqueElement,
   TechniqueSubtype,
   TechniqueUICategory,
+  AttackType,
 } from './technique-types';
 
 // Импортируем утилиты для использования в этом файле
@@ -381,6 +382,19 @@ export interface Technique {
   qiCost: number;
   fatigueCost: { physical: number; mental: number };
   minCultivationLevel: number;
+  
+  /**
+   * ⭐ ULTIMATE-ТЕХНИКА
+   * 
+   * Ultimate-техники имеют особый статус:
+   * - Могут пробить защиту на 4+ уровней выше (10% урона)
+   * - Полный иммунитет только при разнице 5+ уровней
+   * - Редкие и мощные техники
+   * 
+   * @see docs/body_armor.md - Секция 2.5 Ultimate-техники
+   * @see src/lib/constants/level-suppression.ts
+   */
+  isUltimate?: boolean;
   
   /** 
    * Базовая структурная ёмкость техники (в базовых единицах Ци)

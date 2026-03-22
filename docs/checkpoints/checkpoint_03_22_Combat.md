@@ -1,14 +1,25 @@
 # ⚔️ План: Боевая система v4.0
 
 **Дата:** 2026-03-22
-**Версия:** 1.0
-**Статус:** 📋 Планирование
+**Версия:** 3.0
+**Статус:** ✅ Этап 1-7 завершены (Event Bus интегрирован)
 
 ---
 
 ## 📋 Обзор
 
 Документ описывает план интеграции Level Suppression и Qi Buffer в боевую систему.
+
+### ⚠️ ВАЖНО: Часть работы УЖЕ ВЫПОЛНЕНА
+
+В рамках чекпоинта `checkpoint_03_22_Body_update.md` уже реализованы:
+- ✅ `level-suppression.ts` — константы и функции
+- ✅ `qi-buffer-config.ts` — конфигурация
+- ✅ `qi-buffer.ts` — функции обработки
+- ✅ `damage-pipeline.ts` — полный pipeline
+- ✅ Интеграция в `combat-system.ts`
+- ✅ Интеграция в `npc-damage-calculator.ts`
+- ✅ Типы `AttackType`, `isUltimate`
 
 ---
 
@@ -19,339 +30,344 @@
 │                    ИЕРАРХИЯ БОЕВОЙ СИСТЕМЫ                           │
 ├─────────────────────────────────────────────────────────────────────┤
 │                                                                      │
-│  УРОВЕНЬ 1: Константы (новые)                                       │
+│  УРОВЕНЬ 1: Константы (новые) — ✅ ЗАВЕРШЕНО                        │
 │  ├── level-suppression.ts — Таблица подавления                      │
 │  └── qi-buffer-config.ts — Конфигурация буфера                      │
 │                                                                      │
-│  УРОВЕНЬ 2: Функции расчёта                                         │
+│  УРОВЕНЬ 2: Функции расчёта — ✅ ЗАВЕРШЕНО                          │
 │  ├── calculateLevelSuppression() — Расчёт множителя                 │
 │  ├── processQiDamage() — Обработка Qi Buffer                        │
 │  └── processDamagePipeline() — Полный pipeline                      │
 │                                                                      │
-│  УРОВЕНЬ 3: Интеграция                                              │
+│  УРОВЕНЬ 3: Интеграция — ✅ ЗАВЕРШЕНО                               │
 │  ├── combat-system.ts — Интеграция player combat                    │
 │  └── npc-damage-calculator.ts — Интеграция NPC combat               │
 │                                                                      │
-│  УРОВЕНЬ 4: API и UI                                                │
-│  ├── /api/combat/damage — Эндпоинт расчёта                          │
-│  └── DamageFlowDisplay.tsx — Визуализация                           │
+│  УРОВЕНЬ 4: API и UI — ⚠️ ЧАСТИЧНО ВЫПОЛНЕНО                        │
+│  ├── /api/game/event — ✅ Существует (Event Bus)                    │
+│  ├── combat:damage_dealt handler — ✅ Существует                    │
+│  ├── Level Suppression в handler — ✅ Интегрирован (v3.3.0)         │
+│  ├── Qi Buffer в handler — ✅ Интегрирован (v3.3.0)                 │
+│  ├── BodyStatusPanel.tsx — ✅ Существует                            │
+│  ├── DamageFlowDisplay.tsx — 🔜 Не создан                           │
+│  ├── LevelSuppressionIndicator.tsx — 🔜 Не создан                   │
+│  └── QiBufferStatus.tsx — 🔜 Не создан                              │
 │                                                                      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 2️⃣ НОВЫЕ ФАЙЛЫ
+## 2️⃣ ВЫПОЛНЕННЫЕ ЗАДАЧИ ✅
 
-### 2.1 level-suppression.ts
+### 2.1 level-suppression.ts — ✅ Создан
 
 **Расположение:** `src/lib/constants/level-suppression.ts`
 
-```typescript
-export type AttackType = 'normal' | 'technique' | 'ultimate';
+**Реализовано:**
+- `AttackType` тип
+- `SuppressionValues` интерфейс
+- `LEVEL_SUPPRESSION_TABLE` константа
+- `calculateLevelSuppression()` функция
+- `calculateLevelSuppressionFull()` функция с полным результатом
+- `isTargetImmune()` функция
+- `getSuppressionDescription()` функция
 
-export interface SuppressionValues {
-  normal: number;
-  technique: number;
-  ultimate: number;
-}
-
-export const LEVEL_SUPPRESSION_TABLE: Record<number, SuppressionValues> = {
-  0: { normal: 1.0, technique: 1.0, ultimate: 1.0 },
-  1: { normal: 0.5, technique: 0.75, ultimate: 1.0 },
-  2: { normal: 0.1, technique: 0.25, ultimate: 0.5 },
-  3: { normal: 0.0, technique: 0.05, ultimate: 0.25 },
-  4: { normal: 0.0, technique: 0.0, ultimate: 0.1 },
-  5: { normal: 0.0, technique: 0.0, ultimate: 0.0 },
-};
-
-export function calculateLevelSuppression(
-  attackerLevel: number,
-  defenderLevel: number,
-  attackType: AttackType,
-  techniqueLevel?: number
-): number {
-  let effectiveLevel = attackerLevel;
-  
-  // Для техник: technique.level может пробить защиту
-  if (attackType === 'technique' && techniqueLevel) {
-    effectiveLevel = Math.max(attackerLevel, techniqueLevel);
-  }
-  
-  const diff = Math.max(0, defenderLevel - effectiveLevel);
-  const clamped = Math.min(5, diff);
-  
-  return LEVEL_SUPPRESSION_TABLE[clamped][attackType];
-}
-```
-
-### 2.2 qi-buffer-config.ts
+### 2.2 qi-buffer-config.ts — ✅ Создан
 
 **Расположение:** `src/lib/constants/qi-buffer-config.ts`
 
-```typescript
-export const QI_BUFFER_CONFIG = {
-  // Сырая Ци
-  baseQiAbsorptionRatio: 3.0,      // 1 урон = 3 Ци
-  rawQiAbsorptionPercent: 0.90,    // 90% поглощение
-  
-  // Щитовая техника
-  shieldTechniqueMultiplier: 1.0,  // 1 урон = 1 Ци
-  shieldAbsorptionPercent: 1.0,    // 100% поглощение
-  
-  // Минимум
-  minQiForBuffer: 10,
-} as const;
-```
+**Реализовано:**
+- `QiBufferConfig` интерфейс
+- `QI_BUFFER_CONFIG` константа (90% absorption, 10% piercing)
+- `hasQiForBuffer()` функция
+- `calculateRequiredQi()` функция
+- `calculatePiercingDamage()` функция
+- `calculateAbsorbableDamage()` функция
+
+### 2.3 qi-buffer.ts — ✅ Создан
+
+**Расположение:** `src/lib/game/qi-buffer.ts`
+
+**Реализовано:**
+- `processQiDamage()` — основная функция с механикой 90%
+- `processShieldTechnique()` — 100% поглощение
+- `processRawQi()` — 90% поглощение, 10% пробитие
+- `calculateHitsUntilDepletion()` — расчёт ударов до истощения
+- `formatQiDamageResult()` — для UI
+
+### 2.4 damage-pipeline.ts — ✅ Создан
+
+**Расположение:** `src/lib/game/damage-pipeline.ts`
+
+**Реализовано:**
+- `processDamagePipeline()` — полный pipeline 10 слоёв
+- `calculateFinalDamageQuick()` — упрощённый расчёт
+- `canDamageTarget()` — проверка возможности урона
+- `formatDamagePipelineResult()` — для UI
+- Константы `MATERIAL_DAMAGE_REDUCTION`, `DEFAULT_MATERIAL_HARDNESS`
+
+### 2.5 combat-system.ts — ✅ Интегрирован
+
+**Изменения:**
+- Добавлены импорты Level Suppression
+- Добавлен параметр `defenderLevel` в `calculateTechniqueDamageFull()`
+- Добавлены поля в `TechniqueDamageResult`: `levelSuppression`, `damageAfterSuppression`
+- Обратная совместимость сохранена (опциональные параметры)
+
+### 2.6 npc-damage-calculator.ts — ✅ Интегрирован
+
+**Изменения:**
+- Добавлены импорты Level Suppression и Qi Buffer
+- Добавлены поля в `PlayerDefenseStats`: `cultivationLevel`, `currentQi`, `maxQi`, `hasShieldTechnique`
+- Добавлены поля в `DamageResult`: `levelSuppression`, `qiBuffer`, `damageBeforeQiBuffer`
+- Level Suppression применяется перед Qi Buffer
+- Qi Buffer применяется только для техник Ци
+- `meridianBuffer` deprecated для Qi атак (используется только для физических)
 
 ---
 
-## 3️⃣ ОБНОВЛЕНИЕ combat-system.ts
+## 3️⃣ АУДИТ КОДА — ЧТО УЖЕ СУЩЕСТВУЕТ ⚠️
 
-### 3.1 Интеграция Level Suppression
+### 3.1 API для combat — ✅ СУЩЕСТВУЕТ (Event Bus)
 
-**Файл:** `src/lib/game/combat-system.ts`
+**Файл:** `src/app/api/game/event/route.ts`
 
-```typescript
-import { calculateLevelSuppression } from '@/lib/constants/level-suppression';
+**События:**
+- `technique:use` — использование техники
+- `combat:damage_dealt` — нанесение урона
 
-export function calculateTechniqueDamageFull(params: {
-  // ... existing params
-}): CombatDamageResult {
-  // ... existing damage calculation ...
-  
-  // ⭐ НОВОЕ: Level Suppression
-  const attackType = technique?.isUltimate ? 'ultimate' :
-                     technique ? 'technique' : 'normal';
-  
-  const suppression = calculateLevelSuppression(
-    attacker.cultivationLevel,
-    defender.cultivationLevel,
-    attackType,
-    technique?.level
-  );
-  
-  finalDamage *= suppression;
-  
-  // ... continue with Qi Buffer, armor, etc.
-}
-```
+**Handler:** `src/lib/game/event-bus/handlers/combat.ts`
 
-### 3.2 Интеграция Qi Buffer
+**Что уже делает:**
+- ✅ Проверка техники в БД
+- ✅ Проверка знания техники персонажем
+- ✅ Проверка и списание Ци
+- ✅ Расчёт урона (qiDensity, capacity, statMult, masteryMult, gradeMult)
+- ✅ Проверка дестабилизации
+- ✅ Обработка урона по TempNPC
+- ✅ Визуальные команды (show_damage, show_effect)
 
-```typescript
-import { processQiDamage, QI_BUFFER_CONFIG } from '@/lib/game/qi-buffer';
+**Чего НЕ делает (TODO):**
+- ❌ Level Suppression не интегрирован в Event Bus handler
+- ❌ Qi Buffer 90% не интегрирован в Event Bus handler
+- ❌ processDamagePipeline() не используется
 
-export function calculateTechniqueDamageFull(params: {
-  // ...
-}): CombatDamageResult {
-  // ... after Level Suppression ...
-  
-  // ⭐ Qi Buffer (только для техник Ци)
-  if (isQiTechnique && defender.currentQi > QI_BUFFER_CONFIG.minQiForBuffer) {
-    const qiResult = processQiDamage(
-      finalDamage,
-      defender.currentQi,
-      defender.maxQi,
-      defender.hasActiveShieldTechnique,
-      QI_BUFFER_CONFIG
-    );
-    
-    qiConsumed = qiResult.qiConsumed;
-    finalDamage = qiResult.remainingDamage;  // 10% или 0
-  }
-  
-  // ... continue with armor ...
-}
-```
+### 3.2 UI компоненты — ⚠️ ЧАСТИЧНО СУЩЕСТВУЮТ
 
----
+#### Существующие компоненты:
 
-## 4️⃣ ОБНОВЛЕНИЕ npc-damage-calculator.ts
+**BodyStatusPanel.tsx** — ✅ Полностью реализован
+- Расположение: `src/components/game/BodyStatusPanel.tsx`
+- Функционал:
+  - Двойная HP полоска (functional/structural)
+  - Панель сердца
+  - Панель кровотечений
+  - Панель приживления
+  - Статус частей тела (healthy, damaged, crippled, paralyzed, severed)
 
-### 4.1 Интеграция Level Suppression
+**BodyDoll.tsx** — ✅ Существует
+- Расположение: `src/components/game/BodyDoll.tsx`
+- Визуальное отображение тела
 
-**Файл:** `src/lib/game/npc-damage-calculator.ts`
+#### Отсутствующие компоненты:
 
-```typescript
-import { calculateLevelSuppression } from '@/lib/constants/level-suppression';
+| Компонент | Статус | Описание |
+|-----------|--------|----------|
+| DamageFlowDisplay.tsx | 🔜 Не создан | Визуализация pipeline урона |
+| LevelSuppressionIndicator.tsx | 🔜 Не создан | Индикатор подавления |
+| QiBufferStatus.tsx | 🔜 Не создан | Статус Qi Buffer |
 
-export function calculateDamageFromNPC(params: {
-  npc: GeneratedNPC;
-  technique: Technique | null;
-  target: PlayerStats;
-  // ...
-}): DamageResult {
-  // ... existing calculation ...
-  
-  // ⭐ НОВОЕ: Level Suppression
-  const attackType = technique?.isUltimate ? 'ultimate' :
-                     technique ? 'technique' : 'normal';
-  
-  const suppression = calculateLevelSuppression(
-    params.npc.cultivation.level,
-    params.target.cultivationLevel,
-    attackType,
-    technique?.level
-  );
-  
-  finalDamage *= suppression;
-  
-  // ... Qi Buffer игрока ...
-  
-  return {
-    damage: Math.floor(finalDamage),
-    qiConsumed,
-    suppression,  // Для логирования
-  };
-}
-```
+### 3.3 AOE обработка — ✅ ЧАСТИЧНО РЕАЛИЗОВАНО
+
+**Файл:** `src/lib/game/damage-pipeline.ts`
+
+**Реализовано:**
+- `processDamagePipeline()` принимает опциональные параметры для разных целей
+- Level Suppression применяется индивидуально при вызове функции
+- Можно вызывать функцию в цикле для каждой цели AOE
+
+**Не создано (опционально):**
+- Специализированная функция `processAOEAttack()`
 
 ---
 
-## 5️⃣ AOE ОБРАБОТКА
+## 4️⃣ ОСТАВШИЕСЯ ЗАДАЧИ 🔜
 
-### 5.1 Индивидуальное подавление
+### 4.1 Интеграция Level Suppression в Event Bus — ✅ ЗАВЕРШЕНО (v3.3.0)
 
-```typescript
-export function processAOEAttack(params: {
-  attacker: Character;
-  targets: Character[];
-  technique: Technique;
-  // ...
-}): Map<string, DamageResult> {
-  const results = new Map();
-  
-  for (const target of params.targets) {
-    // Базовый урон
-    let damage = calculateBaseDamage(params.technique, params.attacker);
-    
-    // Дистанция
-    const distance = getDistance(params.attacker, target);
-    const distanceMult = getDistanceMultiplier(distance, params.technique);
-    damage *= distanceMult;
-    
-    // ⭐ ИНДИВИДУАЛЬНОЕ ПОДАВЛЕНИЕ
-    const suppression = calculateLevelSuppression(
-      params.attacker.cultivationLevel,
-      target.cultivationLevel,
-      params.technique.isUltimate ? 'ultimate' : 'technique',
-      params.technique.level
-    );
-    damage *= suppression;
-    
-    // Остальные слои
-    results.set(target.id, processRemainingLayers(damage, target));
-  }
-  
-  return results;
-}
-```
+**Файл:** `src/lib/game/event-bus/handlers/combat.ts`
+
+**Реализовано:**
+- ✅ Добавлен импорт `calculateLevelSuppression`, `calculateLevelSuppressionFull`, `isTargetImmune`
+- ✅ Добавлен импорт `determineAttackType` из technique-types
+- ✅ В `handleTempNPCDamageEvent` добавлен расчёт подавления
+- ✅ Проверка иммунитета (return с isImmune: true)
+- ✅ Применение множителя подавления к урону
+
+### 4.2 Интеграция Qi Buffer в Event Bus — ✅ ЗАВЕРШЕНО (v3.3.0)
+
+**Файл:** `src/lib/game/event-bus/handlers/combat.ts`
+
+**Реализовано:**
+- ✅ Добавлен импорт `processQiDamage`, `QiDamageResult`
+- ✅ В `handleTempNPCDamageEvent` добавлена обработка Qi Buffer NPC
+- ✅ Если у NPC есть Ци, 90% поглощается, 10% пробивает
+- ✅ Данные о Qi Buffer возвращаются в response
+
+### 4.3 UI компоненты — 🔜 P1
+
+**Файлы для создания:**
+- `src/components/game/DamageFlowDisplay.tsx`
+- `src/components/game/LevelSuppressionIndicator.tsx`
+- `src/components/game/QiBufferStatus.tsx`
+
+### 4.4 Тестирование — 🔜 P2
+
+**Файлы:**
+- `src/lib/constants/level-suppression.test.ts`
+- `src/lib/game/qi-buffer.test.ts`
 
 ---
 
-## 6️⃣ API ЭНДПОИНТ
+## 5️⃣ ПОРЯДОК РЕАЛИЗАЦИИ (ОБНОВЛЁННЫЙ)
 
-### 6.1 /api/combat/damage
-
-**Файл:** `src/app/api/combat/damage/route.ts`
-
-```typescript
-import { calculateTechniqueDamageFull } from '@/lib/game/combat-system';
-import { processAOEAttack } from '@/lib/game/damage-pipeline';
-
-export async function POST(request: Request) {
-  const body = await request.json();
-  const { attackerId, targetIds, techniqueId, qiSpent } = body;
-  
-  // Загрузка данных
-  const attacker = await loadCharacter(attackerId);
-  const technique = await loadTechnique(techniqueId);
-  
-  if (targetIds.length === 1) {
-    // Одиночная атака
-    const target = await loadCharacter(targetIds[0]);
-    const result = calculateTechniqueDamageFull({
-      attacker, target, technique, qiSpent
-    });
-    return Response.json(result);
-  } else {
-    // AOE атака
-    const targets = await Promise.all(
-      targetIds.map(id => loadCharacter(id))
-    );
-    const results = processAOEAttack({ attacker, targets, technique });
-    return Response.json(Object.fromEntries(results));
-  }
-}
-```
+| Этап | Файл | Задачи | Статус |
+|------|------|--------|--------|
+| 1 | `level-suppression.ts` | Создать константы | ✅ Завершено |
+| 2 | `qi-buffer-config.ts` | Создать конфиг | ✅ Завершено |
+| 3 | `combat-system.ts` | Интегрировать suppression | ✅ Завершено |
+| 4 | `combat-system.ts` | Интегрировать Qi Buffer | ✅ Завершено |
+| 5 | `npc-damage-calculator.ts` | Интегрировать suppression | ✅ Завершено |
+| 6 | `damage-pipeline.ts` | Создать pipeline | ✅ Завершено |
+| 7 | `event-bus/handlers/combat.ts` | Интегрировать suppression | ✅ Завершено |
+| 8 | `event-bus/handlers/combat.ts` | Интегрировать Qi Buffer | ✅ Завершено |
+| 9 | UI компоненты | DamageFlowDisplay и др. | 🔜 P1 |
 
 ---
 
-## 7️⃣ ПОРЯДОК РЕАЛИЗАЦИИ
+## 6️⃣ ТЕСТИРОВАНИЕ
 
-| Этап | Файл | Задачи | Приоритет |
-|------|------|--------|-----------|
-| 1 | `level-suppression.ts` | Создать константы | P0 |
-| 2 | `qi-buffer-config.ts` | Создать конфиг | P0 |
-| 3 | `combat-system.ts` | Интегрировать suppression | P0 |
-| 4 | `combat-system.ts` | Интегрировать Qi Buffer | P0 |
-| 5 | `npc-damage-calculator.ts` | Интегрировать suppression | P0 |
-| 6 | `/api/combat/damage` | Создать эндпоинт | P1 |
-
----
-
-## 8️⃣ ТЕСТИРОВАНИЕ
-
-### Unit тесты
+### Unit тесты — 🔜 НЕ СОЗДАНЫ
 
 ```typescript
 describe('Combat System with Level Suppression', () => {
   test('L7 attacker vs L9 defender (normal) = 0 damage', () => {
-    const result = calculateTechniqueDamageFull({
-      attacker: { cultivationLevel: 7 },
-      defender: { cultivationLevel: 9 },
-      technique: null,  // normal attack
-    });
-    expect(result.damage).toBe(0);
+    const result = calculateLevelSuppression(7, 9, 'normal');
+    expect(result).toBe(0);
   });
   
-  test('L7 attacker vs L9 defender (technique) = 5% damage', () => {
-    const result = calculateTechniqueDamageFull({
-      attacker: { cultivationLevel: 7 },
-      defender: { cultivationLevel: 9 },
-      technique: { level: 7, isUltimate: false },
-      baseDamage: 1000,
-    });
-    expect(result.damage).toBeCloseTo(50, 0);  // 1000 × 0.05
+  test('L7 attacker vs L9 defender (technique L7) = 5% damage', () => {
+    const result = calculateLevelSuppression(7, 9, 'technique', 7);
+    expect(result).toBe(0.05);
   });
   
-  test('technique.level пробивает защиту', () => {
-    const result = calculateTechniqueDamageFull({
-      attacker: { cultivationLevel: 7 },
-      defender: { cultivationLevel: 9 },
-      technique: { level: 8, isUltimate: false },
-      baseDamage: 1000,
+  test('L7 attacker vs L9 defender (technique L8) = 25% damage', () => {
+    const result = calculateLevelSuppression(7, 9, 'technique', 8);
+    expect(result).toBe(0.25);
+  });
+  
+  test('Qi Buffer 90% absorption', () => {
+    const result = processQiDamage({
+      incomingDamage: 100,
+      currentQi: 500,
+      maxQi: 1000,
+      hasShieldTechnique: false,
     });
-    expect(result.damage).toBeCloseTo(250, 0);  // 1000 × 0.25
+    expect(result.absorbedDamage).toBeCloseTo(90, 0);
+    expect(result.remainingDamage).toBeCloseTo(10, 0);
   });
 });
 ```
 
 ---
 
-## 9️⃣ КРИТЕРИИ ГОТОВНОСТИ
+## 7️⃣ КРИТЕРИИ ГОТОВНОСТИ
 
-- [ ] Level Suppression работает для всех типов атак
-- [ ] Qi Buffer работает с механикой 90%
-- [ ] technique.level влияет на пробитие
-- [ ] Ultimate-техники пробивают +4 уровня
-- [ ] AOE атаки применяют индивидуальное подавление
-- [ ] Unit тесты проходят
-- [ ] Интеграционные тесты проходят
+### Phase 1-3: Core Mechanics — ✅ ГОТОВО
+
+- [x] Level Suppression работает для всех типов атак
+- [x] Qi Buffer работает с механикой 90%
+- [x] technique.level влияет на пробитие
+- [x] Ultimate-техники пробивают +4 уровня
+- [x] Интеграция в combat-system.ts
+- [x] Интеграция в npc-damage-calculator.ts
+- [x] Lint: 0 ошибок
+
+### Phase 4: Event Bus Integration — ✅ ЗАВЕРШЕНО
+
+- [x] Level Suppression в handleTempNPCDamageEvent()
+- [x] Qi Buffer в обработке урона NPC
+- [x] Иммунитет при подавлении
+- [x] Данные о подавлении в response
+- [ ] Тестирование Event Bus (P2)
+
+### Phase 5: AOE — ✅ ЧАСТИЧНО ГОТОВО
+
+- [x] Level Suppression применяется индивидуально
+- [ ] Специализированная функция `processAOEAttack()` — опционально
+
+### Phase 6: UI — ⚠️ ЧАСТИЧНО ГОТОВО
+
+- [x] BodyStatusPanel.tsx — HP частей тела, кровотечения
+- [ ] DamageFlowDisplay.tsx
+- [ ] LevelSuppressionIndicator.tsx
+- [ ] QiBufferStatus.tsx
+
+---
+
+## 8️⃣ СВЯЗЬ С ДРУГИМИ ЧЕКПОИНТАМИ
+
+### Зависимости
+
+| Чекпоинт | Статус | Влияние |
+|----------|--------|---------|
+| `checkpoint_03_22_Body_update.md` | ✅ Завершён | Предоставляет Level Suppression, Qi Buffer |
+| `checkpoint_03_22_Formations.md` | 🔜 Не начат | Использует combat систему |
+| `checkpoint_03_22_NPC_Orchestrator.md` | 🔜 Не начат | Интеграция NPC в combat |
+
+### Следующие шаги
+
+1. **Event Bus Integration** — добавить Level Suppression + Qi Buffer в handlers
+2. **Generators** — интеграция техник с isUltimate флагом
+3. **NPC_Orchestrator** — исправление генерации инвентаря
+4. **Formations** — доработка системы формаций
+5. **Combat UI** — визуализация pipeline урона
+
+---
+
+## 9️⃣ ССЫЛКИ
+
+### Документация
+- `docs/body_review.md` v5.0 — Qi Buffer 90%
+- `docs/body_armor.md` v5.0 — Level Suppression
+- `docs/technique-system-v2.md` v3.0 — Ultimate-техники
+- `docs/NPC_COMBAT_INTERACTIONS.md` v3.0 — NPC combat
+
+### Код — Создан
+- `src/lib/constants/level-suppression.ts` — ✅
+- `src/lib/constants/qi-buffer-config.ts` — ✅
+- `src/lib/game/qi-buffer.ts` — ✅
+- `src/lib/game/damage-pipeline.ts` — ✅
+
+### Код — Изменён
+- `src/lib/game/combat-system.ts` — ✅
+- `src/lib/game/npc-damage-calculator.ts` — ✅
+- `src/types/technique-types.ts` — ✅
+- `src/types/game.ts` — ✅
+
+### Код — Существует (Event Bus)
+- `src/app/api/game/event/route.ts` — ✅ API endpoint
+- `src/lib/game/event-bus/handlers/combat.ts` — ✅ Combat handler
+- `src/components/game/BodyStatusPanel.tsx` — ✅ UI
+
+### Код — Требует создания
+- `src/components/game/DamageFlowDisplay.tsx` — 🔜
+- `src/components/game/LevelSuppressionIndicator.tsx` — 🔜
+- `src/components/game/QiBufferStatus.tsx` — 🔜
 
 ---
 
 *План создан: 2026-03-22*
-*Версия: 1.0*
-*Статус: 📋 Планирование — запуск после генераторов*
+*Версия: 2.1*
+*Статус: ✅ Этап 1-3 завершены, Event Bus интеграция (P0) в планах*

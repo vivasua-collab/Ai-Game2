@@ -233,6 +233,53 @@ export function canAssignTechniqueToSlot(type: TechniqueType): boolean {
   return isCombatSlotType(type) || type === 'cultivation';
 }
 
+// ==================== ТИП АТАКИ ДЛЯ LEVEL SUPPRESSION ====================
+
+/**
+ * Тип атаки для расчёта подавления уровнем
+ * 
+ * - normal: Обычная атака без техники
+ * - technique: Атака техникой (technique.level влияет)
+ * - ultimate: Ultimate-техника (особый флаг isUltimate)
+ * 
+ * @see docs/body_armor.md - Секция 2.2 Таблица подавления
+ */
+export type AttackType = 'normal' | 'technique' | 'ultimate';
+
+/**
+ * Проверить, является ли техника ultimate
+ * 
+ * Ultimate-техники:
+ * - Могут пробить защиту на 4+ уровней выше (10% урона)
+ * - Полный иммунитет только при разнице 5+ уровней
+ * - Редкие и мощные техники
+ */
+export function isUltimateTechnique(technique: { isUltimate?: boolean } | undefined): boolean {
+  return technique?.isUltimate === true;
+}
+
+/**
+ * Определить тип атаки для level suppression
+ * 
+ * @param hasTechnique - используется ли техника
+ * @param technique - данные техники (для проверки isUltimate)
+ * @returns тип атаки для таблицы подавления
+ */
+export function determineAttackType(
+  hasTechnique: boolean,
+  technique?: { isUltimate?: boolean }
+): AttackType {
+  if (!hasTechnique) {
+    return 'normal';
+  }
+  
+  if (isUltimateTechnique(technique)) {
+    return 'ultimate';
+  }
+  
+  return 'technique';
+}
+
 // ==================== ОГРАНИЧЕНИЯ СТИХИЙ ====================
 
 /**

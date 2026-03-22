@@ -8,7 +8,8 @@
  * - Ranged (дальний бой): снаряды, лучи, AOE с падением урона
  * - Defense (защитные): блок, щит, уклонение
  * 
- * Версия: 2.0
+ * Версия: 2.1
+ * Обновлено: 2026-03-22 - Добавлена интеграция Level Suppression
  * ============================================================================
  */
 
@@ -16,7 +17,8 @@ import type {
   Technique, 
   CombatRange, 
   CombatTechniqueType,
-  Character 
+  Character,
+  AttackType,
 } from '@/types/game';
 
 // Импорт функций из techniques.ts (устранение дублирования)
@@ -25,6 +27,16 @@ import {
   calculateQiDensity,
   QI_DENSITY_TABLE 
 } from './techniques';
+
+// Импорт системы Level Suppression
+import {
+  calculateLevelSuppression,
+  calculateLevelSuppressionFull,
+  type LevelSuppressionResult,
+} from '@/lib/constants/level-suppression';
+
+// Импорт определения типа атаки
+import { determineAttackType } from '@/types/technique-types';
 
 // ============================================
 // ТИПЫ
@@ -138,6 +150,11 @@ export interface TechniqueDamageResult {
   masteryMultiplier: number;
   levelBonus: number;
   message: string;
+  // === Level Suppression (v2.1) ===
+  /** Результат подавления уровнем (если указан defenderLevel) */
+  levelSuppression?: LevelSuppressionResult;
+  /** Урон после подавления */
+  damageAfterSuppression?: number;
 }
 
 // ============================================
@@ -692,16 +709,18 @@ export function checkDestabilization(
  * Полный расчёт урона техники с учётом структурной ёмкости
  * 
  * @param technique - техника
- * @param character - персонаж
+ * @param character - персонаж (атакующий)
  * @param qiInput - поданное Ци
  * @param mastery - мастерство техники (0-100)
+ * @param defenderLevel - уровень защитника (для Level Suppression)
  * @returns полный результат урона
  */
 export function calculateTechniqueDamageFull(
   technique: Technique,
   character: Character,
   qiInput: number,
-  mastery: number = 0
+  mastery: number = 0,
+  defenderLevel?: number
 ): TechniqueDamageResult {
   
   // 1. Структурная ёмкость техники
@@ -737,10 +756,33 @@ export function calculateTechniqueDamageFull(
   const levelBonus = 1 + ((technique.level || 1) - 1) * 0.05;
   damage *= levelBonus;
   
+  // === 9. LEVEL SUPPRESSION (v2.1) ===
+  let levelSuppression: LevelSuppressionResult | undefined;
+  let damageAfterSuppression: number | undefined;
+  
+  if (defenderLevel !== undefined) {
+    // Определяем тип атаки
+    const attackType: AttackType = determineAttackType(true, technique);
+    
+    // Рассчитываем подавление
+    levelSuppression = calculateLevelSuppressionFull(
+      character.cultivationLevel,
+      defenderLevel,
+      attackType,
+      technique.level
+    );
+    
+    // Применяем множитель подавления
+    damageAfterSuppression = damage * levelSuppression.multiplier;
+    damage = damageAfterSuppression;
+  }
+  
   // Формирование сообщения
   let message = '';
   if (stability.isDestabilized) {
     message = `⚔️ Дестабилизация! Урон: ${Math.floor(damage)} (эфф. ${Math.floor(stability.efficiency * 100)}%), обратный удар: ${stability.backlashDamage}`;
+  } else if (levelSuppression && levelSuppression.wasSuppressed) {
+    message = `⚔️ Урон: ${Math.floor(damage)} (подавление ×${levelSuppression.multiplier.toFixed(2)})`;
   } else {
     message = `✅ Урон: ${Math.floor(damage)} (Ци: ${effectiveQi} × плотность: ${qiDensity})`;
   }
@@ -757,7 +799,9 @@ export function calculateTechniqueDamageFull(
     statMultiplier,
     masteryMultiplier,
     levelBonus,
-    message
+    message,
+    levelSuppression,
+    damageAfterSuppression,
   };
 }
 
