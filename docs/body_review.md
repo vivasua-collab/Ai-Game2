@@ -846,5 +846,83 @@ HP Торса:
 ---
 
 *Документ создан: 2026-03-21*
-*Версия: 4.1*
-*Статус: Синтез всех концепций + буфер Ци 90% + формула ядра*
+*Версия: 5.0*
+*Статус: Синтез всех концепций + буфер Ци 90% + формула ядра + ⭐ подавление уровнем*
+
+---
+
+## 1️⃣1️⃣ ⭐ ПОДАВЛЕНИЕ УРОВНЕМ (NEW v5.0)
+
+### 11.1 Проблема
+
+> **Сырая Ци поглощает только 90% урона.**
+> 
+> Практик L8 получает 10% урона даже от L1 — противоречит жанру сянься.
+
+### 11.2 Решение: Подавление по уровням
+
+**Техника уровня N пробивает до N уровней разницы.**
+
+```
+Формула:
+  levelDiff = defenderLevel - attackerLevel
+  breakthrough = techniqueLevel
+  effectiveDiff = max(0, levelDiff - breakthrough)
+  
+  attackType = isUltimate ? 'ultimate' : technique ? 'technique' : 'normal'
+  multiplier = SUPPRESSION_TABLE[effectiveDiff][attackType]
+```
+
+### 11.3 Таблица подавления
+
+| effectiveDiff | normal | technique | ultimate |
+|---------------|--------|-----------|----------|
+| 0 | ×1.0 | ×1.0 | ×1.0 |
+| +1 | ×0.5 | ×0.75 | ×1.0 |
+| +2 | ×0.1 | ×0.25 | ×0.5 |
+| +3 | ×0 | ×0.05 | ×0.25 |
+| +4 | ×0 | ×0 | ×0.1 |
+| +5+ | ×0 | ×0 | ×0 |
+
+### 11.4 Примеры
+
+```
+Практик L5, техника L5 атакует L8:
+  levelDiff = 3, breakthrough = 5
+  effectiveDiff = 0
+  → ×1.0 урона (нет подавления)
+
+Практик L1, техника L1 атакует L8:
+  levelDiff = 7, breakthrough = 1
+  effectiveDiff = 6
+  → ×0 (ИММУНИТЕТ!)
+
+Практик L8 атакует L9 (technique L8):
+  levelDiff = 1, breakthrough = 8
+  effectiveDiff = 0
+  → ×1.0 урона
+```
+
+### 11.5 Ultimate-техники
+
+**Флаг `isUltimate: true`:**
+- Игнорируют 1 уровень разницы (×1.0 на +1)
+- Улучшенная таблица подавления
+- Только Transcendent grade
+
+### 11.6 Интеграция в пайплайн урона
+
+```
+1. rawDamage = techniqueDamage × qiDensity × gradeMult
+2. ⭐ levelSuppression (NEW!)
+   damage ×= suppressionMultiplier
+   if (multiplier === 0) return IMMUNE
+3. hitPart = rollBodyPart()
+4. Активная защита
+5. Буфер Ци (90%)
+6. Броня
+7. Материал тела
+8. Итоговый урон
+```
+
+**Подробнее:** [body_armor.md](./body_armor.md) раздел 11

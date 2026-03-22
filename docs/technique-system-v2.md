@@ -1,8 +1,8 @@
 # 🎯 Система техник v2.0
 
-**Версия:** 2.9
-**Обновлено:** 2026-03-21
-**Статус:** ✅ Реализовано с Grade System + Capacity System
+**Версия:** 3.0
+**Обновлено:** 2026-03-22
+**Статус:** ✅ Реализовано с Grade System + Capacity System + Level Suppression
 
 ---
 
@@ -18,6 +18,8 @@
 7. **Стихии** — единая система элементов (8 стихий)
 8. **Бонусы техник** — разнообразие от Grade и элемента
 9. **Типы техник** — детальная механика каждого типа
+10. **⭐ Подавление уровнем** — пробитие защиты по уровням (NEW v3.0)
+11. **⭐ Ultimate-техники** — секретные техники с флагом isUltimate (NEW v3.0)
 
 ---
 
@@ -916,8 +918,8 @@ export const ELEMENT_MULTIPLIERS: Record<TechniqueElement, number> = {
 
 ---
 
-*Документ обновлён: 2026-03-21*
-*Версия: 2.9*
+*Документ обновлён: 2026-03-22*
+*Версия: 3.0*
 *Ключевая формула: finalDamage = capacity × gradeMult*
 *Правило дестабилизации: 50% урон практику, урон по цели только для melee*
 *Правило резонанса: техника ≤ уровень практика*
@@ -925,3 +927,258 @@ export const ELEMENT_MULTIPLIERS: Record<TechniqueElement, number> = {
 *Ограничения стихий: Healing/Cultivation = neutral, Poison = poison*
 *Правило баффов: НЕ увеличивают телесные характеристики!*
 *Система тиков: 1 тик = 1 минута игрового времени*
+*⭐ Подавление уровнем: техника L8 пробивает до 8 уровней разницы*
+*⭐ Ultimate-техники: флаг isUltimate для секретных техник*
+
+---
+
+## 1️⃣4️⃣ ⭐ ПОДАВЛЕНИЕ УРОВНЕМ (НОВОЕ v3.0)
+
+### 14.1 Проблема
+
+> **Сырая Ци поглощает только 90% урона!**
+> 
+> Практик L8 получает 10% урона даже от L1 — противоречит жанру сянься.
+
+### 14.2 Решение
+
+**Техника уровня N пробивает до N уровней разницы.**
+
+```
+Пример: Практик L8 использует технику L5
+→ Пробивает до 5 уровней разницы
+→ Может нанести урон практику L9 (diff=1) — ×0.75
+→ НЕ может нанести урон практику L10 (diff=2) — но L10 не существует!
+```
+
+### 14.3 Таблица подавления
+
+| effectiveDiff | normal | technique | ultimate |
+|---------------|--------|-----------|----------|
+| 0 | ×1.0 | ×1.0 | ×1.0 |
+| +1 | ×0.5 | ×0.75 | ×1.0 |
+| +2 | ×0.1 | ×0.25 | ×0.5 |
+| +3 | ×0 | ×0.05 | ×0.25 |
+| +4 | ×0 | ×0 | ×0.1 |
+| +5+ | ×0 | ×0 | ×0 |
+
+### 14.4 Формула
+
+```
+levelDiff = defenderLevel - attackerLevel
+breakthrough = techniqueLevel
+effectiveDiff = max(0, levelDiff - breakthrough)
+
+attackType = isUltimate ? 'ultimate' : technique ? 'technique' : 'normal'
+multiplier = SUPPRESSION_TABLE[effectiveDiff][attackType]
+```
+
+---
+
+## 1️⃣5️⃣ ⭐ ULTIMATE-ТЕХНИКИ (НОВОЕ v3.0)
+
+### 15.1 Определение
+
+```typescript
+interface TechniquePreset {
+  // ... существующие поля ...
+  
+  /**
+   * Флаг секретной техники
+   * 
+   * Ultimate-техники:
+   * - Игнорируют 1 уровень разницы (×1.0 на +1)
+   * - Имеют улучшенную таблицу подавления
+   * - Редкие (только Transcendent grade)
+   */
+  isUltimate?: boolean;
+}
+```
+
+### 15.2 Характеристики
+
+| Параметр | Ultimate | Обычная |
+|----------|----------|---------|
+| Grade | Transcendent | Любой |
+| Подавление +1 | ×1.0 | ×0.75 |
+| Подавление +2 | ×0.5 | ×0.25 |
+| Подавление +3 | ×0.25 | ×0.05 |
+| Подавление +4 | ×0.1 | ×0 |
+| Редкость | <1% | Обычная |
+
+### 15.3 Примеры
+
+```typescript
+// Ultimate-техника
+{
+  id: "dragon_emperor_fist",
+  name: "Кулак Драконьего Императора",
+  techniqueType: "combat",
+  level: 9,
+  grade: "transcendent",
+  isUltimate: true,  // ← Флаг секретной техники
+  
+  // Ultimate игнорирует 1 уровень разницы
+  // L9 vs L10 (если бы существовал): ×1.0 урона
+  // L8 vs L9: ×0.5 (вместо ×0.25)
+}
+
+// Обычная техника L9
+{
+  id: "fire_ball",
+  name: "Огненный шар",
+  techniqueType: "combat",
+  level: 9,
+  grade: "perfect",
+  isUltimate: false,  // Обычная
+  
+  // L9 vs L10: ×0.75 (technique)
+  // L8 vs L9: ×0.25 (technique)
+}
+```
+
+### 15.4 Интеграция в расчёт урона
+
+```
+1. Проверка совместимости по уровню (резонанс)
+   └── techniqueLevel <= practitionerLevel
+   
+2. Расчёт ёмкости и базового урона
+   └── damage = capacity × gradeMult
+   
+3. ⭐ ПОДАВЛЕНИЕ УРОВНЕМ (НОВОЕ!)
+   └── attackType = isUltimate ? 'ultimate' : 'technique'
+   └── multiplier = getSuppressionMultiplier(levelDiff, techniqueLevel, attackType)
+   └── damage ×= multiplier
+   └── if (multiplier === 0) return IMMUNE
+   
+4. Проверка дестабилизации (если применимо)
+   
+5. Применение защиты цели
+```
+
+---
+
+## 1️⃣6️⃣ ПРИМЕРЫ РАСЧЁТА С ПОДАВЛЕНИЕМ
+
+### 16.1 Сценарий: L5 атакует L8
+
+```
+Атакующий: L5
+Техника: "Огненный шар" L5 (не ultimate)
+Защитник: L8
+
+1. levelDiff = 8 - 5 = 3
+2. breakthrough = 5
+3. effectiveDiff = max(0, 3 - 5) = 0
+4. attackType = 'technique'
+5. multiplier = ×1.0 (нет подавления!)
+
+Вывод: L5 техникой L5 может бить L8 без подавления!
+```
+
+### 16.2 Сценарий: L5 атакует L9
+
+```
+Атакующий: L5
+Техника: "Огненный шар" L5
+Защитник: L9
+
+1. levelDiff = 9 - 5 = 4
+2. breakthrough = 5
+3. effectiveDiff = max(0, 4 - 5) = 0
+4. multiplier = ×1.0
+
+Вывод: L5 техникой L5 может бить даже L9!
+```
+
+### 16.3 Сценарий: L1 атакует L8
+
+```
+Атакующий: L1
+Техника: "Дыхание огня" L1
+Защитник: L8
+
+1. levelDiff = 8 - 1 = 7
+2. breakthrough = 1
+3. effectiveDiff = max(0, 7 - 1) = 6
+4. attackType = 'technique'
+5. multiplier = ×0 (ИММУНИТЕТ!)
+
+Вывод: L1 НЕ может нанести урон L8 — правильно для сянься!
+```
+
+### 16.4 Сценарий: Ultimate L9 атакует L9
+
+```
+Атакующий: L9
+Техника: "Кулак Драконьего Императора" L9, isUltimate: true
+Защитник: L9
+
+1. levelDiff = 0
+2. effectiveDiff = 0
+3. attackType = 'ultimate'
+4. multiplier = ×1.0
+
+Вывод: Полный урон между равными уровнями.
+```
+
+### 16.5 AOE и подавление
+
+**Важно:** Подавление рассчитывается ИНДИВИДУАЛЬНО для каждой цели!
+
+```typescript
+function processAOEAttack(
+  attacker: Entity,
+  technique: Technique,
+  targets: Entity[]
+) {
+  const baseDamage = calculateBaseDamage(attacker, technique);
+  
+  for (const target of targets) {
+    // AOE множитель (затухание от центра)
+    const aoeMult = calculateAOEFalloff(distance);
+    
+    // ⭐ Подавление ИНДИВИДУАЛЬНО для каждой цели
+    const suppressionMult = calculateLevelSuppression(
+      attacker.cultivationLevel,
+      target.cultivationLevel,
+      technique.level,
+      technique.isUltimate
+    );
+    
+    const finalDamage = baseDamage * aoeMult * suppressionMult;
+    
+    if (suppressionMult > 0) {
+      applyDamage(target, finalDamage);
+    } else {
+      log(`${target.name}: ИММУНИТЕТ (разница уровней)`);
+    }
+  }
+}
+```
+
+---
+
+## 📁 ФАЙЛЫ СИСТЕМЫ (обновлено v3.0)
+
+| Файл | Назначение |
+|------|------------|
+| `src/types/grade.ts` | Типы Grade, конфигурации |
+| `src/types/technique-types.ts` | Типы техник, стихий, isUltimate |
+| `src/lib/constants/technique-capacity.ts` | BASE_CAPACITY, дестабилизация |
+| `src/lib/game/level-suppression.ts` | ⭐ Таблица и расчёт подавления (NEW) |
+| `src/lib/generator/technique-generator-v2.ts` | Генератор техник V2 |
+| `src/lib/generator/technique-generator-config-v2.ts` | Конфигурация V2 |
+| `src/lib/generator/effects/element-effects.ts` | Эффекты стихий |
+| `src/lib/generator/effects/transcendent-effects.ts` | Transcendent-эффекты |
+
+---
+
+## 🔄 ИСТОРИЯ ИЗМЕНЕНИЙ
+
+| Версия | Дата | Изменения |
+|--------|------|-----------|
+| 2.0 | 2026-03-11 | Базовая система |
+| 2.9 | 2026-03-21 | Grade System + Capacity System |
+| 3.0 | 2026-03-22 | **⭐ Level Suppression + Ultimate-техники** |

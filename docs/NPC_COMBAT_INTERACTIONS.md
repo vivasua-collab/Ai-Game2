@@ -1,8 +1,8 @@
 # 🎮 NPC Combat Interactions - Design Document
 
-**Версия:** 2.0  
-**Дата:** 2026-03-16  
-**Статус:** 📋 Проектирование (обновлено по результатам анализа кода)
+**Версия:** 3.0  
+**Дата:** 2026-03-22  
+**Статус:** 📋 Добавлена система подавления уровнем
 
 ---
 
@@ -10,14 +10,15 @@
 
 Документ описывает архитектуру боевых взаимодействий между игроком и NPC в мире культивации.
 
-### Изменения в v2.0
+### Изменения в v3.0
 
 | # | Изменение | Статус |
 |---|-----------|--------|
 | 0.1 | Бонусы и штрафы экипировки | ✅ Бонусы реализованы, штрафы продуманы |
 | 1.3 | Хитбоксы по типу тела | ✅ Использована система из body.md |
-| 2.1 | Урон от NPC "равноценный" игроку | 📋 Спроектировано |
+| 2.1 | Урон от NPC "равноценный" игроку | ✅ Спроектировано |
 | 2.3 | Агрессия NPC | 🔜 Подготовка вариантов |
+| 2.4 | ⭐ Подавление уровнем для NPC | 📋 Спроектировано (NEW v3.0) |
 | 3.x | Диалоги: 2 схемы | 📋 Спроектировано |
 | 4.x | Квесты расширенные | 📋 Спроектировано |
 | 5.x | Лут → Фаза 2 | 📋 Спроектировано |
@@ -1183,9 +1184,159 @@ export function generateSoulStone(npc: NPC): SoulStone | null {
 - [docs/random_npc.md](./random_npc.md) — Генерация NPC
 - [src/lib/game/combat-system.ts](../src/lib/game/combat-system.ts) — Боевая система
 - [src/types/body.ts](../src/types/body.ts) — Типы тела
+- [docs/body_armor.md](./body_armor.md) — Порядок прохождения урона (v4.0)
+- [docs/technique-system-v2.md](./technique-system-v2.md) — Система техник (v3.0)
+
+---
+
+## 2️⃣4️⃣ ⭐ ПОДАВЛЕНИЕ УРОВНЕМ ДЛЯ NPC (NEW v3.0)
+
+### 24.1 Принцип
+
+**NPC использует ту же систему подавления уровнем, что и игрок.**
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────┐
+│                    ПОДАВЛЕНИЕ УРОВНЕМ ДЛЯ NPC                                       │
+├─────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                      │
+│  NPC L5 атакует игрока L8:                                                          │
+│  levelDiff = 8 - 5 = 3                                                              │
+│  breakthrough = npc.technique.level (если есть техника)                            │
+│  effectiveDiff = max(0, 3 - breakthrough)                                           │
+│                                                                                      │
+│  NPC БЕЗ техники: breakthrough = 0                                                  │
+│  → effectiveDiff = 3                                                                │
+│  → multiplier = ×0 (normal attack, полный иммунитет игрока!)                        │
+│                                                                                      │
+│  NPC с техникой L5: breakthrough = 5                                                │
+│  → effectiveDiff = 0                                                                │
+│  → multiplier = ×1.0 (полный урон)                                                  │
+│                                                                                      │
+└─────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### 24.2 Интеграция в npc-damage-calculator.ts
+
+```typescript
+// src/lib/game/npc-damage-calculator.ts
+
+import { calculateLevelSuppression } from './level-suppression';
+
+export function calculateDamageFromNPC(params: NPCAttackParams): DamageResult {
+  const { npc, technique, target, isCritical = false } = params;
+  
+  // ... существующий расчёт урона ...
+  
+  let effect = effectiveQi * qiDensity * statMultiplier * masteryMultiplier;
+  
+  // ⭐ ПОДАВЛЕНИЕ УРОВНЕМ (NEW v3.0)
+  const suppression = calculateLevelSuppression(
+    npc.cultivationLevel,           // attackerLevel
+    target.cultivationLevel,        // defenderLevel
+    technique?.level ?? 0,          // techniqueLevel (0 если нет техники)
+    technique?.isUltimate ?? false  // isUltimate
+  );
+  
+  effect *= suppression.multiplier;
+  
+  // Если иммунитет — возвращаем 0 урона
+  if (suppression.multiplier === 0) {
+    return {
+      damage: 0,
+      qiSpent,
+      effectiveQi,
+      qiDensity,
+      statMultiplier,
+      masteryMultiplier,
+      conductivityBonus,
+      armorReduction: 0,
+      bufferAbsorbed: 0,
+      isCritical,
+      damageType: 'immune',
+    };
+  }
+  
+  // ... остальной расчёт ...
+}
+```
+
+### 24.3 Влияние на поведение NPC
+
+**NPC осознают подавление уровнем!**
+
+```typescript
+// NPC AI учитывает подавление при выборе цели
+
+function selectTarget(npc: NPC, potentialTargets: Entity[]): Entity | null {
+  const viableTargets = potentialTargets.filter(target => {
+    const suppression = calculateLevelSuppression(
+      npc.cultivationLevel,
+      target.cultivationLevel,
+      npc.bestTechnique?.level ?? 0,
+      npc.bestTechnique?.isUltimate ?? false
+    );
+    
+    // Не атаковать цели с иммунитетом
+    return suppression.multiplier > 0;
+  });
+  
+  // Если нет viable целей — искать другую стратегию
+  if (viableTargets.length === 0) {
+    return null; // Бежать / прятаться / звать помощь
+  }
+  
+  // Выбрать ближайшую viable цель
+  return findClosest(npc, viableTargets);
+}
+```
+
+### 24.4 Примеры сценариев
+
+**Сценарий 1: Слабый NPC без техники**
+```
+NPC L3 (волк) атакует игрока L8
+  technique = null → breakthrough = 0
+  levelDiff = 8 - 3 = 5
+  effectiveDiff = 5
+  multiplier = ×0 (ИММУНИТЕТ)
+  
+Результат: Волк L3 не может нанести урон игроку L8!
+```
+
+**Сценарий 2: NPC с техникой**
+```
+NPC L5 (бандит) с техникой L5 атакует игрока L8
+  technique = L5 → breakthrough = 5
+  levelDiff = 3
+  effectiveDiff = max(0, 3 - 5) = 0
+  multiplier = ×1.0 (technique)
+  
+Результат: Полный урон! NPC L5 с техникой L5 опасен для L8.
+```
+
+**Сценарий 3: NPC босс**
+```
+NPC L9 (дракон) с ultimate-техникой L9 атакует игрока L8
+  isUltimate = true
+  levelDiff = 8 - 9 = -1 (атакующий выше)
+  multiplier = ×1.0 (нет подавления)
+  
+Результат: Полный урон от босса.
+```
+
+### 24.5 Баланс для NPC
+
+| Тип NPC | Уровень | Техника | Угроза для L8 игрока |
+|---------|---------|---------|---------------------|
+| Слабый моб | L1-L3 | Нет | ИММУНИТЕТ |
+| Обычный моб | L4-L5 | Нет | ИММУНИТЕТ |
+| Элитный моб | L5-L6 | L4-L5 | ×0.75 - ×1.0 |
+| Мини-босс | L7-L8 | L6-L8 | ×0.75 - ×1.0 |
+| Босс | L8-L9 | L8-L9 + ultimate | ×1.0 |
 
 ---
 
 *Документ создан: 2026-03-16*  
-*Обновлён: 2026-03-16 (v2.0)*  
+*Обновлён: 2026-03-22 (v3.0 — добавлено подавление уровнем)*  
 *Автор: ИИ-агент*
