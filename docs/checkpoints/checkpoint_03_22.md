@@ -1,8 +1,8 @@
 # 📋 План: 22 марта 2026
 
-**Дата:** 2026-03-22 14:30 UTC
-**Версия:** 5.0
-**Статус:** ✅ Фаза 1-3 завершены (Body_update, Combat, Generators)
+**Дата:** 2026-03-22 18:00 UTC
+**Версия:** 6.0
+**Статус:** ✅ Фаза 1-4 завершены (Body_update, Combat, Generators, Formations_core)
 
 ---
 
@@ -119,6 +119,20 @@
 | Material в convertBodyState | session-npc-manager.ts | ✅ Передаётся |
 | MATERIAL_DAMAGE_REDUCTION в combat | event-bus/handlers/combat.ts | ✅ Интегрирован |
 
+### Задача 9: Формации (Фаза 1-3) — ✅ ЗАВЕРШЕНО
+**Файл:** `docs/checkpoints/checkpoint_03_22_Formations.md`
+
+| Компонент | Файл | Статус |
+|-----------|------|--------|
+| FormationCore model | prisma/schema.prisma | ✅ Создана |
+| ActiveFormation model | prisma/schema.prisma | ✅ Создана |
+| formation-constants.ts | src/lib/formations/ | ✅ Создан |
+| formation-core-generator.ts | src/lib/formations/ | ✅ Создан |
+| formation-manager.ts | src/lib/formations/ | ✅ Создан |
+| /api/formations/route.ts | src/app/api/formations/ | ✅ Создан |
+| /api/formations/cores/route.ts | src/app/api/formations/cores/ | ✅ Создан |
+| FormationCoresTab.tsx | src/components/formation/ | ✅ Создан |
+
 ---
 
 ## 📊 ТЕКУЩЕЕ СОСТОЯНИЕ СИСТЕМ
@@ -150,6 +164,11 @@
 │  └── Level Suppression integration                                  │
 │  └── Ultimate-техники                                               │
 │                                                                      │
+│  УРОВЕНЬ 6: formation_unified.md (ФОРМАЦИИ)                         │
+│  └── Core types: Disks, Altars                                      │
+│  └── Drain system: interval-based                                   │
+│  └── Capacity multipliers: ×10 to ×10000                            │
+│                                                                      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -164,6 +183,7 @@
 | Core Capacity | ✅ Согласовано | 1000 × 1.1^totalLevels |
 | Ultimate генерация | ✅ Реализовано | 5% для transcendent |
 | Arthropod NPC | ✅ Реализовано | chitin материал, 20% reduction |
+| Formation Drain | ✅ Реализовано | interval-based, discrete Qi |
 
 ---
 
@@ -193,7 +213,7 @@
 │  ├── event-bus/handlers/combat.ts — ✅ Интегрирован (v3.3.0)         │
 │  ├── Level Suppression         — ✅ Работает в Event Bus             │
 │  ├── Qi Buffer                 — ✅ Работает в Event Bus             │
-│  └── UI компоненты             — 🔜 Не начато                        │
+│  └── Material Reduction        — ✅ Работает в Event Bus             │
 │                                                                      │
 │  ФАЗА 3: GENERATORS — ✅ ЗАВЕРШЕНО                                   │
 │  ├── technique-generator-v2.ts — ✅ isUltimate генерация             │
@@ -203,10 +223,20 @@
 │  ├── session-npc-manager.ts    — ✅ Передача material/morphology     │
 │  └── combat.ts (event-bus)     — ✅ Material reduction интегрирован  │
 │                                                                      │
-│  ФАЗА 4: UI — 🔜 НЕ НАЧАТО                                           │
-│  ├── BodyDoll-v2.tsx           — Обновлённый UI тела               │
-│  ├── QiBufferIndicator.tsx     — Индикатор Qi Buffer               │
-│  └── DamageFlowDisplay.tsx     — Визуализация урона                │
+│  ФАЗА 4: FORMATIONS (CORE) — ✅ ЗАВЕРШЕНО                            │
+│  ├── prisma/schema.prisma      — ✅ FormationCore, ActiveFormation   │
+│  ├── formation-constants.ts    — ✅ Drain, capacity, radius          │
+│  ├── formation-core-generator.ts — ✅ Disks, Altars                  │
+│  ├── formation-manager.ts      — ✅ CRUD + drain check               │
+│  ├── /api/formations/          — ✅ REST API                         │
+│  └── FormationCoresTab.tsx     — ✅ UI для ядер                      │
+│                                                                      │
+│  ФАЗА 5: UI — 📋 ЗАПЛАНИРОВАНО                                       │
+│  ├── QiBufferStatus.tsx        — Индикатор Qi Buffer               │
+│  ├── LevelSuppressionIndicator.tsx — Индикатор подавления           │
+│  ├── DamageFlowDisplay.tsx     — Визуализация урона                │
+│  ├── FormationCoresTab интеграция — В TechniquesDialog             │
+│  └── FormationVisual.ts        — Базовая визуализация              │
 │                                                                      │
 └─────────────────────────────────────────────────────────────────────┘
 ```
@@ -221,7 +251,9 @@
 | `checkpoint_03_22_Body_update.md` | Детальный план систем тела | ✅ Завершён |
 | `checkpoint_03_22_Generators.md` | План генераторов | ✅ Завершён (v3.0) |
 | `checkpoint_03_22_Combat.md` | План боевой системы | ✅ Завершён (v3.0) |
-| `checkpoint_03_22_UI.md` | План UI обновлений | 📋 Создать |
+| `checkpoint_03_22_Formations.md` | План формаций | ✅ Завершён (v2.0 - Phase 1-3) |
+| `checkpoint_03_22_UI.md` | План UI обновлений | 📋 Создан (v1.0) |
+| `checkpoint_03_22_NPC_Orchestrator.md` | План оркестратора | 📋 Требует обновления |
 
 ---
 
@@ -237,6 +269,9 @@
 | `body_monsters.md` | v1.3 | Членистоногие (arthropod) |
 | `technique-system-v2.md` | v3.0 | Level Suppression + Ultimate |
 | `NPC_COMBAT_INTERACTIONS.md` | v3.0 | Level Suppression для NPC |
+| `formation_unified.md` | v4.1 | Drain system |
+| `formation_drain_system.md` | v1.0 | Interval-based drain |
+| `formation_analysis.md` | v4.1 | Пересчёт с drain |
 
 ### Созданный код
 
@@ -246,6 +281,12 @@
 | `src/lib/constants/qi-buffer-config.ts` | Конфигурация Qi Buffer | ✅ Создан |
 | `src/lib/game/qi-buffer.ts` | Функции обработки Ци | ✅ Создан |
 | `src/lib/game/damage-pipeline.ts` | Pipeline урона | ✅ Создан |
+| `src/lib/formations/formation-constants.ts` | Константы формаций | ✅ Создан |
+| `src/lib/formations/formation-core-generator.ts` | Генератор ядер | ✅ Создан |
+| `src/lib/formations/formation-manager.ts` | Менеджер формаций | ✅ Создан |
+| `src/app/api/formations/route.ts` | API формаций | ✅ Создан |
+| `src/app/api/formations/cores/route.ts` | API ядер | ✅ Создан |
+| `src/components/formation/FormationCoresTab.tsx` | UI ядер | ✅ Создан |
 
 ### Изменённый код
 
@@ -260,6 +301,7 @@
 | `src/lib/generator/npc-generator.ts` | beast_arthropod, material | ✅ Изменён |
 | `src/lib/game/session-npc-manager.ts` | material/morphology передача | ✅ Изменён |
 | `src/lib/game/event-bus/handlers/combat.ts` | Material reduction | ✅ Изменён |
+| `prisma/schema.prisma` | FormationCore, ActiveFormation | ✅ Изменён |
 
 ---
 
@@ -284,6 +326,16 @@
 6. Броня (DR%) — дополнительное снижение
 7. HP тела — последний рубеж
 ```
+
+### Формации (ёмкость)
+
+| Размер | Множитель | Пример L5 (контур 1280) |
+|--------|-----------|-------------------------|
+| Small | ×10 | 12,800 Ци |
+| Medium | ×50 | 64,000 Ци |
+| Large | ×200 | 256,000 Ци |
+| Great | ×1000 | 1,280,000 Ци |
+| Heavy | ×10000 | 12,800,000 Ци (L6+) |
 
 ---
 
@@ -311,6 +363,9 @@
 3. **Arthropod (chitin)** — 20% reduction может быть слабым
    - ✅ Дополнительно: ethereal 70%, mineral 50%
 
+4. **Heavy формации** — огромная ёмкость
+   - ✅ Требует L6+, только с ядром
+
 ---
 
 ## 📝 ДНЕВНИК
@@ -330,8 +385,11 @@
 | 14:00 | Аудит Generators чекпоинта | ✅ Завершено |
 | 14:15 | Добавление material в TempBodyState | ✅ Завершено |
 | 14:20 | Интеграция MATERIAL_DAMAGE_REDUCTION | ✅ Завершено |
-| 14:30 | Обновление чекпоинтов | ✅ Завершено |
-| --:-- | UI компоненты | ⏳ Ожидание |
+| 15:00 | Формации: DB + Constants + Generator | ✅ Завершено |
+| 16:00 | Формации: Manager + API | ✅ Завершено |
+| 16:30 | Формации: FormationCoresTab UI | ✅ Завершено |
+| 18:00 | Комплексный аудит + UI чекпоинт | ✅ Завершено |
+| --:-- | UI компоненты | 📋 Запланировано |
 
 ---
 
@@ -342,11 +400,14 @@
 | `checkpoint_03_22_Body_update.md` | ✅ ЗАВЕРШЁН | Phase 1-5 |
 | `checkpoint_03_22_Combat.md` | ✅ ЗАВЕРШЁН | Phase 1-8 (Event Bus интегрирован) |
 | `checkpoint_03_22_Generators.md` | ✅ ЗАВЕРШЁН | Все 5 этапов |
+| `checkpoint_03_22_Formations.md` | ✅ ЗАВЕРШЁН | Phase 1-3 (Core + API) |
+| `checkpoint_03_22_UI.md` | 📋 СОЗДАН | Планирование |
+| `checkpoint_03_22_NPC_Orchestrator.md` | 📋 ОБНОВЛЯЕТСЯ | Требует доработки |
 
-### Lint статус: ✅ 0 ошибок, 3 warnings (предсуществующие)
+### Lint статус: ✅ 0 ошибок
 
 ---
 
 *План создан: 2026-03-22 06:00 UTC*
-*Обновлён: 2026-03-22 14:30 UTC*
-*Статус: ✅ Фаза 1-3 завершены (Body_update, Combat, Generators)*
+*Обновлён: 2026-03-22 18:00 UTC*
+*Статус: ✅ Фаза 1-4 завершены (Body_update, Combat, Generators, Formations_core)*

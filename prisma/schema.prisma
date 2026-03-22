@@ -1,5 +1,6 @@
 // Prisma schema for Cultivation World Simulator
-// Version: 10
+// Version: 11
+// v11: Добавлена система формаций (FormationCore, ActiveFormation)
 // v10: Добавлено поле bodyHeight в Character для системы размеров тела
 // v9: Equipment v2 - материалы, грейды, прочность (Phase 15.6)
 // v1: Базовая схема
@@ -59,6 +60,7 @@ model GameSession {
   npcs       NPC[]
   locations  Location[]
   sects      Sect[]
+  activeFormations ActiveFormation[]
 }
 
 // ==================== CHARACTER ====================
@@ -150,6 +152,7 @@ model Character {
   spiritStorage  SpiritStorage?
   techniques     CharacterTechnique[]
   techniquePools TechniquePool[]
+  formationCores FormationCore[]
 }
 
 // ==================== MESSAGE ====================
@@ -460,6 +463,7 @@ model InventoryItem {
   
   // === Связи ===
   equipmentSlotRef Equipment? @relation(name: "EquipmentSlot")
+  formationCore    FormationCore?
 
   // Индексы
   @@index([characterId])
@@ -576,6 +580,7 @@ model Technique {
   
   // Связи
   characterTechniques CharacterTechnique[]
+  activeFormations    ActiveFormation[]
 }
 
 // Изученные персонажем техники
@@ -935,4 +940,118 @@ model Material {
   // Индексы
   @@index([tier])
   @@index([category])
+}
+
+// ==================== FORMATION SYSTEM ====================
+
+// Ядра формаций (диски L1-L6, алтари L5-L9)
+model FormationCore {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // === Тип ===
+  coreType    String  // disk, altar
+  variant     String  // stone, jade, iron, spirit_iron, crystal, spirit_crystal, dragon_bone
+  
+  // === Уровень ===
+  levelMin    Int     // Мин. уровень формации
+  levelMax    Int     // Макс. уровень формации
+  
+  // === Параметры ===
+  maxSlots        Int     @default(1)    // Слоты для камней Ци
+  baseConductivity Int   @default(5)     // Проводимость ед/сек
+  maxCapacity     Int     @default(10000) // Макс ёмкость формации
+  
+  // === Состояние ===
+  isImbued        Boolean @default(false)  // Внедрена ли формация
+  imbuedTechniqueId String?               // ID техники внедрённой формации
+  
+  // === Для крафта ===
+  craftSkill      String?                 // Профессия для создания
+  craftDifficulty Int     @default(1)     // Сложность крафта
+  
+  // === Для алтарей ===
+  isStationary    Boolean @default(false)
+  locationId      String?
+  
+  // === Владелец ===
+  characterId String?
+  character   Character? @relation(fields: [characterId], references: [id], onDelete: Cascade)
+  
+  // === Связь с инвентарём ===
+  inventoryItemId String? @unique
+  inventoryItem   InventoryItem? @relation(fields: [inventoryItemId], references: [id], onDelete: SetNull)
+  
+  // === Связь с активной формацией ===
+  activeFormation ActiveFormation?
+  
+  @@index([coreType])
+  @@index([characterId])
+  @@index([levelMin, levelMax])
+}
+
+// Активные формации в мире
+model ActiveFormation {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // === Привязка к сессии ===
+  sessionId String
+  session   GameSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  
+  // === Техника формации ===
+  techniqueId String
+  technique   Technique @relation(fields: [techniqueId], references: [id])
+  
+  // === Ядро (опционально) ===
+  coreId String? @unique
+  core   FormationCore? @relation(fields: [coreId], references: [id], onDelete: SetNull)
+  
+  // === Создатель ===
+  creatorId String?
+  
+  // === Параметры ===
+  level         Int
+  formationType String  // barrier, trap, amplification, suppression, summoning, transport
+  size          String  // small, medium, large, great, heavy
+  isHeavy       Boolean @default(false)
+  
+  // === Ёмкость ===
+  currentQi   Int       @default(0)
+  maxCapacity Int
+  
+  // === Контур ===
+  contourQi   Int       // Затрачено на прорисовку
+  
+  // === Радиусы ===
+  creationRadius Int    @default(10)
+  effectRadius   Int    @default(50)
+  
+  // === Утечка ===
+  drainInterval  Int     @default(60)   // Интервал в тиках (1 тик = 1 минута)
+  drainAmount    Int     @default(1)    // Ци за раз
+  drainPerHour   Int     @default(1)    // Ци/час
+  lastDrainTick  Int     @default(0)    // Последний тик утечки
+  
+  // === Для барьеров ===
+  qiCostRatio Float?    // 1 урон = X Ци
+  
+  // === Этап ===
+  stage String @default("filling")  // drawing, imbuing, mounting, filling, active, depleted
+  
+  // === Позиция ===
+  locationId String?
+  x          Int       @default(0)
+  y          Int       @default(0)
+  
+  // === Участники наполнения (JSON) ===
+  // [{ practitionerId, isCreator, conductivity, qiDensity, contribution }]
+  participants String @default("[]")
+  
+  @@index([sessionId])
+  @@index([locationId])
+  @@index([stage])
+  @@index([formationType])
 }

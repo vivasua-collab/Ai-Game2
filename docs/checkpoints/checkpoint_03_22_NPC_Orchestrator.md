@@ -1,8 +1,9 @@
 # Checkpoint: Правки оркестратора NPC
 
 **Дата:** 2026-03-22
-**Статус:** 📋 Планирование
-**Аудит завершён:** 2026-03-22 09:06:48 UTC
+**Статус:** 🔄 Частично выполнено
+**Версия:** 1.1
+**Аудит завершён:** 2026-03-22 18:00 UTC
 
 ---
 
@@ -17,12 +18,12 @@ npc-full-generator.ts (ОРКЕСТРАТОР)
 │   ├── selectRole()
 │   ├── generateCultivation()
 │   ├── generateStats()
-│   ├── createBodyForSpecies()
+│   ├── createBodyForSpecies()      — ✅ bodyMaterial, morphology добавлены
 │   ├── selectPersonality()
 │   ├── selectTechniques()
 │   └── generateInventoryFromPool() → ❌ ПУСТО
 │
-├── generateTechnique() из technique-generator.ts (V1 deprecated)
+├── generateTechnique() из technique-generator.ts — ⚠️ V1 DEPRECATED!
 ├── generateFormation() из formation-generator.ts
 └── generateFullEquipmentForNPC() из equipment-generator.ts
     ├── generateEquipmentV2() → ✅ Генерирует на лету
@@ -38,110 +39,30 @@ npc-full-generator.ts (ОРКЕСТРАТОР)
 | `loadObjects('consumables')` | ❌ | Возвращает [] |
 | `generateInventoryFromPool()` | ❌ | Всегда пустой инвентарь |
 | `generateInventoryForNPC()` | ⚠️ | Не вызывается в оркестраторе |
+| `generateTechnique` (V1) | ⚠️ | Использует deprecated генератор |
 | Автогенерация формаций | ❌ | Не реализована |
 | Автогенерация расходников | ❌ | Не реализована |
 
-### 1.3 Мёртвый код
+### 1.3 Что УЖЕ исправлено (в других чекпоинтах)
 
-```typescript
-// npc-generator.ts:690 - НЕ РАБОТАЕТ
-async function generateInventoryFromPool(npc: GeneratedNPC) {
-  const consumables = await generatedObjectsLoader.loadObjects('consumables');
-  // ВСЕГДА ПУСТО - нет consumable.json
-}
-
-// equipment-generator.ts:215 - НЕ ВЫЗЫВАЕТСЯ
-export function generateInventoryForNPC(context: InventoryGenerationContext): TempItem[] {
-  // Работает, но оркестратор не вызывает!
-}
-```
+| Компонент | Чекпоинт | Статус |
+|-----------|----------|--------|
+| `bodyMaterial` в BodyState | Generators | ✅ Добавлен |
+| `morphology` в BodyState | Generators | ✅ Добавлен |
+| `beast_arthropod` template | Generators | ✅ Добавлен |
+| `material` в TempBodyState | Generators | ✅ Добавлен |
+| `MATERIAL_DAMAGE_REDUCTION` | Combat | ✅ Интегрирован |
+| FormationCore model | Formations | ✅ Создан |
+| ActiveFormation model | Formations | ✅ Создан |
+| Formation API | Formations | ✅ Создан |
 
 ---
 
 ## 2. ЗАДАЧИ
 
-### 2.1 КРИТИЧНО: Инвентарь NPC (Приоритет: HIGH)
+### 2.1 КРИТИЧНО: Генератор техник V2 (Приоритет: HIGH)
 
-#### 2.1.1 Вариант A: Исправить generateInventoryFromPool
-
-**Проблема:** `loadObjects('consumables')` возвращает пустой массив.
-
-**Решение 1:** Создать `presets/items/consumable.json` с предгенерированными расходниками.
-
-**Решение 2:** Добавить автогенерацию расходников в `generated-objects-loader.ts`:
-
-```typescript
-// В класс GeneratedObjectsLoader добавить:
-private async autoGenerateConsumables(): Promise<GeneratedItem[]> {
-  // Аналогично autoGenerateTechniques
-  // Генерировать pills, elixirs, food для уровней 1-9
-}
-```
-
-#### 2.1.2 Вариант B: Использовать generateInventoryForNPC
-
-**Проблема:** Функция существует, но не вызывается.
-
-**Решение:** Изменить `npc-full-generator.ts`:
-
-```typescript
-// ТЕКУЩИЙ КОД (строка 233):
-generateFullEquipmentForNPC(tempNPC, rng);
-equipment = { ...tempNPC.equipment };
-
-// ИСПРАВЛЕННЫЙ КОД:
-generateFullEquipmentForNPC(tempNPC, rng);
-equipment = { ...tempNPC.equipment };
-inventory = generateInventoryForNPC({
-  cultivationLevel: tempNPC.cultivation.level,
-  speciesId: tempNPC.speciesId,
-  roleId: tempNPC.roleId,
-  wealth: getWealthByRole(tempNPC.roleId),
-  combatant: !NON_COMBAT_ROLES.includes(tempNPC.roleId),
-  rng,
-});
-```
-
-#### 2.1.3 Рекомендуемое решение
-
-**Комбинированный подход:**
-
-1. **Быстрое исправление:** Использовать `generateInventoryForNPC()` в оркестраторе
-2. **Долгосрочное:** Добавить автогенерацию расходников в loader
-
----
-
-### 2.2 КРИТИЧНО: Формации NPC (Приоритет: HIGH)
-
-#### 2.2.1 Проблема
-
-```typescript
-// npc-full-generator.ts:203-222
-const formationSlots = calculateFormationSlots(baseNPC.cultivation.level);
-
-for (let i = 0; i < formationSlots; i++) {
-  const formation = generateFormation(id, type, level, seed);
-  formations.push(formation);  // ✅ Генерирует на лету
-}
-```
-
-**Генерация работает**, но:
-- Нет сохранения в `presets/formations/`
-- `generatedObjectsLoader.loadFormations()` возвращает []
-- Если другой код использует loader - получит пустой массив
-
-#### 2.2.2 Решение
-
-См. `checkpoint_03_22_Formations.md`:
-1. Создать `presets/formations/`
-2. Добавить автогенерацию в loader
-3. Обновить manifest.json
-
----
-
-### 2.3 ВАЖНО: Обновление генератора техник (Приоритет: MEDIUM)
-
-#### 2.3.1 Проблема
+#### 2.1.1 Проблема
 
 ```typescript
 // npc-full-generator.ts:184
@@ -152,7 +73,7 @@ import { generateTechnique, ... } from './technique-generator';
 
 **V1 генератор:** Нарушает принцип "Матрёшка" (baseDamage ≠ qiCost)
 
-#### 2.3.2 Решение
+#### 2.1.2 Решение
 
 Заменить на V2:
 
@@ -173,6 +94,99 @@ const technique = generateTechniqueV2({
 });
 ```
 
+**Файл:** `src/lib/generator/npc-full-generator.ts`
+**Строки:** 184, 194-207
+**Оценка:** 30 минут
+
+---
+
+### 2.2 КРИТИЧНО: Инвентарь NPC (Приоритет: HIGH)
+
+#### 2.2.1 Проблема
+
+```typescript
+// npc-generator.ts:690 - НЕ РАБОТАЕТ
+async function generateInventoryFromPool(npc: GeneratedNPC) {
+  const consumables = await generatedObjectsLoader.loadObjects('consumables');
+  // ВСЕГДА ПУСТО - нет consumable.json
+}
+
+// equipment-generator.ts:215 - НЕ ВЫЗЫВАЕТСЯ
+export function generateInventoryForNPC(context: InventoryGenerationContext): TempItem[] {
+  // Работает, но оркестратор не вызывает!
+}
+```
+
+#### 2.2.2 Решение
+
+**Вариант A: Быстрое исправление**
+
+```typescript
+// npc-full-generator.ts
+// После строки 237 (timing.equipment):
+
+// ========== 6. Генерация инвентаря ==========
+const inventoryStart = performance.now();
+
+import { generateInventoryForNPC, NON_COMBAT_ROLES, getWealthByRole } from './equipment-generator';
+
+const inventoryContext: InventoryGenerationContext = {
+  cultivationLevel: tempNPC.cultivation.level,
+  speciesId: tempNPC.speciesId,
+  roleId: tempNPC.roleId,
+  wealth: getWealthByRole(tempNPC.roleId),
+  combatant: !NON_COMBAT_ROLES.includes(tempNPC.roleId),
+  rng,
+};
+const generatedInventory = generateInventoryForNPC(inventoryContext);
+inventory.push(...generatedInventory);
+
+timing.inventory = performance.now() - inventoryStart;
+```
+
+**Файл:** `src/lib/generator/npc-full-generator.ts`
+**Оценка:** 1 час
+
+---
+
+### 2.3 ВАЖНО: Формации NPC (Приоритет: MEDIUM)
+
+#### 2.3.1 Текущее состояние
+
+```typescript
+// npc-full-generator.ts:203-222
+const formationSlots = calculateFormationSlots(baseNPC.cultivation.level);
+
+for (let i = 0; i < formationSlots; i++) {
+  const formation = generateFormation(id, type, level, seed);
+  formations.push(formation);  // ✅ Генерирует на лету
+}
+```
+
+**Генерация работает**, но:
+- Нет сохранения в `presets/formations/`
+- `generatedObjectsLoader.loadFormations()` возвращает []
+- Если другой код использует loader - получит пустой массив
+
+#### 2.3.2 Решение (опционально)
+
+Использовать новый API формаций из Formations checkpoint:
+
+```typescript
+// Вместо generateFormation():
+import { generateFormationCore } from './formation-core-generator';
+import { FormationManager } from '@/lib/formations/formation-manager';
+
+// Для NPC с формациями L5+:
+if (baseNPC.cultivation.level >= 5) {
+  // Генерация ядра формации
+  const coreData = generateFormationCore(baseNPC.cultivation.level);
+  // ... создание формации
+}
+```
+
+**Оценка:** 2-3 часа (опционально)
+
 ---
 
 ### 2.4 ОПТИМИЗАЦИЯ: Удаление мёртвого кода (Приоритет: LOW)
@@ -184,97 +198,52 @@ const technique = generateTechniqueV2({
 | npc-generator.ts | `generateInventoryFromPool()` | Исправить или удалить |
 | technique-generator.ts | Весь файл | Оставить как deprecated, перевести импорты на V2 |
 
-#### 2.4.2 Функции для использования
-
-| Файл | Функция | Действие |
-|------|---------|----------|
-| equipment-generator.ts | `generateInventoryForNPC()` | Вызывать в оркестраторе |
-
 ---
 
-## 3. ИЗМЕНЕНИЯ В ФАЙЛАХ
-
-### 3.1 npc-full-generator.ts
-
-```diff
-// ИМПОРТЫ
-- import { generateTechnique, ... } from './technique-generator';
-+ import { generateTechniqueV2, ... } from './technique-generator-v2';
-+ import { generateInventoryForNPC, NON_COMBAT_ROLES, getWealthByRole } from './equipment-generator';
-
-// В функции generateFullNPC()
-
-// После строки 237 (timing.equipment):
-+ // ========== 6. Генерация инвентаря ==========
-+ const inventoryStart = performance.now();
-+ 
-+ const inventoryContext: InventoryGenerationContext = {
-+   cultivationLevel: tempNPC.cultivation.level,
-+   speciesId: tempNPC.speciesId,
-+   roleId: tempNPC.roleId,
-+   wealth: getWealthByRole(tempNPC.roleId),
-+   combatant: !NON_COMBAT_ROLES.includes(tempNPC.roleId),
-+   rng,
-+ };
-+ const generatedInventory = generateInventoryForNPC(inventoryContext);
-+ inventory.push(...generatedInventory);
-+ addInventoryToNPC(tempNPC, generatedInventory);
-+ 
-+ timing.inventory = performance.now() - inventoryStart;
-```
-
-### 3.2 generated-objects-loader.ts
-
-```diff
-// Добавить метод автогенерации расходников
-+ private async autoGenerateConsumables(): Promise<GeneratedItem[]> {
-+   // Генерация pills, elixirs, food для уровней 1-9
-+ }
-
-// В loadObjects():
-+ if (type === 'consumables') {
-+   const { objects: items } = await this.loadItems();
-+   const consumables = items.filter(i => i.type === 'consumable');
-+   
-+   // АВТОГЕНЕРАЦИЯ: если пусто - генерируем
-+   if (consumables.length === 0 && !this.isGenerating) {
-+     const generated = await this.autoGenerateConsumables();
-+     return generated;
-+   }
-+   
-+   return consumables;
-+ }
-```
-
----
-
-## 4. ПОРЯДОК РЕАЛИЗАЦИИ
+## 3. ПОРЯДОК РЕАЛИЗАЦИИ
 
 ### Phase 1: Быстрые исправления (1-2 часа)
 
-1. [ ] Добавить вызов `generateInventoryForNPC()` в оркестратор
-2. [ ] Проверить что NPC получают инвентарь
+1. [ ] Заменить `generateTechnique` на `generateTechniqueV2` в оркестраторе
+2. [ ] Добавить вызов `generateInventoryForNPC()` в оркестратор
 3. [ ] Протестировать генерацию NPC
 
-### Phase 2: Инфраструктура (2-3 часа)
+### Phase 2: Инфраструктура (опционально, 2-3 часа)
 
 1. [ ] Создать `presets/formations/` (см. checkpoint_03_22_Formations.md)
 2. [ ] Добавить автогенерацию формаций в loader
 3. [ ] Добавить автогенерацию расходников в loader
 4. [ ] Обновить manifest.json
 
-### Phase 3: Обновление генераторов (2-3 часа)
+### Phase 3: Очистка (опционально, 1 час)
 
-1. [ ] Перевести оркестратор на `generateTechniqueV2`
-2. [ ] Проверить совместимость типов
-3. [ ] Удалить или пометить deprecated код
-4. [ ] Обновить тесты
+1. [ ] Удалить или пометить deprecated код
+2. [ ] Обновить тесты
 
 ---
 
-## 5. ТЕСТИРОВАНИЕ
+## 4. ТЕСТИРОВАНИЕ
 
-### 5.1 Тесты для инвентаря
+### 4.1 Тесты для генератора техник V2
+
+```typescript
+describe('NPC Technique Generation with V2', () => {
+  it('should use technique-generator-v2 for techniques', () => {
+    const result = generateFullNPC({
+      cultivationLevel: 5,
+      roleType: 'warrior',
+      seed: 12345,
+    });
+    
+    // Проверить что техники соответствуют V2 формату
+    expect(result.techniques[0]).toHaveProperty('capacity');
+    expect(result.techniques[0]).toHaveProperty('grade');
+    // V2 гарантирует baseDamage * mastery = qiCost
+  });
+});
+```
+
+### 4.2 Тесты для инвентаря
 
 ```typescript
 describe('NPC Inventory Generation', () => {
@@ -303,69 +272,59 @@ describe('NPC Inventory Generation', () => {
 });
 ```
 
-### 5.2 Тесты для формаций
-
-```typescript
-describe('NPC Formation Generation', () => {
-  it('should generate formations for L5+ NPC', () => {
-    const result = generateFullNPC({
-      cultivationLevel: 5,
-      seed: 12345,
-    });
-    
-    expect(result.formations.length).toBeGreaterThanOrEqual(1);
-  });
-  
-  it('should have no formations for L1-4 NPC', () => {
-    const result = generateFullNPC({
-      cultivationLevel: 3,
-    });
-    
-    expect(result.formations.length).toBe(0);
-  });
-});
-```
-
 ---
 
-## 6. РИСКИ
+## 5. РИСКИ
 
 | Риск | Вероятность | Влияние | Митигация |
 |------|-------------|---------|-----------|
-| Изменение структуры TempNPC | Низкая | Высокое | Проверить типы |
 | Несовместимость V1/V2 техник | Средняя | Среднее | Проверить структуру GeneratedTechnique |
+| Изменение структуры TempNPC | Низкая | Высокое | Проверить типы |
 | Дублирование генерации | Низкая | Низкое | Флаг isGenerating в loader |
 
 ---
 
-## 7. КРИТЕРИИ ГОТОВНОСТИ
+## 6. КРИТЕРИИ ГОТОВНОСТИ
 
 ### Phase 1:
+- [ ] `generateFullNPC()` использует `generateTechniqueV2`
 - [ ] `generateFullNPC()` вызывает `generateInventoryForNPC()`
 - [ ] NPC получают расходники в quickSlots
 - [ ] Нет ошибок при генерации
+- [ ] Lint: 0 ошибок
 
 ### Phase 2:
 - [ ] `presets/formations/` содержит файлы
 - [ ] `loadObjects('consumables')` возвращает массив
 - [ ] manifest.json актуален
 
-### Phase 3:
-- [ ] Оркестратор использует V2 генератор техник
-- [ ] Deprecated код помечен или удалён
-- [ ] Тесты проходят
-
 ---
 
-## 8. ССЫЛКИ
+## 7. ССЫЛКИ
 
+### Код
 - **Оркестратор:** `src/lib/generator/npc-full-generator.ts`
 - **Базовый генератор:** `src/lib/generator/npc-generator.ts`
 - **Экипировка:** `src/lib/generator/equipment-generator.ts`
 - **Загрузчик:** `src/lib/generator/generated-objects-loader.ts`
+- **Техники V2:** `src/lib/generator/technique-generator-v2.ts`
+
+### Зависимости
 - **Формации:** `docs/checkpoints/checkpoint_03_22_Formations.md`
+- **Генераторы:** `docs/checkpoints/checkpoint_03_22_Generators.md`
+
+---
+
+## 8. ИСТОРИЯ ИЗМЕНЕНИЙ
+
+| Дата | Изменение |
+|------|-----------|
+| 2026-03-22 09:06 | Первичный аудит |
+| 2026-03-22 18:00 | Обновление после выполнения других чекпоинтов |
 
 ---
 
 *Чекпоинт создан: 2026-03-22*
 *Аудит выполнен: 2026-03-22 09:06:48 UTC*
+*Обновлён: 2026-03-22 18:00 UTC*
+*Статус: 🔄 Частично выполнено (Phase 1 pending)*
