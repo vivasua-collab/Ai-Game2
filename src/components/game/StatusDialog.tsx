@@ -34,6 +34,7 @@ import {
 } from '@/lib/game/constants';
 import { formatTime, formatDate, getTimeOfDayName, getSeasonName } from '@/lib/game/time-system';
 import type { WorldTime } from '@/lib/game/time-system';
+import { QiBufferStatus } from '@/components/game/QiBufferStatus';
 
 interface StatusDialogProps {
   open: boolean;
@@ -244,6 +245,9 @@ export function StatusDialog({ open, onOpenChange }: StatusDialogProps) {
                 <Progress value={qiPercent} className="h-3" />
                 <div className="text-xs text-slate-500 mt-1">Заполнение: {qiPercent}%</div>
               </div>
+
+              {/* Qi Buffer - защита через Ци */}
+              <QiBufferStatus />
 
               {/* Ядро */}
               <div className="bg-slate-700/50 rounded-lg p-3">

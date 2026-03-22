@@ -295,3 +295,72 @@ export function getQiCostRatio(level: number): number {
 export function canActivate(currentQi: number, maxCapacity: number): boolean {
   return currentQi >= maxCapacity;
 }
+
+// ==================== NAMES ====================
+
+/**
+ * Названия ядер для UI
+ */
+export const CORE_NAMES: Record<string, string> = {
+  // Диски
+  stone: 'Каменный диск',
+  jade: 'Нефритовый диск',
+  iron: 'Железный диск',
+  spirit_iron: 'Духовно-железный диск',
+  // Алтари
+  jade_altar: 'Нефритовый алтарь',
+  crystal_altar: 'Кристаллический алтарь',
+  spirit_crystal_altar: 'Духовно-кристаллический алтарь',
+  dragon_bone_altar: 'Алтарь из кости дракона',
+} as const;
+
+// ==================== HELPER FUNCTIONS ====================
+
+/**
+ * Получить доступные ядра для уровня культивации
+ */
+export function getAvailableCoresForLevel(level: number): Array<{
+  coreType: 'disk' | 'altar';
+  variant: string;
+  name: string;
+  description: string;
+}> {
+  const result: Array<{
+    coreType: 'disk' | 'altar';
+    variant: string;
+    name: string;
+    description: string;
+  }> = [];
+
+  // Диски
+  for (const [variant, config] of Object.entries(DISK_CORE_CONFIGS)) {
+    const [min, max] = config.levelRange;
+    if (level >= min && level <= max) {
+      const key = variant;
+      result.push({
+        coreType: 'disk',
+        variant,
+        name: CORE_NAMES[key] || variant,
+        description: `Ур. ${min}-${max} • ${config.maxSlots} слот • Проводимость: ${config.conductivity}`,
+      });
+    }
+  }
+
+  // Алтари (только с уровня 5+)
+  if (level >= 5) {
+    for (const [variant, config] of Object.entries(ALTAR_CORE_CONFIGS)) {
+      const [min, max] = config.levelRange;
+      if (level >= min && level <= max) {
+        const key = `${variant}_altar`;
+        result.push({
+          coreType: 'altar',
+          variant,
+          name: CORE_NAMES[key] || variant,
+          description: `Ур. ${min}-${max} • ${config.maxSlots} слот • Проводимость: ${config.conductivity} • Стационарный`,
+        });
+      }
+    }
+  }
+
+  return result;
+}

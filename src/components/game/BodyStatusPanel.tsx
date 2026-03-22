@@ -27,12 +27,38 @@ import type {
   LimbStatus,
   BleedingType,
 } from '@/types/body';
+import type { BodyMaterial } from '@/types/entity-types';
+import { BODY_MATERIAL_CONFIG } from '@/types/entity-types';
 
 interface BodyStatusPanelProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   bodyState?: BodyStructure | null;
+  /** Материал тела персонажа (по умолчанию organic для игроков) */
+  material?: BodyMaterial;
 }
+
+// ==================== КОНСТАНТЫ МАТЕРИАЛОВ ====================
+
+const MATERIAL_NAMES: Record<BodyMaterial, string> = {
+  organic: '🥩 Органика',
+  scaled: '🐉 Чешуя',
+  chitin: '🪲 Хитин',
+  ethereal: '👻 Эфир',
+  mineral: '🪨 Минерал',
+  chaos: '🌀 Хаос',
+  construct: '⚙️ Конструкт',
+};
+
+const MATERIAL_COLORS: Record<BodyMaterial, string> = {
+  organic: 'text-red-400 border-red-400',
+  scaled: 'text-green-400 border-green-400',
+  chitin: 'text-amber-400 border-amber-400',
+  ethereal: 'text-purple-400 border-purple-400',
+  mineral: 'text-slate-400 border-slate-400',
+  chaos: 'text-pink-400 border-pink-400',
+  construct: 'text-cyan-400 border-cyan-400',
+};
 
 // ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
 
@@ -327,7 +353,7 @@ function AttachmentPanel({ attachments }: { attachments: BodyStructure['activeAt
 
 // ==================== ГЛАВНЫЙ КОМПОНЕНТ ====================
 
-export function BodyStatusPanel({ open, onOpenChange, bodyState }: BodyStatusPanelProps) {
+export function BodyStatusPanel({ open, onOpenChange, bodyState, material = 'organic' }: BodyStatusPanelProps) {
   // Группировка частей тела по позиции
   const bodyParts = useMemo(() => {
     if (!bodyState) return { upper: [], lower: [], severed: [] };
@@ -352,6 +378,9 @@ export function BodyStatusPanel({ open, onOpenChange, bodyState }: BodyStatusPan
   const hasBleeds = bodyState?.activeBleeds && bodyState.activeBleeds.length > 0;
   const hasAttachments = bodyState?.activeAttachments && bodyState.activeAttachments.length > 0;
   
+  // Конфигурация материала
+  const materialConfig = BODY_MATERIAL_CONFIG[material];
+  
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-2xl max-h-[85vh] overflow-hidden">
@@ -366,6 +395,21 @@ export function BodyStatusPanel({ open, onOpenChange, bodyState }: BodyStatusPan
         
         <ScrollArea className="h-[calc(85vh-120px)]">
           <div className="space-y-4 pr-4">
+            {/* Материал тела */}
+            <div className="bg-slate-700/30 rounded-lg p-3 flex items-center justify-between">
+              <span className="text-sm text-slate-400">Материал тела:</span>
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className={MATERIAL_COLORS[material]}>
+                  {MATERIAL_NAMES[material]}
+                </Badge>
+                {materialConfig.damageReduction > 0 && (
+                  <span className="text-xs text-green-400">
+                    -{materialConfig.damageReduction}% урон
+                  </span>
+                )}
+              </div>
+            </div>
+            
             {/* Сердце */}
             {bodyState?.heart && (
               <HeartPanel heart={bodyState.heart} />

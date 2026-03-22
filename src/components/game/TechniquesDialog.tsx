@@ -33,6 +33,8 @@ import { RARITY_TEXT_COLORS } from '@/types/rarity';
 import { GradeBadge } from '@/components/equipment/GradeBadge';
 import { TechniqueDetailDialog } from '@/components/technique/TechniqueDetailDialog';
 import type { TechniqueGrade } from '@/types/grade';
+import { FormationCoresTab } from '@/components/formation/FormationCoresTab';
+import { LevelSuppressionIndicator } from '@/components/game/LevelSuppressionIndicator';
 
 interface TechniquesDialogProps {
   open: boolean;
@@ -298,6 +300,9 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
   const [catalogTechniques, setCatalogTechniques] = useState<any[]>([]);
   const [catalogLoading, setCatalogLoading] = useState(false);
   const [showCatalog, setShowCatalog] = useState(false);
+  
+  // Под-вкладки формаций (формации / ядра)
+  const [formationsSubTab, setFormationsSubTab] = useState<string>('techniques');
 
   // Разделение техник по категориям
   const techniquesByCategory = useMemo(() => {
@@ -789,52 +794,75 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
 
             {/* Категория: Формации */}
             <TabsContent value="formations" className="mt-4 space-y-4 overflow-y-auto flex-1">
-              <div className="bg-amber-900/20 border border-amber-600/30 rounded-lg p-3 text-sm">
-                <span className="text-amber-400">💡 Формации можно использовать напрямую для усиления медитации.</span>
-              </div>
-              
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="border border-slate-700 rounded-lg p-3">
-                  <h4 className="text-sm font-medium text-slate-400 mb-2">Изученные формации</h4>
-                  {renderTechniqueList(techniquesByCategory.formations)}
-                </div>
+              {/* Под-вкладки */}
+              <Tabs value={formationsSubTab} onValueChange={setFormationsSubTab} className="w-full">
+                <TabsList className="grid grid-cols-2 bg-slate-600 mb-4">
+                  <TabsTrigger value="techniques" className="data-[state=active]:bg-amber-600">
+                    ⭕ Формации ({techniquesByCategory.formations.length})
+                  </TabsTrigger>
+                  <TabsTrigger value="cores" className="data-[state=active]:bg-amber-600">
+                    💿 Ядра
+                  </TabsTrigger>
+                </TabsList>
                 
-                {/* Детали выбранной формации */}
-                <div className="border border-slate-700 rounded-lg p-3">
-                  {selectedTechnique && selectedTechnique.technique.type === 'formation' ? (
-                    <div className="space-y-3">
-                      <div>
-                        <h3 className="text-lg font-bold text-white">{selectedTechnique.technique.name}</h3>
-                        <Badge variant="outline" className={TYPE_COLORS.formation}>
-                          ⭕ Формация
-                        </Badge>
-                      </div>
-                      
-                      <p className="text-sm text-slate-400">{selectedTechnique.technique.description}</p>
-                      
-                      {/* Параметры формации */}
-                      <FormationEffectsDisplay technique={selectedTechnique.technique} />
-                      
-                      {/* Кнопка использования */}
-                      <Button
-                        onClick={handleUseTechnique}
-                        disabled={!canUse.canUse || isUsing}
-                        className="w-full bg-amber-600 hover:bg-amber-700"
-                      >
-                        {isUsing ? '⏳ Создание...' : `⭕ Создать формацию (${selectedTechnique.technique.qiCost} Ци)`}
-                      </Button>
-                      
-                      {!canUse.canUse && (
-                        <p className="text-xs text-amber-400 text-center">{canUse.reason}</p>
+                {/* Под-вкладка: Формации */}
+                <TabsContent value="techniques">
+                  <div className="bg-amber-900/20 border border-amber-600/30 rounded-lg p-3 text-sm mb-4">
+                    <span className="text-amber-400">💡 Формации можно использовать напрямую для усиления медитации.</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <div className="border border-slate-700 rounded-lg p-3">
+                      <h4 className="text-sm font-medium text-slate-400 mb-2">Изученные формации</h4>
+                      {renderTechniqueList(techniquesByCategory.formations)}
+                    </div>
+                    
+                    {/* Детали выбранной формации */}
+                    <div className="border border-slate-700 rounded-lg p-3">
+                      {selectedTechnique && selectedTechnique.technique.type === 'formation' ? (
+                        <div className="space-y-3">
+                          <div>
+                            <h3 className="text-lg font-bold text-white">{selectedTechnique.technique.name}</h3>
+                            <Badge variant="outline" className={TYPE_COLORS.formation}>
+                              ⭕ Формация
+                            </Badge>
+                          </div>
+                          
+                          <p className="text-sm text-slate-400">{selectedTechnique.technique.description}</p>
+                          
+                          {/* Параметры формации */}
+                          <FormationEffectsDisplay technique={selectedTechnique.technique} />
+                          
+                          {/* Кнопка использования */}
+                          <Button
+                            onClick={handleUseTechnique}
+                            disabled={!canUse.canUse || isUsing}
+                            className="w-full bg-amber-600 hover:bg-amber-700"
+                          >
+                            {isUsing ? '⏳ Создание...' : `⭕ Создать формацию (${selectedTechnique.technique.qiCost} Ци)`}
+                          </Button>
+                          
+                          {!canUse.canUse && (
+                            <p className="text-xs text-amber-400 text-center">{canUse.reason}</p>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="h-full min-h-[200px] flex items-center justify-center text-slate-500">
+                          Выберите формацию
+                        </div>
                       )}
                     </div>
-                  ) : (
-                    <div className="h-full min-h-[200px] flex items-center justify-center text-slate-500">
-                      Выберите формацию
-                    </div>
-                  )}
-                </div>
-              </div>
+                  </div>
+                </TabsContent>
+                
+                {/* Под-вкладка: Ядра */}
+                <TabsContent value="cores">
+                  <FormationCoresTab
+                    characterId={character.id}
+                    cultivationLevel={character.cultivationLevel}
+                  />
+                </TabsContent>
+              </Tabs>
             </TabsContent>
 
             {/* Категория: Бой */}
@@ -917,6 +945,53 @@ export function TechniquesDialog({ open, onOpenChange }: TechniquesDialogProps) 
                             <span className="text-red-400">
                               {Number(selectedTechnique.technique.computed?.finalDamage ?? selectedTechnique.technique.effects?.damage)}
                             </span>
+                          </div>
+                        )}
+                        
+                        {/* Подавление уровнем - превью для разных целей */}
+                        {character && (
+                          <div className="border-t border-slate-600 pt-2 mt-2">
+                            <span className="text-xs text-slate-500 block mb-2">📊 Подавление уровнем:</span>
+                            <div className="space-y-1.5">
+                              {/* Против равного */}
+                              <div className="flex items-center justify-between text-xs">
+                                <span className="text-slate-400">Против равного (L{character.cultivationLevel}):</span>
+                                <LevelSuppressionIndicator
+                                  attackerLevel={character.cultivationLevel}
+                                  defenderLevel={character.cultivationLevel}
+                                  attackType={selectedTechnique.technique.isUltimate ? 'ultimate' : 'technique'}
+                                  techniqueLevel={selectedTechnique.technique.level}
+                                  compact
+                                />
+                              </div>
+                              {/* Против на 2 выше */}
+                              <div className="flex items-center justify-between text-xs">
+                                <span className="text-slate-400">Против +2 ур. (L{character.cultivationLevel + 2}):</span>
+                                <LevelSuppressionIndicator
+                                  attackerLevel={character.cultivationLevel}
+                                  defenderLevel={character.cultivationLevel + 2}
+                                  attackType={selectedTechnique.technique.isUltimate ? 'ultimate' : 'technique'}
+                                  techniqueLevel={selectedTechnique.technique.level}
+                                  compact
+                                />
+                              </div>
+                              {/* Против на 5 выше - иммунитет */}
+                              <div className="flex items-center justify-between text-xs">
+                                <span className="text-slate-400">Против +5 ур. (L{character.cultivationLevel + 5}):</span>
+                                <LevelSuppressionIndicator
+                                  attackerLevel={character.cultivationLevel}
+                                  defenderLevel={character.cultivationLevel + 5}
+                                  attackType={selectedTechnique.technique.isUltimate ? 'ultimate' : 'technique'}
+                                  techniqueLevel={selectedTechnique.technique.level}
+                                  compact
+                                />
+                              </div>
+                            </div>
+                            {selectedTechnique.technique.isUltimate && (
+                              <div className="text-xs text-amber-400 mt-1.5">
+                                ⚡ Ultimate пробивает +4 уровня
+                              </div>
+                            )}
                           </div>
                         )}
                         
