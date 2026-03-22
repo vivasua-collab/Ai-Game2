@@ -146,3 +146,32 @@ Stage Summary:
 - Combat.md v3.0: все противоречия исправлены
 - Статус: ✅ Все основные этапы завершены
 - TODO: UI компоненты (P1), Тестирование (P2)
+
+---
+Task ID: 6
+Agent: Main Agent
+Task: Анализ реализованных функций для корректировки Generators.md
+
+Work Log:
+- Прочитаны checkpoint_03_22_Body_update.md, checkpoint_03_22_Combat.md
+- Прочитан checkpoint_03_22_Generators.md v1.0
+- Проведён аудит кода:
+  - technique-generator-v2.ts — ❌ isUltimate НЕ генерируется
+  - npc-generator.ts — ❌ beast_arthropod НЕТ в getTemplateParts()
+  - npc-generator.ts — ❌ bodyMaterial НЕ используется
+  - npc-generator.ts — ❌ morphology НЕ используется
+  - species-presets.ts — ✅ bodyMaterial, morphology, arthropod есть
+  - temp-npc.ts — ✅ cultivation.level, currentQi используются
+  - event-bus/handlers/combat.ts — ✅ Level Suppression + Qi Buffer
+- Обновлён checkpoint_03_22_Generators.md до v2.0
+- Добавлен раздел "🔍 АУДИТ КОДА"
+- Добавлен раздел "🚨 КРИТИЧЕСКИЕ ПРОБЛЕМЫ"
+- Обновлён план реализации с 4 до 5 этапов
+
+Stage Summary:
+- Обнаружено 3 критические проблемы:
+  1. Ultimate-техники не генерируются (isUltimate отсутствует)
+  2. Arthropod NPC получают humanoid тело (нет beast_arthropod template)
+  3. bodyMaterial не влияет на урон NPC
+- Generators.md v2.0 готов к реализации
+- План корректировки: P1 (technique + npc generator), P2 (combat integration)
