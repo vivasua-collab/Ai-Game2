@@ -517,13 +517,21 @@ export class NPCSprite extends Phaser.Physics.Arcade.Sprite {
   // ==================== ОЧИСТКА ====================
   
   destroy(fromScene?: boolean): void {
-    // Уничтожаем визуальные элементы
-    this.aura?.destroy();
-    this.bodyCircle?.destroy();
-    this.directionIndicator?.destroy();
-    this.nameLabel?.destroy();
-    this.hpBar?.destroy();
-    this.hpBarBg?.destroy();
+    // Уничтожаем визуальные элементы с проверкой active
+    if (this.aura?.active) this.aura.destroy();
+    if (this.bodyCircle?.active) this.bodyCircle.destroy();
+    if (this.directionIndicator?.active) this.directionIndicator.destroy();
+    if (this.nameLabel?.active) this.nameLabel.destroy();
+    if (this.hpBar?.active) this.hpBar.destroy();
+    if (this.hpBarBg?.active) this.hpBarBg.destroy();
+    
+    // Очищаем ссылки
+    this.aura = null;
+    this.bodyCircle = null;
+    this.directionIndicator = null;
+    this.nameLabel = null;
+    this.hpBar = null;
+    this.hpBarBg = null;
     
     super.destroy(fromScene);
   }

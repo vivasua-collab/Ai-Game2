@@ -32,6 +32,68 @@ import {
   type PresetNPC,
   type PresetNPCClientView,
 } from '@/types/preset-npc';
+import { z } from 'zod';
+
+// ==================== VALIDATION SCHEMAS ====================
+
+/**
+ * Разрешённые поля для обновления NPC
+ */
+const NPCUpdateSchema = z.object({
+  // Базовая информация
+  name: z.string().min(1).max(100).optional(),
+  title: z.string().max(100).optional(),
+  description: z.string().max(2000).optional(),
+
+  // Культивация
+  cultivationLevel: z.number().int().min(1).max(9).optional(),
+  cultivationSubLevel: z.number().int().min(0).max(9).optional(),
+  currentQi: z.number().int().min(0).optional(),
+  maxQi: z.number().int().min(0).optional(),
+  coreCapacity: z.number().int().min(1).optional(),
+
+  // Статы
+  strength: z.number().int().min(1).max(100).optional(),
+  agility: z.number().int().min(1).max(100).optional(),
+  intelligence: z.number().int().min(1).max(100).optional(),
+  vitality: z.number().int().min(1).max(100).optional(),
+  conductivity: z.number().int().min(1).max(100).optional(),
+
+  // Здоровье
+  health: z.number().int().min(0).optional(),
+  maxHealth: z.number().int().min(1).optional(),
+
+  // Поведение
+  disposition: z.number().min(-100).max(100).optional(),
+
+  // Позиция
+  x: z.number().optional(),
+  y: z.number().optional(),
+  locationId: z.string().optional(),
+
+  // Состояние
+  isAlive: z.boolean().optional(),
+
+  // Секта
+  sectId: z.string().nullable().optional(),
+  sectRole: z.string().optional(),
+
+  // Другое
+  role: z.string().optional(),
+  motivation: z.string().optional(),
+});
+
+/**
+ * Защищённые поля, которые нельзя изменить через API
+ */
+const PROTECTED_NPC_FIELDS = [
+  'id',
+  'sessionId',
+  'createdAt',
+  'updatedAt',
+  'isPreset',
+  'presetId',
+] as const;
 
 // ==================== TYPES ====================
 
@@ -372,6 +434,40 @@ export async function POST(request: NextRequest) {
             success: false,
             error: 'sessionId and npcId are required',
           }, { status: 400 });
+        }
+
+        // === ВАЛИДАЦИЯ UPDATES ===
+
+        // Проверка на защищённые поля
+        if (updates && typeof updates === 'object') {
+          const forbiddenFields = Object.keys(updates).filter(
+            key => PROTECTED_NPC_FIELDS.includes(key as typeof PROTECTED_NPC_FIELDS[number])
+          );
+
+          if (forbiddenFields.length > 0) {
+            console.warn(`[NPC Spawn API] Attempted to update protected fields:`, forbiddenFields);
+            return NextResponse.json({
+              success: false,
+              error: 'Attempted to update protected fields',
+              forbiddenFields,
+            }, { status: 403 });
+          }
+
+          // Валидация разрешённых полей
+          const validationResult = NPCUpdateSchema.safeParse(updates);
+          if (!validationResult.success) {
+            return NextResponse.json({
+              success: false,
+              error: 'Invalid update data',
+              details: validationResult.error.issues.map(issue => ({
+                path: issue.path.join('.'),
+                message: issue.message,
+              })),
+            }, { status: 400 });
+          }
+
+          // Использовать валидированные данные
+          updates = validationResult.data;
         }
         
         if (isTempNPCId(npcId)) {

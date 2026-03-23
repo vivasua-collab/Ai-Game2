@@ -25,6 +25,7 @@ import {
   checkDestabilizationWithBaseQi,
   type CombatSubtype,
 } from '@/lib/constants/technique-capacity';
+import { safeJsonParse } from '@/lib/utils/json-utils';
 
 interface UseTechniqueRequest {
   characterId: string;
@@ -134,9 +135,9 @@ export async function POST(request: NextRequest) {
         physical: tech.physicalFatigueCost ?? 0, 
         mental: tech.mentalFatigueCost ?? 0 
       },
-      statRequirements: tech.statRequirements ? JSON.parse(tech.statRequirements) : undefined,
-      statScaling: tech.statScaling ? JSON.parse(tech.statScaling) : undefined,
-      effects: tech.effects ? JSON.parse(tech.effects) : {},
+      statRequirements: safeJsonParse(tech.statRequirements, undefined),
+      statScaling: safeJsonParse(tech.statScaling, undefined),
+      effects: safeJsonParse(tech.effects, {}),
       masteryProgress: characterTechnique.mastery,
       masteryBonus: 0.5,
       source: 'preset' as const,

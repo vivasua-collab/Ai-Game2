@@ -112,6 +112,9 @@ export class TechniqueSlotsManager {
   private characterStrength: number = 10;
   private characterAgility: number = 10;
   private characterIntelligence: number = 10;
+
+  // === Блокировка для защиты от race condition ===
+  private isProcessingUse: boolean = false;
   
   // Константы
   private static readonly DEFAULT_COOLDOWN = 1000; // 1 сек
@@ -272,6 +275,8 @@ export class TechniqueSlotsManager {
   
   /**
    * Использовать технику
+   * 
+   * ВАЖНО: Метод защищён от race condition через isProcessingUse флаг.
    */
   async use(
     playerX: number,
@@ -279,92 +284,112 @@ export class TechniqueSlotsManager {
     targetX: number,
     targetY: number
   ): Promise<TechniqueUseResult> {
-    const slot = this.state.slots[this.state.activeSlotIndex];
-    const technique = slot?.technique;
-    
-    if (!technique) {
-      return { success: false, reason: 'no_technique' };
+    // === Защита от race condition ===
+    if (this.isProcessingUse) {
+      return { success: false, reason: 'cooldown' };
     }
-    
-    // Проверка возможности использования
-    const check = this.canUse();
-    if (!check.canUse) {
-      return { success: false, reason: check.reason as TechniqueUseResult['reason'] };
-    }
-    
-    const qiCost = technique.qiCost ?? 10;
-    
-    // === Получаем mastery техники ===
-    const mastery = this.getTechniqueMastery(technique.id);
-    
-    // Расчёт времени зарядки с учётом mastery
-    const chargeTime = calculateChargeTime(
-      qiCost,
-      this.characterCoreCapacity,
-      this.characterCultivationLevel,
-      mastery,  // ← ИСПРАВЛЕНО: реальное mastery вместо 0
-      this.characterConductivityMeditations
-    );
-    
-    console.log(`[TechniqueSlotsManager] Technique ${technique.name} mastery: ${mastery}%, charge time: ${chargeTime}ms`);
-    
-    // Если зарядка > 100мс, начинаем зарядку
-    if (chargeTime > 100) {
-      return {
-        success: false,
-        reason: 'charging',
-        chargeTime,
-      };
-    }
-    
-    // Расчёт урона по новой формуле
-    const damageResult = this.calculateDamage(technique);
-    const damage = damageResult.damage;
-    
-    // Логирование дестабилизации
-    if (damageResult.isDestabilized) {
-      console.warn(`[TechniqueSlotsManager] DESTABILIZATION! Backlash damage: ${damageResult.backlashDamage}`);
-    }
-    
-    // Определение типа снаряда
-    const subtype = this.getCombatSubtype(technique);
-    
-    // Создание снаряда
-    this.onFireProjectile({
-      techniqueId: technique.id,
-      ownerId: 'player',
-      x: playerX,
-      y: playerY,
-      targetX,
-      targetY,
-      damage,
-      subtype,
-      element: technique.element ?? 'neutral',
-    });
-    
-    // Установка кулдауна
-    const cooldown = technique.effects?.duration ?? TechniqueSlotsManager.DEFAULT_COOLDOWN;
-    slot.cooldownEndsAt = Date.now() + cooldown;
-    this.state.lastUsedAt = Date.now();
-    
-    // Списание Qi
-    this.characterQi -= qiCost;
-    
-    // Отправка события на сервер
+
+    this.isProcessingUse = true;
+
     try {
-      await eventBusClient.useTechnique(technique.id, { x: playerX, y: playerY });
-    } catch (error) {
-      console.warn('[TechniqueSlotsManager] Failed to notify server:', error);
+      const slot = this.state.slots[this.state.activeSlotIndex];
+      const technique = slot?.technique;
+
+      if (!technique) {
+        return { success: false, reason: 'no_technique' };
+      }
+
+      const qiCost = technique.qiCost ?? 10;
+
+      // === Атомарная проверка и вычитание Qi ===
+      if (this.characterQi < qiCost) {
+        return {
+          success: false,
+          reason: 'no_qi',
+        };
+      }
+
+      // Проверка кулдауна
+      if (Date.now() < slot.cooldownEndsAt) {
+        return { success: false, reason: 'cooldown' };
+      }
+
+      // === Получаем mastery техники ===
+      const mastery = this.getTechniqueMastery(technique.id);
+
+      // Расчёт времени зарядки с учётом mastery
+      const chargeTime = calculateChargeTime(
+        qiCost,
+        this.characterCoreCapacity,
+        this.characterCultivationLevel,
+        mastery,
+        this.characterConductivityMeditations
+      );
+
+      console.log(`[TechniqueSlotsManager] Technique ${technique.name} mastery: ${mastery}%, charge time: ${chargeTime}ms`);
+
+      // Если зарядка > 100мс, начинаем зарядку
+      if (chargeTime > 100) {
+        return {
+          success: false,
+          reason: 'charging',
+          chargeTime,
+        };
+      }
+
+      // === Списываем Qi СРАЗУ после проверки ===
+      this.characterQi -= qiCost;
+
+      // Расчёт урона по новой формуле
+      const damageResult = this.calculateDamage(technique);
+      const damage = damageResult.damage;
+
+      // Логирование дестабилизации
+      if (damageResult.isDestabilized) {
+        console.warn(`[TechniqueSlotsManager] DESTABILIZATION! Backlash damage: ${damageResult.backlashDamage}`);
+      }
+
+      // Определение типа снаряда
+      const subtype = this.getCombatSubtype(technique);
+
+      // Создание снаряда
+      this.onFireProjectile({
+        techniqueId: technique.id,
+        ownerId: 'player',
+        x: playerX,
+        y: playerY,
+        targetX,
+        targetY,
+        damage,
+        subtype,
+        element: technique.element ?? 'neutral',
+      });
+
+      // Установка кулдауна
+      const cooldown = technique.effects?.duration ?? TechniqueSlotsManager.DEFAULT_COOLDOWN;
+      slot.cooldownEndsAt = Date.now() + cooldown;
+      this.state.lastUsedAt = Date.now();
+
+      // Отправка события на сервер
+      try {
+        await eventBusClient.useTechnique(technique.id, { x: playerX, y: playerY });
+      } catch (error) {
+        console.warn('[TechniqueSlotsManager] Failed to notify server:', error);
+      }
+
+      // Уведомление UI
+      this.scene.events.emit('technique-slots-update', this.state);
+
+      return {
+        success: true,
+        damage,
+        projectileId: `proj_${Date.now()}`,
+      };
+
+    } finally {
+      // === ВСЕГДА снимаем блокировку ===
+      this.isProcessingUse = false;
     }
-    
-    // Уведомление UI
-    this.scene.events.emit('technique-slots-update', this.state);
-    
-    return {
-      success: true,
-      damage,
-      projectileId: `proj_${Date.now()}`,
-    };
   }
   
   /**

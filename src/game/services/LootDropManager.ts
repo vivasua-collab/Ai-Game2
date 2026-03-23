@@ -308,6 +308,16 @@ export class LootDropManager {
   getActiveDropCount(): number {
     return this.lootDrops.size;
   }
+
+  /**
+   * Уничтожить менеджер и освободить ресурсы
+   * Вызывается при shutdown сцены
+   */
+  destroy(): void {
+    this.clear();
+    this.onPickup = undefined;
+    console.log('[LootDropManager] Destroyed');
+  }
   
   // ==================== PRIVATE METHODS ====================
   

@@ -179,6 +179,11 @@ export class LocationScene extends BaseScene {
   private debugGraphics: Phaser.GameObjects.Graphics | null = null;
   private debugMode: boolean = false;
 
+  // === AI Event Handlers (for cleanup) ===
+  private boundNPCMove: ((event: Event) => void) | null = null;
+  private boundNPCAttack: ((event: Event) => void) | null = null;
+  private boundAITick: ((event: Event) => void) | null = null;
+
   constructor() {
     super({ key: 'LocationScene' });
   }
@@ -244,7 +249,7 @@ export class LocationScene extends BaseScene {
       // Initialize EventBusClient if we have session
       if (this.sessionId) {
         // Get characterId from bridge or storage
-        const characterId = localStorage.getItem('characterId');
+        const characterId = typeof window !== 'undefined' ? localStorage.getItem('characterId') : null;
         if (characterId) {
           eventBusClient.initialize(this.sessionId, characterId);
         }
@@ -873,23 +878,26 @@ export class LocationScene extends BaseScene {
    * Слушает события от NPCAIController через Event Bus
    */
   private setupAI(): void {
-    // Слушаем события движения NPC
-    window.addEventListener('npc:move', ((event: CustomEvent) => {
-      const data = event.detail as NPCMoveEvent;
+    // Создать bound handlers с сохранением ссылок
+    this.boundNPCMove = ((event: Event) => {
+      const data = (event as CustomEvent).detail as NPCMoveEvent;
       this.handleNPCMove(data);
-    }) as EventListener);
-    
-    // Слушаем события атаки NPC
-    window.addEventListener('npc:attack', ((event: CustomEvent) => {
-      const data = event.detail as NPCAttackPlayerEvent;
+    }) as EventListener;
+
+    this.boundNPCAttack = ((event: Event) => {
+      const data = (event as CustomEvent).detail as NPCAttackPlayerEvent;
       this.handleNPCAttack(data);
-    }) as EventListener);
-    
-    // Слушаем тик ИИ
-    window.addEventListener('npc_ai:tick', (() => {
+    }) as EventListener;
+
+    this.boundAITick = (() => {
       this.onAITick();
-    }) as EventListener);
-    
+    }) as EventListener;
+
+    // Зарегистрировать слушатели
+    window.addEventListener('npc:move', this.boundNPCMove);
+    window.addEventListener('npc:attack', this.boundNPCAttack);
+    window.addEventListener('npc_ai:tick', this.boundAITick);
+
     console.log('[LocationScene] AI system initialized');
   }
   
@@ -1825,6 +1833,63 @@ export class LocationScene extends BaseScene {
     infoText.setDepth(1001);
     // Удаляем текст на следующем кадре
     this.time.delayedCall(16, () => infoText.destroy());
+  }
+
+  /**
+   * Очистка ресурсов сцены при переключении
+   *
+   * ВАЖНО: Должен вызываться при переходе на другую сцену!
+   * Удаляет все слушатели событий и очищает коллекции.
+   */
+  shutdown(): void {
+    console.log('[LocationScene] Shutdown started...');
+
+    // === Удалить все слушатели событий window ===
+    if (this.boundNPCMove) {
+      window.removeEventListener('npc:move', this.boundNPCMove);
+      this.boundNPCMove = null;
+    }
+    if (this.boundNPCAttack) {
+      window.removeEventListener('npc:attack', this.boundNPCAttack);
+      this.boundNPCAttack = null;
+    }
+    if (this.boundAITick) {
+      window.removeEventListener('npc_ai:tick', this.boundAITick);
+      this.boundAITick = null;
+    }
+
+    // === Очистить физические спрайты NPC ===
+    if (this.npcPhysicsSprites) {
+      this.npcPhysicsSprites.forEach((sprite) => {
+        if (sprite.active) {
+          sprite.destroy();
+        }
+      });
+      this.npcPhysicsSprites.clear();
+    }
+
+    // === Очистить остальные коллекции ===
+    if (this.npcs) {
+      this.npcs.clear();
+    }
+    if (this.npcSprites) {
+      this.npcSprites.clear();
+    }
+    if (this.npcStates) {
+      this.npcStates.clear();
+    }
+    this.targets = [];
+    this.damageNumbers = [];
+
+    // === Остановить менеджеры ===
+    if (this.projectileManager) {
+      this.projectileManager.destroy();
+    }
+    if (this.lootDropManager) {
+      this.lootDropManager.destroy();
+    }
+
+    console.log('[LocationScene] Shutdown complete');
   }
 }
 

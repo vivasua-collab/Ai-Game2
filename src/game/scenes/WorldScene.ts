@@ -379,4 +379,22 @@ export class WorldScene extends BaseScene {
     // TODO: Implement menu overlay
     console.log('Menu opened');
   }
+
+  /**
+   * Очистка ресурсов сцены
+   */
+  shutdown(): void {
+    console.log('[WorldScene] Shutdown started...');
+
+    // Убить все активные tweens
+    this.tweens.killAll();
+
+    // Очистить locations map
+    this.locations.clear();
+
+    // Удалить все слушатели событий сцены
+    this.events.removeAllListeners();
+
+    console.log('[WorldScene] Shutdown complete');
+  }
 }
