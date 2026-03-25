@@ -276,7 +276,12 @@ export class TechniqueSlotsManager {
   /**
    * Использовать технику
    * 
-   * ВАЖНО: Метод защищён от race condition через isProcessingUse флаг.
+   * ВАЖНО: Все расчёты происходят на сервере!
+   * - Qi списывается на сервере
+   * - Урон рассчитывается на сервере
+   * - Клиент только отправляет намерение и создаёт визуальный снаряд
+   * 
+   * @see docs/checkpoints/checkpoint_03_25_phase2_techniques.md
    */
   async use(
     playerX: number,
@@ -299,92 +304,108 @@ export class TechniqueSlotsManager {
         return { success: false, reason: 'no_technique' };
       }
 
-      const qiCost = technique.qiCost ?? 10;
-
-      // === Атомарная проверка и вычитание Qi ===
-      if (this.characterQi < qiCost) {
-        return {
-          success: false,
-          reason: 'no_qi',
-        };
-      }
-
-      // Проверка кулдауна
+      // Проверка кулдауна (локально - это допустимо)
       if (Date.now() < slot.cooldownEndsAt) {
         return { success: false, reason: 'cooldown' };
       }
 
       // === Получаем mastery техники ===
       const mastery = this.getTechniqueMastery(technique.id);
+      
+      // Определяем Grade
+      const grade: TechniqueGrade = (technique.grade as TechniqueGrade)
+        ?? RARITY_TO_TECHNIQUE_GRADE[technique.rarity as keyof typeof RARITY_TO_TECHNIQUE_GRADE]
+        ?? 'common';
 
-      // Расчёт времени зарядки с учётом mastery
-      const chargeTime = calculateChargeTime(
-        qiCost,
-        this.characterCoreCapacity,
-        this.characterCultivationLevel,
-        mastery,
-        this.characterConductivityMeditations
-      );
-
-      console.log(`[TechniqueSlotsManager] Technique ${technique.name} mastery: ${mastery}%, charge time: ${chargeTime}ms`);
-
-      // Если зарядка > 100мс, начинаем зарядку
-      if (chargeTime > 100) {
-        return {
-          success: false,
-          reason: 'charging',
-          chargeTime,
-        };
-      }
-
-      // === Списываем Qi СРАЗУ после проверки ===
-      this.characterQi -= qiCost;
-
-      // Расчёт урона по новой формуле
-      const damageResult = this.calculateDamage(technique);
-      const damage = damageResult.damage;
-
-      // Логирование дестабилизации
-      if (damageResult.isDestabilized) {
-        console.warn(`[TechniqueSlotsManager] DESTABILIZATION! Backlash damage: ${damageResult.backlashDamage}`);
-      }
-
-      // Определение типа снаряда
-      const subtype = this.getCombatSubtype(technique);
-
-      // Создание снаряда
-      this.onFireProjectile({
-        techniqueId: technique.id,
-        ownerId: 'player',
-        x: playerX,
-        y: playerY,
-        targetX,
-        targetY,
-        damage,
-        subtype,
-        element: technique.element ?? 'neutral',
-      });
-
-      // Установка кулдауна
-      const cooldown = technique.effects?.duration ?? TechniqueSlotsManager.DEFAULT_COOLDOWN;
-      slot.cooldownEndsAt = Date.now() + cooldown;
-      this.state.lastUsedAt = Date.now();
-
-      // Отправка события на сервер
+      // === ВАЖНО: Все расчёты на сервере! ===
+      // Отправляем запрос на сервер через HTTP API
       try {
-        await eventBusClient.useTechnique(technique.id, { x: playerX, y: playerY });
+        const response = await fetch('/api/combat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'technique:use',
+            sessionId: 'current', // TODO: получить из GameBridge
+            characterId: 'player',
+            techniqueId: technique.id,
+            techniqueLevel: technique.level ?? 1,
+            techniqueGrade: grade,
+            techniqueType: technique.type ?? 'combat',
+            combatSubtype: this.getCombatSubtype(technique),
+            element: technique.element ?? 'neutral',
+            mastery,
+            targetX,
+            targetY,
+            attackerX: playerX,
+            attackerY: playerY,
+            cultivationLevel: this.characterCultivationLevel,
+            currentQi: this.characterQi,
+            maxQi: this.characterMaxQi,
+            isUltimate: false, // TODO: определить из техники
+          }),
+        });
+        
+        if (!response.ok) {
+          console.error('[TechniqueSlotsManager] Server error:', response.status);
+          return { success: false, reason: 'no_qi' };
+        }
+        
+        const result = await response.json();
+        
+        if (!result.success) {
+          console.warn('[TechniqueSlotsManager] Technique use failed:', result.reason);
+          return { 
+            success: false, 
+            reason: result.reason?.includes('Qi') ? 'no_qi' : 'invalid_target'
+          };
+        }
+        
+        // === Обновляем Qi от сервера ===
+        if (result.currentQi !== undefined) {
+          this.characterQi = result.currentQi;
+          // Уведомляем UI об изменении Qi
+          this.scene.events.emit('qi-updated', { 
+            currentQi: result.currentQi, 
+            maxQi: this.characterMaxQi 
+          });
+        }
+        
+        // === Создаём снаряд с данными от сервера ===
+        const damage = result.damage ?? 10;
+        const subtype = this.getCombatSubtype(technique);
+        
+        this.onFireProjectile({
+          techniqueId: technique.id,
+          ownerId: 'player',
+          x: playerX,
+          y: playerY,
+          targetX,
+          targetY,
+          damage,
+          subtype,
+          element: technique.element ?? 'neutral',
+        });
+        
+        // Установка кулдауна
+        const cooldown = technique.effects?.duration ?? TechniqueSlotsManager.DEFAULT_COOLDOWN;
+        slot.cooldownEndsAt = Date.now() + cooldown;
+        this.state.lastUsedAt = Date.now();
+        
+        // Уведомление UI
+        this.scene.events.emit('technique-slots-update', this.state);
+        
+        console.log(`[TechniqueSlotsManager] Technique ${technique.name} used: ${damage} damage, Qi: ${result.currentQi}`);
+        
+        return {
+          success: true,
+          damage,
+          projectileId: `proj_${Date.now()}`,
+        };
+        
       } catch (error) {
-        console.warn('[TechniqueSlotsManager] Failed to notify server:', error);
+        console.error('[TechniqueSlotsManager] Failed to use technique:', error);
+        return { success: false, reason: 'invalid_target' };
       }
-
-      // Уведомление UI
-      this.scene.events.emit('technique-slots-update', this.state);
-
-      return {
-        success: true,
-        damage,
-        projectileId: `proj_${Date.now()}`,
-      };
 
     } finally {
       // === ВСЕГДА снимаем блокировку ===

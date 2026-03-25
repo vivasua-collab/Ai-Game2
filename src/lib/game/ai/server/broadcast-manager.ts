@@ -1,12 +1,17 @@
 /**
  * ============================================================================
- * BROADCAST MANAGER - Отправка действий NPC через WebSocket
+ * BROADCAST MANAGER - HTTP-Only Event Queue для AI
  * ============================================================================
  * 
- * Управляет отправкой событий npc:action, npc:spawn, npc:despawn
- * через WebSocket сервер.
+ * Управляет очередью событий npc:action, npc:spawn, npc:despawn
+ * для HTTP polling клиентом.
  * 
- * @see mini-services/game-ws/index.ts
+ * Архитектура HTTP-Only (WebSocket удалён):
+ * - События сохраняются в очереди по sessionId
+ * - Клиент забирает через GET /api/ai/events
+ * - Очередь очищается после чтения
+ * 
+ * @see docs/ARCHITECTURE_cloud.md
  */
 
 import type { NPCState, NPCAction } from '@/lib/game/types';
@@ -42,19 +47,48 @@ export interface CombatHitEvent {
   techniqueId?: string;
 }
 
+// ==================== КОНСТАНТЫ ====================
+
+/**
+ * Максимальное количество событий в очереди на сессию
+ */
+const MAX_EVENTS_PER_SESSION = 100;
+
+/**
+ * Время жизни события (мс) - 5 минут
+ */
+const EVENT_TTL_MS = 5 * 60 * 1000;
+
 // ==================== КЛАСС ====================
 
 /**
- * BroadcastManager - singleton для отправки событий WebSocket
+ * BroadcastManager - singleton для управления очередью AI событий
  * 
- * Интегрируется с Socket.io сервером через setIO()
+ * HTTP-Only Single-Player версия:
+ * - Одна глобальная очередь событий (single-player)
+ * - События сохраняются в памяти
+ * - Клиент polling через /api/ai/events
+ * - Автоматическая очистка старых событий
  */
 export class BroadcastManager {
   private static instance: BroadcastManager;
   
-  private io: any = null; // Socket.io Server
-  private eventQueue: BroadcastEvent[] = [];
+  // Глобальная очередь событий (single-player)
+  private globalEventQueue: BroadcastEvent[] = [];
+  
+  // Очереди событий по sessionId (для совместимости)
+  private eventQueues: Map<string, BroadcastEvent[]> = new Map();
+  
+  // Время последнего доступа (для cleanup)
+  private lastAccess: Map<string, number> = new Map();
+  
+  // Batch режим
   private isBatching: boolean = false;
+  private batchQueue: BroadcastEvent[] = [];
+  
+  // Текущий sessionId (single-player)
+  private currentSessionId: string = 'default';
+  private currentBatchSessionId: string = 'default';
   
   private constructor() {}
   
@@ -65,73 +99,157 @@ export class BroadcastManager {
     return this.instance;
   }
   
+  // ==================== PUBLIC API - HTTP ====================
+  
   /**
-   * Установить Socket.io сервер
+   * Получить события из глобальной очереди (single-player)
+   * 
+   * После чтения события удаляются из очереди!
    */
-  setIO(io: any): void {
-    this.io = io;
-    console.log('[BroadcastManager] Socket.io server set');
+  pollGlobalEvents(): BroadcastEvent[] {
+    this.cleanupIfNeeded();
     
-    // Отправляем отложенные события
-    this.flushQueue();
+    if (this.globalEventQueue.length === 0) {
+      return [];
+    }
+    
+    // Возвращаем копию и очищаем очередь
+    const events = [...this.globalEventQueue];
+    this.globalEventQueue = [];
+    
+    return events;
   }
   
   /**
-   * Получить Socket.io сервер
+   * Получить события для сессии (HTTP polling)
+   * 
+   * После чтения события удаляются из очереди!
    */
-  getIO(): any {
-    return this.io;
+  pollEvents(sessionId: string): BroadcastEvent[] {
+    this.cleanupIfNeeded();
+    
+    // Сначала проверяем глобальную очередь
+    if (this.globalEventQueue.length > 0) {
+      return this.pollGlobalEvents();
+    }
+    
+    const queue = this.eventQueues.get(sessionId);
+    if (!queue || queue.length === 0) {
+      return [];
+    }
+    
+    // Обновляем время доступа
+    this.lastAccess.set(sessionId, Date.now());
+    
+    // Возвращаем копию и очищаем очередь
+    const events = [...queue];
+    queue.length = 0; // Очищаем массив
+    
+    return events;
+  }
+  
+  /**
+   * Получить события для локации (все сессии в локации)
+   */
+  pollEventsForLocation(locationId: string, sessionIds: string[]): BroadcastEvent[] {
+    const allEvents: BroadcastEvent[] = [];
+    
+    for (const sessionId of sessionIds) {
+      const events = this.pollEvents(sessionId);
+      // Фильтруем по локации
+      const locationEvents = events.filter(e => e.locationId === locationId);
+      allEvents.push(...locationEvents);
+    }
+    
+    // Сортируем по времени
+    allEvents.sort((a, b) => a.timestamp - b.timestamp);
+    
+    return allEvents;
+  }
+  
+  /**
+   * Проверить наличие событий
+   */
+  hasEvents(sessionId: string): boolean {
+    const queue = this.eventQueues.get(sessionId);
+    return queue !== undefined && queue.length > 0;
+  }
+  
+  /**
+   * Количество событий в очереди
+   */
+  getQueueLength(sessionId: string): number {
+    return this.eventQueues.get(sessionId)?.length ?? 0;
   }
   
   // ==================== NPC EVENTS ====================
   
   /**
-   * Отправить действие NPC
+   * Отправить действие NPC (single-player версия)
+   * Для multi-player используйте broadcastNPCAction(sessionId, locationId, data)
    */
-  broadcastNPCAction(locationId: string, data: NPCActionEvent): void {
-    this.broadcast('npc:action', data, locationId);
+  broadcastNPCAction(sessionIdOrLocationId: string, locationIdOrData: string | NPCActionEvent, data?: NPCActionEvent): void {
+    if (typeof locationIdOrData === 'string') {
+      // Multi-player signature: (sessionId, locationId, data)
+      this.broadcast(sessionIdOrLocationId, 'npc:action', data!, locationIdOrData);
+    } else {
+      // Single-player signature: (locationId, data)
+      this.broadcast(this.currentSessionId, 'npc:action', locationIdOrData, sessionIdOrLocationId);
+    }
   }
   
   /**
    * Отправить спавн NPC
    */
-  broadcastNPCSpawn(locationId: string, data: NPCSpawnEvent): void {
-    this.broadcast('npc:spawn', data, locationId);
+  broadcastNPCSpawn(sessionId: string, locationId: string, data: NPCSpawnEvent): void {
+    this.broadcast(sessionId, 'npc:spawn', data, locationId);
   }
   
   /**
    * Отправить деспавн NPC
    */
-  broadcastNPCDespawn(locationId: string, data: NPCDespawnEvent): void {
-    this.broadcast('npc:despawn', data, locationId);
+  broadcastNPCDespawn(sessionId: string, locationId: string, data: NPCDespawnEvent): void {
+    this.broadcast(sessionId, 'npc:despawn', data, locationId);
   }
   
   /**
    * Отправить обновление NPC
    */
-  broadcastNPCUpdate(locationId: string, npcId: string, changes: Partial<NPCState>): void {
-    this.broadcast('npc:update', { npcId, changes }, locationId);
+  broadcastNPCUpdate(sessionId: string, locationId: string, npcId: string, changes: Partial<NPCState>): void {
+    this.broadcast(sessionId, 'npc:update', { npcId, changes }, locationId);
   }
   
   // ==================== COMBAT EVENTS ====================
   
   /**
-   * Отправить событие атаки
+   * Отправить событие атаки (single-player версия)
+   * Для multi-player используйте broadcastCombatAttack(sessionId, locationId, data)
    */
-  broadcastCombatAttack(locationId: string, data: {
+  broadcastCombatAttack(sessionIdOrLocationId: string, locationIdOrData: string | {
+    attackerId: string;
+    targetId: string;
+    techniqueId?: string;
+    timestamp: number;
+  }, data?: {
     attackerId: string;
     targetId: string;
     techniqueId?: string;
     timestamp: number;
   }): void {
-    this.broadcast('combat:attack', data, locationId);
+    if (typeof locationIdOrData === 'string') {
+      // Multi-player signature
+      this.broadcast(sessionIdOrLocationId, 'combat:attack', data!, locationIdOrData);
+    } else {
+      // Single-player signature: (locationId, data)
+      this.broadcast(this.currentSessionId, 'combat:attack', locationIdOrData, sessionIdOrLocationId);
+    }
   }
   
   /**
    * Отправить событие попадания
    */
-  broadcastCombatHit(locationId: string, data: CombatHitEvent): void {
-    this.broadcast('combat:hit', data, locationId);
+  broadcastCombatHit(sessionId: string, locationId: string, data: CombatHitEvent): void {
+    this.broadcast(sessionId, 'combat:hit', data, locationId);
   }
   
   // ==================== WORLD EVENTS ====================
@@ -139,28 +257,26 @@ export class BroadcastManager {
   /**
    * Отправить синхронизацию мира
    */
-  broadcastWorldSync(locationId: string, data: {
+  broadcastWorldSync(sessionId: string, locationId: string, data: {
     npcs: NPCState[];
-    time: any;
+    time: unknown;
   }): void {
-    this.broadcast('world:sync', data, locationId);
+    this.broadcast(sessionId, 'world:sync', data, locationId);
   }
   
   /**
-   * Отправить тик мира всем клиентам
+   * Отправить тик мира
    */
-  broadcastWorldTick(data: { tick: number; time: any }): void {
-    if (this.io) {
-      this.io.emit('world:tick', data);
-    }
+  broadcastWorldTick(sessionId: string, locationId: string, data: { tick: number; time: unknown }): void {
+    this.broadcast(sessionId, 'world:tick', data, locationId);
   }
   
   // ==================== CORE METHODS ====================
   
   /**
-   * Отправить событие в локацию
+   * Отправить событие в очередь сессии
    */
-  broadcast(event: string, data: unknown, locationId: string): void {
+  broadcast(sessionId: string, event: string, data: unknown, locationId: string): void {
     const eventObj: BroadcastEvent = {
       event,
       data,
@@ -168,52 +284,96 @@ export class BroadcastManager {
       timestamp: Date.now(),
     };
     
-    if (this.isBatching) {
-      this.eventQueue.push(eventObj);
+    if (this.isBatching && this.currentBatchSessionId === sessionId) {
+      // Batch режим - накапливаем
+      this.batchQueue.push(eventObj);
     } else {
-      this.emitEvent(eventObj);
+      // Обычный режим - сразу в очередь
+      this.addToQueue(sessionId, eventObj);
     }
   }
   
   /**
    * Начать batch режим (для накопления событий в тике)
+   * 
+   * @param sessionId - опционально, для single-player используется 'default'
    */
-  startBatch(): void {
+  startBatch(sessionId?: string): void {
     this.isBatching = true;
+    this.currentBatchSessionId = sessionId || 'default';
+    this.currentSessionId = sessionId || 'default';
+    this.batchQueue = [];
   }
   
   /**
    * Закончить batch режим и отправить все события
    */
   endBatch(): void {
-    this.isBatching = false;
-    this.flushQueue();
-  }
-  
-  /**
-   * Отправить событие через Socket.io
-   */
-  private emitEvent(event: BroadcastEvent): void {
-    if (!this.io) {
-      // Сохраняем в очередь если io не установлен
-      this.eventQueue.push(event);
+    if (!this.isBatching) {
       return;
     }
     
-    // Отправляем в комнату локации
-    const room = `location:${event.locationId}`;
-    this.io.to(room).emit(event.event, event.data);
+    // Добавляем все события в глобальную очередь
+    for (const event of this.batchQueue) {
+      this.globalEventQueue.push(event);
+    }
+    
+    // Также добавляем в очередь сессии для совместимости
+    for (const event of this.batchQueue) {
+      this.addToQueue(this.currentSessionId, event);
+    }
+    
+    // Сбрасываем состояние
+    this.isBatching = false;
+    this.batchQueue = [];
+  }
+  
+  // ==================== PRIVATE METHODS ====================
+  
+  /**
+   * Добавить событие в очередь сессии
+   */
+  private addToQueue(sessionId: string, event: BroadcastEvent): void {
+    let queue = this.eventQueues.get(sessionId);
+    
+    if (!queue) {
+      queue = [];
+      this.eventQueues.set(sessionId, queue);
+    }
+    
+    // Проверяем лимит
+    if (queue.length >= MAX_EVENTS_PER_SESSION) {
+      // Удаляем старые события
+      queue.shift();
+    }
+    
+    queue.push(event);
+    this.lastAccess.set(sessionId, Date.now());
   }
   
   /**
-   * Отправить все отложенные события
+   * Очистка старых очередей
    */
-  private flushQueue(): void {
-    if (!this.io) return;
+  private cleanupIfNeeded(): void {
+    const now = Date.now();
     
-    while (this.eventQueue.length > 0) {
-      const event = this.eventQueue.shift()!;
-      this.emitEvent(event);
+    // Cleanup каждые ~100 вызовов
+    if (Math.random() > 0.99) {
+      this.cleanup();
+    }
+  }
+  
+  /**
+   * Удалить старые очереди
+   */
+  private cleanup(): void {
+    const now = Date.now();
+    
+    for (const [sessionId, lastTime] of this.lastAccess) {
+      if (now - lastTime > EVENT_TTL_MS) {
+        this.eventQueues.delete(sessionId);
+        this.lastAccess.delete(sessionId);
+      }
     }
   }
   
@@ -224,14 +384,34 @@ export class BroadcastManager {
    */
   getStats(): {
     isBatching: boolean;
-    queueLength: number;
-    hasIO: boolean;
+    batchQueueLength: number;
+    totalSessions: number;
+    totalEvents: number;
   } {
+    let totalEvents = 0;
+    for (const queue of this.eventQueues.values()) {
+      totalEvents += queue.length;
+    }
+    
     return {
       isBatching: this.isBatching,
-      queueLength: this.eventQueue.length,
-      hasIO: !!this.io,
+      batchQueueLength: this.batchQueue.length,
+      totalSessions: this.eventQueues.size,
+      totalEvents,
     };
+  }
+  
+  /**
+   * Очистить все очереди
+   */
+  clear(): void {
+    this.globalEventQueue = [];
+    this.eventQueues.clear();
+    this.lastAccess.clear();
+    this.batchQueue = [];
+    this.isBatching = false;
+    this.currentBatchSessionId = 'default';
+    this.currentSessionId = 'default';
   }
 }
 

@@ -821,19 +821,20 @@ setupAIListener() {
 
 ### Обязательные
 
-- [ ] Создан `src/lib/game/server/ai/spinal-server.ts`
-- [ ] Создан `src/lib/game/server/ai/npc-ai-manager.ts`
-- [ ] Создан `src/lib/game/server/ai/ai-service.ts`
-- [ ] AI tick loop запущен на сервере
-- [ ] `npc:action` broadcast работает
-- [ ] Удалён `updateSpinalAI()` из клиента
+- [x] Создан `src/lib/game/ai/server/spinal-server.ts`
+- [x] Создан `src/lib/game/ai/server/npc-ai-manager.ts`
+- [x] Создан `src/lib/game/ai/server/broadcast-manager.ts` (HTTP polling)
+- [x] Создан `/api/ai/events` для HTTP polling
+- [x] Создан `/api/ai/tick` для tick loop
+- [ ] AI tick loop интегрирован с game/state (Phase 4)
+- [ ] Удалён `updateSpinalAI()` из клиента (Phase 4)
 
 ### Код ревью
 
-- [ ] Нет AI кода в NPCSprite
-- [ ] Нет AI кода в LocationScene
-- [ ] Все решения в `src/lib/game/server/ai/`
-- [ ] Tick loop использует 1 тик = 1 сек
+- [ ] Нет AI кода в NPCSprite (Phase 4 - пока есть для обратной совместимости)
+- [ ] Нет AI кода в LocationScene (Phase 4)
+- [x] Все решения в `src/lib/game/ai/server/`
+- [x] Tick loop использует 1 тик = 1 сек
 
 ### Проверка через логи
 
