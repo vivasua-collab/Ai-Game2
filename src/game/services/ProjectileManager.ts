@@ -145,6 +145,9 @@ export class ProjectileManager {
   
   /**
    * Отправить отчёт об уроне на сервер
+   * 
+   * ВАЖНО: Сервер возвращает npcAction - действие, которое должен выполнить NPC!
+   * Это серверная логика управления NPC.
    */
   private async reportDamageToServer(
     npc: NPCSprite,
@@ -157,7 +160,7 @@ export class ProjectileManager {
         : hitResult.damageZone === 'half' ? 0.5 
         : 0.25; // falloff zone
       
-      await eventBusClient.reportDamageDealt(
+      const response = await eventBusClient.reportDamageDealt(
         npc.npcId,
         'npc',
         projectile.techniqueId,
@@ -166,6 +169,37 @@ export class ProjectileManager {
         0, // rotation - не важен для сервера
         damageMultiplier
       );
+
+      // === ОБРАБАТЫВАЕМ NPC ACTION ИЗ ОТВЕТА СЕРВЕРА ===
+      // Это серверная логика управления NPC!
+      if (response.success && response.data) {
+        const data = response.data as {
+          npcAction?: {
+            type: string;
+            target?: { x: number; y: number } | string;
+            params?: Record<string, unknown>;
+            startTime: number;
+            duration: number;
+          };
+          newHealth?: number;
+          maxHealth?: number;
+          isDead?: boolean;
+        };
+
+        // Обновляем HP NPC из ответа сервера
+        if (data.newHealth !== undefined) {
+          npc.applyServerUpdate({
+            health: data.newHealth,
+            maxHp: data.maxHealth,
+          });
+        }
+
+        // Выполняем действие NPC (серверная логика!)
+        if (data.npcAction && !data.isDead) {
+          console.log(`[ProjectileManager] Server sent NPC action: ${data.npcAction.type}`);
+          npc.executeServerAction(data.npcAction);
+        }
+      }
     } catch (error) {
       console.warn('[ProjectileManager] Failed to report damage:', error);
     }

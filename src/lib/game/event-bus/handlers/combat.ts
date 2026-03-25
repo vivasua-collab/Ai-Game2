@@ -47,6 +47,13 @@ import {
 } from '@/lib/game/damage-pipeline';
 import { determineAttackType } from '@/types/technique-types';
 
+// ==================== ИМПОРТ AI ДЛЯ РЕАКЦИИ NPC ====================
+import {
+  createSpinalServerController,
+  type SpinalServerController,
+} from '@/lib/game/ai/server/spinal-server';
+import type { NPCAction } from '@/lib/game/types';
+
 // ==================== ИМПОРТ КОНСТАНТ ====================
 
 /**
@@ -72,6 +79,148 @@ import {
 // ==================== КОНСТАНТЫ ====================
 
 const METERS_TO_PIXELS = 32;
+
+// ==================== КЭШ AI КОНТРОЛЛЕРОВ ====================
+
+/**
+ * Кэш Spinal контроллеров для NPC (упрощённая версия)
+ */
+const spinalControllers = new Map<string, SpinalServerController>();
+
+/**
+ * Получить или создать Spinal контроллер для NPC
+ */
+function getOrCreateSpinalController(npcId: string, preset: string = 'monster'): SpinalServerController {
+  let controller = spinalControllers.get(npcId);
+  if (!controller) {
+    controller = createSpinalServerController(npcId, preset);
+    spinalControllers.set(npcId, controller);
+  }
+  return controller;
+}
+
+/**
+ * Сгенерировать действие реакции NPC на урон
+ *
+ * @param npcId - ID NPC
+ * @param damage - Полученный урон
+ * @param npcHealth - Текущее здоровье NPC
+ * @param npcMaxHealth - Максимальное здоровье
+ * @param attackerPosition - Позиция атакующего
+ * @param npcPosition - Позиция NPC
+ * @param npcPreset - Пресет AI (monster, guard, etc.)
+ * @returns NPCAction или null
+ */
+function generateNPCReaction(
+  npcId: string,
+  damage: number,
+  npcHealth: number,
+  npcMaxHealth: number,
+  attackerPosition: { x: number; y: number },
+  npcPosition: { x: number; y: number },
+  npcPreset: string = 'monster'
+): NPCAction | null {
+  // Получаем контроллер
+  const controller = getOrCreateSpinalController(npcId, npcPreset);
+
+  // Вычисляем направление от атаки к NPC
+  const dx = npcPosition.x - attackerPosition.x;
+  const dy = npcPosition.y - attackerPosition.y;
+  const len = Math.sqrt(dx * dx + dy * dy) || 1;
+
+  // Создаём сигнал урона
+  const damageIntensity = Math.min(1.0, damage / (npcMaxHealth * 0.3));
+
+  controller.receiveSignal({
+    type: 'damage',
+    intensity: damageIntensity,
+    direction: { x: dx / len, y: dy / len },
+    source: 'player',
+    timestamp: Date.now(),
+  });
+
+  // Если урон сильный - добавляем сигнал опасности
+  if (damageIntensity > 0.3) {
+    controller.receiveSignal({
+      type: 'danger_nearby',
+      intensity: damageIntensity,
+      direction: { x: dx / len, y: dy / len },
+      source: 'player',
+      timestamp: Date.now(),
+    });
+  }
+
+  // Вычисляем направление К атакующему (для ответной атаки)
+  const toAttackerX = attackerPosition.x - npcPosition.x;
+  const toAttackerY = attackerPosition.y - npcPosition.y;
+  const toAttackerLen = Math.sqrt(toAttackerX * toAttackerX + toAttackerY * toAttackerY) || 1;
+
+  // Состояние NPC для AI
+  const npcState = {
+    x: npcPosition.x,
+    y: npcPosition.y,
+    health: npcHealth,
+    maxHealth: npcMaxHealth,
+    qi: 0,
+    maxQi: 100,
+    facing: Math.atan2(toAttackerY, toAttackerX) * 180 / Math.PI,
+    isMoving: false,
+    aiState: 'idle' as const,
+    currentAction: null,
+    isActive: true,
+    isDead: npcHealth <= 0,
+    spinalPreset: npcPreset,
+    id: npcId,
+    name: npcId,
+    speciesId: 'unknown',
+    roleId: npcPreset,
+    level: 1,
+    disposition: -50,
+    aggressionLevel: 80,
+    threatLevel: 50,
+    targetId: 'player',
+    lastActiveTime: Date.now(),
+    locationId: 'current',
+  };
+
+  // Получаем действие от AI
+  const action = controller.update(1000, npcState, null);
+
+  if (action) {
+    console.log(`[NPCReaction] ${npcId} reacts with: ${action.type}`);
+    return action;
+  }
+
+  // Если AI не дал действия - создаём базовую реакцию
+  // Если здоровье низкое - бегство, иначе - атака
+  const hpPercent = npcHealth / npcMaxHealth;
+
+  if (hpPercent < 0.2) {
+    // Бегство от атакующего
+    return {
+      type: 'flee',
+      startTime: Date.now(),
+      duration: 2000,
+      target: {
+        x: npcPosition.x + (dx / len) * 200,
+        y: npcPosition.y + (dy / len) * 200,
+      },
+      params: { speed: 200 },
+    };
+  }
+
+  // Агрессия - атака в сторону атакующего
+  return {
+    type: 'chase',
+    startTime: Date.now(),
+    duration: 3000,
+    target: {
+      x: attackerPosition.x,
+      y: attackerPosition.y,
+    },
+    params: { speed: 150 },
+  };
+}
 
 // ==================== ГЛАВНЫЙ HANDLER ====================
 
@@ -498,6 +647,16 @@ async function handleDamageDealt(
     return handleTempNPCDamageEvent(event, context, session, truthSystem);
   }
 
+  // === ПРОВЕРКА: ЯВЛЯЕТСЯ ЛИ ЦЕЛЬЮ PRESET NPC (из БД) ===
+  const presetNPC = await db.nPC.findUnique({
+    where: { id: targetId },
+  });
+  
+  if (presetNPC) {
+    context.log('info', `Target is Preset NPC from DB, processing damage`);
+    return handlePresetNPCDamageEvent(event, context, session, truthSystem, presetNPC);
+  }
+
   try {
     // Получаем технику
     const technique = await db.technique.findUnique({
@@ -858,7 +1017,41 @@ async function handleTempNPCDamageEvent(
         },
       });
     }
-    
+
+    // === ГЕНЕРИРУЕМ AI РЕАКЦИЮ NPC ===
+    // NPC реагирует на урон: атакует, убегает или вздрагивает
+    let npcAction: NPCAction | null = null;
+    if (!combatResult.isDead && finalDamage > 0) {
+      // Определяем пресет NPC по его данным
+      const npcPreset = npc?.speciesId?.includes('wolf') || npc?.speciesId?.includes('beast')
+        ? 'monster'
+        : npc?.roleId?.includes('guard')
+          ? 'guard'
+          : 'passerby';
+
+      // Получаем позицию атакующего (игрока)
+      // В событии нет позиции игрока, используем позицию цели и направление
+      // Для простоты считаем, что атака пришла со стороны игрока
+      const attackerPosition = {
+        x: targetPosition.x - (typedEvent.rotation ? Math.cos(typedEvent.rotation) * 100 : 0),
+        y: targetPosition.y - (typedEvent.rotation ? Math.sin(typedEvent.rotation) * 100 : 0),
+      };
+
+      npcAction = generateNPCReaction(
+        targetId,
+        finalDamage,
+        combatResult.newHealth,
+        combatResult.maxHealth,
+        attackerPosition,
+        targetPosition,
+        npcPreset
+      );
+
+      if (npcAction) {
+        context.log('info', `NPC ${targetId} reacts with: ${npcAction.type}`);
+      }
+    }
+
     // === ДОБАВЛЯЕМ ДЕЛЬТУ РАЗВИТИЯ ===
     if (finalDamage > 0) {
       try {
@@ -920,6 +1113,9 @@ async function handleTempNPCDamageEvent(
         // Данные о материале тела
         bodyMaterial: npcBodyMaterial,
         materialReduction,
+        // === NPC AI REACTION ===
+        // Действие, которое клиент должен выполнить для NPC
+        npcAction,
       },
       message: combatResult.isDead 
         ? `${targetId} уничтожен! XP: ${combatResult.xp}`
@@ -928,6 +1124,196 @@ async function handleTempNPCDamageEvent(
 
   } catch (error) {
     context.log('error', `Error in handleTempNPCDamageEvent: ${error}`);
+    return {
+      success: false,
+      eventId: context.eventId,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      commands: [],
+    };
+  }
+}
+
+// ==================== PRESET NPC DAMAGE HANDLING ====================
+
+/**
+ * Обработка урона по Preset NPC (из БД)
+ */
+async function handlePresetNPCDamageEvent(
+  event: GameEvent,
+  context: EventContext,
+  session: NonNullable<ReturnType<typeof TruthSystem.getInstance>['getSessionState']>,
+  truthSystem: ReturnType<typeof TruthSystem.getInstance>,
+  presetNPC: { id: string; name: string; health: number; maxHealth?: number; cultivationLevel?: number }
+): Promise<EventResult> {
+  const typedEvent = event as GameEvent & {
+    targetId: string;
+    techniqueId: string;
+    targetPosition: { x: number; y: number };
+    distance: number;
+    rotation: number;
+    damageMultiplier?: number;
+  };
+
+  const { targetId, techniqueId, targetPosition, damageMultiplier } = typedEvent;
+
+  try {
+    // Получаем технику
+    const technique = await db.technique.findUnique({
+      where: { id: techniqueId },
+    });
+
+    if (!technique) {
+      return createErrorResult(context.eventId, 'Technique not found');
+    }
+
+    // === LEVEL SUPPRESSION ===
+    const playerCultivationLevel = session.character.cultivationLevel ?? 1;
+    const techniqueLevel = technique.level ?? 1;
+    const npcCultivationLevel = presetNPC.cultivationLevel ?? 1;
+    
+    const attackType = determineAttackType(true, { level: techniqueLevel, isUltimate: false });
+    const suppressionResult = calculateLevelSuppressionFull(
+      playerCultivationLevel,
+      npcCultivationLevel,
+      attackType,
+      techniqueLevel
+    );
+
+    // Рассчитываем урон
+    const baseDamage = (technique.effects as Record<string, unknown>)?.damage ?? 25;
+    let damage = baseDamage as number * (damageMultiplier ?? 1.0) * suppressionResult.multiplier;
+    
+    // Применяем расстояние
+    const distanceInMeters = typedEvent.distance / METERS_TO_PIXELS;
+    const rangeData = (technique.effects as Record<string, unknown>)?.range as { fullDamage?: number; max?: number } | undefined;
+    const fullDamageRange = rangeData?.fullDamage ?? 5;
+    const maxRange = rangeData?.max ?? 10;
+    
+    if (distanceInMeters > fullDamageRange && distanceInMeters <= maxRange) {
+      damage *= 0.5;
+    } else if (distanceInMeters > maxRange) {
+      damage = 0;
+    }
+
+    const finalDamage = Math.floor(damage);
+
+    // === ПРИМЕНЯЕМ УРОН К NPC В БД ===
+    const currentHealth = presetNPC.health ?? 100;
+    const maxHealth = presetNPC.maxHealth ?? 100;
+    const newHealth = Math.max(0, currentHealth - finalDamage);
+    const isDead = newHealth <= 0;
+
+    await db.nPC.update({
+      where: { id: targetId },
+      data: { health: newHealth },
+    });
+
+    // === ГЕНЕРИРУЕМ AI РЕАКЦИЮ ===
+    let npcAction: NPCAction | null = null;
+    if (!isDead && finalDamage > 0) {
+      const attackerPosition = {
+        x: targetPosition.x - (typedEvent.rotation ? Math.cos(typedEvent.rotation) * 100 : 0),
+        y: targetPosition.y - (typedEvent.rotation ? Math.sin(typedEvent.rotation) * 100 : 0),
+      };
+
+      npcAction = generateNPCReaction(
+        targetId,
+        finalDamage,
+        newHealth,
+        maxHealth,
+        attackerPosition,
+        targetPosition,
+        'passerby'
+      );
+
+      if (npcAction) {
+        context.log('info', `Preset NPC ${targetId} reacts with: ${npcAction.type}`);
+      }
+    }
+
+    // === ДОБАВЛЯЕМ ДЕЛЬТУ РАЗВИТИЯ ===
+    if (finalDamage > 0) {
+      try {
+        const deltaResult = generateAttackDelta(false, undefined, damageMultiplier ?? 1.0);
+        const fatiguePenalty = calculateFatiguePenaltyForDevelopment(
+          session.character.fatigue ?? 0,
+          session.character.mentalFatigue ?? 0
+        );
+        
+        await addStatDelta(
+          event.characterId,
+          deltaResult.targetStat,
+          deltaResult.deltaGained * fatiguePenalty,
+          deltaResult.source
+        );
+      } catch (deltaError) {
+        context.log('warn', `Failed to add stat delta: ${deltaError}`);
+      }
+    }
+
+    // Формируем ответ
+    const commands = [
+      {
+        type: 'visual:show_damage',
+        timestamp: Date.now(),
+        data: {
+          targetId,
+          x: targetPosition.x,
+          y: targetPosition.y,
+          damage: finalDamage,
+          element: technique.element ?? 'neutral',
+          newHealth,
+          maxHealth,
+        },
+      },
+      {
+        type: 'visual:show_effect',
+        timestamp: Date.now(),
+        data: {
+          x: targetPosition.x,
+          y: targetPosition.y,
+          effectType: 'impact',
+          duration: 300,
+        },
+      },
+    ];
+
+    if (isDead) {
+      commands.push({
+        type: 'visual:npc_death',
+        timestamp: Date.now(),
+        data: {
+          targetId,
+          x: targetPosition.x,
+          y: targetPosition.y,
+          loot: [],
+          xp: 10,
+        },
+      });
+    }
+
+    context.log('info', `Preset NPC ${targetId} took ${finalDamage} damage. HP: ${currentHealth} -> ${newHealth}`);
+
+    return {
+      success: true,
+      eventId: context.eventId,
+      commands,
+      data: {
+        targetId,
+        damage: finalDamage,
+        newHealth,
+        maxHealth,
+        isDead,
+        levelSuppression: suppressionResult,
+        npcAction,
+      },
+      message: isDead 
+        ? `${presetNPC.name} уничтожен!`
+        : `Нанесено ${finalDamage} урона ${presetNPC.name}`,
+    };
+
+  } catch (error) {
+    context.log('error', `Error in handlePresetNPCDamageEvent: ${error}`);
     return {
       success: false,
       eventId: context.eventId,

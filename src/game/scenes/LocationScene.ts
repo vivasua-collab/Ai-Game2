@@ -45,6 +45,8 @@ import { useTimeStore, type GameTime, type TickSpeedId } from '@/stores/time.sto
 import { scaleMovementSpeedInverse, TIME_SCALING_FACTORS } from '@/lib/game/time-scaling';
 // Activity Manager for auto time switching
 import { activityManager, startCombat, endCombat, startTravel, endTravel } from '@/lib/game/activity-manager';
+// AI Polling Client - Server AI
+import { getAIPollingClient, type AIEvent } from '@/lib/game/ai/client/ai-polling-client';
 
 // ==================== CONSTANTS ====================
 
@@ -171,6 +173,9 @@ export class LocationScene extends BaseScene {
   // === Loot Drop System ===
   private lootDropManager!: LootDropManager;
   
+  // === Server AI Polling ===
+  private aiPollingClient = getAIPollingClient();
+  
   // === Player Stats (Combat) ===
   private playerHp: number = 100;
   private playerMaxHp: number = 100;
@@ -262,6 +267,7 @@ export class LocationScene extends BaseScene {
     await this.loadCharacterStats();
     this.setupInput();
     this.setupAI();
+    this.setupAIPolling();  // ← Server AI Polling (HTTP-only)
     this.setupTickTimer();  // ← Tick Timer Integration
     this.syncWithTimeStore();  // ← FIX: Sync pause state and time from store
     this.createUI();
@@ -955,6 +961,117 @@ export class LocationScene extends BaseScene {
     });
     
     console.log('[LocationScene] Activity Manager integrated');
+  }
+
+  // ==================== SERVER AI POLLING ====================
+
+  /**
+   * Setup Server AI Polling - HTTP-only architecture
+   * 
+   * Архитектура: "Божество → Облако → Земля"
+   * - Земля (Сервер) управляет AI
+   * - Облако (Клиент) polling-ом получает события
+   * - 1 TICK = 1 СЕКУНДА
+   */
+  private setupAIPolling(): void {
+    if (!this.sessionId) {
+      console.warn('[LocationScene] No sessionId, AI polling disabled');
+      return;
+    }
+
+    // Инициализируем polling client
+    this.aiPollingClient.initialize(this.sessionId);
+
+    // Подписываемся на серверные события
+    window.addEventListener('npc:server-action', this.handleServerNPCAction.bind(this) as EventListener);
+    window.addEventListener('npc:server-update', this.handleServerNPCUpdate.bind(this) as EventListener);
+    window.addEventListener('npc:server-despawn', this.handleServerNPCDespawn.bind(this) as EventListener);
+    window.addEventListener('combat:server-hit', this.handleServerCombatHit.bind(this) as EventListener);
+
+    // Запускаем polling
+    this.aiPollingClient.start();
+
+    console.log('[LocationScene] Server AI polling initialized');
+  }
+
+  /**
+   * Обработать действие NPC от сервера
+   */
+  private handleServerNPCAction(event: Event): void {
+    const data = (event as CustomEvent<{ npcId: string; action: { type: string; data?: Record<string, unknown> } }>).detail;
+    const { npcId, action } = data;
+
+    const npcSprite = this.npcPhysicsSprites.get(npcId);
+    if (!npcSprite) {
+      console.warn(`[LocationScene] NPC ${npcId} not found for server action`);
+      return;
+    }
+
+    // Выполняем действие на клиенте (только визуал!)
+    npcSprite.executeServerAction(action);
+
+    console.log(`[LocationScene] Server action for ${npcId}: ${action.type}`);
+  }
+
+  /**
+   * Обработать обновление NPC от сервера
+   */
+  private handleServerNPCUpdate(event: Event): void {
+    const data = (event as CustomEvent<{ npcId: string; changes: Record<string, unknown> }>).detail;
+    const { npcId, changes } = data;
+
+    const npcSprite = this.npcPhysicsSprites.get(npcId);
+    if (!npcSprite) return;
+
+    // Применяем обновление к спрайту
+    npcSprite.applyServerUpdate(changes);
+
+    // Обновляем локальные данные
+    const npc = this.npcs.get(npcId);
+    if (npc && changes.hp !== undefined) {
+      npc.hp = changes.hp as number;
+    }
+  }
+
+  /**
+   * Обработать despawn NPC от сервера
+   */
+  private handleServerNPCDespawn(event: Event): void {
+    const data = (event as CustomEvent<{ npcId: string; reason: string }>).detail;
+    const { npcId, reason } = data;
+
+    const npcSprite = this.npcPhysicsSprites.get(npcId);
+    if (npcSprite) {
+      npcSprite.destroy();
+      this.npcPhysicsSprites.delete(npcId);
+    }
+
+    this.npcs.delete(npcId);
+
+    console.log(`[LocationScene] NPC ${npcId} despawned: ${reason}`);
+  }
+
+  /**
+   * Обработать удар в бою от сервера
+   */
+  private handleServerCombatHit(event: Event): void {
+    const data = (event as CustomEvent<{ attackerId: string; targetId: string; damage: number; effects?: unknown[] }>).detail;
+    const { attackerId, targetId, damage } = data;
+
+    // Если игрок получил урон
+    if (targetId === this.characterId || targetId === 'player') {
+      this.playerHp = Math.max(0, this.playerHp - damage);
+      this.updatePlayerHP();
+
+      // Эффект урона
+      this.showDamageNumber(this.player!.x, this.player!.y - 30, damage, 'physical');
+
+      if (this.playerHp <= 0) {
+        this.onPlayerDeath();
+      }
+    }
+
+    console.log(`[LocationScene] Combat hit: ${attackerId} → ${targetId}: ${damage} damage`);
   }
 
   // ==================== TICK TIMER INTEGRATION ====================

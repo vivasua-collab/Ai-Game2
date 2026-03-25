@@ -224,6 +224,16 @@ export const useGameStore = create<GameStoreState>()(
             
             if (data.session.worldTime) {
               updates.worldTime = data.session.worldTime;
+              
+              // КРИТИЧЕСКИ ВАЖНО: синхронизируем timeStore!
+              // Без этого TickTimer не узнаёт о новом времени
+              useTimeStore.getState()._initFromServer({
+                year: data.session.worldTime.year,
+                month: data.session.worldTime.month,
+                day: data.session.worldTime.day,
+                hour: data.session.worldTime.hour,
+                minute: data.session.worldTime.minute,
+              });
             }
             
             if (data.session.daysSinceStart !== undefined) {
