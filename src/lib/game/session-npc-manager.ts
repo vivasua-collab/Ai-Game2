@@ -14,6 +14,9 @@ import {
   type TempNPC,
   type TempItem,
   type LocationNPCConfig,
+  type CollisionConfig,
+  type InteractionZones,
+  type AIBehaviorConfig,
   LOCATION_NPC_PRESETS,
   generateTempNPCId,
   generateTempItemId,
@@ -36,6 +39,10 @@ import { getSpeciesByType, getAllSpecies } from '@/data/presets/species-presets'
 import { getRolesByType, getAllRoles } from '@/data/presets/role-presets';
 import type { SpeciesType } from '@/data/presets';
 import { getSoulFromSpecies } from '@/lib/generator/soul-mapping';
+import {
+  calculateCollisionConfig,
+  calculateInteractionZones,
+} from '@/lib/game/npc-collision';
 
 // ==================== SINGLETON ====================
 
@@ -339,6 +346,9 @@ export class SessionNPCManager {
       seed,
     };
     
+    // 9. Применяем AI конфигурацию (aiConfig, collision, interactionZones)
+    applyAIConfigToNPC(tempNPC);
+    
     return tempNPC;
   }
   
@@ -636,3 +646,139 @@ export class SessionNPCManager {
 // ==================== EXPORT SINGLETON ====================
 
 export const sessionNPCManager = getSessionNPCManager();
+
+// ==================== AI CONFIGURATION GENERATOR ====================
+
+/**
+ * Результат генерации AI конфигурации
+ */
+export interface AIGenerationResult {
+  aiConfig: AIBehaviorConfig;
+  collision: CollisionConfig;
+  interactionZones: InteractionZones;
+}
+
+/**
+ * Генерация AI конфигурации для TempNPC
+ * 
+ * Заполняет поля, необходимые для серверного AI:
+ * - aiConfig: параметры поведения (радиус агрессии, скорость патрулирования и т.д.)
+ * - collision: параметры коллизии (радиус, высота, вес)
+ * - interactionZones: зоны взаимодействия (разговор, торговля, агрессия, восприятие)
+ * 
+ * @param npc - TempNPC для генерации конфигурации
+ * @returns AI конфигурация, коллизия и зоны взаимодействия
+ * 
+ * @example
+ * ```typescript
+ * const npc = sessionNPCManager.getNPC(sessionId, npcId);
+ * if (npc) {
+ *   const { aiConfig, collision, interactionZones } = generateAIFromNPC(npc);
+ *   npc.aiConfig = aiConfig;
+ *   npc.collision = collision;
+ *   npc.interactionZones = interactionZones;
+ * }
+ * ```
+ */
+export function generateAIFromNPC(npc: TempNPC): AIGenerationResult {
+  // 1. Расчёт коллизии
+  const collision = calculateCollisionConfig(npc);
+
+  // 2. Расчёт зон взаимодействия
+  const interactionZones = calculateInteractionZones(npc);
+
+  // 3. AI конфигурация на основе личности и роли
+  const aiConfig: AIBehaviorConfig = {
+    // Радиус агрессии = зона агрессии из interactionZones
+    agroRadius: interactionZones.agro,
+    
+    // Радиус патрулирования (для стражей и монстров)
+    patrolRadius: calculatePatrolRadius(npc),
+    
+    // Порог бегства из личности NPC
+    fleeThreshold: npc.personality?.fleeThreshold || 20,
+    
+    // Дальность атаки = радиус коллизии + запас
+    attackRange: collision.radius + 30,
+    
+    // Скорость преследования зависит от типа
+    chaseSpeed: calculateChaseSpeed(npc),
+    
+    // Скорость патрулирования медленнее
+    patrolSpeed: calculatePatrolSpeed(npc),
+  };
+
+  return { aiConfig, collision, interactionZones };
+}
+
+/**
+ * Расчёт радиуса патрулирования
+ */
+function calculatePatrolRadius(npc: TempNPC): number {
+  // Стражи патрулируют больше
+  if (npc.roleId.includes('guard') || npc.roleId.includes('patrol')) {
+    return 200;
+  }
+  
+  // Монстры патрулируют свою территорию
+  if (npc.speciesType === 'beast' || npc.roleId.includes('monster')) {
+    return 150;
+  }
+  
+  // Остальные минимально перемещаются
+  return 50;
+}
+
+/**
+ * Расчёт скорости преследования
+ */
+function calculateChaseSpeed(npc: TempNPC): number {
+  // Базовая скорость
+  let speed = 150;
+  
+  // Модификатор от ловкости
+  const agility = npc.stats?.agility ?? 10;
+  speed += (agility - 10) * 3;
+  
+  // Модификатор от уровня культивации
+  const level = npc.cultivation?.level ?? 1;
+  speed += (level - 1) * 5;
+  
+  // Звери быстрее
+  if (npc.speciesType === 'beast') {
+    speed *= 1.2;
+  }
+  
+  // Духи ещё быстрее
+  if (npc.speciesType === 'spirit') {
+    speed *= 1.4;
+  }
+  
+  return Math.round(speed);
+}
+
+/**
+ * Расчёт скорости патрулирования
+ */
+function calculatePatrolSpeed(npc: TempNPC): number {
+  // Патрулирование медленнее преследования
+  return Math.round(calculateChaseSpeed(npc) * 0.3);
+}
+
+/**
+ * Применение AI конфигурации к NPC
+ * 
+ * Используется после генерации NPC для заполнения AI полей
+ * 
+ * @param npc - TempNPC для обновления
+ * @returns Обновлённый NPC
+ */
+export function applyAIConfigToNPC(npc: TempNPC): TempNPC {
+  const { aiConfig, collision, interactionZones } = generateAIFromNPC(npc);
+  
+  npc.aiConfig = aiConfig;
+  npc.collision = collision;
+  npc.interactionZones = interactionZones;
+  
+  return npc;
+}

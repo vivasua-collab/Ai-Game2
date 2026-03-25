@@ -295,7 +295,8 @@ export function calculateCollisionConfig(
   const baseRadius = SPECIES_COLLISION_RADIUS[npc.speciesId] || 15;
   
   // Модификатор от уровня культивации (крупнее существа)
-  const levelMod = 1 + (npc.cultivation.level - 1) * 0.02; // +2% за уровень
+  const level = npc.cultivation?.level ?? 1;
+  const levelMod = 1 + (level - 1) * 0.02; // +2% за уровень
   
   // Модификатор от размера тела
   const sizeMod = npc.speciesType === 'beast' ? 1.2 : 
@@ -312,7 +313,8 @@ export function calculateCollisionConfig(
   const baseWeight = npc.speciesType === 'beast' ? 50 :
                      npc.speciesType === 'spirit' ? 10 :
                      70;
-  const weight = baseWeight + npc.stats.vitality * 0.5;
+  const vitality = npc.stats?.vitality ?? 10;
+  const weight = baseWeight + vitality * 0.5;
   
   return {
     radius,
@@ -344,22 +346,24 @@ export function calculateInteractionZones(
   
   // Модификаторы от уровня культивации
   // Более высокие существа лучше чувствуют
-  const levelMod = 1 + (npc.cultivation.level - 1) * 0.05; // +5% за уровень
+  const level = npc.cultivation?.level ?? 1;
+  const levelMod = 1 + (level - 1) * 0.05; // +5% за уровень
   
   zones.perception = Math.round(zones.perception * levelMod);
   
   // Модификаторы от интеллекта
   // Умные существа лучше воспринимают
-  const intMod = 1 + (npc.stats.intelligence - 10) * 0.01;
+  const intelligence = npc.stats?.intelligence ?? 10;
+  const intMod = 1 + (intelligence - 10) * 0.01;
   zones.perception = Math.round(zones.perception * intMod);
   
   // Если NPC не может говорить - зона разговора = 0
-  if (!npc.personality.canTalk) {
+  if (npc.personality && !npc.personality.canTalk) {
     zones.talk = 0;
   }
   
   // Если NPC не может торговать - зона торговли = 0
-  if (!npc.personality.canTrade) {
+  if (npc.personality && !npc.personality.canTrade) {
     zones.trade = 0;
   }
   

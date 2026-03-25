@@ -449,3 +449,412 @@ Stage Summary:
   - Training Ground теперь использует time-scaled скорость
   - Training Ground теперь слушает timer:pause/resume/start события
   - Физика Phaser синхронизирована с состоянием паузы
+
+---
+Task ID: 25
+Agent: Main Agent
+Task: Проверка вчерашних чекпоинтов и начало серверного AI для NPC
+
+Work Log:
+- Прочитаны вчерашние чекпоинты:
+  - checkpoint_03_24_autotik_analysis.md — анализ проблем AutoTick
+  - checkpoint_03_24_spinal_ai_phase1.md — Spinal AI Phase 1
+  - checkpoint_03_24_spinal_ai_phase2.md — Spinal AI Phase 2
+- Проведена верификация выполнения задач:
+  - AutoTick: ✅ все проблемы исправлены (tick-timer.ts)
+  - Spinal AI Phase 1: ✅ полностью выполнена (spinal-controller.ts)
+  - Spinal AI Phase 2: ✅ полностью выполнена (NPCSprite.ts интеграция)
+- Ключевое замечание: Вся реализация - КЛИЕНТСКАЯ, требует миграции на сервер
+- Обновлён checkpoint_03_25_AI_server_implementation_plan.md:
+  - Добавлена история разработки
+  - Добавлены результаты проверки вчерашних чекпоинтов
+  - Добавлена Фаза 0: Подготовка NPC генераторов
+- Реализована Фаза 0:
+  - Создана функция generateAIFromNPC() в session-npc-manager.ts
+  - Функция заполняет aiConfig, collision, interactionZones
+  - Добавлена функция applyAIConfigToNPC() для применения при генерации
+  - Интегрировано в generateTempNPC() — шаг 9
+  - Добавлены вспомогательные функции: calculatePatrolRadius, calculateChaseSpeed, calculatePatrolSpeed
+
+Stage Summary:
+- Lint: 0 ошибок, 3 warnings (pre-existing)
+- Фаза 0: ✅ ЗАВЕРШЕНО
+- Файлы изменены:
+  - src/lib/game/session-npc-manager.ts — добавлена generateAIFromNPC()
+  - docs/checkpoints/checkpoint_03_25_AI_server_implementation_plan.md — добавлена история и Фаза 0
+- Ключевые результаты:
+  - NPC теперь генерируются с заполненными aiConfig, collision, interactionZones
+  - Готова база для серверного AI
+- Следующие фазы: 1-5 (World State Extension, WebSocket, Server AI Manager, Client Executor, Integration)
+
+---
+Task ID: 26
+Agent: Main Agent
+Task: Фаза 1 - World State Extension (типы и API для NPC)
+
+Work Log:
+- Создан тест для generateAIFromNPC() - 17 тестов
+- Исправлены edge cases в npc-collision.ts (defensive coding для undefined)
+- Исправлены edge cases в session-npc-manager.ts (defensive coding)
+- Все 17 тестов прошли успешно
+- Созданы типы для серверного AI:
+  - src/lib/game/types/npc-state.ts - NPCState, NPCAction, SpinalAIState
+  - src/lib/game/types/world-state.ts - WorldState, WorldEvent, LocationState, PlayerWorldState
+  - src/lib/game/types/index.ts - экспорты
+- Создан NPCWorldManager (src/lib/game/npc-world-manager.ts):
+  - CRUD операции для NPC
+  - Индексы для быстрого поиска по локациям
+  - Управление игроками
+  - AI helpers (activateNPC, setNPCAction, updateNPCThreat)
+  - Статистика мира
+- Создан API endpoint (src/app/api/npc/state/route.ts):
+  - GET - получение NPC по ID или локации
+  - POST - добавление NPC из TempNPC или напрямую
+  - PATCH - обновление NPC
+  - DELETE - удаление NPC с синхронизацией SessionNPCManager
+- Обновлён checkpoint_03_25_AI_server_implementation_plan.md
+
+Stage Summary:
+- Lint: 0 ошибок, 3 warnings (pre-existing)
+- Фаза 0: ✅ ЗАВЕРШЕНО (тесты пройдены)
+- Фаза 1: ✅ ЗАВЕРШЕНО (типы, менеджер, API)
+- Созданные файлы:
+  - src/lib/game/types/npc-state.ts (~200 строк)
+  - src/lib/game/types/world-state.ts (~200 строк)
+  - src/lib/game/types/index.ts (~30 строк)
+  - src/lib/game/npc-world-manager.ts (~350 строк)
+  - src/app/api/npc/state/route.ts (~200 строк)
+  - src/lib/game/session-npc-manager.test.ts (~150 строк)
+- Ключевые результаты:
+  - Типы NPCState и WorldState готовы для серверного AI
+  - NPCWorldManager управляет NPC в памяти
+  - API предоставляет CRUD для фронтенда
+  - Интеграция с SessionNPCManager
+- Следующая фаза: WebSocket Service (port 3003)
+
+---
+Task ID: 27
+Agent: Main Agent
+Task: Верификация Phase 1 и реализация Phase 2 - WebSocket Service
+
+Work Log:
+- Проверка Phase 1 (World State Extension):
+  - Все файлы существуют и содержат правильный код
+  - src/lib/game/types/npc-state.ts - NPCState интерфейс (292 строки)
+  - src/lib/game/types/world-state.ts - WorldState интерфейс (338 строк)
+  - src/lib/game/npc-world-manager.ts - NPCWorldManager singleton (460 строк)
+  - src/app/api/npc/state/route.ts - CRUD endpoints (236 строк)
+- Lint проверка: 0 errors, 3 warnings (pre-existing)
+- Обновлён checkpoint с результатами верификации Phase 1
+- Реализация Phase 2 (WebSocket Service):
+  - Создан mini-services/game-ws/package.json
+  - Создан mini-services/game-ws/index.ts (~330 строк)
+    - Socket.io сервер на порту 3003
+    - Tick Loop (1 секунда = 1 тик)
+    - События: player:connect, player:move, player:attack, world:tick, npc:action
+    - Управление игроками и NPC по локациям
+  - Создан src/lib/game-socket.ts (~320 строк)
+    - GameSocket класс для клиентской стороны
+    - Автоматический реконнект (до 10 попыток)
+    - Типизированные события ClientEvents/ServerEvents
+    - Singleton паттерн (getGameSocket)
+- Установлены зависимости для game-ws: socket.io@4.8.3
+- Сервис запущен успешно:
+  - [GameWS] Game WebSocket server started on port 3003
+  - [GameWS] Tick loop started (1 tick = 1 second)
+
+Stage Summary:
+- Lint: 0 errors, 3 warnings (pre-existing)
+- Phase 1: ✅ ЗАВЕРШЕНО И ПРОВЕРЕНО
+- Phase 2: ✅ ЗАВЕРШЕНО (WebSocket Service)
+- Новые файлы:
+  - mini-services/game-ws/package.json
+  - mini-services/game-ws/index.ts
+  - src/lib/game-socket.ts
+- Ключевые результаты:
+  - WebSocket сервер запущен на порту 3003
+  - Tick loop работает (1 тик = 1 секунда)
+  - Клиентский GameSocket готов для интеграции
+  - Автоматический реконнект реализован
+- Следующая фаза: Phase 3 - Server AI Manager
+
+---
+Task ID: 27
+Agent: Main Agent
+Task: Верификация Phase 1 и реализация Phase 2 - WebSocket Service
+
+Work Log:
+- Проверка Phase 1 (World State Extension):
+  - Все файлы существуют и содержат правильный код
+  - src/lib/game/types/npc-state.ts - NPCState интерфейс (292 строки)
+  - src/lib/game/types/world-state.ts - WorldState интерфейс (338 строк)
+  - src/lib/game/npc-world-manager.ts - NPCWorldManager singleton (460 строк)
+  - src/app/api/npc/state/route.ts - CRUD endpoints (236 строк)
+- Lint проверка: 0 errors, 3 warnings (pre-existing)
+- Обновлён checkpoint с результатами верификации Phase 1
+- Реализация Phase 2 (WebSocket Service):
+  - Создан mini-services/game-ws/package.json
+  - Создан mini-services/game-ws/index.ts (~330 строк)
+    - Socket.io сервер на порту 3003
+    - Tick Loop (1 секунда = 1 тик)
+    - События: player:connect, player:move, player:attack, world:tick, npc:action
+    - Управление игроками и NPC по локациям
+  - Создан src/lib/game-socket.ts (~320 строк)
+    - GameSocket класс для клиентской стороны
+    - Автоматический реконнект (до 10 попыток)
+    - Типизированные события ClientEvents/ServerEvents
+    - Singleton паттерн (getGameSocket)
+- Установлены зависимости для game-ws: socket.io@4.8.3
+- Сервис запущен успешно:
+  - [GameWS] Game WebSocket server started on port 3003
+  - [GameWS] Tick loop started (1 tick = 1 second)
+
+Stage Summary:
+- Lint: 0 errors, 3 warnings (pre-existing)
+- Phase 1: ✅ ЗАВЕРШЕНО И ПРОВЕРЕНО
+- Phase 2: ✅ ЗАВЕРШЕНО (WebSocket Service)
+- Новые файлы:
+  - mini-services/game-ws/package.json
+  - mini-services/game-ws/index.ts
+  - src/lib/game-socket.ts
+- Ключевые результаты:
+  - WebSocket сервер запущен на порту 3003
+  - Tick loop работает (1 тик = 1 секунда)
+  - Клиентский GameSocket готов для интеграции
+  - Автоматический реконнект реализован
+- Следующая фаза: Phase 3 - Server AI Manager
+
+---
+Task ID: 28
+Agent: Main Agent
+Task: Phase 3 - Server AI Manager (NPCAIManager, SpinalServerController, BroadcastManager)
+
+Work Log:
+- Проверка кода Phase 2:
+  - Lint: 0 errors, 3 warnings (pre-existing)
+  - WebSocket сервер запущен и работает
+- Реализация Phase 3:
+  - Создан src/lib/game/ai/server/index.ts - Экспорты
+  - Создан src/lib/game/ai/server/spinal-server.ts (~220 строк):
+    - SpinalServerController класс - адаптер для SpinalController
+    - npcStateToBodyState() - конвертация состояний
+    - convertToNPCAction() - конвертация действий
+    - createAttackSignal() - сигнал атаки игрока
+    - createPlayerNearbySignal() - сигнал игрока рядом
+  - Создан src/lib/game/ai/server/broadcast-manager.ts (~220 строк):
+    - BroadcastManager singleton для WebSocket событий
+    - broadcastNPCAction() - отправка действия NPC
+    - broadcastNPCSpawn/Despawn/Update() - спавн/деспавн/обновление
+    - broadcastCombatAttack/Hit() - события боя
+    - Batch mode для оптимизации отправки
+  - Создан src/lib/game/ai/server/npc-ai-manager.ts (~350 строк):
+    - NPCAIManager singleton - главный менеджер AI
+    - updateAllNPCs() - обновление всех NPC каждый тик
+    - findNearbyPlayers() - поиск игроков в радиусе
+    - activateNPC/deactivateNPC() - активация/деактивация
+    - updateActiveNPC() - обновление активного NPC
+    - executeAction() - выполнение действия NPC
+    - handlePlayerAttack() - обработка атаки игрока на NPC
+- Ключевые константы:
+  - ACTIVATION_RADIUS = 300 - радиус активации
+  - PERCEPTION_RADIUS = 400 - радиус восприятия
+  - AGRO_RADIUS = 150 - радиус агрессии
+  - MAX_UPDATE_TIME_MS = 100 - макс. время тика
+- Обновлён checkpoint_03_25_AI_server_implementation_plan.md
+
+Stage Summary:
+- Lint: 0 errors, 3 warnings (pre-existing)
+- Phase 2: ✅ ПРОВЕРЕНО
+- Phase 3: ✅ ЗАВЕРШЕНО (Server AI Manager)
+- Новые файлы:
+  - src/lib/game/ai/server/index.ts
+  - src/lib/game/ai/server/spinal-server.ts
+  - src/lib/game/ai/server/broadcast-manager.ts
+  - src/lib/game/ai/server/npc-ai-manager.ts
+- Ключевые результаты:
+  - SpinalServerController адаптирует клиентский SpinalController для сервера
+  - BroadcastManager отправляет WebSocket события
+  - NPCAIManager управляет AI всех NPC на сервере
+  - Активация NPC при приближении игрока
+  - Автоматическое обновление каждый тик
+- Следующая фаза: Phase 4 - Client Action Executor
+
+---
+Task ID: 29
+Agent: Main Agent
+Task: Phase 4 - Client Action Executor (executeServerAction для NPCSprite)
+
+Work Log:
+- Проверка кода Phase 3:
+  - Lint: 0 errors, 3 warnings (pre-existing)
+  - Все файлы на месте: spinal-server.ts, broadcast-manager.ts, npc-ai-manager.ts
+  - Проверены импорты и зависимости
+- Реализация Phase 4:
+  - Добавлен метод `executeServerAction(action)` в NPCSprite
+  - Добавлены приватные методы для серверных действий:
+    - `performServerMove()` - движение к цели
+    - `performServerAttack()` - атака цели
+    - `performServerDodge()` - уклонение
+    - `performServerFlee()` - бегство
+    - `performServerIdle()` - ожидание
+    - `performServerPatrol()` - патрулирование
+- Поддерживаемые типы действий:
+  - `move`, `chase` - движение к цели
+  - `attack` - атака цели
+  - `dodge` - уклонение
+  - `flee` - бегство
+  - `flinch` - вздрагивание (переиспользует существующий метод)
+  - `idle` - ожидание
+  - `patrol` - патрулирование
+- SpinalController сохранён для обратной совместимости
+- Обновлён checkpoint_03_25_AI_server_implementation_plan.md
+
+Stage Summary:
+- Lint: 0 errors, 3 warnings (pre-existing)
+- Phase 3: ✅ ПРОВЕРЕНО
+- Phase 4: ✅ ЗАВЕРШЕНО (Client Action Executor)
+- Изменённые файлы:
+  - src/game/objects/NPCSprite.ts - добавлен executeServerAction()
+- Ключевые результаты:
+  - NPCSprite теперь может выполнять команды от сервера
+  - Все типы действий поддерживаются
+  - SpinalController сохранён для обратной совместимости
+- Следующая фаза: Phase 5 - Integration & Testing
+
+---
+Task ID: 30
+Agent: Main Agent
+Task: Создание комплексного плана рефакторинга - миграция всей логики на сервер
+
+Work Log:
+- Прочитаны существующие документы архитектуры:
+  - docs/architecture-analysis.md - текущая архитектура (Truth System, Event Bus)
+  - docs/ARCHITECTURE_code_base.md - примеры кода
+  - docs/ARCHITECTURE_future.md - будущая архитектура (WebSocket, Custom Server)
+  - docs/ARCHITECTURE_refact.md - анализ проблем и план миграции
+- Создан главный чекпоинт docs/checkpoints/checkpoint_03_25_refactoring.md (v2.0):
+  - Решение: Поэтапный рефакторинг (НЕ переписывание с нуля)
+  - 4 фазы с зависимостями
+  - Критерии готовности
+  - Риски и митигация
+- Созданы детальные планы для каждой фазы:
+  1. docs/checkpoints/phase_01_combat_api.md - Combat API (3-5 дней)
+     - Создание серверного damage-calculator.ts
+     - Миграция damage-pipeline.ts
+     - WebSocket протокол player:attack / combat:result
+     - 5 методов тестирования
+  2. docs/checkpoints/phase_02_techniques.md - Techniques (2-3 дня)
+     - Создание technique-service.ts
+     - Qi списание ТОЛЬКО через TruthSystem
+     - WebSocket протокол technique:use / technique:result
+     - 5 методов тестирования
+  3. docs/checkpoints/phase_03_server_ai.md - Server AI (3-4 дня)
+     - Создание spinal-server.ts
+     - Создание npc-ai-manager.ts
+     - Tick loop на сервере
+     - WebSocket протокол npc:action
+     - 5 методов тестирования
+  4. docs/checkpoints/phase_04_cleanup.md - Cleanup (1-2 дня)
+     - Удаление клиентской логики
+     - Упрощение клиентских классов
+     - Обновление документации
+     - Финальное тестирование
+
+Stage Summary:
+- Созданные файлы:
+  - docs/checkpoints/checkpoint_03_25_refactoring.md (v2.0)
+  - docs/checkpoints/phase_01_combat_api.md
+  - docs/checkpoints/phase_02_techniques.md
+  - docs/checkpoints/phase_03_server_ai.md
+  - docs/checkpoints/phase_04_cleanup.md
+- Ключевые решения:
+  - Выбран рефакторинг вместо переписывания (2-4 недели vs 4-8 недель)
+  - 4 фазы с чёткими зависимостями
+  - Каждый документ содержит методы тестирования
+- Общее время: ~60 часов (8-12 рабочих дней)
+- Следующий шаг: Начать Фазу 1 (Combat API)
+
+---
+Task ID: 31
+Agent: Main Agent
+Task: Глубокий аудит боевой системы и расширение требований
+
+Work Log:
+- Прочитаны ключевые документы:
+  - docs/combat-system.md - система техник, Qi, наполнение
+  - docs/NPC_COMBAT_INTERACTIONS.md - коллизии, урон, агрессия
+  - docs/NPC_AI_THEORY.md - State Machine, Utility AI, Behavior Tree
+  - docs/body.md - система тела, двойная HP
+- Прочитаны ключевые файлы кода:
+  - src/lib/game/combat-system.ts (~1140 строк) - расчёт урона техник
+  - src/lib/game/damage-pipeline.ts (~460 строк) - 10 слоёв защиты
+  - src/lib/game/ai/spinal/spinal-controller.ts (~464 строки) - клиентский AI
+- Идентифицированы проблемы:
+  - Весь пайплайн урона на клиенте (читерство)
+  - SpinalController на клиенте (подмена решений)
+  - Нет системы координат на сервере
+  - Нет системы чувств NPC
+- Добавлены новые требования:
+  - Система координат (position: Vector2D)
+  - Направление взгляда (direction: Vector2D, angle, degrees)
+  - Система чувств NPC:
+    - Vision (зрение) - 15м, FOV, освещение
+    - Hearing (слух) - 20м, громкость
+    - Pain (боль) - реакция на урон
+    - Qi Sense (чувство Ци) - 50м, Qi Pressure
+  - Qi Pressure ("Давление Ци"):
+    - supreme (+5 уровней) - страх, бегство
+    - superior (+2-4) - осторожность
+    - equal (-1 to +1) - нормальное поведение
+    - inferior (-2 to -4) - уверенность
+    - prey (-5+) - презрение, игнорирование
+
+Stage Summary:
+- Файлы созданы:
+  - docs/checkpoints/checkpoint_03_25_phase1_combat.md (v2.0)
+- Ключевые результаты:
+  - Глубокий аудит кода завершён
+  - Спроектирована система координат
+  - Спроектирована система чувств (vision, hearing, pain, qiSense)
+  - Спроектирован Qi Pressure для культивации
+- Обновлённое время: ~26 часов (с учётом новой функциональности)
+- Требует подтверждения от пользователя
+
+---
+Task ID: 32
+Agent: Main Agent
+Task: Проверка реализации Phase 1 Combat и создание Unit тестов
+
+Work Log:
+- Прочитан checkpoint_03_25_phase1_combat.md (v3.2)
+- Проверены реализованные файлы:
+  - src/lib/game/server/types.ts - типы боевой системы ✅
+  - src/lib/game/server/combat/damage-calculator.ts - расчёт урона ✅
+  - src/lib/game/server/combat/combat-service.ts - сервис боя ✅
+  - src/lib/game/ai/server/npc-ai-manager.ts - AI менеджер ✅
+  - src/lib/game/types/npc-state.ts - состояние NPC ✅
+  - mini-services/game-ws/index.ts - WebSocket сервер (port 3003) ✅
+- Запущен WebSocket сервер на порту 3003
+- Созданы тесты для серверной боевой системы:
+  - src/lib/game/server/combat/damage-calculator.test.ts
+  - 38 тестов, все пройдены ✅
+- Создана Senses System (недостающая часть):
+  - src/lib/game/server/ai/senses/types.ts - типы чувств
+  - src/lib/game/server/ai/senses/perception-config.ts - центры восприятия
+  - src/lib/game/server/ai/senses/qi-pressure.ts - давление Ци (7 уровней)
+  - src/lib/game/server/ai/senses/index.ts - экспорты и функции
+- Lint проверка: 0 ошибок, 3 warnings (предсуществующие)
+
+Stage Summary:
+- Phase 1 Combat: ✅ РЕАЛИЗОВАН И ПРОТЕСТИРОВАН
+- Unit тесты: 38/38 пройдены
+- WebSocket сервер: запущен на порту 3003
+- Senses System: создана с нуля
+- Ключевые механики проверены:
+  - Qi Density: 2^(level-1) ✅
+  - Level Suppression: 7 уровней ✅
+  - Qi Buffer: 90% поглощение ✅
+  - Ultimate: +30% урона, 5% шанс ✅
+  - Material Damage Reduction: organic=0%, ethereal=70% ✅
+  - Architecture "Matryoshka": 3 слоя генерации ✅
+

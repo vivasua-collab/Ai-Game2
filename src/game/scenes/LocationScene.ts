@@ -229,6 +229,11 @@ export class LocationScene extends BaseScene {
     this.damageNumbers = [];
     this.selectedNPC = null;
     this.lastAttackTime = 0;
+    
+    // === PHASE 5: Get characterId from localStorage ===
+    if (typeof window !== 'undefined') {
+      this.characterId = localStorage.getItem('characterId') || '';
+    }
   }
 
   async create(): Promise<void> {
@@ -1181,9 +1186,10 @@ export class LocationScene extends BaseScene {
   
   /**
    * Тик обновления ИИ
+   * NOTE: Локальный AI отключён - сервер управляет поведением!
    */
   private onAITick(): void {
-    // Инициализируем состояния для новых NPC
+    // Инициализируем состояния для новых NPC (для совместимости)
     for (const [id, npc] of this.npcs) {
       if (!this.npcStates.has(id)) {
         this.npcStates.set(id, 'idle');
@@ -1193,67 +1199,29 @@ export class LocationScene extends BaseScene {
   
   /**
    * Обновление ИИ (вызывается каждый кадр)
+   * 
+   * ВАЖНО: Локальный AI отключён! Сервер управляет всеми NPC.
+   * Клиент только отображает действия, полученные через WebSocket.
    */
   private updateAI(): void {
-    this.aiUpdateTimer += 16; // ~60 FPS
+    // === ЛОКАЛЬНЫЙ AI ОТКЛЮЧЁН ===
+    // Сервер управляет поведением через npc:action события
+    // 
+    // Если сервер недоступен, NPC будут стоять на месте.
+    // Это правильное поведение для серверной архитектуры.
     
-    if (this.aiUpdateTimer >= this.aiUpdateInterval) {
-      this.aiUpdateTimer = 0;
-      
-      // Обновляем поведение всех NPC
-      for (const [id, npc] of this.npcs) {
-        this.updateNPCBehavior(npc);
-      }
+    // Обновляем визуал NPC (синхронизация спрайтов с физикой)
+    for (const [id, sprite] of this.npcPhysicsSprites) {
+      sprite.syncVisualPosition();
     }
-  }
-  
-  /**
-   * Обновление поведения отдельного NPC
-   * 
-   * ВАЖНО: Использует sprite.x/y для позиции (от физики)!
-   */
-  private updateNPCBehavior(npc: LocationNPC): void {
-    const sprite = this.npcPhysicsSprites.get(npc.id);
-    if (!sprite) return;
     
-    const state = this.npcStates.get(npc.id) || 'idle';
-    
-    // Используем позицию спрайта (от физики)
-    const npcX = sprite.x;
-    const npcY = sprite.y;
-    
-    // Проверяем дистанцию до игрока
-    const dx = this.playerX - npcX;
-    const dy = this.playerY - npcY;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    
-    // Определяем агрессивность по disposition
-    const isAggressive = npc.disposition < 0;
-    const agroRadius = isAggressive ? 200 : 100;
-    
-    // Машина состояний
-    if (distance <= 50) {
-      // В зоне атаки
-      if (state !== 'attack') {
-        this.npcStates.set(npc.id, 'attack');
-        // Останавливаем движение при атаке
-        sprite.stopMovement();
-      }
-    } else if (distance <= agroRadius && isAggressive) {
-      // В зоне агрессии
-      if (state !== 'chase') {
-        this.npcStates.set(npc.id, 'chase');
-      }
-      // Двигаемся к игроку (speed is scaled by moveNPCTowards)
-      this.moveNPCTowards(npc, this.playerX, this.playerY, BASE_NPC_SPEED);
-    } else {
-      // Патрулирование
-      if (state !== 'patrol') {
-        this.npcStates.set(npc.id, 'patrol');
-      }
-      // Останавливаем движение вне зоны агрессии
-      sprite.stopMovement();
-    }
+    // AI обновление теперь только на сервере!
+    // Сервер отправляет npc:action события для:
+    // - move/chase - движение к цели
+    // - attack - атака
+    // - orient - поворот к цели
+    // - idle - ожидание
+    // - patrol - патрулирование
   }
   
   /**
@@ -1358,6 +1326,15 @@ export class LocationScene extends BaseScene {
     this.player.setPosition(this.playerPhysicsBody.x, this.playerPhysicsBody.y);
     this.playerX = this.playerPhysicsBody.x;
     this.playerY = this.playerPhysicsBody.y;
+    
+    // === PHASE 5: Send position to server (throttled) ===
+    if (isMoving) {
+      // Throttle: send every 200ms
+      if (!this._lastMoveSend || Date.now() - this._lastMoveSend > 200) {
+        this.sendPlayerMove(this.playerX, this.playerY);
+        this._lastMoveSend = Date.now();
+      }
+    }
     
     // === Обновляем NPC Group ===
     if (this.npcGroup) {

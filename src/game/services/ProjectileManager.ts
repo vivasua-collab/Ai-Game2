@@ -103,6 +103,9 @@ export class ProjectileManager {
   
   /**
    * Обработка попадания снаряда по NPC
+   * 
+   * ВАЖНО: Урон применяется на СЕРВЕРЕ, клиент только отображает!
+   * Отправляем player:attack на WebSocket сервер.
    */
   private onProjectileHit(
     projectile: Phaser.Physics.Arcade.Sprite,
@@ -116,8 +119,9 @@ export class ProjectileManager {
     if (hitResult) {
       console.log(`[ProjectileManager] Hit: ${proj.techniqueId} → ${npc.npcName} for ${hitResult.damage} damage (${hitResult.damageZone})`);
       
-      // Применяем урон NPC
-      npc.takeDamage(hitResult.damage, proj.element);
+      // === ВАЖНО: Урон отправляется на СЕРВЕР через HTTP API ===
+      // Combat API применит урон и вернёт новое HP
+      this.sendDamageToCombatAPI(npc, proj, hitResult);
       
       // Визуальный эффект попадания
       this.showHitEffect(npc.x, npc.y, proj.element);
@@ -125,7 +129,7 @@ export class ProjectileManager {
       // Показываем число урона
       this.showDamageNumber(npc.x, npc.y - 30, hitResult.damage, proj.element);
       
-      // Отправляем событие на сервер
+      // Отправляем событие на сервер через Event Bus (для истории)
       this.reportDamageToServer(npc, proj, hitResult);
       
       // Callback
@@ -164,6 +168,60 @@ export class ProjectileManager {
       );
     } catch (error) {
       console.warn('[ProjectileManager] Failed to report damage:', error);
+    }
+  }
+  
+  /**
+   * Отправить урон на Combat API (HTTP)
+   * 
+   * Заменяет WebSocket player:attack на HTTP запрос к /api/combat
+   */
+  private async sendDamageToCombatAPI(
+    npc: NPCSprite,
+    projectile: TechniqueProjectile,
+    hitResult: HitResult
+  ): Promise<void> {
+    try {
+      const response = await fetch('/api/combat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'combat:hit',
+          attackerId: 'player',
+          targetId: npc.npcId,
+          damage: hitResult.damage,
+          techniqueLevel: 1, // TODO: get from technique
+          attackerLevel: 1,  // TODO: get from player
+          element: projectile.element,
+          isUltimate: false,
+        }),
+      });
+      
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          // Обновляем HP NPC из ответа сервера
+          if (result.targetHp !== undefined) {
+            npc.currentHp = result.targetHp;
+            npc.updateHpBar();
+          }
+          
+          // NPC умер
+          if (result.isDead) {
+            npc.onDeath();
+          }
+          
+          console.log(`[ProjectileManager] Combat API confirmed: ${hitResult.damage} damage, HP: ${result.targetHp}`);
+        }
+      } else {
+        // Fallback: применяем урон локально
+        console.warn('[ProjectileManager] Combat API failed, applying damage locally');
+        npc.takeDamage(hitResult.damage, projectile.element);
+      }
+    } catch (error) {
+      console.warn('[ProjectileManager] Combat API error:', error);
+      // Fallback: применяем урон локально
+      npc.takeDamage(hitResult.damage, projectile.element);
     }
   }
   

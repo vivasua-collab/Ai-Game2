@@ -514,6 +514,246 @@ export class NPCSprite extends Phaser.Physics.Arcade.Sprite {
     return this.spinalController?.getDebugInfo() || null;
   }
   
+  // ==================== SERVER ACTION EXECUTOR ====================
+  
+  /**
+   * Выполнить действие, полученное от сервера
+   * 
+   * Это основной метод для выполнения действий в серверной архитектуре.
+   * Сервер вычисляет AI, клиент только отображает.
+   */
+  public executeServerAction(action: {
+    type: string;
+    target?: { x: number; y: number } | string;
+    params?: Record<string, unknown>;
+    startTime: number;
+    duration: number;
+  }): void {
+    if (this.isDead) return;
+    
+    console.log(`[NPCSprite:${this.npcName}] Server action: ${action.type}`);
+    
+    switch (action.type) {
+      case 'move':
+      case 'chase':
+        if (action.target && typeof action.target === 'object') {
+          this.performServerMove(action.target, action.params);
+        }
+        break;
+        
+      case 'attack':
+        if (action.target && typeof action.target === 'object') {
+          this.performServerAttack(action.target, action.params);
+        }
+        break;
+        
+      case 'dodge':
+        this.performServerDodge(action.params);
+        break;
+        
+      case 'flee':
+        if (action.target && typeof action.target === 'object') {
+          this.performServerFlee(action.target, action.params);
+        }
+        break;
+        
+      case 'flinch':
+        this.performFlinch(action.params || {});
+        break;
+        
+      case 'idle':
+        this.performServerIdle();
+        break;
+        
+      case 'patrol':
+        if (action.target && typeof action.target === 'object') {
+          this.performServerPatrol(action.target, action.params);
+        }
+        break;
+        
+      case 'orient':
+        if (action.target && typeof action.target === 'object') {
+          this.performServerOrient(action.target);
+        }
+        break;
+        
+      default:
+        console.warn(`[NPCSprite:${this.npcName}] Unknown server action: ${action.type}`);
+    }
+  }
+  
+  /**
+   * Серверное движение
+   */
+  private performServerMove(target: { x: number; y: number }, params?: Record<string, unknown>): void {
+    const speed = (params?.speed as number) || 100;
+    this.aiState = 'chase';
+    this.moveTo(target.x, target.y, speed);
+  }
+  
+  /**
+   * Серверная атака
+   */
+  private performServerAttack(target: { x: number; y: number }, params?: Record<string, unknown>): void {
+    this.aiState = 'attack';
+    
+    // Поворачиваемся к цели
+    const angle = Math.atan2(target.y - this.y, target.x - this.x) * 180 / Math.PI;
+    this.setDirection(angle);
+    
+    // Визуальный эффект атаки
+    this.scene.tweens.add({
+      targets: this.bodyCircle,
+      scale: 1.3,
+      duration: 100,
+      yoyo: true,
+      onComplete: () => {
+        this.aiState = 'idle';
+      },
+    });
+  }
+  
+  /**
+   * Серверное уклонение
+   */
+  private performServerDodge(params?: Record<string, unknown>): void {
+    const direction = params?.direction as { x: number; y: number } | undefined;
+    const speed = (params?.speed as number) || 300;
+    
+    if (direction) {
+      this.setVelocity(direction.x * speed, direction.y * speed);
+      
+      this.scene.tweens.add({
+        targets: this,
+        alpha: 0.5,
+        duration: 100,
+        yoyo: true,
+        onComplete: () => {
+          this.setAlpha(0);
+          this.setVelocity(0, 0);
+        },
+      });
+    }
+  }
+  
+  /**
+   * Серверное бегство
+   */
+  private performServerFlee(target: { x: number; y: number }, params?: Record<string, unknown>): void {
+    const speed = (params?.speed as number) || 200;
+    this.aiState = 'flee';
+    
+    // Бежим от цели
+    const dx = this.x - target.x;
+    const dy = this.y - target.y;
+    const len = Math.sqrt(dx * dx + dy * dy) || 1;
+    
+    this.setVelocity((dx / len) * speed, (dy / len) * speed);
+    
+    this.scene.time.delayedCall(1000, () => {
+      this.setVelocity(0, 0);
+      this.aiState = 'idle';
+    });
+  }
+  
+  /**
+   * Серверный idle
+   */
+  private performServerIdle(): void {
+    this.aiState = 'idle';
+    this.setVelocity(0, 0);
+  }
+  
+  /**
+   * Серверный патруль
+   */
+  private performServerPatrol(target: { x: number; y: number }, params?: Record<string, unknown>): void {
+    const speed = (params?.speed as number) || 50;
+    this.aiState = 'patrol';
+    this.patrolTarget = target;
+    this.moveTo(target.x, target.y, speed);
+  }
+  
+  /**
+   * Серверная ориентация (поворот к цели без движения)
+   */
+  private performServerOrient(target: { x: number; y: number }): void {
+    const angle = Math.atan2(target.y - this.y, target.x - this.x) * 180 / Math.PI;
+    this.setDirection(angle);
+    this.setVelocity(0, 0);
+    
+    // Визуальный эффект "внимания"
+    this.scene.tweens.add({
+      targets: this.bodyCircle,
+      alpha: 0.7,
+      duration: 100,
+      yoyo: true,
+    });
+  }
+  
+  /**
+   * Применить обновление состояния от сервера
+   * 
+   * Используется для синхронизации HP, позиции и других данных.
+   * Сервер - источник истины!
+   */
+  public applyServerUpdate(changes: {
+    health?: number;
+    hp?: number;
+    maxHp?: number;
+    x?: number;
+    y?: number;
+    aiState?: string;
+    isActive?: boolean;
+  }): void {
+    // Обновляем HP
+    if (changes.health !== undefined || changes.hp !== undefined) {
+      const newHp = changes.health ?? changes.hp ?? this.hp;
+      const oldHp = this.hp;
+      this.hp = newHp;
+      
+      if (changes.maxHp !== undefined) {
+        this.maxHp = changes.maxHp;
+      }
+      
+      // Обновляем HP бар
+      this.updateHpBar();
+      
+      // Визуальный эффект урона
+      if (newHp < oldHp) {
+        this.bodyCircle.setFillStyle(0xff4444, 0.9);
+        this.scene.time.delayedCall(100, () => {
+          if (this.bodyCircle?.active) {
+            this.bodyCircle.setFillStyle(this.getBodyColor(), 0.9);
+          }
+        });
+      }
+      
+      console.log(`[NPCSprite:${this.npcName}] HP updated: ${oldHp} → ${newHp}/${this.maxHp}`);
+      
+      // Проверка смерти
+      if (this.hp <= 0 && !this.isDead) {
+        this.die('server');
+      }
+    }
+    
+    // Обновляем позицию (если сервер её изменил)
+    if (changes.x !== undefined && changes.y !== undefined) {
+      this.setPosition(changes.x, changes.y);
+      this.syncVisualPosition();
+    }
+    
+    // Обновляем AI состояние
+    if (changes.aiState !== undefined) {
+      this.aiState = changes.aiState as any;
+    }
+    
+    // Обновляем активность
+    if (changes.isActive !== undefined) {
+      // Можно добавить визуальные эффекты при активации/деактивации
+    }
+  }
+  
   // ==================== ФИЗИКА ====================
   
   /**
