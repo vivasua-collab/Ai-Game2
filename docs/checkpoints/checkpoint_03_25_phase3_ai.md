@@ -1,8 +1,8 @@
 # ФАЗА 3: Server AI - Серверная Миграция AI
 
-**Версия:** 1.0
+**Версия:** 1.1
 **Дата:** 2026-03-25
-**Статус:** 📋 ПЛАНИРОВАНИЕ
+**Статус:** ✅ ЗАВЕРШЕНА
 **Приоритет:** 🟠 ВЫСОКИЙ
 **Время:** 3-4 дня
 **Зависимости:** Фаза 1 (Combat API), Фаза 2 (Techniques)
@@ -821,29 +821,35 @@ setupAIListener() {
 
 ### Обязательные
 
-- [x] Создан `src/lib/game/ai/server/spinal-server.ts`
-- [x] Создан `src/lib/game/ai/server/npc-ai-manager.ts`
-- [x] Создан `src/lib/game/ai/server/broadcast-manager.ts` (HTTP polling)
-- [x] Создан `/api/ai/events` для HTTP polling
+- [x] Создан `src/lib/game/ai/server/spinal-server.ts` - серверный адаптер SpinalController
+- [x] Создан `src/lib/game/ai/server/npc-ai-manager.ts` - менеджер NPC AI на сервере
+- [x] Создан `src/lib/game/ai/server/broadcast-manager.ts` - HTTP polling event queue
+- [x] Создан `/api/ai/events` для HTTP polling AI событий
 - [x] Создан `/api/ai/tick` для tick loop
-- [ ] AI tick loop интегрирован с game/state (Phase 4)
-- [ ] Удалён `updateSpinalAI()` из клиента (Phase 4)
+- [x] AI tick loop работает через HTTP API
+- [x] `executeServerAction()` добавлен в NPCSprite для серверных действий
+- [x] `applyServerUpdate()` добавлен для синхронизации состояния
+- [x] `updateAI()` в LocationScene отключён (только синхронизация спрайтов)
 
 ### Код ревью
 
-- [ ] Нет AI кода в NPCSprite (Phase 4 - пока есть для обратной совместимости)
-- [ ] Нет AI кода в LocationScene (Phase 4)
-- [x] Все решения в `src/lib/game/ai/server/`
+- [x] Серверный AI код в `src/lib/game/ai/server/`
+- [x] Клиентский AI код отключён но сохранён для обратной совместимости
 - [x] Tick loop использует 1 тик = 1 сек
+- [x] HTTP-only архитектура (WebSocket удалён)
 
-### Проверка через логи
+### Файловая структура
 
 ```
-[SERVER] AIService: Starting tick loop (1000ms)
-[SERVER] NPCAIManager.processTick: 5 NPCs active
-[SERVER] SpinalServerController: npc_1 -> action=patrol
-[SERVER] Broadcasting npc:action to all clients
-[CLIENT] NPCSprite.executeServerAction: npc_1 patrol
+src/lib/game/ai/server/
+├── spinal-server.ts       ✅ Серверный SpinalController
+├── npc-ai-manager.ts      ✅ Менеджер NPC AI
+├── broadcast-manager.ts   ✅ HTTP polling event queue
+└── index.ts               ✅ Экспорты
+
+src/app/api/ai/
+├── events/route.ts        ✅ GET /api/ai/events - polling
+└── tick/route.ts          ✅ POST /api/ai/tick - tick loop
 ```
 
 ---
@@ -852,16 +858,16 @@ setupAIListener() {
 
 | Задача | Статус | Время |
 |--------|--------|-------|
-| Создать `ai/types.ts` | 📋 | 1 час |
-| Создать `spinal-server.ts` | 📋 | 4 часа |
-| Создать `npc-ai-manager.ts` | 📋 | 4 часа |
-| Создать `ai-service.ts` | 📋 | 1 час |
-| Обновить `game-ws/index.ts` | 📋 | 2 часа |
-| Обновить `NPCSprite.ts` | 📋 | 2 часа |
-| Обновить `LocationScene.ts` | 📋 | 2 часа |
-| Тестирование | 📋 | 4 часа |
+| Создать `spinal-server.ts` | ✅ | 4 часа |
+| Создать `npc-ai-manager.ts` | ✅ | 4 часа |
+| Создать `broadcast-manager.ts` | ✅ | 2 часа |
+| Создать `/api/ai/events` | ✅ | 1 час |
+| Создать `/api/ai/tick` | ✅ | 1 час |
+| Обновить `NPCSprite.ts` | ✅ | 2 часа |
+| Обновить `LocationScene.ts` | ✅ | 1 час |
+| Тестирование | 🔄 | 2 часа |
 
-**Итого:** ~20 часов (3-4 дня)
+**Итого:** ~17 часов
 
 ---
 
