@@ -1,0 +1,108 @@
+{
+  "version": "2.0",
+  "count": 2,
+  "techniques": [
+    {
+      "id": "SN000001",
+      "name": "Базовый Восприятие",
+      "nameEn": "Базовый Восприятие",
+      "description": "Базовый Восприятие — техника sensory уровня 1. Grade: refined. Урон: 38. Дальность: 5м.",
+      "type": "sensory",
+      "element": "neutral",
+      "level": 1,
+      "grade": "refined",
+      "qiCost": 32,
+      "baseQiCost": 32,
+      "baseDamage": 32,
+      "baseRange": 5,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 38,
+        "finalQiCost": 32,
+        "finalRange": 5,
+        "formula": "32 × 1.2 = 38",
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8,
+            "duration": 6
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffType": "speed",
+          "buffAmount": 8,
+          "buffDuration": 6
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "intelligence": 5
+      },
+      "meta": {
+        "seed": 1774114254491,
+        "template": "sensory_base_neutral",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 4
+      }
+    },
+    {
+      "id": "SN000002",
+      "name": "Восприятие вулканический",
+      "nameEn": "Восприятие Вулканический",
+      "description": "Восприятие вулканический — техника sensory элемента fire уровня 1. Grade: common. Урон: 32. Дальность: 5м.",
+      "type": "sensory",
+      "element": "fire",
+      "level": 1,
+      "grade": "common",
+      "qiCost": 32,
+      "baseQiCost": 32,
+      "baseDamage": 32,
+      "baseRange": 5,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 32,
+        "finalQiCost": 32,
+        "finalRange": 5,
+        "formula": "32 × 1 = 32",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "intelligence": 3
+      },
+      "meta": {
+        "seed": 1774114254492,
+        "template": "sensory_base_fire",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 4
+      }
+    }
+  ]
+}

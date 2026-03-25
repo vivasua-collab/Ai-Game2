@@ -1,0 +1,126 @@
+{
+  "version": "2.0",
+  "count": 2,
+  "techniques": [
+    {
+      "id": "SN000003",
+      "name": "Обнаружение морской",
+      "nameEn": "Обнаружение Морской",
+      "description": "Обнаружение морской — техника sensory элемента water уровня 5. Grade: perfect. Урон: 716. Дальность: 5м.",
+      "type": "sensory",
+      "element": "water",
+      "level": 5,
+      "grade": "perfect",
+      "qiCost": 512,
+      "baseQiCost": 512,
+      "baseDamage": 512,
+      "baseRange": 5,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 716,
+        "finalQiCost": 512,
+        "finalRange": 5,
+        "formula": "512 × 1.4 = 716",
+        "activeEffects": [
+          {
+            "type": "speed",
+            "value": 0
+          },
+          {
+            "type": "buff",
+            "value": 20,
+            "duration": 5
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "speed": true,
+          "buff": true
+        },
+        "effectValues": {
+          "speedBonus": 38,
+          "buffType": "crit_chance",
+          "buffAmount": 20,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "intelligence": 19
+      },
+      "meta": {
+        "seed": 1774114254493,
+        "template": "sensory_base_water",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 4
+      }
+    },
+    {
+      "id": "SN000004",
+      "name": "Каменный Анализ",
+      "nameEn": "Каменный Анализ",
+      "description": "Каменный Анализ — техника sensory элемента earth уровня 5. Grade: common. Урон: 512. Дальность: 5м.",
+      "type": "sensory",
+      "element": "earth",
+      "level": 5,
+      "grade": "common",
+      "qiCost": 512,
+      "baseQiCost": 512,
+      "baseDamage": 512,
+      "baseRange": 5,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 512,
+        "finalQiCost": 512,
+        "finalRange": 5,
+        "formula": "512 × 1 = 512",
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 20,
+            "duration": 4
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffType": "damage_percent",
+          "buffAmount": 20,
+          "buffDuration": 4
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "intelligence": 15
+      },
+      "meta": {
+        "seed": 1774114254494,
+        "template": "sensory_base_earth",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 4
+      }
+    }
+  ]
+}

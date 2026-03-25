@@ -1,0 +1,1033 @@
+{
+  "version": "2.0",
+  "category": "story",
+  "count": 20,
+  "npcs": [
+    {
+      "id": "NPC_PRESET_00001",
+      "isPreset": true,
+      "name": "Мастер Фэн",
+      "title": "Старейшина Секты Небесного Меча",
+      "nameEn": "Master Feng",
+      "age": 156,
+      "gender": "male",
+      "backstory": "Бывший глава секты Небесного Меча, ушедший на покой после достижения 9-го уровня культивации. Теперь обучает молодых учеников.",
+      "personality": {
+        "traits": ["Мудрость", "Терпение", "Справедливость"],
+        "motivation": "передача знаний",
+        "dominantEmotion": "спокойствие",
+        "speechStyle": "официально-поучительный"
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "elder",
+      "stats": {
+        "strength": 45,
+        "agility": 38,
+        "intelligence": 52,
+        "conductivity": 48,
+        "vitality": 42
+      },
+      "cultivation": {
+        "level": 9,
+        "subLevel": 5,
+        "coreCapacity": 150000,
+        "currentQi": 120000,
+        "coreQuality": 95,
+        "baseVolume": 12500,
+        "qiDensity": 256,
+        "meridianConductivity": 12.5
+      },
+      "sectRole": "elder",
+      "techniques": ["TC_000001", "TC_000002"],
+      "equipment": {
+        "weapon": "MW_000001",
+        "armor": "AR_000001"
+      },
+      "resources": {
+        "spiritStones": 5000,
+        "contributionPoints": 10000
+      },
+      "category": "story",
+      "rarity": "legendary",
+      "importance": "critical",
+      "tags": ["mentor", "elder", "cultivation_master"],
+      "relations": {
+        "defaultPlayerDisposition": 50
+      }
+    },
+    {
+      "id": "NPC_PRESET_00002",
+      "isPreset": true,
+      "name": "Ли Вэй",
+      "title": "Глава дисциплинырного зала",
+      "nameEn": "Li Wei",
+      "age": 89,
+      "gender": "male",
+      "backstory": "Строгий надзиратель за дисциплиной в секте. Известен своей суровостью, но справедливостью.",
+      "personality": {
+        "traits": ["Строгость", "Справедливость", "Преданность"],
+        "motivation": "поддержание порядка",
+        "dominantEmotion": "серьёзность",
+        "speechStyle": "краткий и командный"
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "guard",
+      "stats": {
+        "strength": 42,
+        "agility": 35,
+        "intelligence": 28,
+        "conductivity": 38,
+        "vitality": 45
+      },
+      "cultivation": {
+        "level": 7,
+        "subLevel": 3,
+        "coreCapacity": 85000,
+        "currentQi": 65000,
+        "coreQuality": 85,
+        "baseVolume": 7200,
+        "qiDensity": 128,
+        "meridianConductivity": 10.2
+      },
+      "sectRole": "guard",
+      "techniques": ["TC_000003", "TC_000004"],
+      "equipment": {
+        "weapon": "MW_000002",
+        "armor": "AR_000002"
+      },
+      "resources": {
+        "spiritStones": 2000,
+        "contributionPoints": 5000
+      },
+      "category": "story",
+      "rarity": "rare",
+      "importance": "important",
+      "tags": ["discipline", "combat", "sect_official"],
+      "relations": {
+        "defaultPlayerDisposition": 30
+      }
+    },
+    {
+      "id": "NPC_PRESET_00003",
+      "isPreset": true,
+      "name": "Сю Лань",
+      "title": "Ученица внутреннего круга",
+      "nameEn": "Xu Lan",
+      "age": 19,
+      "gender": "female",
+      "backstory": "Талантливая молодая культиватор, достигшая 4-го уровня в юном возрасте. Помогает новичкам освоиться.",
+      "personality": {
+        "traits": ["Доброта", "Любопытство", "Оптимизм"],
+        "motivation": "помощь другим",
+        "dominantEmotion": "радость",
+        "speechStyle": "дружелюбный и неформальный"
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "inner_disciple",
+      "stats": {
+        "strength": 18,
+        "agility": 25,
+        "intelligence": 30,
+        "conductivity": 28,
+        "vitality": 20
+      },
+      "cultivation": {
+        "level": 4,
+        "subLevel": 7,
+        "coreCapacity": 15000,
+        "currentQi": 12000,
+        "coreQuality": 75,
+        "baseVolume": 1400,
+        "qiDensity": 16,
+        "meridianConductivity": 6.8
+      },
+      "sectRole": "inner_disciple",
+      "techniques": ["TC_000005"],
+      "equipment": {
+        "weapon": null,
+        "armor": "AR_000003"
+      },
+      "resources": {
+        "spiritStones": 500,
+        "contributionPoints": 800
+      },
+      "category": "story",
+      "rarity": "uncommon",
+      "importance": "normal",
+      "tags": ["mentor", "fellow_disciple", "genius"],
+      "relations": {
+        "defaultPlayerDisposition": 65
+      }
+    },
+    {
+      "id": "NPC_PRESET_00004",
+      "isPreset": true,
+      "name": "Чжан Мин",
+      "title": "Управляющий хранилищем",
+      "nameEn": "Zhang Ming",
+      "age": 67,
+      "gender": "male",
+      "backstory": "Бывший культиватор, потерявший способность к культивации после травмы. Теперь управляет хранилищем секты.",
+      "personality": {
+        "traits": ["Осторожность", "Практичность", "Ностальгия"],
+        "motivation": "сохранение ресурсов",
+        "dominantEmotion": "меланхолия",
+        "speechStyle": "подробный и осторожный"
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "merchant",
+      "stats": {
+        "strength": 12,
+        "agility": 10,
+        "intelligence": 35,
+        "conductivity": 5,
+        "vitality": 15
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 0,
+        "coreCapacity": 3000,
+        "currentQi": 500,
+        "coreQuality": 30,
+        "baseVolume": 280,
+        "qiDensity": 4,
+        "meridianConductivity": 2.1
+      },
+      "sectRole": "servant",
+      "techniques": [],
+      "equipment": {},
+      "resources": {
+        "spiritStones": 10000,
+        "contributionPoints": 2000
+      },
+      "category": "story",
+      "rarity": "common",
+      "importance": "normal",
+      "tags": ["merchant", "storage", "former_cultivator"],
+      "relations": {
+        "defaultPlayerDisposition": 40
+      }
+    },
+    {
+      "id": "NPC_PRESET_00005",
+      "isPreset": true,
+      "name": "Хуа Мэй",
+      "title": "Целительница секты",
+      "nameEn": "Hua Mei",
+      "age": 45,
+      "gender": "female",
+      "backstory": "Мастер целительных техник, обучавшаяся в знаменитой долине целителей. Лечит раненых учеников.",
+      "personality": {
+        "traits": ["Сострадание", "Терпение", "Знание"],
+        "motivation": "исцеление",
+        "dominantEmotion": "забота",
+        "speechStyle": "мягкий и успокаивающий"
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "alchemist",
+      "stats": {
+        "strength": 15,
+        "agility": 20,
+        "intelligence": 42,
+        "conductivity": 35,
+        "vitality": 22
+      },
+      "cultivation": {
+        "level": 5,
+        "subLevel": 8,
+        "coreCapacity": 28000,
+        "currentQi": 22000,
+        "coreQuality": 82,
+        "baseVolume": 2400,
+        "qiDensity": 32,
+        "meridianConductivity": 8.5
+      },
+      "sectRole": "instructor",
+      "techniques": ["TC_000006", "TC_000007"],
+      "equipment": {
+        "accessory1": "AC_000001"
+      },
+      "resources": {
+        "spiritStones": 3000,
+        "contributionPoints": 6000
+      },
+      "category": "story",
+      "rarity": "rare",
+      "importance": "important",
+      "tags": ["healer", "alchemist", "teacher"],
+      "relations": {
+        "defaultPlayerDisposition": 70
+      }
+    },
+    {
+      "id": "NPC_PRESET_00006",
+      "isPreset": true,
+      "name": "Ван Цзе",
+      "title": "Кузнец секты",
+      "nameEn": "Wang Jie",
+      "age": 78,
+      "gender": "male",
+      "backstory": "Мастер-кузнец, создающий оружие и доспехи для секты. Известен своим умением работать с духовными материалами.",
+      "personality": {
+        "traits": ["Трудолюбие", "Мастерство", "Гордость"],
+        "motivation": "создание совершенства",
+        "dominantEmotion": "удовлетворение",
+        "speechStyle": "грубый но честный"
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "blacksmith",
+      "stats": {
+        "strength": 38,
+        "agility": 15,
+        "intelligence": 25,
+        "conductivity": 20,
+        "vitality": 40
+      },
+      "cultivation": {
+        "level": 4,
+        "subLevel": 2,
+        "coreCapacity": 12000,
+        "currentQi": 8000,
+        "coreQuality": 65,
+        "baseVolume": 1100,
+        "qiDensity": 8,
+        "meridianConductivity": 5.5
+      },
+      "sectRole": "servant",
+      "techniques": ["TC_000008"],
+      "equipment": {
+        "weapon": "MW_000003"
+      },
+      "resources": {
+        "spiritStones": 8000,
+        "contributionPoints": 4000
+      },
+      "category": "story",
+      "rarity": "uncommon",
+      "importance": "normal",
+      "tags": ["craftsman", "blacksmith", "equipment"],
+      "relations": {
+        "defaultPlayerDisposition": 45
+      }
+    },
+    {
+      "id": "NPC_PRESET_00007",
+      "isPreset": true,
+      "name": "Чэнь Юй",
+      "title": "Тайный агент",
+      "nameEn": "Chen Yu",
+      "age": 32,
+      "gender": "male",
+      "backstory": "Загадочная фигура, работающая на руководство секты. Выполняет секретные миссии и собирает информацию.",
+      "personality": {
+        "traits": ["Хитрость", "Наблюдательность", "Преданность"],
+        "motivation": "информация",
+        "dominantEmotion": "настороженность",
+        "speechStyle": "краткий и загадочный"
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "assassin",
+      "stats": {
+        "strength": 28,
+        "agility": 42,
+        "intelligence": 35,
+        "conductivity": 30,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 6,
+        "subLevel": 4,
+        "coreCapacity": 45000,
+        "currentQi": 35000,
+        "coreQuality": 78,
+        "baseVolume": 3800,
+        "qiDensity": 64,
+        "meridianConductivity": 9.2
+      },
+      "sectRole": "inner_disciple",
+      "techniques": ["TC_000009", "TC_000010"],
+      "equipment": {
+        "weapon": "MW_000004",
+        "armor": null
+      },
+      "resources": {
+        "spiritStones": 1500,
+        "contributionPoints": 3000
+      },
+      "category": "story",
+      "rarity": "rare",
+      "importance": "important",
+      "tags": ["spy", "assassin", "stealth"],
+      "relations": {
+        "defaultPlayerDisposition": 20
+      }
+    },
+    {
+      "id": "NPC_PRESET_00008",
+      "isPreset": true,
+      "name": "Линь Фэй",
+      "title": "Библиотекарь",
+      "nameEn": "Lin Fei",
+      "age": 234,
+      "gender": "male",
+      "backstory": "Древний старец, хранящий знания секты тысячи лет. Знает секретные техники и истории мира.",
+      "personality": {
+        "traits": ["Мудрость", "Память", "Загадочность"],
+        "motivation": "сохранение знаний",
+        "dominantEmotion": "любопытство",
+        "speechStyle": "древний и поэтичный"
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "scholar",
+      "stats": {
+        "strength": 8,
+        "agility": 5,
+        "intelligence": 65,
+        "conductivity": 55,
+        "vitality": 12
+      },
+      "cultivation": {
+        "level": 8,
+        "subLevel": 0,
+        "coreCapacity": 120000,
+        "currentQi": 100000,
+        "coreQuality": 92,
+        "baseVolume": 10000,
+        "qiDensity": 128,
+        "meridianConductivity": 11.8
+      },
+      "sectRole": "elder",
+      "techniques": ["TC_000011", "TC_000012", "TC_000013"],
+      "equipment": {},
+      "resources": {
+        "spiritStones": 500,
+        "contributionPoints": 15000
+      },
+      "category": "story",
+      "rarity": "legendary",
+      "importance": "critical",
+      "tags": ["librarian", "ancient", "knowledge_keeper"],
+      "relations": {
+        "defaultPlayerDisposition": 55
+      }
+    },
+    {
+      "id": "NPC_PRESET_00009",
+      "isPreset": true,
+      "name": "Бай Лин",
+      "title": "Травница",
+      "nameEn": "Bai Ling",
+      "age": 28,
+      "gender": "female",
+      "backstory": "Молодая травница, собирающая редкие растения в опасных регионах. Знает свойства всех трав мира.",
+      "personality": {
+        "traits": ["Природность", "Знание", "Храбрость"],
+        "motivation": "изучение природы",
+        "dominantEmotion": "восторг",
+        "speechStyle": "увлечённый и подробный"
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "herbalist",
+      "stats": {
+        "strength": 15,
+        "agility": 28,
+        "intelligence": 38,
+        "conductivity": 22,
+        "vitality": 18
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 5,
+        "coreCapacity": 8000,
+        "currentQi": 6000,
+        "coreQuality": 70,
+        "baseVolume": 720,
+        "qiDensity": 8,
+        "meridianConductivity": 5.8
+      },
+      "sectRole": "outer_disciple",
+      "techniques": ["TC_000014"],
+      "equipment": {},
+      "resources": {
+        "spiritStones": 300,
+        "contributionPoints": 400
+      },
+      "category": "story",
+      "rarity": "uncommon",
+      "importance": "normal",
+      "tags": ["herbalist", "gatherer", "nature"],
+      "relations": {
+        "defaultPlayerDisposition": 60
+      }
+    },
+    {
+      "id": "NPC_PRESET_00010",
+      "isPreset": true,
+      "name": "Чжао Ху",
+      "title": "Инструктор по боевым искусствам",
+      "nameEn": "Zhao Hu",
+      "age": 56,
+      "gender": "male",
+      "backstory": "Бывший наёмник, нашедший покой в секте. Обучает новичков основам боя.",
+      "personality": {
+        "traits": ["Дисциплина", "Опыт", "Твёрдость"],
+        "motivation": "обучение воинов",
+        "dominantEmotion": "решимость",
+        "speechStyle": "командный и чёткий"
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "instructor",
+      "stats": {
+        "strength": 40,
+        "agility": 32,
+        "intelligence": 18,
+        "conductivity": 28,
+        "vitality": 45
+      },
+      "cultivation": {
+        "level": 5,
+        "subLevel": 2,
+        "coreCapacity": 22000,
+        "currentQi": 18000,
+        "coreQuality": 68,
+        "baseVolume": 1900,
+        "qiDensity": 16,
+        "meridianConductivity": 7.2
+      },
+      "sectRole": "instructor",
+      "techniques": ["TC_000015", "TC_000016"],
+      "equipment": {
+        "weapon": "MW_000005"
+      },
+      "resources": {
+        "spiritStones": 1200,
+        "contributionPoints": 2500
+      },
+      "category": "story",
+      "rarity": "uncommon",
+      "importance": "important",
+      "tags": ["combat_teacher", "instructor", "martial_arts"],
+      "relations": {
+        "defaultPlayerDisposition": 40
+      }
+    },
+    {
+      "id": "NPC_PRESET_00011",
+      "isPreset": true,
+      "name": "Су Мин",
+      "title": "Кандидат в ученики",
+      "nameEn": "Su Ming",
+      "age": 17,
+      "gender": "male",
+      "backstory": "Недавно принятый кандидат, такой же как игрок. Стремится доказать свою ценность секте.",
+      "personality": {
+        "traits": ["Амбиции", "Упорство", "Зависть"],
+        "motivation": "превосходство",
+        "dominantEmotion": "решимость",
+        "speechStyle": "конкурентный и напряжённый"
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "candidate",
+      "stats": {
+        "strength": 14,
+        "agility": 16,
+        "intelligence": 15,
+        "conductivity": 12,
+        "vitality": 14
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 0,
+        "coreCapacity": 1000,
+        "currentQi": 0,
+        "coreQuality": 55,
+        "baseVolume": 100,
+        "qiDensity": 1,
+        "meridianConductivity": 2.5
+      },
+      "sectRole": "candidate",
+      "techniques": [],
+      "equipment": {},
+      "resources": {
+        "spiritStones": 10,
+        "contributionPoints": 0
+      },
+      "category": "story",
+      "rarity": "common",
+      "importance": "normal",
+      "tags": ["candidate", "rival", "fellow_disciple"],
+      "relations": {
+        "defaultPlayerDisposition": 25
+      }
+    },
+    {
+      "id": "NPC_PRESET_00012",
+      "isPreset": true,
+      "name": "Юнь Ши",
+      "title": "Мастер формаций",
+      "nameEn": "Yun Shi",
+      "age": 112,
+      "gender": "female",
+      "backstory": "Эксперт по формациям, создавшая защитные барьеры секты. Редко покидает свою башню.",
+      "personality": {
+        "traits": ["Интеллект", "Изоляция", "Совершенство"],
+        "motivation": "совершенствование искусства",
+        "dominantEmotion": "сосредоточенность",
+        "speechStyle": "технический и отвлечённый"
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "formation_master",
+      "stats": {
+        "strength": 10,
+        "agility": 12,
+        "intelligence": 58,
+        "conductivity": 48,
+        "vitality": 15
+      },
+      "cultivation": {
+        "level": 7,
+        "subLevel": 8,
+        "coreCapacity": 95000,
+        "currentQi": 85000,
+        "coreQuality": 88,
+        "baseVolume": 8000,
+        "qiDensity": 128,
+        "meridianConductivity": 10.8
+      },
+      "sectRole": "elder",
+      "techniques": ["TC_000017", "TC_000018"],
+      "equipment": {},
+      "resources": {
+        "spiritStones": 20000,
+        "contributionPoints": 8000
+      },
+      "category": "story",
+      "rarity": "legendary",
+      "importance": "important",
+      "tags": ["formation", "elder", "specialist"],
+      "relations": {
+        "defaultPlayerDisposition": 35
+      }
+    },
+    {
+      "id": "NPC_PRESET_00013",
+      "isPreset": true,
+      "name": "Гуань Юй",
+      "title": "Страж ворот",
+      "nameEn": "Guan Yu",
+      "age": 45,
+      "gender": "male",
+      "backstory": "Верный страж главных ворот секты. Знает всех, кто входит и выходит.",
+      "personality": {
+        "traits": ["Верность", "Бдительность", "Простота"],
+        "motivation": "защита секты",
+        "dominantEmotion": "бдительность",
+        "speechStyle": "простой и прямой"
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "guard",
+      "stats": {
+        "strength": 35,
+        "agility": 22,
+        "intelligence": 12,
+        "conductivity": 18,
+        "vitality": 40
+      },
+      "cultivation": {
+        "level": 4,
+        "subLevel": 5,
+        "coreCapacity": 16000,
+        "currentQi": 12000,
+        "coreQuality": 62,
+        "baseVolume": 1400,
+        "qiDensity": 8,
+        "meridianConductivity": 5.2
+      },
+      "sectRole": "guard",
+      "techniques": ["TC_000019"],
+      "equipment": {
+        "weapon": "MW_000006",
+        "armor": "AR_000004"
+      },
+      "resources": {
+        "spiritStones": 400,
+        "contributionPoints": 600
+      },
+      "category": "story",
+      "rarity": "common",
+      "importance": "minor",
+      "tags": ["guard", "gatekeeper", "loyal"],
+      "relations": {
+        "defaultPlayerDisposition": 45
+      }
+    },
+    {
+      "id": "NPC_PRESET_00014",
+      "isPreset": true,
+      "name": "Мэй Лин",
+      "title": "Повариха секты",
+      "nameEn": "Mei Ling",
+      "age": 52,
+      "gender": "female",
+      "backstory": "Готовит для всей секты уже 30 лет. Её блюда известны своими восстанавливающими свойствами.",
+      "personality": {
+        "traits": ["Забота", "Щедрость", "Традиция"],
+        "motivation": "накормить всех",
+        "dominantEmotion": "тепло",
+        "speechStyle": "материнский и заботливый"
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "cook",
+      "stats": {
+        "strength": 18,
+        "agility": 15,
+        "intelligence": 20,
+        "conductivity": 12,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 8,
+        "coreCapacity": 3500,
+        "currentQi": 2800,
+        "coreQuality": 45,
+        "baseVolume": 320,
+        "qiDensity": 4,
+        "meridianConductivity": 3.5
+      },
+      "sectRole": "servant",
+      "techniques": [],
+      "equipment": {},
+      "resources": {
+        "spiritStones": 200,
+        "contributionPoints": 300
+      },
+      "category": "story",
+      "rarity": "common",
+      "importance": "minor",
+      "tags": ["cook", "servant", "food"],
+      "relations": {
+        "defaultPlayerDisposition": 70
+      }
+    },
+    {
+      "id": "NPC_PRESET_00015",
+      "isPreset": true,
+      "name": "Тянь Лун",
+      "title": "Скрытый мастер",
+      "nameEn": "Tian Long",
+      "age": 500,
+      "gender": "male",
+      "backstory": "Легендарный культиватор, скрывающийся в секте под видом простого слуги. Наблюдает за молодыми талантами.",
+      "personality": {
+        "traits": ["Мудрость", "Скрытность", "Терпение"],
+        "motivation": "поиск наследника",
+        "dominantEmotion": "наблюдательность",
+        "speechStyle": "простой но глубокий"
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "servant",
+      "stats": {
+        "strength": 55,
+        "agility": 50,
+        "intelligence": 60,
+        "conductivity": 58,
+        "vitality": 48
+      },
+      "cultivation": {
+        "level": 9,
+        "subLevel": 9,
+        "coreCapacity": 200000,
+        "currentQi": 180000,
+        "coreQuality": 99,
+        "baseVolume": 16000,
+        "qiDensity": 512,
+        "meridianConductivity": 15.0
+      },
+      "sectRole": "servant",
+      "techniques": ["TC_000020", "TC_000021", "TC_000022"],
+      "equipment": {},
+      "resources": {
+        "spiritStones": 100000,
+        "contributionPoints": 50000
+      },
+      "category": "story",
+      "rarity": "legendary",
+      "importance": "critical",
+      "tags": ["hidden_master", "legend", "observer"],
+      "relations": {
+        "defaultPlayerDisposition": 50
+      }
+    },
+    {
+      "id": "NPC_PRESET_00016",
+      "isPreset": true,
+      "name": "Фэн Юй",
+      "title": "Охотница на монстров",
+      "nameEn": "Feng Yu",
+      "age": 35,
+      "gender": "female",
+      "backstory": "Независимая охотница, работающая на секту по контракту. Специализируется на духах и зверях.",
+      "personality": {
+        "traits": ["Храбрость", "Независимость", "Практичность"],
+        "motivation": "добыча и слава",
+        "dominantEmotion": "азарт",
+        "speechStyle": "прямой и деловой"
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "hunter",
+      "stats": {
+        "strength": 32,
+        "agility": 38,
+        "intelligence": 22,
+        "conductivity": 28,
+        "vitality": 30
+      },
+      "cultivation": {
+        "level": 5,
+        "subLevel": 5,
+        "coreCapacity": 25000,
+        "currentQi": 20000,
+        "coreQuality": 72,
+        "baseVolume": 2100,
+        "qiDensity": 16,
+        "meridianConductivity": 7.0
+      },
+      "sectRole": null,
+      "techniques": ["TC_000023", "TC_000024"],
+      "equipment": {
+        "weapon": "MW_000007",
+        "armor": "AR_000005"
+      },
+      "resources": {
+        "spiritStones": 3500,
+        "contributionPoints": 0
+      },
+      "category": "story",
+      "rarity": "rare",
+      "importance": "normal",
+      "tags": ["hunter", "mercenary", "beast_slayer"],
+      "relations": {
+        "defaultPlayerDisposition": 40
+      }
+    },
+    {
+      "id": "NPC_PRESET_00017",
+      "isPreset": true,
+      "name": "Ло Вэй",
+      "title": "Бродячий торговец",
+      "nameEn": "Luo Wei",
+      "age": 48,
+      "gender": "male",
+      "backstory": "Торговец, путешествующий между сектами. Всегда имеет редкие товары и слухи.",
+      "personality": {
+        "traits": ["Хитрость", "Обаяние", "Жадность"],
+        "motivation": "прибыль",
+        "dominantEmotion": "радушие",
+        "speechStyle": "льстивый и деловой"
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "merchant",
+      "stats": {
+        "strength": 12,
+        "agility": 18,
+        "intelligence": 35,
+        "conductivity": 15,
+        "vitality": 14
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 2,
+        "coreCapacity": 6000,
+        "currentQi": 4000,
+        "coreQuality": 50,
+        "baseVolume": 550,
+        "qiDensity": 4,
+        "meridianConductivity": 4.2
+      },
+      "sectRole": null,
+      "techniques": [],
+      "equipment": {},
+      "resources": {
+        "spiritStones": 50000,
+        "contributionPoints": 0
+      },
+      "category": "story",
+      "rarity": "uncommon",
+      "importance": "normal",
+      "tags": ["merchant", "traveler", "rumors"],
+      "relations": {
+        "defaultPlayerDisposition": 60
+      }
+    },
+    {
+      "id": "NPC_PRESET_00018",
+      "isPreset": true,
+      "name": "Цин Лань",
+      "title": "Дух-хранитель",
+      "nameEn": "Qing Lan",
+      "age": 1000,
+      "gender": "female",
+      "backstory": "Древний дух, охраняющий священное место секты. Говорит загадками и редко вмешивается.",
+      "personality": {
+        "traits": ["Загадочность", "Мудрость", "Отстранённость"],
+        "motivation": "охрана святыни",
+        "dominantEmotion": "спокойствие",
+        "speechStyle": "поэтичный и загадочный"
+      },
+      "speciesId": "spirit",
+      "speciesType": "spirit",
+      "roleId": "guardian",
+      "stats": {
+        "strength": 20,
+        "agility": 45,
+        "intelligence": 70,
+        "conductivity": 80,
+        "vitality": 35
+      },
+      "cultivation": {
+        "level": 8,
+        "subLevel": 5,
+        "coreCapacity": 150000,
+        "currentQi": 140000,
+        "coreQuality": 95,
+        "baseVolume": 12500,
+        "qiDensity": 256,
+        "meridianConductivity": 14.5
+      },
+      "sectRole": null,
+      "techniques": ["TC_000025", "TC_000026"],
+      "equipment": {},
+      "resources": {
+        "spiritStones": 0,
+        "contributionPoints": 0
+      },
+      "category": "story",
+      "rarity": "legendary",
+      "importance": "critical",
+      "tags": ["spirit", "guardian", "ancient"],
+      "relations": {
+        "defaultPlayerDisposition": 50
+      }
+    },
+    {
+      "id": "NPC_PRESET_00019",
+      "isPreset": true,
+      "name": "Хуан Тэнь",
+      "title": "Отверженный ученик",
+      "nameEn": "Huang Ten",
+      "age": 25,
+      "gender": "male",
+      "backstory": "Бывший ученик секты, изгнанный за нарушение правил. Скрывается поблизости, планируя месть.",
+      "personality": {
+        "traits": ["Месть", "Горечь", "Упорство"],
+        "motivation": "доказать свою силу",
+        "dominantEmotion": "злоба",
+        "speechStyle": "горький и угрожающий"
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "outcast",
+      "stats": {
+        "strength": 28,
+        "agility": 25,
+        "intelligence": 20,
+        "conductivity": 24,
+        "vitality": 22
+      },
+      "cultivation": {
+        "level": 4,
+        "subLevel": 0,
+        "coreCapacity": 12000,
+        "currentQi": 10000,
+        "coreQuality": 60,
+        "baseVolume": 1000,
+        "qiDensity": 8,
+        "meridianConductivity": 5.5
+      },
+      "sectRole": null,
+      "techniques": ["TC_000027"],
+      "equipment": {
+        "weapon": "MW_000008"
+      },
+      "resources": {
+        "spiritStones": 800,
+        "contributionPoints": 0
+      },
+      "category": "story",
+      "rarity": "uncommon",
+      "importance": "normal",
+      "tags": ["outcast", "antagonist", "exiled"],
+      "relations": {
+        "defaultPlayerDisposition": -20
+      }
+    },
+    {
+      "id": "NPC_PRESET_00020",
+      "isPreset": true,
+      "name": "Шэнь Му",
+      "title": "Мастер зверей",
+      "nameEn": "Shen Mu",
+      "age": 67,
+      "gender": "male",
+      "backstory": "Мастер, работающий с духовными зверями. Содержит конюшню и помогает приручить питомцев.",
+      "personality": {
+        "traits": ["Терпение", "Понимание", "Спокойствие"],
+        "motivation": "связь с животными",
+        "dominantEmotion": "умиротворение",
+        "speechStyle": "спокойный и мягкий"
+      },
+      "speciesId": "human",
+      "speciesType": "humanoid",
+      "roleId": "beast_master",
+      "stats": {
+        "strength": 22,
+        "agility": 18,
+        "intelligence": 32,
+        "conductivity": 25,
+        "vitality": 20
+      },
+      "cultivation": {
+        "level": 5,
+        "subLevel": 0,
+        "coreCapacity": 20000,
+        "currentQi": 15000,
+        "coreQuality": 70,
+        "baseVolume": 1700,
+        "qiDensity": 16,
+        "meridianConductivity": 6.8
+      },
+      "sectRole": "servant",
+      "techniques": ["TC_000028", "TC_000029"],
+      "equipment": {},
+      "resources": {
+        "spiritStones": 2500,
+        "contributionPoints": 2000
+      },
+      "category": "story",
+      "rarity": "rare",
+      "importance": "normal",
+      "tags": ["beast_master", "pets", "animals"],
+      "relations": {
+        "defaultPlayerDisposition": 55
+      }
+    }
+  ]
+}

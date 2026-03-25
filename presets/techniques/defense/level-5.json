@@ -1,0 +1,150 @@
+{
+  "version": "2.0",
+  "count": 3,
+  "techniques": [
+    {
+      "id": "DF000004",
+      "name": "Щит вихревой",
+      "nameEn": "Щит Вихревой",
+      "description": "Щит вихревой — техника defense элемента air уровня 5. Grade: common. Урон: 1152. Дальность: 5м.",
+      "type": "defense",
+      "element": "air",
+      "level": 5,
+      "grade": "common",
+      "qiCost": 1152,
+      "baseQiCost": 1152,
+      "baseDamage": 1152,
+      "baseRange": 5,
+      "baseCapacity": 72,
+      "computed": {
+        "finalDamage": 1152,
+        "finalQiCost": 1152,
+        "finalRange": 5,
+        "formula": "1152 × 1 = 1152",
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 38
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 38
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "meta": {
+        "seed": 1774114254467,
+        "template": "defense_base_air",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 2
+      }
+    },
+    {
+      "id": "DF000005",
+      "name": "Молниеносный Барьер",
+      "nameEn": "Молниеносный Барьер",
+      "description": "Молниеносный Барьер — техника defense элемента lightning уровня 5. Grade: common. Урон: 1152. Дальность: 5м.",
+      "type": "defense",
+      "element": "lightning",
+      "level": 5,
+      "grade": "common",
+      "qiCost": 1152,
+      "baseQiCost": 1152,
+      "baseDamage": 1152,
+      "baseRange": 5,
+      "baseCapacity": 72,
+      "computed": {
+        "finalDamage": 1152,
+        "finalQiCost": 1152,
+        "finalRange": 5,
+        "formula": "1152 × 1 = 1152",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "meta": {
+        "seed": 1774114254468,
+        "template": "defense_base_lightning",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 2
+      }
+    },
+    {
+      "id": "DF000006",
+      "name": "Забвенный Купол",
+      "nameEn": "Забвенный Купол",
+      "description": "Забвенный Купол — техника defense элемента void уровня 5. Grade: common. Урон: 1152. Дальность: 5м.",
+      "type": "defense",
+      "element": "void",
+      "level": 5,
+      "grade": "common",
+      "qiCost": 1152,
+      "baseQiCost": 1152,
+      "baseDamage": 1152,
+      "baseRange": 5,
+      "baseCapacity": 72,
+      "computed": {
+        "finalDamage": 1152,
+        "finalQiCost": 1152,
+        "finalRange": 5,
+        "formula": "1152 × 1 = 1152",
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 51
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 51
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "meta": {
+        "seed": 1774114254469,
+        "template": "defense_base_void",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 2
+      }
+    }
+  ]
+}

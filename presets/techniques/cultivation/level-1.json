@@ -1,0 +1,52 @@
+{
+  "version": "2.0",
+  "count": 1,
+  "techniques": [
+    {
+      "id": "CU000001",
+      "name": "Поток сфокусированный",
+      "nameEn": "Поток Сфокусированный",
+      "description": "Поток сфокусированный — техника cultivation уровня 1. Grade: common. Урон: 0. Дальность: 5м.",
+      "type": "cultivation",
+      "element": "neutral",
+      "level": 1,
+      "grade": "common",
+      "qiCost": 0,
+      "baseQiCost": 0,
+      "baseDamage": 0,
+      "baseRange": 5,
+      "baseCapacity": null,
+      "computed": {
+        "finalDamage": 0,
+        "finalQiCost": 0,
+        "finalRange": 5,
+        "formula": "Пассивная техника",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "intelligence": 3,
+        "conductivity": 2
+      },
+      "meta": {
+        "seed": 1774114254505,
+        "template": "cultivation_base_neutral",
+        "generatedAt": "2026-03-21T17:30:54.391Z",
+        "generatorVersion": "4.0.0",
+        "tier": 5
+      }
+    }
+  ]
+}

@@ -1,0 +1,240 @@
+{
+  "version": "2.0",
+  "count": 5,
+  "techniques": [
+    {
+      "id": "MW000001",
+      "name": "Ладонь штормовой",
+      "nameEn": "Ладонь Штормовой",
+      "description": "Ладонь штормовой — техника melee_weapon элемента water уровня 1. Grade: common. Урон: 48. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "water",
+      "level": 1,
+      "grade": "common",
+      "qiCost": 48,
+      "baseQiCost": 48,
+      "baseDamage": 48,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 48,
+        "finalQiCost": 48,
+        "finalRange": 1,
+        "formula": "48 × 1 = 48",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 3
+      },
+      "meta": {
+        "seed": 1774114254412,
+        "template": "combat_melee_weapon_water",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MW000002",
+      "name": "Неизбежный Укол",
+      "nameEn": "Неизбежный Укол",
+      "description": "Неизбежный Укол — техника melee_weapon элемента earth уровня 1. Grade: refined. Урон: 57. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "earth",
+      "level": 1,
+      "grade": "refined",
+      "qiCost": 48,
+      "baseQiCost": 48,
+      "baseDamage": 48,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 57,
+        "finalQiCost": 48,
+        "finalRange": 1,
+        "formula": "48 × 1.2 = 57",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 5
+        }
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 5
+      },
+      "meta": {
+        "seed": 1774114254413,
+        "template": "combat_melee_weapon_earth",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MW000003",
+      "name": "Порывистый Толчок",
+      "nameEn": "Порывистый Толчок",
+      "description": "Порывистый Толчок — техника melee_weapon элемента air уровня 1. Grade: common. Урон: 48. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "air",
+      "level": 1,
+      "grade": "common",
+      "qiCost": 48,
+      "baseQiCost": 48,
+      "baseDamage": 48,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 48,
+        "finalQiCost": 48,
+        "finalRange": 1,
+        "formula": "48 × 1 = 48",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 3
+      },
+      "meta": {
+        "seed": 1774114254414,
+        "template": "combat_melee_weapon_air",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MW000004",
+      "name": "Кулак молниеносный",
+      "nameEn": "Кулак Молниеносный",
+      "description": "Кулак молниеносный — техника melee_weapon элемента lightning уровня 1. Grade: refined. Урон: 57. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "lightning",
+      "level": 1,
+      "grade": "refined",
+      "qiCost": 48,
+      "baseQiCost": 48,
+      "baseDamage": 48,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 57,
+        "finalQiCost": 48,
+        "finalRange": 1,
+        "formula": "48 × 1.2 = 57",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 5
+        }
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 5
+      },
+      "meta": {
+        "seed": 1774114254415,
+        "template": "combat_melee_weapon_lightning",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MW000005",
+      "name": "Клинок эфирный",
+      "nameEn": "Клинок Эфирный",
+      "description": "Клинок эфирный — техника melee_weapon элемента void уровня 1. Grade: common. Урон: 48. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "void",
+      "level": 1,
+      "grade": "common",
+      "qiCost": 48,
+      "baseQiCost": 48,
+      "baseDamage": 48,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 48,
+        "finalQiCost": 48,
+        "finalRange": 1,
+        "formula": "48 × 1 = 48",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 3
+      },
+      "meta": {
+        "seed": 1774114254416,
+        "template": "combat_melee_weapon_void",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    }
+  ]
+}

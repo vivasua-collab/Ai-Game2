@@ -1,0 +1,143 @@
+{
+  "version": "2.0",
+  "count": 3,
+  "techniques": [
+    {
+      "id": "DF000007",
+      "name": "Базовый Защита",
+      "nameEn": "Базовый Защита",
+      "description": "Базовый Защита — техника defense уровня 9. Grade: common. Урон: 18432. Дальность: 5м.",
+      "type": "defense",
+      "element": "neutral",
+      "level": 9,
+      "grade": "common",
+      "qiCost": 18432,
+      "baseQiCost": 18432,
+      "baseDamage": 18432,
+      "baseRange": 5,
+      "baseCapacity": 72,
+      "computed": {
+        "finalDamage": 18432,
+        "finalQiCost": 18432,
+        "finalRange": 5,
+        "formula": "18432 × 1 = 18432",
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 110,
+            "duration": 6
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 110,
+          "shieldDuration": 6
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "meta": {
+        "seed": 1774114254470,
+        "template": "defense_base_neutral",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 2
+      }
+    },
+    {
+      "id": "DF000008",
+      "name": "Пылающий Барьер",
+      "nameEn": "Пылающий Барьер",
+      "description": "Пылающий Барьер — техника defense элемента fire уровня 9. Grade: common. Урон: 18432. Дальность: 5м.",
+      "type": "defense",
+      "element": "fire",
+      "level": 9,
+      "grade": "common",
+      "qiCost": 18432,
+      "baseQiCost": 18432,
+      "baseDamage": 18432,
+      "baseRange": 5,
+      "baseCapacity": 72,
+      "computed": {
+        "finalDamage": 18432,
+        "finalQiCost": 18432,
+        "finalRange": 5,
+        "formula": "18432 × 1 = 18432",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "meta": {
+        "seed": 1774114254471,
+        "template": "defense_base_fire",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 2
+      }
+    },
+    {
+      "id": "DF000009",
+      "name": "Барьер морской",
+      "nameEn": "Барьер Морской",
+      "description": "Барьер морской — техника defense элемента water уровня 9. Grade: common. Урон: 18432. Дальность: 5м.",
+      "type": "defense",
+      "element": "water",
+      "level": 9,
+      "grade": "common",
+      "qiCost": 18432,
+      "baseQiCost": 18432,
+      "baseDamage": 18432,
+      "baseRange": 5,
+      "baseCapacity": 72,
+      "computed": {
+        "finalDamage": 18432,
+        "finalQiCost": 18432,
+        "finalRange": 5,
+        "formula": "18432 × 1 = 18432",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "meta": {
+        "seed": 1774114254472,
+        "template": "defense_base_water",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 2
+      }
+    }
+  ]
+}

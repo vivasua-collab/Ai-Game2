@@ -1,0 +1,3916 @@
+{
+  "version": "2.0",
+  "type": "accessory",
+  "count": 54,
+  "items": [
+    {
+      "id": "AC_000001",
+      "name": "Амулет из камень",
+      "nameEn": "Амулет из камень",
+      "description": "Амулет из камень — аксессуар из камень уровня 1. Качество: Обычный. Проводимость Ци: 2.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "common",
+      "materialId": "stone",
+      "material": {
+        "id": "stone",
+        "name": "Камень",
+        "tier": 1,
+        "category": "mineral",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 5,
+          "weight": 5,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [],
+        "description": "Обычный камень. Тяжёлый и прочный, но не проводит Ци.",
+        "rarity": 100,
+        "source": "Каменоломни"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 2,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 42,
+        "max": 42,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_armor_1773589830143_0",
+          "type": "defense_armor",
+          "category": "defense",
+          "value": 7,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1
+      },
+      "value": 39,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AC_000002",
+      "name": "Серьга из кожа",
+      "nameEn": "Серьга из кожа",
+      "description": "Серьга из кожа — аксессуар из кожа уровня 1. Качество: Обычный. Проводимость Ци: 2.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "common",
+      "materialId": "leather",
+      "material": {
+        "id": "leather",
+        "name": "Кожа",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 20,
+          "qiConductivity": 5,
+          "weight": 0.5,
+          "hardness": 2,
+          "flexibility": 8
+        },
+        "bonuses": [],
+        "description": "Обычная кожа животных. Лёгкая, гибкая, но слабо проводит Ци.",
+        "rarity": 100,
+        "source": "Охота на обычных животных"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 2,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 22,
+        "max": 22,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1
+      },
+      "value": 39,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AC_000003",
+      "name": "Браслет из камень",
+      "nameEn": "Браслет из камень",
+      "description": "Браслет из камень — аксессуар из камень уровня 1. Качество: Обычный. Проводимость Ци: 2.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "common",
+      "materialId": "stone",
+      "material": {
+        "id": "stone",
+        "name": "Камень",
+        "tier": 1,
+        "category": "mineral",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 5,
+          "weight": 5,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [],
+        "description": "Обычный камень. Тяжёлый и прочный, но не проводит Ци.",
+        "rarity": 100,
+        "source": "Каменоломни"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 2,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 42,
+        "max": 42,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1
+      },
+      "value": 39,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AC_000004",
+      "name": "Повреждённое амулет из кожа",
+      "nameEn": "Повреждённое амулет из кожа",
+      "description": "Повреждённое амулет из кожа — аксессуар из кожа уровня 1. Качество: Повреждённый. Проводимость Ци: 2.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "damaged",
+      "materialId": "leather",
+      "material": {
+        "id": "leather",
+        "name": "Кожа",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 20,
+          "qiConductivity": 5,
+          "weight": 0.5,
+          "hardness": 2,
+          "flexibility": 8
+        },
+        "bonuses": [],
+        "description": "Обычная кожа животных. Лёгкая, гибкая, но слабо проводит Ци.",
+        "rarity": 100,
+        "source": "Охота на обычных животных"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 2,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 12,
+        "max": 12,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1
+      },
+      "value": 31,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AC_000005",
+      "name": "Улучшенный серьга из камень",
+      "nameEn": "Улучшенный серьга из камень",
+      "description": "Улучшенный серьга из камень — аксессуар из камень уровня 1. Качество: Улучшенный. Проводимость Ци: 2.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "refined",
+      "materialId": "stone",
+      "material": {
+        "id": "stone",
+        "name": "Камень",
+        "tier": 1,
+        "category": "mineral",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 5,
+          "weight": 5,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [],
+        "description": "Обычный камень. Тяжёлый и прочный, но не проводит Ци.",
+        "rarity": 100,
+        "source": "Каменоломни"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 2,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 62,
+        "max": 62,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "utility_stealth_1773589830143_0",
+          "type": "utility_stealth",
+          "category": "utility",
+          "value": 8,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1
+      },
+      "value": 50,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AC_000006",
+      "name": "Кольцо из ткань",
+      "nameEn": "Кольцо из ткань",
+      "description": "Кольцо из ткань — аксессуар из ткань уровня 1. Качество: Обычный. Проводимость Ци: 7.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "common",
+      "materialId": "cloth",
+      "material": {
+        "id": "cloth",
+        "name": "Ткань",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 10,
+          "qiConductivity": 15,
+          "weight": 0.2,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [],
+        "description": "Обычная ткань из хлопка или льна. Хорошо проводит Ци.",
+        "rarity": 100,
+        "source": "Выращивание растений"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 7,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 12,
+        "max": 12,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1
+      },
+      "value": 136,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AC_000007",
+      "name": "Амулет из камень",
+      "nameEn": "Амулет из камень",
+      "description": "Амулет из камень — аксессуар из камень уровня 2. Качество: Обычный. Проводимость Ци: 2.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "common",
+      "materialId": "stone",
+      "material": {
+        "id": "stone",
+        "name": "Камень",
+        "tier": 1,
+        "category": "mineral",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 5,
+          "weight": 5,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [],
+        "description": "Обычный камень. Тяжёлый и прочный, но не проводит Ци.",
+        "rarity": 100,
+        "source": "Каменоломни"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 2,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 44,
+        "max": 44,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_armor_1773589830143_0",
+          "type": "defense_armor",
+          "category": "defense",
+          "value": 9,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1
+      },
+      "value": 48,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AC_000008",
+      "name": "Серьга из кожа",
+      "nameEn": "Серьга из кожа",
+      "description": "Серьга из кожа — аксессуар из кожа уровня 2. Качество: Обычный. Проводимость Ци: 2.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "common",
+      "materialId": "leather",
+      "material": {
+        "id": "leather",
+        "name": "Кожа",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 20,
+          "qiConductivity": 5,
+          "weight": 0.5,
+          "hardness": 2,
+          "flexibility": 8
+        },
+        "bonuses": [],
+        "description": "Обычная кожа животных. Лёгкая, гибкая, но слабо проводит Ци.",
+        "rarity": 100,
+        "source": "Охота на обычных животных"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 2,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 24,
+        "max": 24,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1
+      },
+      "value": 48,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AC_000009",
+      "name": "Браслет из камень",
+      "nameEn": "Браслет из камень",
+      "description": "Браслет из камень — аксессуар из камень уровня 2. Качество: Обычный. Проводимость Ци: 2.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "common",
+      "materialId": "stone",
+      "material": {
+        "id": "stone",
+        "name": "Камень",
+        "tier": 1,
+        "category": "mineral",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 5,
+          "weight": 5,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [],
+        "description": "Обычный камень. Тяжёлый и прочный, но не проводит Ци.",
+        "rarity": 100,
+        "source": "Каменоломни"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 2,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 44,
+        "max": 44,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1
+      },
+      "value": 48,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AC_000010",
+      "name": "Повреждённое амулет из кожа",
+      "nameEn": "Повреждённое амулет из кожа",
+      "description": "Повреждённое амулет из кожа — аксессуар из кожа уровня 2. Качество: Повреждённый. Проводимость Ци: 2.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "damaged",
+      "materialId": "leather",
+      "material": {
+        "id": "leather",
+        "name": "Кожа",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 20,
+          "qiConductivity": 5,
+          "weight": 0.5,
+          "hardness": 2,
+          "flexibility": 8
+        },
+        "bonuses": [],
+        "description": "Обычная кожа животных. Лёгкая, гибкая, но слабо проводит Ци.",
+        "rarity": 100,
+        "source": "Охота на обычных животных"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 2,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 14,
+        "max": 14,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1
+      },
+      "value": 38,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AC_000011",
+      "name": "Улучшенный серьга из камень",
+      "nameEn": "Улучшенный серьга из камень",
+      "description": "Улучшенный серьга из камень — аксессуар из камень уровня 2. Качество: Улучшенный. Проводимость Ци: 2.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "refined",
+      "materialId": "stone",
+      "material": {
+        "id": "stone",
+        "name": "Камень",
+        "tier": 1,
+        "category": "mineral",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 5,
+          "weight": 5,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [],
+        "description": "Обычный камень. Тяжёлый и прочный, но не проводит Ци.",
+        "rarity": 100,
+        "source": "Каменоломни"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 2,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 64,
+        "max": 64,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "utility_stealth_1773589830144_0",
+          "type": "utility_stealth",
+          "category": "utility",
+          "value": 9,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1
+      },
+      "value": 62,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AC_000012",
+      "name": "Кольцо из ткань",
+      "nameEn": "Кольцо из ткань",
+      "description": "Кольцо из ткань — аксессуар из ткань уровня 2. Качество: Обычный. Проводимость Ци: 7.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "common",
+      "materialId": "cloth",
+      "material": {
+        "id": "cloth",
+        "name": "Ткань",
+        "tier": 1,
+        "category": "organic",
+        "properties": {
+          "durability": 10,
+          "qiConductivity": 15,
+          "weight": 0.2,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [],
+        "description": "Обычная ткань из хлопка или льна. Хорошо проводит Ци.",
+        "rarity": 100,
+        "source": "Выращивание растений"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 7,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 14,
+        "max": 14,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1
+      },
+      "value": 168,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AC_000013",
+      "name": "Улучшенный амулет из бронза",
+      "nameEn": "Улучшенный амулет из бронза",
+      "description": "Улучшенный амулет из бронза — аксессуар из бронза уровня 3. Качество: Улучшенный. Проводимость Ци: 15.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "refined",
+      "materialId": "bronze",
+      "material": {
+        "id": "bronze",
+        "name": "Бронза",
+        "tier": 2,
+        "category": "metal",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 30,
+          "weight": 4.5,
+          "hardness": 6,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 5,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Сплав меди и олова. Хорошо проводит Ци, подходит для брони.",
+        "rarity": 50,
+        "source": "Глубокие шахты (3-8 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 15,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 66,
+        "max": 66,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_evasion_1773589830144_0",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 4,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1
+      },
+      "value": 741,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AC_000014",
+      "name": "Улучшенный амулет из мрамор",
+      "nameEn": "Улучшенный амулет из мрамор",
+      "description": "Улучшенный амулет из мрамор — аксессуар из мрамор уровня 3. Качество: Улучшенный. Проводимость Ци: 7.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "refined",
+      "materialId": "marble",
+      "material": {
+        "id": "marble",
+        "name": "Мрамор",
+        "tier": 2,
+        "category": "mineral",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 15,
+          "weight": 6,
+          "hardness": 9,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Плотный мрамор из глубоких каменолен. Очень твёрдый.",
+        "rarity": 40,
+        "source": "Глубокие каменоломни (5-15 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 7,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 96,
+        "max": 96,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_evasion_1773589830144_0",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 5,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1
+      },
+      "value": 345,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AC_000015",
+      "name": "Кольцо из шёлк",
+      "nameEn": "Кольцо из шёлк",
+      "description": "Кольцо из шёлк — аксессуар из шёлк уровня 3. Качество: Обычный. Проводимость Ци: 22.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "common",
+      "materialId": "silk",
+      "material": {
+        "id": "silk",
+        "name": "Шёлк",
+        "tier": 2,
+        "category": "organic",
+        "properties": {
+          "durability": 15,
+          "qiConductivity": 45,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 5,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от особых гусениц. Отличная проводимость Ци.",
+        "rarity": 40,
+        "source": "Шёлковые фермы"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 22,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 21,
+        "max": 21,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "special_life_steal_1773589830144_0",
+          "type": "special_life_steal",
+          "category": "special",
+          "value": 5,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1
+      },
+      "value": 836,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AC_000016",
+      "name": "Совершенный кольцо из мрамор",
+      "nameEn": "Совершенный кольцо из мрамор",
+      "description": "Совершенный кольцо из мрамор — аксессуар из мрамор уровня 3. Качество: Совершенный. Проводимость Ци: 7.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "perfect",
+      "materialId": "marble",
+      "material": {
+        "id": "marble",
+        "name": "Мрамор",
+        "tier": 2,
+        "category": "mineral",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 15,
+          "weight": 6,
+          "hardness": 9,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Плотный мрамор из глубоких каменолен. Очень твёрдый.",
+        "rarity": 40,
+        "source": "Глубокие каменоломни (5-15 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 7,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 156,
+        "max": 156,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "utility_stealth_1773589830144_0",
+          "type": "utility_stealth",
+          "category": "utility",
+          "value": 14,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_hp_1773589830144_1",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 100,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_resistance_1773589830144_2",
+          "type": "defense_resistance",
+          "category": "defense",
+          "value": 11,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1
+      },
+      "value": 452,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "AC_000017",
+      "name": "Кольцо из шёлк",
+      "nameEn": "Кольцо из шёлк",
+      "description": "Кольцо из шёлк — аксессуар из шёлк уровня 3. Качество: Обычный. Проводимость Ци: 22.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "common",
+      "materialId": "silk",
+      "material": {
+        "id": "silk",
+        "name": "Шёлк",
+        "tier": 2,
+        "category": "organic",
+        "properties": {
+          "durability": 15,
+          "qiConductivity": 45,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 5,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от особых гусениц. Отличная проводимость Ци.",
+        "rarity": 40,
+        "source": "Шёлковые фермы"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 22,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 21,
+        "max": 21,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1
+      },
+      "value": 836,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AC_000018",
+      "name": "Браслет из мрамор",
+      "nameEn": "Браслет из мрамор",
+      "description": "Браслет из мрамор — аксессуар из мрамор уровня 3. Качество: Обычный. Проводимость Ци: 7.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "common",
+      "materialId": "marble",
+      "material": {
+        "id": "marble",
+        "name": "Мрамор",
+        "tier": 2,
+        "category": "mineral",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 15,
+          "weight": 6,
+          "hardness": 9,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Плотный мрамор из глубоких каменолен. Очень твёрдый.",
+        "rarity": 40,
+        "source": "Глубокие каменоломни (5-15 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 7,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 66,
+        "max": 66,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_evasion_1773589830144_0",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 2,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 1
+      },
+      "value": 266,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AC_000019",
+      "name": "Улучшенный амулет из бронза",
+      "nameEn": "Улучшенный амулет из бронза",
+      "description": "Улучшенный амулет из бронза — аксессуар из бронза уровня 4. Качество: Улучшенный. Проводимость Ци: 15.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "refined",
+      "materialId": "bronze",
+      "material": {
+        "id": "bronze",
+        "name": "Бронза",
+        "tier": 2,
+        "category": "metal",
+        "properties": {
+          "durability": 40,
+          "qiConductivity": 30,
+          "weight": 4.5,
+          "hardness": 6,
+          "flexibility": 4
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 5,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Сплав меди и олова. Хорошо проводит Ци, подходит для брони.",
+        "rarity": 50,
+        "source": "Глубокие шахты (3-8 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 15,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 68,
+        "max": 68,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_evasion_1773589830144_0",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 5,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 2
+      },
+      "value": 858,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AC_000020",
+      "name": "Улучшенный амулет из мрамор",
+      "nameEn": "Улучшенный амулет из мрамор",
+      "description": "Улучшенный амулет из мрамор — аксессуар из мрамор уровня 4. Качество: Улучшенный. Проводимость Ци: 7.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "refined",
+      "materialId": "marble",
+      "material": {
+        "id": "marble",
+        "name": "Мрамор",
+        "tier": 2,
+        "category": "mineral",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 15,
+          "weight": 6,
+          "hardness": 9,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Плотный мрамор из глубоких каменолен. Очень твёрдый.",
+        "rarity": 40,
+        "source": "Глубокие каменоломни (5-15 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 7,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 98,
+        "max": 98,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_evasion_1773589830144_0",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 5,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 2
+      },
+      "value": 400,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AC_000021",
+      "name": "Кольцо из шёлк",
+      "nameEn": "Кольцо из шёлк",
+      "description": "Кольцо из шёлк — аксессуар из шёлк уровня 4. Качество: Обычный. Проводимость Ци: 22.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "common",
+      "materialId": "silk",
+      "material": {
+        "id": "silk",
+        "name": "Шёлк",
+        "tier": 2,
+        "category": "organic",
+        "properties": {
+          "durability": 15,
+          "qiConductivity": 45,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 5,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от особых гусениц. Отличная проводимость Ци.",
+        "rarity": 40,
+        "source": "Шёлковые фермы"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 22,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 23,
+        "max": 23,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "special_life_steal_1773589830144_0",
+          "type": "special_life_steal",
+          "category": "special",
+          "value": 5,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 2
+      },
+      "value": 968,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AC_000022",
+      "name": "Совершенный кольцо из мрамор",
+      "nameEn": "Совершенный кольцо из мрамор",
+      "description": "Совершенный кольцо из мрамор — аксессуар из мрамор уровня 4. Качество: Совершенный. Проводимость Ци: 7.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "perfect",
+      "materialId": "marble",
+      "material": {
+        "id": "marble",
+        "name": "Мрамор",
+        "tier": 2,
+        "category": "mineral",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 15,
+          "weight": 6,
+          "hardness": 9,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Плотный мрамор из глубоких каменолен. Очень твёрдый.",
+        "rarity": 40,
+        "source": "Глубокие каменоломни (5-15 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 7,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 158,
+        "max": 158,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "utility_stealth_1773589830144_0",
+          "type": "utility_stealth",
+          "category": "utility",
+          "value": 16,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_hp_1773589830144_1",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 120,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_resistance_1773589830144_2",
+          "type": "defense_resistance",
+          "category": "defense",
+          "value": 12,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 2
+      },
+      "value": 523,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "AC_000023",
+      "name": "Кольцо из шёлк",
+      "nameEn": "Кольцо из шёлк",
+      "description": "Кольцо из шёлк — аксессуар из шёлк уровня 4. Качество: Обычный. Проводимость Ци: 22.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "common",
+      "materialId": "silk",
+      "material": {
+        "id": "silk",
+        "name": "Шёлк",
+        "tier": 2,
+        "category": "organic",
+        "properties": {
+          "durability": 15,
+          "qiConductivity": 45,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 5,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от особых гусениц. Отличная проводимость Ци.",
+        "rarity": 40,
+        "source": "Шёлковые фермы"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 22,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 23,
+        "max": 23,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [],
+      "specialEffects": [],
+      "requirements": {
+        "level": 2
+      },
+      "value": 968,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AC_000024",
+      "name": "Браслет из мрамор",
+      "nameEn": "Браслет из мрамор",
+      "description": "Браслет из мрамор — аксессуар из мрамор уровня 4. Качество: Обычный. Проводимость Ци: 7.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "common",
+      "materialId": "marble",
+      "material": {
+        "id": "marble",
+        "name": "Мрамор",
+        "tier": 2,
+        "category": "mineral",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 15,
+          "weight": 6,
+          "hardness": 9,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "defense_armor",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Плотный мрамор из глубоких каменолен. Очень твёрдый.",
+        "rarity": 40,
+        "source": "Глубокие каменоломни (5-15 км)"
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 7,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 68,
+        "max": 68,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_evasion_1773589830144_0",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 3,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 2
+      },
+      "value": 308,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AC_000025",
+      "name": "Улучшенный амулет из духовный шёлк",
+      "nameEn": "Улучшенный амулет из духовный шёлк",
+      "description": "Улучшенный амулет из духовный шёлк — аксессуар из духовный шёлк уровня 5. Качество: Улучшенный. Проводимость Ци: 37.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "refined",
+      "materialId": "spirit_silk",
+      "material": {
+        "id": "spirit_silk",
+        "name": "Духовный шёлк",
+        "tier": 3,
+        "category": "organic",
+        "properties": {
+          "durability": 25,
+          "qiConductivity": 75,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от духовных червей. Почти невесомый, отлично проводит Ци.",
+        "rarity": 15,
+        "source": "Духовные черви в местах силы",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 37,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 47,
+        "max": 47,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_evasion_1773589830144_0",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 5,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 3
+      },
+      "value": 3006,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AC_000026",
+      "name": "Улучшенный амулет из нефрит",
+      "nameEn": "Улучшенный амулет из нефрит",
+      "description": "Улучшенный амулет из нефрит — аксессуар из нефрит уровня 5. Качество: Улучшенный. Проводимость Ци: 42.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "refined",
+      "materialId": "jade",
+      "material": {
+        "id": "jade",
+        "name": "Нефрит",
+        "tier": 3,
+        "category": "mineral",
+        "properties": {
+          "durability": 50,
+          "qiConductivity": 85,
+          "weight": 3,
+          "hardness": 7,
+          "flexibility": 2
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_meditation_bonus",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Нефрит из глубин. Идеален для культивации и артефактов.",
+        "rarity": 10,
+        "source": "Глубинные жилы нефрита (500-2000 км)",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 42,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 85,
+        "max": 85,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_evasion_1773589830144_0",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 6,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 3
+      },
+      "value": 3412,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AC_000027",
+      "name": "Кольцо из духовный шёлк",
+      "nameEn": "Кольцо из духовный шёлк",
+      "description": "Кольцо из духовный шёлк — аксессуар из духовный шёлк уровня 5. Качество: Обычный. Проводимость Ци: 37.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "common",
+      "materialId": "spirit_silk",
+      "material": {
+        "id": "spirit_silk",
+        "name": "Духовный шёлк",
+        "tier": 3,
+        "category": "organic",
+        "properties": {
+          "durability": 25,
+          "qiConductivity": 75,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от духовных червей. Почти невесомый, отлично проводит Ци.",
+        "rarity": 15,
+        "source": "Духовные черви в местах силы",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 37,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 35,
+        "max": 35,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "special_life_steal_1773589830144_0",
+          "type": "special_life_steal",
+          "category": "special",
+          "value": 6,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 3
+      },
+      "value": 2312,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AC_000028",
+      "name": "Совершенный кольцо из осколок кристалла ци",
+      "nameEn": "Совершенный кольцо из осколок кристалла ци",
+      "description": "Совершенный кольцо из осколок кристалла ци — аксессуар из осколок кристалла ци уровня 5. Качество: Совершенный. Проводимость Ци: 45.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "perfect",
+      "materialId": "spirit_crystal_shard",
+      "material": {
+        "id": "spirit_crystal_shard",
+        "name": "Осколок кристалла Ци",
+        "tier": 3,
+        "category": "crystal",
+        "properties": {
+          "durability": 30,
+          "qiConductivity": 90,
+          "weight": 0.5,
+          "hardness": 5,
+          "flexibility": 2
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Осколок кристалла Ци (духовного камня). Высокая проводимость.",
+        "rarity": 8,
+        "source": "Залежи кристаллов Ци",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 45,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 85,
+        "max": 85,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "utility_stealth_1773589830144_0",
+          "type": "utility_stealth",
+          "category": "utility",
+          "value": 18,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_hp_1773589830144_1",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 140,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_resistance_1773589830144_2",
+          "type": "defense_resistance",
+          "category": "defense",
+          "value": 14,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 3
+      },
+      "value": 4781,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "AC_000029",
+      "name": "Улучшенный серьга из духовный шёлк",
+      "nameEn": "Улучшенный серьга из духовный шёлк",
+      "description": "Улучшенный серьга из духовный шёлк — аксессуар из духовный шёлк уровня 5. Качество: Улучшенный. Проводимость Ци: 37.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "refined",
+      "materialId": "spirit_silk",
+      "material": {
+        "id": "spirit_silk",
+        "name": "Духовный шёлк",
+        "tier": 3,
+        "category": "organic",
+        "properties": {
+          "durability": 25,
+          "qiConductivity": 75,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от духовных червей. Почти невесомый, отлично проводит Ци.",
+        "rarity": 15,
+        "source": "Духовные черви в местах силы",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 37,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 47,
+        "max": 47,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "utility_stealth_1773589830144_0",
+          "type": "utility_stealth",
+          "category": "utility",
+          "value": 13,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 3
+      },
+      "value": 3006,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AC_000030",
+      "name": "Браслет из осколок кристалла ци",
+      "nameEn": "Браслет из осколок кристалла ци",
+      "description": "Браслет из осколок кристалла ци — аксессуар из осколок кристалла ци уровня 5. Качество: Обычный. Проводимость Ци: 45.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "common",
+      "materialId": "spirit_crystal_shard",
+      "material": {
+        "id": "spirit_crystal_shard",
+        "name": "Осколок кристалла Ци",
+        "tier": 3,
+        "category": "crystal",
+        "properties": {
+          "durability": 30,
+          "qiConductivity": 90,
+          "weight": 0.5,
+          "hardness": 5,
+          "flexibility": 2
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Осколок кристалла Ци (духовного камня). Высокая проводимость.",
+        "rarity": 8,
+        "source": "Залежи кристаллов Ци",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 45,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 40,
+        "max": 40,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_evasion_1773589830144_0",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 3,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 3
+      },
+      "value": 2812,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AC_000031",
+      "name": "Улучшенный амулет из духовный шёлк",
+      "nameEn": "Улучшенный амулет из духовный шёлк",
+      "description": "Улучшенный амулет из духовный шёлк — аксессуар из духовный шёлк уровня 6. Качество: Улучшенный. Проводимость Ци: 37.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "refined",
+      "materialId": "spirit_silk",
+      "material": {
+        "id": "spirit_silk",
+        "name": "Духовный шёлк",
+        "tier": 3,
+        "category": "organic",
+        "properties": {
+          "durability": 25,
+          "qiConductivity": 75,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от духовных червей. Почти невесомый, отлично проводит Ци.",
+        "rarity": 15,
+        "source": "Духовные черви в местах силы",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 37,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 49,
+        "max": 49,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_evasion_1773589830144_0",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 6,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 4
+      },
+      "value": 3367,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AC_000032",
+      "name": "Улучшенный амулет из нефрит",
+      "nameEn": "Улучшенный амулет из нефрит",
+      "description": "Улучшенный амулет из нефрит — аксессуар из нефрит уровня 6. Качество: Улучшенный. Проводимость Ци: 42.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "refined",
+      "materialId": "jade",
+      "material": {
+        "id": "jade",
+        "name": "Нефрит",
+        "tier": 3,
+        "category": "mineral",
+        "properties": {
+          "durability": 50,
+          "qiConductivity": 85,
+          "weight": 3,
+          "hardness": 7,
+          "flexibility": 2
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_meditation_bonus",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Нефрит из глубин. Идеален для культивации и артефактов.",
+        "rarity": 10,
+        "source": "Глубинные жилы нефрита (500-2000 км)",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 42,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 87,
+        "max": 87,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_evasion_1773589830144_0",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 7,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 4
+      },
+      "value": 3821,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AC_000033",
+      "name": "Кольцо из духовный шёлк",
+      "nameEn": "Кольцо из духовный шёлк",
+      "description": "Кольцо из духовный шёлк — аксессуар из духовный шёлк уровня 6. Качество: Обычный. Проводимость Ци: 37.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "common",
+      "materialId": "spirit_silk",
+      "material": {
+        "id": "spirit_silk",
+        "name": "Духовный шёлк",
+        "tier": 3,
+        "category": "organic",
+        "properties": {
+          "durability": 25,
+          "qiConductivity": 75,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от духовных червей. Почти невесомый, отлично проводит Ци.",
+        "rarity": 15,
+        "source": "Духовные черви в местах силы",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 37,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 37,
+        "max": 37,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "special_life_steal_1773589830144_0",
+          "type": "special_life_steal",
+          "category": "special",
+          "value": 7,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 4
+      },
+      "value": 2590,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AC_000034",
+      "name": "Совершенный кольцо из осколок кристалла ци",
+      "nameEn": "Совершенный кольцо из осколок кристалла ци",
+      "description": "Совершенный кольцо из осколок кристалла ци — аксессуар из осколок кристалла ци уровня 6. Качество: Совершенный. Проводимость Ци: 45.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "perfect",
+      "materialId": "spirit_crystal_shard",
+      "material": {
+        "id": "spirit_crystal_shard",
+        "name": "Осколок кристалла Ци",
+        "tier": 3,
+        "category": "crystal",
+        "properties": {
+          "durability": 30,
+          "qiConductivity": 90,
+          "weight": 0.5,
+          "hardness": 5,
+          "flexibility": 2
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Осколок кристалла Ци (духовного камня). Высокая проводимость.",
+        "rarity": 8,
+        "source": "Залежи кристаллов Ци",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 45,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 87,
+        "max": 87,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "utility_stealth_1773589830144_0",
+          "type": "utility_stealth",
+          "category": "utility",
+          "value": 20,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_hp_1773589830144_1",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 160,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_resistance_1773589830144_2",
+          "type": "defense_resistance",
+          "category": "defense",
+          "value": 15,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 4
+      },
+      "value": 5355,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "AC_000035",
+      "name": "Улучшенный серьга из духовный шёлк",
+      "nameEn": "Улучшенный серьга из духовный шёлк",
+      "description": "Улучшенный серьга из духовный шёлк — аксессуар из духовный шёлк уровня 6. Качество: Улучшенный. Проводимость Ци: 37.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "refined",
+      "materialId": "spirit_silk",
+      "material": {
+        "id": "spirit_silk",
+        "name": "Духовный шёлк",
+        "tier": 3,
+        "category": "organic",
+        "properties": {
+          "durability": 25,
+          "qiConductivity": 75,
+          "weight": 0.1,
+          "hardness": 1,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "defense_evasion",
+            "value": 12,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_regeneration",
+            "value": 8,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Шёлк от духовных червей. Почти невесомый, отлично проводит Ци.",
+        "rarity": 15,
+        "source": "Духовные черви в местах силы",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 37,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 49,
+        "max": 49,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "utility_stealth_1773589830144_0",
+          "type": "utility_stealth",
+          "category": "utility",
+          "value": 14,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 4
+      },
+      "value": 3367,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AC_000036",
+      "name": "Браслет из осколок кристалла ци",
+      "nameEn": "Браслет из осколок кристалла ци",
+      "description": "Браслет из осколок кристалла ци — аксессуар из осколок кристалла ци уровня 6. Качество: Обычный. Проводимость Ци: 45.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "common",
+      "materialId": "spirit_crystal_shard",
+      "material": {
+        "id": "spirit_crystal_shard",
+        "name": "Осколок кристалла Ци",
+        "tier": 3,
+        "category": "crystal",
+        "properties": {
+          "durability": 30,
+          "qiConductivity": 90,
+          "weight": 0.5,
+          "hardness": 5,
+          "flexibility": 2
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 15,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Осколок кристалла Ци (духовного камня). Высокая проводимость.",
+        "rarity": 8,
+        "source": "Залежи кристаллов Ци",
+        "requiredLevel": 5
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 45,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 42,
+        "max": 42,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_evasion_1773589830144_0",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 4,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 4
+      },
+      "value": 3150,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AC_000037",
+      "name": "Совершенный амулет из громовой металл",
+      "nameEn": "Совершенный амулет из громовой металл",
+      "description": "Совершенный амулет из громовой металл — аксессуар из громовой металл уровня 7. Качество: Совершенный. Проводимость Ци: 35.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "perfect",
+      "materialId": "thunder_metal",
+      "material": {
+        "id": "thunder_metal",
+        "name": "Громовой металл",
+        "tier": 4,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 70,
+          "weight": 2.5,
+          "hardness": 9,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "elemental_lightning",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_damage",
+            "value": 25,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Металл, закалённый в грозовых бурях мест силы.",
+        "rarity": 4,
+        "source": "Грозовые места силы",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 35,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 214,
+        "max": 214,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_evasion_1773589830144_0",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 9,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_hp_1773589830144_1",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 181,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "utility_stealth_1773589830144_2",
+          "type": "utility_stealth",
+          "category": "utility",
+          "value": 22,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 5
+      },
+      "value": 5533,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "AC_000038",
+      "name": "Совершенный амулет из пустотное дерево",
+      "nameEn": "Совершенный амулет из пустотное дерево",
+      "description": "Совершенный амулет из пустотное дерево — аксессуар из пустотное дерево уровня 7. Качество: Совершенный. Проводимость Ци: 45.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "perfect",
+      "materialId": "void_wood",
+      "material": {
+        "id": "void_wood",
+        "name": "Пустотное дерево",
+        "tier": 4,
+        "category": "wood",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 90,
+          "weight": 0.3,
+          "hardness": 8,
+          "flexibility": 8
+        },
+        "bonuses": [
+          {
+            "type": "combat_crit_chance",
+            "value": 10,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_damage",
+            "value": 35,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 20,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Дерево из пустоты между мирами. Лор: \"Дерево из пустоты между мирами\".",
+        "rarity": 3,
+        "source": "Разрывы в куполе мира",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 45,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 164,
+        "max": 164,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_evasion_1773589830144_0",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 10,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "special_thorns_1773589830144_1",
+          "type": "special_thorns",
+          "category": "special",
+          "value": 16,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 5
+      },
+      "value": 7114,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "AC_000039",
+      "name": "Кольцо из громовой металл",
+      "nameEn": "Кольцо из громовой металл",
+      "description": "Кольцо из громовой металл — аксессуар из громовой металл уровня 7. Качество: Обычный. Проводимость Ци: 35.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "common",
+      "materialId": "thunder_metal",
+      "material": {
+        "id": "thunder_metal",
+        "name": "Громовой металл",
+        "tier": 4,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 70,
+          "weight": 2.5,
+          "hardness": 9,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "elemental_lightning",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_damage",
+            "value": 25,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Металл, закалённый в грозовых бурях мест силы.",
+        "rarity": 4,
+        "source": "Грозовые места силы",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 35,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 94,
+        "max": 94,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "special_life_steal_1773589830144_0",
+          "type": "special_life_steal",
+          "category": "special",
+          "value": 7,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 5
+      },
+      "value": 3255,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AC_000040",
+      "name": "Превосходящий амулет из духовный кристалл",
+      "nameEn": "Превосходящий амулет из духовный кристалл",
+      "description": "Превосходящий амулет из духовный кристалл — аксессуар из духовный кристалл уровня 7. Качество: Превосходящий. Проводимость Ци: 50.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "transcendent",
+      "materialId": "spirit_crystal",
+      "material": {
+        "id": "spirit_crystal",
+        "name": "Духовный кристалл",
+        "tier": 4,
+        "category": "crystal",
+        "properties": {
+          "durability": 70,
+          "qiConductivity": 100,
+          "weight": 2,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 30,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_meditation_bonus",
+            "value": 40,
+            "isMultiplier": false
+          },
+          {
+            "type": "elemental_all",
+            "value": 10,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Чистый кристалл Ци. Лор: \"кристаллы Ци плотность 1024 ед/см³\".",
+        "rarity": 2,
+        "source": "Сердце мира, глубинные залежи",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 50,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 294,
+        "max": 294,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "utility_stealth_1773589830144_0",
+          "type": "utility_stealth",
+          "category": "utility",
+          "value": 32,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_hp_1773589830144_1",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 265,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_resistance_1773589830144_2",
+          "type": "defense_resistance",
+          "category": "defense",
+          "value": 24,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "utility_pickup_range_1773589830144_3",
+          "type": "utility_pickup_range",
+          "category": "utility",
+          "value": 53,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_evasion_1773589830144_4",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 10,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 5
+      },
+      "value": 11625,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "legendary"
+    },
+    {
+      "id": "AC_000041",
+      "name": "Улучшенный серьга из громовой металл",
+      "nameEn": "Улучшенный серьга из громовой металл",
+      "description": "Улучшенный серьга из громовой металл — аксессуар из громовой металл уровня 7. Качество: Улучшенный. Проводимость Ци: 35.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "refined",
+      "materialId": "thunder_metal",
+      "material": {
+        "id": "thunder_metal",
+        "name": "Громовой металл",
+        "tier": 4,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 70,
+          "weight": 2.5,
+          "hardness": 9,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "elemental_lightning",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_damage",
+            "value": 25,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Металл, закалённый в грозовых бурях мест силы.",
+        "rarity": 4,
+        "source": "Грозовые места силы",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 35,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 134,
+        "max": 134,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "utility_stealth_1773589830144_0",
+          "type": "utility_stealth",
+          "category": "utility",
+          "value": 15,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 5
+      },
+      "value": 4231,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AC_000042",
+      "name": "Улучшенный браслет из духовный кристалл",
+      "nameEn": "Улучшенный браслет из духовный кристалл",
+      "description": "Улучшенный браслет из духовный кристалл — аксессуар из духовный кристалл уровня 7. Качество: Улучшенный. Проводимость Ци: 50.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "refined",
+      "materialId": "spirit_crystal",
+      "material": {
+        "id": "spirit_crystal",
+        "name": "Духовный кристалл",
+        "tier": 4,
+        "category": "crystal",
+        "properties": {
+          "durability": 70,
+          "qiConductivity": 100,
+          "weight": 2,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 30,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_meditation_bonus",
+            "value": 40,
+            "isMultiplier": false
+          },
+          {
+            "type": "elemental_all",
+            "value": 10,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Чистый кристалл Ци. Лор: \"кристаллы Ци плотность 1024 ед/см³\".",
+        "rarity": 2,
+        "source": "Сердце мира, глубинные залежи",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 50,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 119,
+        "max": 119,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_evasion_1773589830144_0",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 5,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_hp_1773589830144_1",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 113,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 5
+      },
+      "value": 6045,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AC_000043",
+      "name": "Совершенный амулет из громовой металл",
+      "nameEn": "Совершенный амулет из громовой металл",
+      "description": "Совершенный амулет из громовой металл — аксессуар из громовой металл уровня 8. Качество: Совершенный. Проводимость Ци: 35.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "perfect",
+      "materialId": "thunder_metal",
+      "material": {
+        "id": "thunder_metal",
+        "name": "Громовой металл",
+        "tier": 4,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 70,
+          "weight": 2.5,
+          "hardness": 9,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "elemental_lightning",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_damage",
+            "value": 25,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Металл, закалённый в грозовых бурях мест силы.",
+        "rarity": 4,
+        "source": "Грозовые места силы",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 35,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 216,
+        "max": 216,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_evasion_1773589830144_0",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 9,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_hp_1773589830144_1",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 201,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "utility_stealth_1773589830144_2",
+          "type": "utility_stealth",
+          "category": "utility",
+          "value": 24,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 6
+      },
+      "value": 6069,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "AC_000044",
+      "name": "Совершенный амулет из пустотное дерево",
+      "nameEn": "Совершенный амулет из пустотное дерево",
+      "description": "Совершенный амулет из пустотное дерево — аксессуар из пустотное дерево уровня 8. Качество: Совершенный. Проводимость Ци: 45.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "perfect",
+      "materialId": "void_wood",
+      "material": {
+        "id": "void_wood",
+        "name": "Пустотное дерево",
+        "tier": 4,
+        "category": "wood",
+        "properties": {
+          "durability": 60,
+          "qiConductivity": 90,
+          "weight": 0.3,
+          "hardness": 8,
+          "flexibility": 8
+        },
+        "bonuses": [
+          {
+            "type": "combat_crit_chance",
+            "value": 10,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_damage",
+            "value": 35,
+            "isMultiplier": false
+          },
+          {
+            "type": "qi_cost_reduction",
+            "value": 20,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Дерево из пустоты между мирами. Лор: \"Дерево из пустоты между мирами\".",
+        "rarity": 3,
+        "source": "Разрывы в куполе мира",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 45,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 166,
+        "max": 166,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_evasion_1773589830144_0",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 11,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "special_thorns_1773589830144_1",
+          "type": "special_thorns",
+          "category": "special",
+          "value": 18,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 6
+      },
+      "value": 7803,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "AC_000045",
+      "name": "Кольцо из громовой металл",
+      "nameEn": "Кольцо из громовой металл",
+      "description": "Кольцо из громовой металл — аксессуар из громовой металл уровня 8. Качество: Обычный. Проводимость Ци: 35.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "common",
+      "materialId": "thunder_metal",
+      "material": {
+        "id": "thunder_metal",
+        "name": "Громовой металл",
+        "tier": 4,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 70,
+          "weight": 2.5,
+          "hardness": 9,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "elemental_lightning",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_damage",
+            "value": 25,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Металл, закалённый в грозовых бурях мест силы.",
+        "rarity": 4,
+        "source": "Грозовые места силы",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 35,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 96,
+        "max": 96,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "special_life_steal_1773589830144_0",
+          "type": "special_life_steal",
+          "category": "special",
+          "value": 8,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 6
+      },
+      "value": 3570,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "common"
+    },
+    {
+      "id": "AC_000046",
+      "name": "Превосходящий амулет из духовный кристалл",
+      "nameEn": "Превосходящий амулет из духовный кристалл",
+      "description": "Превосходящий амулет из духовный кристалл — аксессуар из духовный кристалл уровня 8. Качество: Превосходящий. Проводимость Ци: 50.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "transcendent",
+      "materialId": "spirit_crystal",
+      "material": {
+        "id": "spirit_crystal",
+        "name": "Духовный кристалл",
+        "tier": 4,
+        "category": "crystal",
+        "properties": {
+          "durability": 70,
+          "qiConductivity": 100,
+          "weight": 2,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 30,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_meditation_bonus",
+            "value": 40,
+            "isMultiplier": false
+          },
+          {
+            "type": "elemental_all",
+            "value": 10,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Чистый кристалл Ци. Лор: \"кристаллы Ци плотность 1024 ед/см³\".",
+        "rarity": 2,
+        "source": "Сердце мира, глубинные залежи",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 50,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 296,
+        "max": 296,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "utility_stealth_1773589830144_0",
+          "type": "utility_stealth",
+          "category": "utility",
+          "value": 34,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_hp_1773589830144_1",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 295,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_resistance_1773589830144_2",
+          "type": "defense_resistance",
+          "category": "defense",
+          "value": 26,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "utility_pickup_range_1773589830144_3",
+          "type": "utility_pickup_range",
+          "category": "utility",
+          "value": 58,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_evasion_1773589830144_4",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 11,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 6
+      },
+      "value": 12750,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "legendary"
+    },
+    {
+      "id": "AC_000047",
+      "name": "Улучшенный серьга из громовой металл",
+      "nameEn": "Улучшенный серьга из громовой металл",
+      "description": "Улучшенный серьга из громовой металл — аксессуар из громовой металл уровня 8. Качество: Улучшенный. Проводимость Ци: 35.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "refined",
+      "materialId": "thunder_metal",
+      "material": {
+        "id": "thunder_metal",
+        "name": "Громовой металл",
+        "tier": 4,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 70,
+          "weight": 2.5,
+          "hardness": 9,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "elemental_lightning",
+            "value": 25,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_damage",
+            "value": 25,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Металл, закалённый в грозовых бурях мест силы.",
+        "rarity": 4,
+        "source": "Грозовые места силы",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 35,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 136,
+        "max": 136,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "utility_stealth_1773589830144_0",
+          "type": "utility_stealth",
+          "category": "utility",
+          "value": 17,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 6
+      },
+      "value": 4641,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AC_000048",
+      "name": "Улучшенный браслет из духовный кристалл",
+      "nameEn": "Улучшенный браслет из духовный кристалл",
+      "description": "Улучшенный браслет из духовный кристалл — аксессуар из духовный кристалл уровня 8. Качество: Улучшенный. Проводимость Ци: 50.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "refined",
+      "materialId": "spirit_crystal",
+      "material": {
+        "id": "spirit_crystal",
+        "name": "Духовный кристалл",
+        "tier": 4,
+        "category": "crystal",
+        "properties": {
+          "durability": 70,
+          "qiConductivity": 100,
+          "weight": 2,
+          "hardness": 8,
+          "flexibility": 1
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 30,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_meditation_bonus",
+            "value": 40,
+            "isMultiplier": false
+          },
+          {
+            "type": "elemental_all",
+            "value": 10,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Чистый кристалл Ци. Лор: \"кристаллы Ци плотность 1024 ед/см³\".",
+        "rarity": 2,
+        "source": "Сердце мира, глубинные залежи",
+        "requiredLevel": 7
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 50,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 121,
+        "max": 121,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_evasion_1773589830144_0",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 6,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_hp_1773589830144_1",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 126,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 6
+      },
+      "value": 6630,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AC_000049",
+      "name": "Совершенный амулет из хаотичная материя",
+      "nameEn": "Совершенный амулет из хаотичная материя",
+      "description": "Совершенный амулет из хаотичная материя — аксессуар из хаотичная материя уровня 9. Качество: Совершенный. Проводимость Ци: 60.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "perfect",
+      "materialId": "chaos_matter",
+      "material": {
+        "id": "chaos_matter",
+        "name": "Хаотичная материя",
+        "tier": 5,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 120,
+          "weight": 5,
+          "hardness": 10,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 120,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_chance",
+            "value": 20,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_damage",
+            "value": 80,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_chaos_effect",
+            "value": 100,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Нестабильная материя хаоса. Лор: \"Хаотичная Ци имеет выше энергетический потенциал\".",
+        "rarity": 0.5,
+        "source": "Древние катаклизмы, разрывы реальности",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 60,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 218,
+        "max": 218,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_evasion_1773589830144_0",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 10,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_hp_1773589830144_1",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 221,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "utility_stealth_1773589830144_2",
+          "type": "utility_stealth",
+          "category": "utility",
+          "value": 25,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 7
+      },
+      "value": 13208,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "AC_000050",
+      "name": "Совершенный амулет из осколок сердца мира",
+      "nameEn": "Совершенный амулет из осколок сердца мира",
+      "description": "Совершенный амулет из осколок сердца мира — аксессуар из осколок сердца мира уровня 9. Качество: Совершенный. Проводимость Ци: 65.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "perfect",
+      "materialId": "heart_of_world_shard",
+      "material": {
+        "id": "heart_of_world_shard",
+        "name": "Осколок Сердца Мира",
+        "tier": 5,
+        "category": "crystal",
+        "properties": {
+          "durability": 120,
+          "qiConductivity": 130,
+          "weight": 0.5,
+          "hardness": 10,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 100,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_world_connection",
+            "value": 1,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_infinite_qi_pool",
+            "value": 1,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Осколок Сердца Мира. Лор: \"Сердце Мира — портал в подпространство для хранения Ци\".",
+        "rarity": 0.2,
+        "source": "Сердце Мира (глубина 5000+ км)",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 65,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 318,
+        "max": 318,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_evasion_1773589830144_0",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 12,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "special_thorns_1773589830144_1",
+          "type": "special_thorns",
+          "category": "special",
+          "value": 19,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 7
+      },
+      "value": 14309,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "AC_000051",
+      "name": "Улучшенный браслет из хаотичная материя",
+      "nameEn": "Улучшенный браслет из хаотичная материя",
+      "description": "Улучшенный браслет из хаотичная материя — аксессуар из хаотичная материя уровня 9. Качество: Улучшенный. Проводимость Ци: 60.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "refined",
+      "materialId": "chaos_matter",
+      "material": {
+        "id": "chaos_matter",
+        "name": "Хаотичная материя",
+        "tier": 5,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 120,
+          "weight": 5,
+          "hardness": 10,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 120,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_chance",
+            "value": 20,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_damage",
+            "value": 80,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_chaos_effect",
+            "value": 100,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Нестабильная материя хаоса. Лор: \"Хаотичная Ци имеет выше энергетический потенциал\".",
+        "rarity": 0.5,
+        "source": "Древние катаклизмы, разрывы реальности",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 60,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 138,
+        "max": 138,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "special_life_steal_1773589830144_0",
+          "type": "special_life_steal",
+          "category": "special",
+          "value": 11,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "utility_capacity_1773589830144_1",
+          "type": "utility_capacity",
+          "category": "utility",
+          "value": 9,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 7
+      },
+      "value": 10101,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    },
+    {
+      "id": "AC_000052",
+      "name": "Превосходящий амулет из осколок сердца мира",
+      "nameEn": "Превосходящий амулет из осколок сердца мира",
+      "description": "Превосходящий амулет из осколок сердца мира — аксессуар из осколок сердца мира уровня 9. Качество: Превосходящий. Проводимость Ци: 65.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "transcendent",
+      "materialId": "heart_of_world_shard",
+      "material": {
+        "id": "heart_of_world_shard",
+        "name": "Осколок Сердца Мира",
+        "tier": 5,
+        "category": "crystal",
+        "properties": {
+          "durability": 120,
+          "qiConductivity": 130,
+          "weight": 0.5,
+          "hardness": 10,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 100,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_world_connection",
+            "value": 1,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_infinite_qi_pool",
+            "value": 1,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Осколок Сердца Мира. Лор: \"Сердце Мира — портал в подпространство для хранения Ци\".",
+        "rarity": 0.2,
+        "source": "Сердце Мира (глубина 5000+ км)",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 65,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 498,
+        "max": 498,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "utility_stealth_1773589830144_0",
+          "type": "utility_stealth",
+          "category": "utility",
+          "value": 37,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_hp_1773589830144_1",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 324,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_resistance_1773589830144_2",
+          "type": "defense_resistance",
+          "category": "defense",
+          "value": 29,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "utility_pickup_range_1773589830144_3",
+          "type": "utility_pickup_range",
+          "category": "utility",
+          "value": 62,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_evasion_1773589830144_4",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 12,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 7
+      },
+      "value": 21043,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "legendary"
+    },
+    {
+      "id": "AC_000053",
+      "name": "Совершенный кольцо из хаотичная материя",
+      "nameEn": "Совершенный кольцо из хаотичная материя",
+      "description": "Совершенный кольцо из хаотичная материя — аксессуар из хаотичная материя уровня 9. Качество: Совершенный. Проводимость Ци: 60.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "perfect",
+      "materialId": "chaos_matter",
+      "material": {
+        "id": "chaos_matter",
+        "name": "Хаотичная материя",
+        "tier": 5,
+        "category": "metal",
+        "properties": {
+          "durability": 80,
+          "qiConductivity": 120,
+          "weight": 5,
+          "hardness": 10,
+          "flexibility": 10
+        },
+        "bonuses": [
+          {
+            "type": "combat_damage",
+            "value": 120,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_chance",
+            "value": 20,
+            "isMultiplier": false
+          },
+          {
+            "type": "combat_crit_damage",
+            "value": 80,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_chaos_effect",
+            "value": 100,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Нестабильная материя хаоса. Лор: \"Хаотичная Ци имеет выше энергетический потенциал\".",
+        "rarity": 0.5,
+        "source": "Древние катаклизмы, разрывы реальности",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 60,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 218,
+        "max": 218,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "utility_stealth_1773589830144_0",
+          "type": "utility_stealth",
+          "category": "utility",
+          "value": 24,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_armor_1773589830144_1",
+          "type": "defense_armor",
+          "category": "defense",
+          "value": 47,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 7
+      },
+      "value": 13208,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "rare"
+    },
+    {
+      "id": "AC_000054",
+      "name": "Улучшенный браслет из осколок сердца мира",
+      "nameEn": "Улучшенный браслет из осколок сердца мира",
+      "description": "Улучшенный браслет из осколок сердца мира — аксессуар из осколок сердца мира уровня 9. Качество: Улучшенный. Проводимость Ци: 65.",
+      "type": "accessory",
+      "category": "accessory",
+      "grade": "refined",
+      "materialId": "heart_of_world_shard",
+      "material": {
+        "id": "heart_of_world_shard",
+        "name": "Осколок Сердца Мира",
+        "tier": 5,
+        "category": "crystal",
+        "properties": {
+          "durability": 120,
+          "qiConductivity": 130,
+          "weight": 0.5,
+          "hardness": 10,
+          "flexibility": 5
+        },
+        "bonuses": [
+          {
+            "type": "qi_regeneration",
+            "value": 100,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_world_connection",
+            "value": 1,
+            "isMultiplier": false
+          },
+          {
+            "type": "special_infinite_qi_pool",
+            "value": 1,
+            "isMultiplier": false
+          }
+        ],
+        "description": "Осколок Сердца Мира. Лор: \"Сердце Мира — портал в подпространство для хранения Ци\".",
+        "rarity": 0.2,
+        "source": "Сердце Мира (глубина 5000+ км)",
+        "requiredLevel": 9
+      },
+      "effectiveStats": {
+        "damage": 0,
+        "defense": 0,
+        "qiConductivity": 65,
+        "weight": 0.1
+      },
+      "durability": {
+        "current": 198,
+        "max": 198,
+        "condition": "pristine",
+        "repairCount": 0,
+        "lastRepairQuality": 100,
+        "totalDamageAbsorbed": 0
+      },
+      "bonuses": [
+        {
+          "id": "defense_evasion_1773589830144_0",
+          "type": "defense_evasion",
+          "category": "defense",
+          "value": 6,
+          "isMultiplier": false,
+          "source": "equipment"
+        },
+        {
+          "id": "defense_hp_1773589830144_1",
+          "type": "defense_hp",
+          "category": "defense",
+          "value": 139,
+          "isMultiplier": false,
+          "source": "equipment"
+        }
+      ],
+      "specialEffects": [],
+      "requirements": {
+        "level": 7
+      },
+      "value": 10942,
+      "icon": "💎",
+      "sizeWidth": 1,
+      "sizeHeight": 2,
+      "rarity": "uncommon"
+    }
+  ]
+}

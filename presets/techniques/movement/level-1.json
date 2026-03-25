@@ -1,0 +1,120 @@
+{
+  "version": "2.0",
+  "count": 2,
+  "techniques": [
+    {
+      "id": "MV000001",
+      "name": "Пожирающий Рывок",
+      "nameEn": "Пожирающий Рывок",
+      "description": "Пожирающий Рывок — техника movement элемента fire уровня 1. Grade: refined. Урон: 48. Дальность: 5м.",
+      "type": "movement",
+      "element": "fire",
+      "level": 1,
+      "grade": "refined",
+      "qiCost": 40,
+      "baseQiCost": 40,
+      "baseDamage": 40,
+      "baseRange": 5,
+      "baseCapacity": 40,
+      "computed": {
+        "finalDamage": 48,
+        "finalQiCost": 40,
+        "finalRange": 5,
+        "formula": "40 × 1.2 = 48",
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8,
+            "duration": 6
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffType": "speed",
+          "buffAmount": 8,
+          "buffDuration": 6
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "agility": 5
+      },
+      "meta": {
+        "seed": 1774114254485,
+        "template": "movement_base_fire",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 4
+      }
+    },
+    {
+      "id": "MV000002",
+      "name": "Рывок морской",
+      "nameEn": "Рывок Морской",
+      "description": "Рывок морской — техника movement элемента water уровня 1. Grade: common. Урон: 40. Дальность: 5м.",
+      "type": "movement",
+      "element": "water",
+      "level": 1,
+      "grade": "common",
+      "qiCost": 40,
+      "baseQiCost": 40,
+      "baseDamage": 40,
+      "baseRange": 5,
+      "baseCapacity": 40,
+      "computed": {
+        "finalDamage": 40,
+        "finalQiCost": 40,
+        "finalRange": 5,
+        "formula": "40 × 1 = 40",
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8,
+            "duration": 6
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffType": "speed",
+          "buffAmount": 8,
+          "buffDuration": 6
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "agility": 3
+      },
+      "meta": {
+        "seed": 1774114254486,
+        "template": "movement_base_water",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 4
+      }
+    }
+  ]
+}

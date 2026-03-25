@@ -1,0 +1,594 @@
+{
+  "version": "2.0",
+  "type": "hawk",
+  "count": 5,
+  "npcs": [
+    {
+      "id": "NP_000109",
+      "name": "Ястреб Смертоносец",
+      "age": 29,
+      "gender": "female",
+      "speciesId": "hawk",
+      "roleId": "cultist",
+      "stats": {
+        "strength": 12,
+        "agility": 27,
+        "intelligence": 11,
+        "vitality": 11
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 6,
+        "coreCapacity": 512,
+        "currentQi": 487,
+        "coreQuality": 31,
+        "baseVolume": 129,
+        "qiDensity": 2,
+        "meridianConductivity": 0.35833333333333334,
+        "meridianBuffer": 1
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 41,
+            "maxFunctionalHP": 41,
+            "structuralHP": 82,
+            "maxStructuralHP": 82,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 66,
+            "maxFunctionalHP": 66,
+            "structuralHP": 132,
+            "maxStructuralHP": 132,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_wing": {
+            "functionalHP": 33,
+            "maxFunctionalHP": 33,
+            "structuralHP": 66,
+            "maxStructuralHP": 66,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_wing": {
+            "functionalHP": 33,
+            "maxFunctionalHP": 33,
+            "structuralHP": 66,
+            "maxStructuralHP": 66,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_leg": {
+            "functionalHP": 41,
+            "maxFunctionalHP": 41,
+            "structuralHP": 82,
+            "maxStructuralHP": 82,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_leg": {
+            "functionalHP": 41,
+            "maxFunctionalHP": 41,
+            "structuralHP": 82,
+            "maxStructuralHP": 82,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Фанатизм",
+          "Преданность",
+          "Тайна"
+        ],
+        "motivation": "распространение веры",
+        "dominantEmotion": "нетерпимость",
+        "disposition": 35
+      },
+      "techniques": [
+        "breath_of_qi",
+        "curse",
+        "fire_ball",
+        "mental_shield"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 74,
+        "contributionPoints": 21
+      },
+      "generationMeta": {
+        "seed": 1773590176321,
+        "generatedAt": "2026-03-15T15:56:16.314Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000111",
+      "name": "Ястреб Быстроног",
+      "age": 32,
+      "gender": "female",
+      "speciesId": "hawk",
+      "roleId": "guard_combat",
+      "stats": {
+        "strength": 11,
+        "agility": 27,
+        "intelligence": 11,
+        "vitality": 15
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 2,
+        "coreCapacity": 554,
+        "currentQi": 316,
+        "coreQuality": 12,
+        "baseVolume": 208,
+        "qiDensity": 2,
+        "meridianConductivity": 0.5777777777777777,
+        "meridianBuffer": 2
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 41,
+            "maxFunctionalHP": 41,
+            "structuralHP": 82,
+            "maxStructuralHP": 82,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 66,
+            "maxFunctionalHP": 66,
+            "structuralHP": 132,
+            "maxStructuralHP": 132,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_wing": {
+            "functionalHP": 33,
+            "maxFunctionalHP": 33,
+            "structuralHP": 66,
+            "maxStructuralHP": 66,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_wing": {
+            "functionalHP": 33,
+            "maxFunctionalHP": 33,
+            "structuralHP": 66,
+            "maxStructuralHP": 66,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_leg": {
+            "functionalHP": 41,
+            "maxFunctionalHP": 41,
+            "structuralHP": 82,
+            "maxStructuralHP": 82,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_leg": {
+            "functionalHP": 41,
+            "maxFunctionalHP": 41,
+            "structuralHP": 82,
+            "maxStructuralHP": 82,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Верность",
+          "Храбрость",
+          "Дисциплина"
+        ],
+        "motivation": "защита",
+        "dominantEmotion": "обязанность",
+        "disposition": 65
+      },
+      "techniques": [
+        "reinforced_strike",
+        "turtle_stance",
+        "iron_wall"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 68,
+        "contributionPoints": 18
+      },
+      "generationMeta": {
+        "seed": 1773590176323,
+        "generatedAt": "2026-03-15T15:56:16.314Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000156",
+      "name": "Ястреб Громолап",
+      "age": 86,
+      "gender": "female",
+      "speciesId": "hawk",
+      "roleId": "noble",
+      "stats": {
+        "strength": 16,
+        "agility": 31,
+        "intelligence": 15,
+        "vitality": 12
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 4,
+        "coreCapacity": 1272,
+        "currentQi": 1019,
+        "coreQuality": 18,
+        "baseVolume": 179,
+        "qiDensity": 4,
+        "meridianConductivity": 0.49722222222222223,
+        "meridianBuffer": 2
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 45,
+            "maxFunctionalHP": 45,
+            "structuralHP": 90,
+            "maxStructuralHP": 90,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 72,
+            "maxFunctionalHP": 72,
+            "structuralHP": 144,
+            "maxStructuralHP": 144,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_wing": {
+            "functionalHP": 36,
+            "maxFunctionalHP": 36,
+            "structuralHP": 72,
+            "maxStructuralHP": 72,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_wing": {
+            "functionalHP": 36,
+            "maxFunctionalHP": 36,
+            "structuralHP": 72,
+            "maxStructuralHP": 72,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_leg": {
+            "functionalHP": 45,
+            "maxFunctionalHP": 45,
+            "structuralHP": 90,
+            "maxStructuralHP": 90,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_leg": {
+            "functionalHP": 45,
+            "maxFunctionalHP": 45,
+            "structuralHP": 90,
+            "maxStructuralHP": 90,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Жадность",
+          "Хитрость",
+          "Обаяние"
+        ],
+        "motivation": "расширение торговли",
+        "dominantEmotion": "алчность",
+        "disposition": 50
+      },
+      "techniques": [
+        "breath_of_qi",
+        "mental_shield",
+        "wind_speed"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null,
+        "accessory1": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 825,
+        "contributionPoints": 6
+      },
+      "generationMeta": {
+        "seed": 1773590345677,
+        "generatedAt": "2026-03-15T15:59:05.663Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000187",
+      "name": "Ястреб Громолап",
+      "age": 31,
+      "gender": "male",
+      "speciesId": "hawk",
+      "roleId": "bandit",
+      "stats": {
+        "strength": 10,
+        "agility": 25,
+        "intelligence": 10,
+        "vitality": 13
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 3,
+        "coreCapacity": 326,
+        "currentQi": 256,
+        "coreQuality": 21,
+        "baseVolume": 244,
+        "qiDensity": 1,
+        "meridianConductivity": 0.6777777777777778,
+        "meridianBuffer": 3
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 37,
+            "maxFunctionalHP": 37,
+            "structuralHP": 74,
+            "maxStructuralHP": 74,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 75,
+            "maxFunctionalHP": 75,
+            "structuralHP": 150,
+            "maxStructuralHP": 150,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 60,
+            "maxFunctionalHP": 60,
+            "structuralHP": 120,
+            "maxStructuralHP": 120,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_wing": {
+            "functionalHP": 30,
+            "maxFunctionalHP": 30,
+            "structuralHP": 60,
+            "maxStructuralHP": 60,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_wing": {
+            "functionalHP": 30,
+            "maxFunctionalHP": 30,
+            "structuralHP": 60,
+            "maxStructuralHP": 60,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_leg": {
+            "functionalHP": 37,
+            "maxFunctionalHP": 37,
+            "structuralHP": 74,
+            "maxStructuralHP": 74,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_leg": {
+            "functionalHP": 37,
+            "maxFunctionalHP": 37,
+            "structuralHP": 74,
+            "maxStructuralHP": 74,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Фанатизм",
+          "Преданность",
+          "Тайна"
+        ],
+        "motivation": "служение культу",
+        "dominantEmotion": "нетерпимость",
+        "disposition": 35
+      },
+      "techniques": [
+        "reinforced_strike",
+        "dirty_trick",
+        "ghost_shadow"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 7,
+        "contributionPoints": 13
+      },
+      "generationMeta": {
+        "seed": 1773590348742,
+        "generatedAt": "2026-03-15T15:59:08.736Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000189",
+      "name": "Ястреб Смертоносец",
+      "age": 81,
+      "gender": "male",
+      "speciesId": "hawk",
+      "roleId": "alchemist",
+      "stats": {
+        "strength": 11,
+        "agility": 27,
+        "intelligence": 13,
+        "vitality": 11
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 8,
+        "coreCapacity": 1078,
+        "currentQi": 790,
+        "coreQuality": 18,
+        "baseVolume": 226,
+        "qiDensity": 2,
+        "meridianConductivity": 0.6277777777777778,
+        "meridianBuffer": 3
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 41,
+            "maxFunctionalHP": 41,
+            "structuralHP": 82,
+            "maxStructuralHP": 82,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 66,
+            "maxFunctionalHP": 66,
+            "structuralHP": 132,
+            "maxStructuralHP": 132,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_wing": {
+            "functionalHP": 33,
+            "maxFunctionalHP": 33,
+            "structuralHP": 66,
+            "maxStructuralHP": 66,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_wing": {
+            "functionalHP": 33,
+            "maxFunctionalHP": 33,
+            "structuralHP": 66,
+            "maxStructuralHP": 66,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_leg": {
+            "functionalHP": 41,
+            "maxFunctionalHP": 41,
+            "structuralHP": 82,
+            "maxStructuralHP": 82,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_leg": {
+            "functionalHP": 41,
+            "maxFunctionalHP": 41,
+            "structuralHP": 82,
+            "maxStructuralHP": 82,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Сострадание",
+          "Терпение",
+          "Знание"
+        ],
+        "motivation": "исцеление",
+        "dominantEmotion": "сострадание",
+        "disposition": 70
+      },
+      "techniques": [
+        "breath_of_qi",
+        "qi_healing",
+        "water_shield"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 240,
+        "contributionPoints": 3
+      },
+      "generationMeta": {
+        "seed": 1773590348744,
+        "generatedAt": "2026-03-15T15:59:08.737Z",
+        "version": "2.1.0-lore"
+      }
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "version": "4.0.0",
+  "generatedAt": "2026-03-21T09:48:13.855Z",
+  "lastModifiedAt": "2026-03-21T09:48:13.855Z",
+  "generator": "V2",
+  "principles": [
+    "baseDamage = qiCost",
+    "Formula-based generation",
+    "Matryoshka architecture compliance"
+  ],
+  "techniques": {
+    "total": 121,
+    "byLevel": {
+      "1": 31,
+      "3": 14,
+      "5": 31,
+      "7": 14,
+      "9": 31
+    },
+    "byType": {
+      "combat": 77,
+      "defense": 9,
+      "healing": 6,
+      "support": 6,
+      "movement": 6,
+      "sensory": 6,
+      "curse": 4,
+      "poison": 4,
+      "cultivation": 3
+    },
+    "byElement": {
+      "fire": 18,
+      "water": 18,
+      "earth": 17,
+      "air": 17,
+      "lightning": 17,
+      "void": 17,
+      "neutral": 17
+    },
+    "byGrade": {
+      "common": 74,
+      "refined": 34,
+      "perfect": 10,
+      "transcendent": 3
+    }
+  },
+  "formations": {
+    "total": 0,
+    "byLevel": {},
+    "byType": {}
+  },
+  "items": {
+    "total": 0
+  },
+  "npcs": {
+    "total": 0
+  }
+}

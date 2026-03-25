@@ -1,0 +1,508 @@
+{
+  "version": "2.0",
+  "type": "dragon_beast",
+  "count": 4,
+  "npcs": [
+    {
+      "id": "NP_000113",
+      "name": "Дракон Смертоносец",
+      "age": 62,
+      "gender": "male",
+      "speciesId": "dragon_beast",
+      "roleId": "merchant",
+      "stats": {
+        "strength": 31,
+        "agility": 28,
+        "intelligence": 31,
+        "vitality": 31
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 7,
+        "coreCapacity": 298598,
+        "currentQi": 228985,
+        "coreQuality": 77,
+        "baseVolume": 31656,
+        "qiDensity": 4,
+        "meridianConductivity": 87.93333333333334,
+        "meridianBuffer": 439
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 120,
+            "maxFunctionalHP": 120,
+            "structuralHP": 240,
+            "maxStructuralHP": 240,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 240,
+            "maxFunctionalHP": 240,
+            "structuralHP": 480,
+            "maxStructuralHP": 480,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 192,
+            "maxFunctionalHP": 192,
+            "structuralHP": 384,
+            "maxStructuralHP": 384,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_left_leg": {
+            "functionalHP": 120,
+            "maxFunctionalHP": 120,
+            "structuralHP": 240,
+            "maxStructuralHP": 240,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_right_leg": {
+            "functionalHP": 120,
+            "maxFunctionalHP": 120,
+            "structuralHP": 240,
+            "maxStructuralHP": 240,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_left_leg": {
+            "functionalHP": 120,
+            "maxFunctionalHP": 120,
+            "structuralHP": 240,
+            "maxStructuralHP": 240,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_right_leg": {
+            "functionalHP": 120,
+            "maxFunctionalHP": 120,
+            "structuralHP": 240,
+            "maxStructuralHP": 240,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 72,
+            "maxFunctionalHP": 72,
+            "structuralHP": 144,
+            "maxStructuralHP": 144,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Жадность",
+          "Хитрость",
+          "Обаяние"
+        ],
+        "motivation": "найти редкие товары",
+        "dominantEmotion": "алчность",
+        "disposition": 50
+      },
+      "techniques": [
+        "breath_of_qi",
+        "mental_shield",
+        "wind_speed"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 557,
+        "contributionPoints": 8
+      },
+      "generationMeta": {
+        "seed": 1773590176325,
+        "generatedAt": "2026-03-15T15:56:16.315Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000158",
+      "name": "Дракон Смертоносец",
+      "age": 19,
+      "gender": "female",
+      "speciesId": "dragon_beast",
+      "roleId": "bandit",
+      "stats": {
+        "strength": 25,
+        "agility": 25,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 0,
+        "coreCapacity": 47460,
+        "currentQi": 47391,
+        "coreQuality": 12,
+        "baseVolume": 47460,
+        "qiDensity": 1,
+        "meridianConductivity": 131.83333333333334,
+        "meridianBuffer": 659
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 160,
+            "maxFunctionalHP": 160,
+            "structuralHP": 320,
+            "maxStructuralHP": 320,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_left_leg": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_right_leg": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_left_leg": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_right_leg": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 60,
+            "maxFunctionalHP": 60,
+            "structuralHP": 120,
+            "maxStructuralHP": 120,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Безжалостность",
+          "Дисциплина",
+          "Сила"
+        ],
+        "motivation": "победа",
+        "dominantEmotion": "презрение",
+        "disposition": 35
+      },
+      "techniques": [
+        "reinforced_strike",
+        "ghost_shadow",
+        "dirty_trick"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 36,
+        "contributionPoints": 12
+      },
+      "generationMeta": {
+        "seed": 1773590345679,
+        "generatedAt": "2026-03-15T15:59:05.663Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000160",
+      "name": "Дракон Громолап",
+      "age": 46,
+      "gender": "male",
+      "speciesId": "dragon_beast",
+      "roleId": "alchemist",
+      "stats": {
+        "strength": 27,
+        "agility": 27,
+        "intelligence": 27,
+        "vitality": 27
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 5,
+        "coreCapacity": 154602,
+        "currentQi": 114596,
+        "coreQuality": 27,
+        "baseVolume": 43633,
+        "qiDensity": 2,
+        "meridianConductivity": 121.20277777777778,
+        "meridianBuffer": 606
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 110,
+            "maxFunctionalHP": 110,
+            "structuralHP": 220,
+            "maxStructuralHP": 220,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 220,
+            "maxFunctionalHP": 220,
+            "structuralHP": 440,
+            "maxStructuralHP": 440,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 176,
+            "maxFunctionalHP": 176,
+            "structuralHP": 352,
+            "maxStructuralHP": 352,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_left_leg": {
+            "functionalHP": 110,
+            "maxFunctionalHP": 110,
+            "structuralHP": 220,
+            "maxStructuralHP": 220,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_right_leg": {
+            "functionalHP": 110,
+            "maxFunctionalHP": 110,
+            "structuralHP": 220,
+            "maxStructuralHP": 220,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_left_leg": {
+            "functionalHP": 110,
+            "maxFunctionalHP": 110,
+            "structuralHP": 220,
+            "maxStructuralHP": 220,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_right_leg": {
+            "functionalHP": 110,
+            "maxFunctionalHP": 110,
+            "structuralHP": 220,
+            "maxStructuralHP": 220,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 66,
+            "maxFunctionalHP": 66,
+            "structuralHP": 132,
+            "maxStructuralHP": 132,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Сострадание",
+          "Терпение",
+          "Знание"
+        ],
+        "motivation": "помощь страждущим",
+        "dominantEmotion": "забота",
+        "disposition": 70
+      },
+      "techniques": [
+        "breath_of_qi",
+        "qi_healing",
+        "water_shield"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 262,
+        "contributionPoints": 19
+      },
+      "generationMeta": {
+        "seed": 1773590345681,
+        "generatedAt": "2026-03-15T15:59:05.663Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000191",
+      "name": "Дракон Быстроног",
+      "age": 114,
+      "gender": "male",
+      "speciesId": "dragon_beast",
+      "roleId": "cultist",
+      "stats": {
+        "strength": 27,
+        "agility": 27,
+        "intelligence": 27,
+        "vitality": 27
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 5,
+        "coreCapacity": 144559,
+        "currentQi": 108818,
+        "coreQuality": 24,
+        "baseVolume": 40799,
+        "qiDensity": 2,
+        "meridianConductivity": 113.33055555555555,
+        "meridianBuffer": 566
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 110,
+            "maxFunctionalHP": 110,
+            "structuralHP": 220,
+            "maxStructuralHP": 220,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 220,
+            "maxFunctionalHP": 220,
+            "structuralHP": 440,
+            "maxStructuralHP": 440,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 176,
+            "maxFunctionalHP": 176,
+            "structuralHP": 352,
+            "maxStructuralHP": 352,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_left_leg": {
+            "functionalHP": 110,
+            "maxFunctionalHP": 110,
+            "structuralHP": 220,
+            "maxStructuralHP": 220,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_right_leg": {
+            "functionalHP": 110,
+            "maxFunctionalHP": 110,
+            "structuralHP": 220,
+            "maxStructuralHP": 220,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_left_leg": {
+            "functionalHP": 110,
+            "maxFunctionalHP": 110,
+            "structuralHP": 220,
+            "maxStructuralHP": 220,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_right_leg": {
+            "functionalHP": 110,
+            "maxFunctionalHP": 110,
+            "structuralHP": 220,
+            "maxStructuralHP": 220,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 66,
+            "maxFunctionalHP": 66,
+            "structuralHP": 132,
+            "maxStructuralHP": 132,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Агрессия",
+          "Жестокость",
+          "Нетерпение"
+        ],
+        "motivation": "нажива",
+        "dominantEmotion": "презрение",
+        "disposition": 0
+      },
+      "techniques": [
+        "breath_of_qi",
+        "curse",
+        "mental_shield",
+        "fire_ball"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 73,
+        "contributionPoints": 9
+      },
+      "generationMeta": {
+        "seed": 1773590348746,
+        "generatedAt": "2026-03-15T15:59:08.737Z",
+        "version": "2.1.0-lore"
+      }
+    }
+  ]
+}

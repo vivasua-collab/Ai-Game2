@@ -1,0 +1,110 @@
+{
+  "version": "2.0",
+  "count": 2,
+  "techniques": [
+    {
+      "id": "HL000005",
+      "name": "Истинный Регенерация",
+      "nameEn": "Истинный Регенерация",
+      "description": "Истинный Регенерация — техника healing уровня 9. Grade: refined. Урон: 17203. Дальность: 5м.",
+      "type": "healing",
+      "element": "neutral",
+      "level": 9,
+      "grade": "refined",
+      "qiCost": 14336,
+      "baseQiCost": 14336,
+      "baseDamage": 14336,
+      "baseRange": 5,
+      "baseCapacity": 56,
+      "computed": {
+        "finalDamage": 17203,
+        "finalQiCost": 14336,
+        "finalRange": 5,
+        "formula": "14336 × 1.2 = 17203",
+        "activeEffects": [
+          {
+            "type": "shield",
+            "value": 110,
+            "duration": 3
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "shield": true
+        },
+        "effectValues": {
+          "shieldHP": 110,
+          "shieldDuration": 3
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "meta": {
+        "seed": 1774114254477,
+        "template": "healing_base_neutral",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 2
+      }
+    },
+    {
+      "id": "HL000006",
+      "name": "Исцеление чистый",
+      "nameEn": "Исцеление Чистый",
+      "description": "Исцеление чистый — техника healing уровня 9. Grade: common. Урон: 14336. Дальность: 5м.",
+      "type": "healing",
+      "element": "neutral",
+      "level": 9,
+      "grade": "common",
+      "qiCost": 14336,
+      "baseQiCost": 14336,
+      "baseDamage": 14336,
+      "baseRange": 5,
+      "baseCapacity": 56,
+      "computed": {
+        "finalDamage": 14336,
+        "finalQiCost": 14336,
+        "finalRange": 5,
+        "formula": "14336 × 1 = 14336",
+        "activeEffects": [
+          {
+            "type": "heal",
+            "value": 64
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "heal": true
+        },
+        "effectValues": {
+          "healAmount": 64
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "meta": {
+        "seed": 1774114254478,
+        "template": "healing_base_neutral",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 2
+      }
+    }
+  ]
+}
