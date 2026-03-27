@@ -237,8 +237,9 @@ export class NPCAIManager {
     const players = this.npcWorldManager.getPlayersInLocation(npc.locationId);
     
     // === DEBUG ===
+    console.log(`[NPCAIManager] findNearbyPlayers: NPC "${npc.name}" (${npc.id}) at (${npc.x}, ${npc.y}), locationId="${npc.locationId}", players in location: ${players.length}`);
+    
     if (players.length > 0) {
-      console.log(`[NPCAIManager] findNearbyPlayers: npc=${npc.name} at (${npc.x}, ${npc.y}), ${players.length} players in location`);
       for (const player of players) {
         const dx = player.x - npc.x;
         const dy = player.y - npc.y;
@@ -247,13 +248,16 @@ export class NPCAIManager {
       }
     }
     
-    return players.filter(player => {
+    const nearbyPlayers = players.filter(player => {
       const dx = player.x - npc.x;
       const dy = player.y - npc.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
       
       return distance <= ACTIVATION_RADIUS;
     });
+    
+    console.log(`[NPCAIManager] findNearbyPlayers result: ${nearbyPlayers.length} players within ${ACTIVATION_RADIUS}px`);
+    return nearbyPlayers;
   }
   
   /**
@@ -569,6 +573,8 @@ export class NPCAIManager {
    * Выполнить действие NPC
    */
   private executeAction(npc: NPCState, action: NPCAction): void {
+    console.log(`[NPCAIManager] EXECUTE ACTION: NPC "${npc.name}" (${npc.id}) -> ${action.type} target=${JSON.stringify(action.target)}`);
+    
     // Обновляем состояние NPC
     npc.currentAction = action;
     npc.aiState = action.type;
@@ -579,6 +585,7 @@ export class NPCAIManager {
         // Обновляем позицию (упрощённо)
         npc.x = action.target.x;
         npc.y = action.target.y;
+        console.log(`[NPCAIManager] Updated NPC "${npc.name}" position to (${npc.x}, ${npc.y})`);
       }
     }
     
@@ -592,6 +599,8 @@ export class NPCAIManager {
         aiState: npc.aiState,
       },
     });
+    
+    console.log(`[NPCAIManager] Broadcast action to location "${npc.locationId}"`);
   }
 }
 

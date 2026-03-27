@@ -58,7 +58,7 @@ export interface AIPollingConfig {
 const DEFAULT_CONFIG: AIPollingConfig = {
   tickInterval: 1000, // 1 тик = 1 секунда
   eventsInterval: 100, // события чаще
-  debug: false,
+  debug: true, // ВКЛЮЧЕН DEBUG для диагностики NPC
   autoStart: false,
 };
 

@@ -19,7 +19,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getNPCAIManager } from '@/lib/game/ai/server';
 import { TruthSystem } from '@/lib/game/truth-system';
-import { getNPCWorldManager } from '@/lib/game/npc-world-manager';
 import { sessionNPCManager } from '@/lib/game/session-npc-manager';
 import { db } from '@/lib/db';
 
@@ -58,7 +57,9 @@ export async function POST(request: NextRequest) {
     // Получаем менеджеры
     const npcAIManager = getNPCAIManager();
     const truthSystem = TruthSystem.getInstance();
-    const npcWorldManager = getNPCWorldManager();
+    // ВАЖНО: Используем npcWorldManager ИЗ npcAIManager, а не отдельный singleton!
+    // В Next.js dev mode singleton НЕ работает между процессами
+    const npcWorldManager = (npcAIManager as any).npcWorldManager;
 
     // Проверяем/загружаем сессию
     let session = truthSystem.getSessionState(sessionId);
@@ -87,11 +88,16 @@ export async function POST(request: NextRequest) {
       const worldState = npcWorldManager.getWorldState();
       const existingPlayer = worldState.players.get(characterId);
 
+      // === DEBUG: Проверяем состояние location.playerIds ===
+      const location = worldState.locations.get(targetLocationId);
+      console.log(`[API:ai/tick] Location "${targetLocationId}" exists: ${!!location}, playerIds before: ${location?.playerIds?.length || 0}`);
+
       if (existingPlayer) {
         // Обновляем позицию существующего игрока
         existingPlayer.x = playerX;
         existingPlayer.y = playerY;
         existingPlayer.lastUpdate = Date.now();
+        console.log(`[API:ai/tick] Updated existing player ${characterId} position to (${playerX}, ${playerY})`);
 
         // Проверяем смену локации
         if (existingPlayer.locationId !== targetLocationId && targetLocationId) {
@@ -99,6 +105,7 @@ export async function POST(request: NextRequest) {
           const oldLocation = worldState.locations.get(existingPlayer.locationId);
           if (oldLocation && oldLocation.playerIds) {
             oldLocation.playerIds = oldLocation.playerIds.filter(id => id !== characterId);
+            console.log(`[API:ai/tick] Removed player from old location ${existingPlayer.locationId}`);
           }
 
           // Добавляем в новую локацию
@@ -106,6 +113,7 @@ export async function POST(request: NextRequest) {
           const newLocation = worldState.locations.get(targetLocationId);
           if (newLocation && newLocation.playerIds && !newLocation.playerIds.includes(characterId)) {
             newLocation.playerIds.push(characterId);
+            console.log(`[API:ai/tick] Added player to new location ${targetLocationId}`);
           }
         }
       } else {
@@ -120,15 +128,25 @@ export async function POST(request: NextRequest) {
           lastAttackTime: 0,
           threatLevel: 0,
         });
-        console.log(`[API:ai/tick] Added player ${characterId} to location ${targetLocationId}`);
+        console.log(`[API:ai/tick] Added NEW player ${characterId} to location ${targetLocationId}`);
       }
+
+      // === DEBUG: Проверяем состояние после обновления ===
+      const locationAfter = worldState.locations.get(targetLocationId);
+      console.log(`[API:ai/tick] Location "${targetLocationId}" playerIds after: ${locationAfter?.playerIds?.length || 0}, players in Map: ${worldState.players.size}`);
+    } else {
+      console.log(`[API:ai/tick] WARNING: No player position provided! characterId=${characterId}, playerX=${playerX}, playerY=${playerY}`);
     }
 
     // === ЗАГРУЗКА NPC В WORLDMANAGER ===
     // Загружаем NPC для текущей локации если они ещё не в WorldManager
+    console.log(`[API:ai/tick] BEFORE loadNPCs: worldState.npcs.size=${npcWorldManager.getWorldState().npcs.size}`);
+    
     if (targetLocationId) {
       await loadNPCsToWorldManager(sessionId, targetLocationId, npcWorldManager);
     }
+    
+    console.log(`[API:ai/tick] AFTER loadNPCs: worldState.npcs.size=${npcWorldManager.getWorldState().npcs.size}`);
 
     // Обновляем время мира
     npcWorldManager.incrementTick();
@@ -178,7 +196,8 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const npcAIManager = getNPCAIManager();
-    const npcWorldManager = getNPCWorldManager();
+    // ВАЖНО: Используем npcWorldManager ИЗ npcAIManager
+    const npcWorldManager = (npcAIManager as any).npcWorldManager;
 
     const stats = npcAIManager.getStats();
     const worldState = npcWorldManager.getWorldState();

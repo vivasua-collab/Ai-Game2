@@ -17,7 +17,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getBroadcastManager } from '@/lib/game/ai/server';
-import { getTruthSystem } from '@/lib/game/truth-system';
+import { TruthSystem } from '@/lib/game/truth-system';
 
 /**
  * GET /api/ai/events
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
     const events = broadcastManager.pollEvents(sessionId);
 
     // Получаем текущий тик
-    const truthSystem = getTruthSystem();
+    const truthSystem = TruthSystem.getInstance();
     const session = truthSystem.getSession(sessionId);
     const tick = session?.worldTime?.tick ?? 0;
 
