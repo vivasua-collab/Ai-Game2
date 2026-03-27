@@ -1,57 +1,59 @@
 # ДИАГНОЗ: NPC НЕ ДВИГАЮТСЯ
 
 **Дата:** 2026-03-26
-**Статус:** 🟢 ИСПРАВЛЕНО - КОРНЕВАЯ ПРИЧИНА НАЙДЕНА
+**Статус:** 🔵 ДИАГНОСТИКА В ПРОЦЕССЕ
 
 ---
 
-## 🔴 КОРНЕВАЯ ПРИЧИНА НАЙДЕНА
+## 🔄 ИЗМЕНЕНИЯ В ВЕРСИИ c1c138f
 
-### Проблема: Игрок НЕ добавлялся в `location.playerIds`
+### Добавлено debug логирование:
 
-**Файл:** `src/app/api/ai/tick/route.ts:94-101`
+1. **`src/app/api/ai/tick/route.ts`**:
+   - Логирование состояния `location.playerIds` до/после добавления игрока
+   - Логирование количества NPC в `worldState.npcs.size`
+   - Использование `npcWorldManager` из `npcAIManager` (единый singleton)
 
-```typescript
-// ❌ БЫЛО (неправильно):
-worldState.players.set(characterId, {
-  id: characterId,
-  x: playerX,
-  y: playerY,
-  locationId: targetLocationId,
-  lastUpdate: Date.now(),
-});
-// Игрок добавляется в Map, НО location.playerIds НЕ обновляется!
-```
+2. **`src/lib/game/ai/server/npc-ai-manager.ts`**:
+   - Подробное логирование в `findNearbyPlayers()`
+   - Логирование выполнения действий в `executeAction()`
 
-**Результат:** `getPlayersInLocation()` возвращал пустой массив, потому что:
-1. `location.playerIds` = `[]` (пустой)
-2. NPC не находили игроков рядом
-3. NPC не активировались и не двигались
+3. **`src/lib/game/ai/client/ai-polling-client.ts`**:
+   - Включён debug режим по умолчанию
+
+4. **`src/app/api/ai/events/route.ts`**:
+   - Исправлен импорт `TruthSystem` вместо `getTruthSystem`
 
 ---
 
-## ✅ ИСПРАВЛЕНИЕ
+## 🔴 КОРНЕВЫЕ ПРИЧИНЫ (ИДЕНТИФИЦИРОВАНЫ)
 
-**Файл:** `src/app/api/ai/tick/route.ts:111-124`
+### Причина #1: Разные singleton в Next.js dev mode
 
+**Проблема:**
+- `route.ts` использует `getNPCWorldManager()` - один singleton
+- `npcAIManager` использует `this.npcWorldManager = getNPCWorldManager()` - другой singleton
+- В dev mode это РАЗНЫЕ объекты!
+
+**Исправлено:**
 ```typescript
-// ✅ СТАЛО (правильно):
-npcWorldManager.addPlayer({
-  id: characterId,
-  sessionId: sessionId,
-  locationId: targetLocationId || 'unknown',
-  x: playerX,
-  y: playerY,
-  level: session.character?.cultivationLevel || 1,
-  lastAttackTime: 0,
-  threatLevel: 0,
-});
+// route.ts - используем npcWorldManager ИЗ npcAIManager
+const npcWorldManager = (npcAIManager as any).npcWorldManager;
 ```
 
-**`npcWorldManager.addPlayer()`**:
-1. Добавляет игрока в `worldState.players`
-2. **Обновляет `location.playerIds`** ← КРИТИЧЕСКИ ВАЖНО!
-3. Создаёт событие `player:enter`
+### Причина #2: Ошибка компиляции в /api/ai/events
+
+**Проблема:**
+```typescript
+import { getTruthSystem } from '@/lib/game/truth-system';
+// getTruthSystem не существует!
+```
+
+**Исправлено:**
+```typescript
+import { TruthSystem } from '@/lib/game/truth-system';
+const truthSystem = TruthSystem.getInstance();
+```
 
 ---
 
@@ -59,88 +61,41 @@ npcWorldManager.addPlayer({
 
 1. ✅ NPC видны на экране
 2. ✅ NPC получают урон от удара рукой
-3. ❌ **NPC НЕ ДВИГАЮТСЯ** ← ИСПРАВЛЕНО
-4. ❌ **NPC НЕ РЕАГИРУЮТ на урон** ← ИСПРАВЛЕНО
+3. ❌ **NPC НЕ ДВИГАЮТСЯ** ← В процессе исправления
+4. ❌ **NPC НЕ РЕАГИРУЮТ на урон** ← В процессе исправления
 
 ---
 
-## 📋 ДИАГНОСТИКА: РЕЗУЛЬТАТЫ
+## 📋 ДИАГНОСТИКА: РЕЗУЛЬТАТЫ ТЕСТОВ
 
-### ✅ sessionId передаётся правильно
-- `GameContainer.tsx` → `GameBridge.setSessionId()`
-- `WorldScene.ts` → `bridge.getSessionId()`
-- `LocationScene.ts` → `data.sessionId`
+### Тест /api/temp-npc
+- ✅ Возвращает 4 NPC для sessionId `cmn5s3fco0002p7zwk4zqd14n`
+- ✅ locationId = `training_ground`
+- ✅ Позиции NPC заданы
 
-### ✅ AI tick работает
-- `POST /api/ai/tick` → 200 OK
-- `worldState.npcs.size = 12`
-- `players = 1`
-
-### ✅ NPC загружаются в WorldManager
-- `[NPCWorldManager] Added NPC: Хао (TEMP_xxx) to location`
-- `[AI Tick] Added NPC: Хао (TEMP_xxx) at (513, 760)`
-
-### ❌ КОРНЕВАЯ ПРОБЛЕМА (ИСПРАВЛЕНО)
-- `getPlayersInLocation()` возвращал `[]`
-- `location.playerIds` был пустой
-- Игрок добавлялся напрямую в Map, минуя `npcWorldManager.addPlayer()`
+### Тест /api/ai/tick
+- ❌ `totalNPCs: 0` - NPC НЕ загружены в WorldManager!
+- Причина: `loadNPCsToWorldManager()` не находит NPC
 
 ---
 
-## 🔧 ИЗМЕНЁННЫЕ ФАЙЛЫ
+## 🔧 СЛЕДУЮЩИЕ ШАГИ
 
-### 1. `src/app/api/ai/tick/route.ts`
-**Изменение:** Использовать `npcWorldManager.addPlayer()` вместо прямого добавления в Map
-
-### 2. `src/lib/game/types/world-state.ts`
-**Изменение:** Добавлено поле `lastUpdate?: number` в `PlayerWorldState`
-
----
-
-## 📐 АРХИТЕКТУРА: Божество → Облако → Земля
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    ПОТОК ДАННЫХ (ИСПРАВЛЕННЫЙ)                               │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│   👁️ БОЖЕСТВО (Игрок)                                                      │
-│   └── Двигается → отправляет позицию на сервер                             │
-│                                                                             │
-│   ☁️ ОБЛАКО (Клиент)                                                        │
-│   └── AIPollingClient отправляет playerX, playerY                          │
-│   └── POST /api/ai/tick { sessionId, playerX, playerY }                    │
-│                                                                             │
-│   🌍 ЗЕМЛЯ (Сервер)                                                         │
-│   ├── npcWorldManager.addPlayer() ← ✅ ИСПРАВЛЕНО                          │
-│   │   └── Добавляет игрока в worldState.players                            │
-│   │   └── Обновляет location.playerIds ← КРИТИЧЕСКИ ВАЖНО                  │
-│   ├── getPlayersInLocation(locationId) → [player] ← ✅ ТЕПЕРЬ РАБОТАЕТ    │
-│   ├── findNearbyPlayers(npc) → [player] ← ✅ ТЕПЕРЬ РАБОТАЕТ              │
-│   └── NPC активируются и двигаются! ← ✅ ИСПРАВЛЕНО                        │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+1. **Перезапустить dev сервер** - чтобы кэш обновился
+2. **Протестировать снова** - запустить `node scripts/test-ai-tick.mjs`
+3. **Проверить логи** - убедиться что NPC загружаются
 
 ---
 
 ## ✅ КРИТЕРИИ ГОТОВНОСТИ
 
-- [x] Игрок добавляется через `npcWorldManager.addPlayer()`
-- [x] `location.playerIds` корректно обновляется
-- [x] `getPlayersInLocation()` возвращает игрока
-- [ ] NPC активируются при приближении игрока (требуется тест)
-- [ ] NPC двигаются (требуется тест)
-
----
-
-## 📚 СЛЕДУЮЩИЕ ШАГИ
-
-1. **Протестировать в игре** - подойти к NPC и проверить движение
-2. **Добавить debug логи** - показать радиус активации
-3. **Проверить события** - убедиться что `npc:action` отправляется
+- [ ] NPC загружаются в WorldManager (`totalNPCs > 0`)
+- [ ] NPC активируются при приближении игрока
+- [ ] NPC двигаются (chase, patrol)
+- [ ] NPC реагируют на урон
 
 ---
 
 *Документ обновлён: 2026-03-26*
-*Статус: Корневая причина найдена и исправлена*
+*Коммит: c1c138f*
+*Статус: Debug логирование добавлено, требуется перезапуск сервера*
