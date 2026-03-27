@@ -2185,3 +2185,158 @@ Caused by:
 note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
 ○ Compiling /_not-found/page ...
 Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+⨯ Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/page/build-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/page/build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/page/build-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/page/build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+}
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+⨯ Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/page/build-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/page/build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/page/build-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/page/build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/page/build-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/page/build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/page/build-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/page/build-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/api/ai/events/[__metadata_id__]/route/app-paths-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/api/ai/events/[__metadata_id__]/route/app-paths-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/api/ai/events/[__metadata_id__]/route/app-paths-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/api/ai/events/[__metadata_id__]/route/app-paths-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+}
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+⨯ Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+}
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+[?25h
