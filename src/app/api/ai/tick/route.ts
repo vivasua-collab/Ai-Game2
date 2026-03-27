@@ -20,6 +20,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getNPCAIManager } from '@/lib/game/ai/server';
 import { TruthSystem } from '@/lib/game/truth-system';
 import { sessionNPCManager } from '@/lib/game/session-npc-manager';
+import { getNPCWorldManager } from '@/lib/game/npc-world-manager';
 import { db } from '@/lib/db';
 
 /**
@@ -78,7 +79,7 @@ export async function POST(request: NextRequest) {
     // Получаем locationId из сессии если не передан
     // ВАЖНО: SessionState.currentLocation.id, не character.currentLocationId!
     const targetLocationId = locationId || session.currentLocation?.id;
-    const characterId = session.character?.id;
+    const characterId = session.characterId; // Используем characterId напрямую из SessionState
 
     console.log(`[API:ai/tick] sessionId=${sessionId}, targetLocationId=${targetLocationId}, characterId=${characterId}`);
 
@@ -143,6 +144,7 @@ export async function POST(request: NextRequest) {
           level: session.character?.cultivationLevel || 1,
           lastAttackTime: 0,
           threatLevel: 0,
+          lastUpdate: Date.now(),
         });
         console.log(`[API:ai/tick] Added NEW player ${characterId} to location ${targetLocationId}`);
       }

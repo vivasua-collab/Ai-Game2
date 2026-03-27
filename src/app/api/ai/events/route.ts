@@ -50,8 +50,9 @@ export async function GET(request: NextRequest) {
 
     // Получаем текущий тик
     const truthSystem = TruthSystem.getInstance();
-    const session = truthSystem.getSession(sessionId);
-    const tick = session?.worldTime?.tick ?? 0;
+    const session = truthSystem.getSessionState(sessionId);
+    // tickCount в worldTime.tickCount, но для простоты возвращаем 0 если нет сессии
+    const tick = session ? (session as any).worldTime?.tickCount ?? 0 : 0;
 
     return NextResponse.json({
       success: true,

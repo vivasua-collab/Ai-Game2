@@ -11,7 +11,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getNPCWorldManager } from '@/lib/game/npc-world-manager';
-import { getTruthSystem } from '@/lib/game/truth-system';
+import { TruthSystem } from '@/lib/game/truth-system';
 
 /**
  * POST /api/ai/player-position
@@ -36,11 +36,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Получаем менеджеры
-    const truthSystem = getTruthSystem();
+    const truthSystem = TruthSystem.getInstance();
     const npcWorldManager = getNPCWorldManager();
 
     // Проверяем сессию
-    const session = truthSystem.getSession(sessionId);
+    const session = truthSystem.getSessionState(sessionId);
     if (!session) {
       return NextResponse.json(
         { error: 'Session not found' },

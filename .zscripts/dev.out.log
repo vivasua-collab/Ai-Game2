@@ -2013,3 +2013,175 @@ All exports of the module are statically known (It doesn't have dynamic exports)
  GET / 500 in 14ms (compile: 7ms, render: 7ms)
 ⚠ Cross origin request detected from preview-chat-f687cb4d-0841-42f2-9f34-f2eea68d4940.space.z.ai to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
 Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+ GET /api/ai/tick 500 in 24ms (compile: 17ms, render: 6ms)
+ GET /api/ai/tick 500 in 10ms (compile: 4ms, render: 6ms)
+ GET /api/ai/tick 500 in 12ms (compile: 6ms, render: 5ms)
+Persisting failed: Unable to write SST file 00000226.sst
+
+Caused by:
+    No such file or directory (os error 2)
+⨯ Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+}
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+⨯ Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+}
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+⨯ Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+}
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+⨯ Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+}
+⨯ Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/app/api/ai/tick/[__metadata_id__]/route/app-paths-manifest.json'
+}
+Error: ENOENT: no such file or directory, open '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+    at ignore-listed frames {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/home/z/my-project/.next/dev/server/pages/_app/build-manifest.json'
+}
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
+
+thread 'tokio-runtime-worker' (1742) panicked at /build/turbopack/crates/turbo-tasks-backend/src/backend/operation/mod.rs:156:17:
+Failed to restore task data (corrupted database or bug): Data for <EsmAssetReference as ChunkableModuleReference>::chunking_type (TaskId 249543))
+
+Caused by:
+    0: Looking up data for TaskId 249543 from database failed
+    1: Unable to open static sorted file referenced from 00000160.meta
+    2: Unable to open static sorted file 00000150.sst
+    3: No such file or directory (os error 2)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+○ Compiling /_not-found/page ...
+Persisting failed: Another write batch or compaction is already active (Only a single write operations is allowed at a time)
