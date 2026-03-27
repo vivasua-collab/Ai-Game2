@@ -466,12 +466,13 @@ export class LocationScene extends BaseScene {
     this.projectileManager = new ProjectileManager({
       scene: this,
       npcGroup: this.npcGroup,
+      sessionId: this.sessionId,  // ← ИСПРАВЛЕНО: передаём sessionId для Combat API
       onHit: (event: ProjectileHitEvent) => {
         console.log(`[LocationScene] Projectile hit: ${event.hitResult.damage} damage`);
       },
     });
     
-    console.log('[LocationScene] ProjectileManager initialized');
+    console.log('[LocationScene] ProjectileManager initialized with sessionId:', this.sessionId);
   }
   
   /**
@@ -708,16 +709,57 @@ export class LocationScene extends BaseScene {
 
   // ==================== NPC LOADING ====================
 
+  /**
+   * Загрузка NPC для локации
+   * 
+   * АРХИТЕКТУРА: "Божество → Облако → Земля"
+   * - Сначала инициализируем NPC на сервере (Земля)
+   * - Затем загружаем их для отображения (Облако)
+   * - NPC в TruthSystem будут активированы AI tick
+   */
   private async loadNPCs(): Promise<void> {
-    if (!this.sessionId) return;
+    if (!this.sessionId) {
+      console.warn('[LocationScene] No sessionId, skipping NPC load');
+      return;
+    }
+    
     try {
+      // === ШАГ 1: Инициализация NPC на сервере ===
+      // Это создаёт NPC в TruthSystem для AI tick
+      console.log(`[LocationScene] Initializing NPCs for location ${this.locationId}...`);
+      
+      const initResponse = await fetch('/api/temp-npc', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'init',
+          sessionId: this.sessionId,
+          locationId: this.locationId,
+          config: 'training_ground',  // Конфигурация для тестового полигона
+          playerLevel: 1,
+        }),
+      });
+      
+      const initData = await initResponse.json();
+      
+      if (initData.success) {
+        console.log(`[LocationScene] Server initialized ${initData.total} NPCs`);
+      } else {
+        console.warn('[LocationScene] Server NPC init failed:', initData.error);
+      }
+      
+      // === ШАГ 2: Загрузка NPC для отображения ===
       const response = await fetch(
         `/api/npc/spawn?action=list&sessionId=${this.sessionId}&locationId=${this.locationId}`
       );
       const data = await response.json();
+      
       if (data.success && data.npcs) {
-        for (const npc of data.npcs) this.spawnNPC(npc);
-        console.log(`[LocationScene] Loaded ${data.npcs.length} NPCs`);
+        for (const npc of data.npcs) {
+          this.spawnNPC(npc);
+        }
+        console.log(`[LocationScene] Loaded ${data.npcs.length} NPCs for display`);
+        console.log(`[LocationScene] Breakdown: ${JSON.stringify(data.breakdown)}`);
       }
     } catch (error) {
       console.error('[LocationScene] Failed to load NPCs:', error);
@@ -725,10 +767,29 @@ export class LocationScene extends BaseScene {
   }
 
   private spawnNPC(npcData: any): void {
-    const angle = Math.random() * Math.PI * 2;
-    const distance = 150 + Math.random() * 200;
-    const x = WORLD_WIDTH / 2 + Math.cos(angle) * distance;
-    const y = WORLD_HEIGHT / 2 + Math.sin(angle) * distance;
+    // === ИСПРАВЛЕНО: Используем позицию с сервера (TruthSystem) ===
+    // Если позиция пришла с сервера - используем её
+    // Иначе генерируем случайную вокруг центра
+    let x: number, y: number;
+    
+    if (npcData.position?.x !== undefined && npcData.position?.y !== undefined) {
+      // Позиция с сервера (TruthSystem)
+      x = npcData.position.x;
+      y = npcData.position.y;
+      console.log(`[LocationScene] Using server position for NPC "${npcData.name}": (${x}, ${y})`);
+    } else if (npcData.x !== undefined && npcData.y !== undefined) {
+      // Позиция из данных NPC (альтернативный формат)
+      x = npcData.x;
+      y = npcData.y;
+      console.log(`[LocationScene] Using npcData position for NPC "${npcData.name}": (${x}, ${y})`);
+    } else {
+      // Случайная позиция вокруг центра (fallback)
+      const angle = Math.random() * Math.PI * 2;
+      const distance = 150 + Math.random() * 200;
+      x = WORLD_WIDTH / 2 + Math.cos(angle) * distance;
+      y = WORLD_HEIGHT / 2 + Math.sin(angle) * distance;
+      console.log(`[LocationScene] Using random position for NPC "${npcData.name}": (${x}, ${y})`);
+    }
 
     const level = npcData.cultivation?.level || 1;
     const disposition = npcData.personality?.disposition || 50;
@@ -743,7 +804,7 @@ export class LocationScene extends BaseScene {
       x,
       y,
       disposition,
-      aggressionLevel: disposition < 0 ? Math.abs(disposition) : 0,
+      aggressionLevel: npcData.personality?.aggressionLevel || (disposition < 0 ? Math.abs(disposition) : 0),
       cultivationSubLevel: npcData.cultivation?.subLevel || 0,
     });
     
@@ -766,7 +827,7 @@ export class LocationScene extends BaseScene {
     this.npcs.set(npc.id, npc);
     this.npcPhysicsSprites.set(npc.id, npcSprite);
     
-    console.log(`[LocationScene] Spawned NPC "${npcData.name}" at (${x}, ${y}) with physics`);
+    console.log(`[LocationScene] Spawned NPC "${npcData.name}" (${npcData.id}) at (${x}, ${y})`);
   }
 
   private getSpeciesIcon(speciesId: string): string {

@@ -22,6 +22,8 @@ import {
   generateTempItemId,
   isTempNPCId,
 } from '@/types/temp-npc';
+import { TruthSystem } from './truth-system';
+import { createNPCStateFromTempNPC, type NPCState } from './types/npc-state';
 import {
   generateEquipmentForNPC,
   getWealthByRole,
@@ -68,8 +70,8 @@ export function getSessionNPCManager(): SessionNPCManager {
  * Хранит статистов в оперативной памяти
  */
 export class SessionNPCManager {
-  // Хранилище: sessionId -> locationId -> TempNPC[]
-  private npcs: Map<string, Map<string, TempNPC[]>> = new Map();
+  // Хранилище УДАЛЕНО (Фаза 3) - используем TruthSystem
+  // private npcs: Map<string, Map<string, TempNPC[]>> = new Map();
   
   // Счётчик для генерации seed
   private counter: number = 0;
@@ -79,6 +81,8 @@ export class SessionNPCManager {
   /**
    * Инициализация локации
    * Генерирует статистов при входе игрока
+   * 
+   * ИЗМЕНЕНО (Фаза 3): Сохраняет NPC в TruthSystem вместо собственного хранилища
    */
   async initializeLocation(
     sessionId: string,
@@ -87,11 +91,14 @@ export class SessionNPCManager {
     playerLevel: number,
     worldSize?: { width: number; height: number }
   ): Promise<TempNPC[]> {
-    // 1. Проверяем, уже инициализирована?
-    const existing = this.getLocationNPCs(sessionId, locationId);
-    if (existing.length > 0) {
-      console.log(`[SessionNPCManager] Location ${locationId} already initialized with ${existing.length} NPCs`);
-      return existing;
+    const truthSystem = TruthSystem.getInstance();
+    
+    // 1. Проверяем, уже инициализирована? (через TruthSystem)
+    const existingNPCs = truthSystem.getNPCsByLocation(sessionId, locationId);
+    if (existingNPCs.length > 0) {
+      console.log(`[SessionNPCManager] Location ${locationId} already initialized with ${existingNPCs.length} NPCs`);
+      // Конвертируем обратно в TempNPC для совместимости
+      return existingNPCs.map(npc => this.npcStateToTempNPC(npc));
     }
     
     // 2. Получаем конфигурацию
@@ -108,7 +115,7 @@ export class SessionNPCManager {
     const worldHeight = worldSize?.height || 1200;
     
     // 4. Генерируем N статистов
-    const npcs: TempNPC[] = [];
+    const tempNPCs: TempNPC[] = [];
     const baseSeed = Date.now();
     
     for (let i = 0; i < count; i++) {
@@ -117,102 +124,131 @@ export class SessionNPCManager {
       npc.locationId = locationId;
       
       // === ГЕНЕРАЦИЯ ПОЗИЦИИ ===
-      // Случайная позиция вокруг центра карты (200-500 пикселей)
+      // NPC должны быть БЛИЗКО к игроку для активации AI!
+      // Игрок появляется в центре, NPCs в радиусе 100-250 пикселей
       const angle = Math.random() * Math.PI * 2;
-      const distance = 200 + Math.random() * 300;
+      const distance = 100 + Math.random() * 150;  // 100-250 пикселей от центра
       npc.position = {
         x: Math.round(worldWidth / 2 + Math.cos(angle) * distance),
         y: Math.round(worldHeight / 2 + Math.sin(angle) * distance),
       };
       
-      npcs.push(npc);
+      tempNPCs.push(npc);
     }
     
-    // 5. Сохраняем в память
-    this.setLocationNPCs(sessionId, locationId, npcs);
+    // 5. Конвертируем и сохраняем в TruthSystem
+    let savedCount = 0;
+    for (const tempNPC of tempNPCs) {
+      const npcState = this.convertTempNPCToState(tempNPC);
+      const result = await truthSystem.addNPC(sessionId, npcState);
+      if (result.success) {
+        savedCount++;
+      } else {
+        console.error(`[SessionNPCManager] Failed to add NPC ${tempNPC.name}: ${result.error}`);
+      }
+    }
     
-    return npcs;
+    console.log(`[SessionNPCManager] Generated ${tempNPCs.length} NPCs, saved ${savedCount} to TruthSystem`);
+    return tempNPCs;
   }
   
   /**
    * Получить всех NPC в локации
+   * 
+   * ИЗМЕНЕНО (Фаза 3): Читает из TruthSystem
    */
   getLocationNPCs(sessionId: string, locationId: string): TempNPC[] {
-    const sessionMap = this.npcs.get(sessionId);
-    if (!sessionMap) return [];
-    
-    return sessionMap.get(locationId) || [];
+    const npcStates = TruthSystem.getInstance().getNPCsByLocation(sessionId, locationId);
+    return npcStates.map(npc => this.npcStateToTempNPC(npc));
   }
   
   /**
    * Получить конкретного NPC
+   * 
+   * ИЗМЕНЕНО (Фаза 3): Читает из TruthSystem
    */
   getNPC(sessionId: string, npcId: string): TempNPC | null {
     // Если это не временный NPC, возвращаем null
     if (!isTempNPCId(npcId)) return null;
     
-    const sessionMap = this.npcs.get(sessionId);
-    if (!sessionMap) return null;
-    
-    for (const [, npcs] of sessionMap) {
-      const npc = npcs.find(n => n.id === npcId);
-      if (npc) return npc;
-    }
-    
-    return null;
+    const npcState = TruthSystem.getInstance().getNPC(sessionId, npcId);
+    return npcState ? this.npcStateToTempNPC(npcState) : null;
   }
   
   /**
    * Получить всех NPC в сессии
+   * 
+   * ИЗМЕНЕНО (Фаза 3): Читает из TruthSystem
    */
   getAllSessionNPCs(sessionId: string): TempNPC[] {
-    const sessionMap = this.npcs.get(sessionId);
-    if (!sessionMap) return [];
-    
-    const allNPCs: TempNPC[] = [];
-    for (const npcs of sessionMap.values()) {
-      allNPCs.push(...npcs);
-    }
-    
-    return allNPCs;
+    const npcStates = TruthSystem.getInstance().getAllNPCs(sessionId);
+    return npcStates.map(npc => this.npcStateToTempNPC(npc));
   }
   
   /**
    * Обновить NPC
+   * 
+   * ИЗМЕНЕНО (Фаза 3): Обновляет через TruthSystem
    */
   updateNPC(sessionId: string, npcId: string, updates: Partial<TempNPC>): TempNPC | null {
-    const npc = this.getNPC(sessionId, npcId);
-    if (!npc) return null;
+    const truthSystem = TruthSystem.getInstance();
+    const existingNpc = truthSystem.getNPC(sessionId, npcId);
+    if (!existingNpc) return null;
     
-    Object.assign(npc, updates);
-    return npc;
+    // Конвертируем обновления TempNPC в обновления NPCState
+    const stateUpdates: Partial<NPCState> = {};
+    
+    if (updates.position) {
+      stateUpdates.x = updates.position.x;
+      stateUpdates.y = updates.position.y;
+    }
+    if (updates.bodyState) {
+      stateUpdates.health = updates.bodyState.health;
+      stateUpdates.maxHealth = updates.bodyState.maxHealth;
+      stateUpdates.isDead = updates.bodyState.isDead;
+      stateUpdates.isUnconscious = updates.bodyState.isUnconscious;
+    }
+    if (updates.cultivation) {
+      stateUpdates.level = updates.cultivation.level;
+      stateUpdates.subLevel = updates.cultivation.subLevel;
+      stateUpdates.qi = updates.cultivation.currentQi;
+      stateUpdates.maxQi = updates.cultivation.coreCapacity;
+    }
+    if (updates.personality) {
+      stateUpdates.disposition = updates.personality.disposition;
+      stateUpdates.aggressionLevel = updates.personality.aggressionLevel;
+      stateUpdates.fleeThreshold = updates.personality.fleeThreshold;
+    }
+    if (updates.locationId !== undefined) {
+      stateUpdates.locationId = updates.locationId;
+    }
+    
+    const result = truthSystem.updateNPC(sessionId, npcId, stateUpdates);
+    return result.success ? this.npcStateToTempNPC(result.data!) : null;
   }
   
   /**
    * Удалить мёртвого NPC и вернуть лут
+   * 
+   * ИЗМЕНЕНО (Фаза 3): Удаляет через TruthSystem
    */
   removeNPC(sessionId: string, npcId: string): { loot: TempItem[]; xp: number } | null {
-    const sessionMap = this.npcs.get(sessionId);
-    if (!sessionMap) return null;
+    const truthSystem = TruthSystem.getInstance();
+    const npcState = truthSystem.getNPC(sessionId, npcId);
     
-    for (const [locationId, npcs] of sessionMap) {
-      const index = npcs.findIndex(n => n.id === npcId);
-      if (index !== -1) {
-        const npc = npcs[index];
-        
-        // Собираем лут
-        const loot = this.generateLoot(npc);
-        
-        // Рассчитываем XP
-        const xp = this.calculateXP(npc);
-        
-        // Удаляем NPC
-        npcs.splice(index, 1);
-        
-        console.log(`[SessionNPCManager] Removed NPC ${npcId}, loot: ${loot.length} items, XP: ${xp}`);
-        
-        return { loot, xp };
-      }
+    if (!npcState) return null;
+    
+    // Конвертируем в TempNPC для генератора лута
+    const tempNPC = this.npcStateToTempNPC(npcState);
+    const loot = this.generateLoot(tempNPC);
+    const xp = this.calculateXP(tempNPC);
+    
+    // Удаляем из TruthSystem
+    const result = truthSystem.removeNPC(sessionId, npcId);
+    
+    if (result.success) {
+      console.log(`[SessionNPCManager] Removed NPC ${npcId}, loot: ${loot.length} items, XP: ${xp}`);
+      return { loot, xp };
     }
     
     return null;
@@ -220,62 +256,55 @@ export class SessionNPCManager {
   
   /**
    * Очистка локации при выходе
+   * 
+   * ИЗМЕНЕНО (Фаза 3): Через TruthSystem
    */
   clearLocation(sessionId: string, locationId: string): number {
-    const sessionMap = this.npcs.get(sessionId);
-    if (!sessionMap) return 0;
+    const truthSystem = TruthSystem.getInstance();
+    const npcs = truthSystem.getNPCsByLocation(sessionId, locationId);
     
-    const npcs = sessionMap.get(locationId) || [];
-    const count = npcs.length;
+    for (const npc of npcs) {
+      truthSystem.removeNPC(sessionId, npc.id);
+    }
     
-    sessionMap.delete(locationId);
-    
-    console.log(`[SessionNPCManager] Cleared location ${locationId}, removed ${count} NPCs`);
-    
-    return count;
+    console.log(`[SessionNPCManager] Cleared location ${locationId}, removed ${npcs.length} NPCs`);
+    return npcs.length;
   }
   
   /**
    * Полная очистка сессии
+   * 
+   * ИЗМЕНЕНО (Фаза 3): Через TruthSystem
    */
   clearSession(sessionId: string): number {
-    const sessionMap = this.npcs.get(sessionId);
-    if (!sessionMap) return 0;
+    const truthSystem = TruthSystem.getInstance();
+    const npcs = truthSystem.getAllNPCs(sessionId);
     
-    let count = 0;
-    for (const npcs of sessionMap.values()) {
-      count += npcs.length;
+    for (const npc of npcs) {
+      truthSystem.removeNPC(sessionId, npc.id);
     }
     
-    this.npcs.delete(sessionId);
-    
-    console.log(`[SessionNPCManager] Cleared session ${sessionId}, removed ${count} NPCs`);
-    
-    return count;
+    console.log(`[SessionNPCManager] Cleared session ${sessionId}, removed ${npcs.length} NPCs`);
+    return npcs.length;
   }
   
   /**
    * Статистика менеджера
+   * 
+   * ИЗМЕНЕНО (Фаза 3): Через TruthSystem
    */
   getStats(): {
     sessions: number;
     totalNPCs: number;
     byLocation: Record<string, number>;
   } {
-    let totalNPCs = 0;
-    const byLocation: Record<string, number> = {};
-    
-    for (const [sessionId, sessionMap] of this.npcs) {
-      for (const [locationId, npcs] of sessionMap) {
-        totalNPCs += npcs.length;
-        byLocation[`${sessionId}:${locationId}`] = npcs.length;
-      }
-    }
-    
+    // TruthSystem не хранит отдельные сессии в том же формате
+    // Возвращаем базовую статистику
+    const truthStats = TruthSystem.getInstance().getStats();
     return {
-      sessions: this.npcs.size,
-      totalNPCs,
-      byLocation,
+      sessions: truthStats.activeSessions,
+      totalNPCs: 0, // TODO: нужно добавить метод getNPCStats в TruthSystem
+      byLocation: {},
     };
   }
   
@@ -646,15 +675,105 @@ export class SessionNPCManager {
     return Math.floor(baseXP + subLevelBonus + qualityBonus);
   }
   
+  // ==================== КОНВЕРТЕРЫ (Фаза 3) ====================
+  
   /**
-   * Сохранение NPC в память
+   * Конвертировать TempNPC в NPCState для сохранения в TruthSystem
    */
-  private setLocationNPCs(sessionId: string, locationId: string, npcs: TempNPC[]): void {
-    if (!this.npcs.has(sessionId)) {
-      this.npcs.set(sessionId, new Map());
-    }
-    
-    this.npcs.get(sessionId)!.set(locationId, npcs);
+  private convertTempNPCToState(tempNPC: TempNPC): NPCState {
+    return createNPCStateFromTempNPC({
+      id: tempNPC.id,
+      name: tempNPC.name,
+      speciesId: tempNPC.speciesId,
+      speciesType: tempNPC.speciesType,
+      roleId: tempNPC.roleId,
+      soulType: tempNPC.soulType,
+      controller: tempNPC.controller,
+      mind: tempNPC.mind,
+      cultivation: tempNPC.cultivation,
+      position: tempNPC.position,
+      locationId: tempNPC.locationId,
+      bodyState: tempNPC.bodyState,
+      cultivation_qi: { currentQi: tempNPC.currentQi, maxQi: tempNPC.cultivation.coreCapacity },
+      personality: tempNPC.personality,
+      collision: tempNPC.collision,
+      interactionZones: tempNPC.interactionZones,
+      aiConfig: tempNPC.aiConfig,
+    });
+  }
+  
+  /**
+   * Конвертировать NPCState обратно в TempNPC для совместимости
+   */
+  private npcStateToTempNPC(npc: NPCState): TempNPC {
+    return {
+      id: npc.id,
+      isTemporary: true,
+      speciesId: npc.speciesId,
+      speciesType: npc.speciesType,
+      roleId: npc.roleId,
+      soulType: npc.soulType,
+      controller: npc.controller,
+      mind: npc.mind,
+      name: npc.name,
+      gender: 'unknown',
+      age: 25,
+      stats: { strength: 10, agility: 10, intelligence: 10 },
+      cultivation: {
+        level: npc.level,
+        subLevel: npc.subLevel,
+        coreCapacity: npc.maxQi,
+        currentQi: npc.qi,
+        coreQuality: 50,
+        baseVolume: 100,
+        qiDensity: 1,
+        meridianConductivity: 1,
+      },
+      bodyState: {
+        health: npc.health,
+        maxHealth: npc.maxHealth,
+        parts: {},
+        isDead: npc.isDead,
+        isUnconscious: npc.isUnconscious,
+        activeEffects: [],
+        material: 'organic',
+        morphology: 'humanoid',
+      },
+      equipment: { weapon: null, armor: null, accessories: [] },
+      quickSlots: [],
+      techniques: [],
+      personality: {
+        disposition: npc.disposition,
+        aggressionLevel: npc.aggressionLevel,
+        fleeThreshold: npc.fleeThreshold,
+        canTalk: npc.canTalk,
+        canTrade: npc.canTrade,
+        traits: [],
+        motivation: '',
+        dominantEmotion: 'neutral',
+      },
+      resources: { spiritStones: 0, contributionPoints: 0 },
+      locationId: npc.locationId,
+      position: { x: npc.x, y: npc.y },
+      currentQi: npc.qi,
+      generatedAt: Date.now(),
+      seed: 0,
+      collision: { radius: npc.collisionRadius },
+      interactionZones: {
+        agro: npc.agroRadius,
+        perception: npc.perceptionRadius,
+        talk: npc.canTalk ? 100 : 0,
+        trade: npc.canTrade ? 100 : 0,
+      },
+      aiConfig: {
+        agroRadius: npc.agroRadius,
+        patrolRadius: npc.patrolRadius ?? 100,
+        fleeThreshold: npc.fleeThreshold,
+        attackRange: npc.attackRange ?? 50,
+        chaseSpeed: npc.chaseSpeed ?? 150,
+        patrolSpeed: npc.patrolSpeed ?? 50,
+      },
+    };
   }
 }
 

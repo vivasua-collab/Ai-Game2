@@ -29,6 +29,9 @@ import type {
   ProjectileData,
 } from './types';
 import { BASE_CAPACITY_BY_COMBAT_SUBTYPE, GRADE_QI_COST_MULTIPLIERS } from './types';
+import { TruthSystem } from '@/lib/game/truth-system';
+import type { NPCState } from '@/lib/game/types/npc-state';
+import { getNPCAIManager } from '@/lib/game/ai/server';
 
 // ==================== ТИПЫ ====================
 
@@ -138,6 +141,10 @@ const npcStates = new Map<string, NPCCombatState>();
  * Combat Service
  * 
  * Главный класс для обработки боевых действий на сервере.
+ * 
+ * ИНТЕГРАЦИЯ С TruthSystem (исправление):
+ * - NPC ищутся в TruthSystem, а не во внутреннем Map
+ * - Урон применяется через TruthSystem
  */
 export class CombatService {
   private static instance: CombatService;
@@ -442,6 +449,154 @@ export class CombatService {
           timestamp: Date.now(),
         });
       }
+    }
+    
+    return result;
+  }
+  
+  // ==================== ПОПАДАНИЕ ПО NPC (Через TruthSystem) ====================
+  
+  /**
+   * Обработать попадание техники по NPC через TruthSystem
+   * 
+   * ИСПРАВЛЕНИЕ: Использует TruthSystem вместо внутреннего Map.
+   * NPCState хранит health/maxHealth (не currentHp/maxHp).
+   * 
+   * @param sessionId - ID сессии (обязательно для TruthSystem)
+   * @param attackerId - ID атакующего (обычно 'player')
+   * @param targetNpcId - ID NPC цели
+   * @param techniqueDamage - Расчётный урон техники
+   * @param techniqueLevel - Уровень техники
+   * @param attackerLevel - Уровень атакующего
+   * @param element - Стихия атаки
+   * @param isUltimate - Является ли ультой
+   */
+  applyNPCHit(
+    sessionId: string,
+    attackerId: string,
+    targetNpcId: string,
+    techniqueDamage: number,
+    techniqueLevel: number,
+    attackerLevel: number,
+    element: string,
+    isUltimate: boolean = false
+  ): CombatResult {
+    const truthSystem = TruthSystem.getInstance();
+    
+    // Получить NPC из TruthSystem
+    const npc = truthSystem.getNPC(sessionId, targetNpcId);
+    if (!npc) {
+      console.warn(`[CombatService] NPC "${targetNpcId}" не найден в TruthSystem для сессии ${sessionId}`);
+      return this.createFailedResult(attackerId, targetNpcId, 'NPC не найден в TruthSystem');
+    }
+    
+    // NPC уже мёртв?
+    if (npc.isDead) {
+      return this.createFailedResult(attackerId, targetNpcId, 'NPC уже мёртв');
+    }
+    
+    // Подготовить параметры атакующего (игрок)
+    const attackerParams: AttackerParams = {
+      id: attackerId,
+      cultivationLevel: attackerLevel,
+      qiDensity: Math.pow(2, attackerLevel - 1),
+      technique: {
+        id: 'technique',
+        level: techniqueLevel,
+        grade: 'common',
+        type: 'combat',
+        element: element as any,
+        isUltimate,
+      },
+      position: { x: npc.x, y: npc.y }, // Позиция NPC как приближение
+    };
+    
+    // Подготовить параметры защищающегося (NPC)
+    // NPCState использует health/maxHealth вместо currentHp/maxHp
+    const defenderParams: DefenderParams = {
+      id: targetNpcId,
+      cultivationLevel: npc.level,
+      currentHp: npc.health,
+      maxHp: npc.maxHealth,
+      currentQi: npc.qi,
+      maxQi: npc.maxQi,
+      bodyMaterial: 'organic',
+      armor: 0,
+      position: { x: npc.x, y: npc.y },
+    };
+    
+    // Обработать через пайплайн урона
+    const result = processDamagePipeline({
+      rawDamage: techniqueDamage,
+      attacker: attackerParams,
+      defender: defenderParams,
+      options: {
+        attackType: isUltimate ? 'ultimate' : 'technique',
+        techniqueLevel,
+        isUltimate,
+        isQiTechnique: true,
+        element,
+      },
+    });
+    
+    // Обновить состояние NPC через TruthSystem
+    if (result.success) {
+      const newHealth = result.targetHp;
+      const isDead = newHealth <= 0;
+      
+      // Обновляем NPC в TruthSystem
+      truthSystem.updateNPC(sessionId, targetNpcId, {
+        health: newHealth,
+        isDead,
+        // Если умер - сбрасываем активность
+        isActive: isDead ? false : npc.isActive,
+        aiState: isDead ? 'dead' : npc.aiState,
+        // Увеличиваем агрессию при ударе
+        threatLevel: Math.min(100, npc.threatLevel + 20),
+        targetId: attackerId,
+      });
+      
+      console.log(`[CombatService] NPC "${npc.name}" получил ${result.finalDamage} урона, HP: ${newHealth}/${npc.maxHealth}`);
+      
+      // === ВАЖНО: Уведомляем AI менеджер об атаке ===
+      // Это активирует Spinal AI для рефлекторной реакции (flinch, dodge, flee)
+      const npcAIManager = getNPCAIManager();
+      npcAIManager.handlePlayerAttack(
+        sessionId,
+        attackerId,
+        targetNpcId,
+        result.finalDamage,
+        'technique' // techniqueId
+      );
+      
+      // Broadcast результата
+      this.broadcast('combat:hit', {
+        attackerId,
+        targetId: targetNpcId,
+        npcName: npc.name,
+        damage: result.finalDamage,
+        targetHp: newHealth,
+        targetMaxHp: npc.maxHealth,
+        isDead,
+        effects: result.effects,
+        timestamp: result.timestamp,
+      });
+      
+      // Если NPC умер
+      if (isDead) {
+        this.broadcast('entity:death', {
+          entityId: targetNpcId,
+          entityType: 'npc',
+          npcName: npc.name,
+          killerId: attackerId,
+          timestamp: Date.now(),
+        });
+        
+        console.log(`[CombatService] NPC "${npc.name}" убит игроком!`);
+      }
+      
+      // Обновляем результат с правильными данными NPC
+      result.targetMaxHp = npc.maxHealth;
     }
     
     return result;

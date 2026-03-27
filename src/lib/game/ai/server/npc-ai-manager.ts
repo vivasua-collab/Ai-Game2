@@ -12,8 +12,8 @@
  * @see docs/checkpoints/checkpoint_03_25_AI_server_implementation_plan.md
  */
 
-import { getNPCWorldManager } from '@/lib/game/npc-world-manager';
-import type { NPCState, NPCAction, PlayerWorldState } from '@/lib/game/types';
+import { TruthSystem } from '@/lib/game/truth-system';
+import type { NPCState, NPCAction } from '@/lib/game/types';
 import { 
   SpinalServerController, 
   createSpinalServerController,
@@ -39,9 +39,9 @@ interface AIStats {
 
 // ==================== КОНСТАНТЫ ====================
 
-const ACTIVATION_RADIUS = 300; // Радиус активации NPC при приближении игрока
-const PERCEPTION_RADIUS = 400; // Радиус восприятия NPC
-const AGRO_RADIUS = 150; // Радиус агрессии
+const ACTIVATION_RADIUS = 500; // Радиус активации NPC при приближении игрока
+const PERCEPTION_RADIUS = 600; // Радиус восприятия NPC
+const AGRO_RADIUS = 200; // Радиус агрессии
 const MAX_UPDATE_TIME_MS = 100; // Максимальное время обновления всех NPC
 
 // ==================== КЛАСС ====================
@@ -55,8 +55,7 @@ export class NPCAIManager {
   // Контроллеры AI для каждого NPC
   private controllers: Map<string, NPCAIEntry> = new Map();
   
-  // Ссылки на другие менеджеры
-  private npcWorldManager = getNPCWorldManager();
+  // УДАЛЕНО (Фаза 4): private npcWorldManager = getNPCWorldManager();
   private broadcastManager = getBroadcastManager();
   
   // Статистика
@@ -79,41 +78,50 @@ export class NPCAIManager {
   // ==================== PUBLIC API ====================
   
   /**
-   * Обновить всех NPC (вызывается каждый тик)
+   * Обновить всех NPC для указанной сессии (вызывается каждый тик)
+   * 
+   * ИЗМЕНЕНО (Фаза 4): Теперь требует sessionId, читает из TruthSystem
+   * ИСПРАВЛЕНО: Принимает позицию игрока как параметр
    */
-  async updateAllNPCs(): Promise<void> {
+  async updateAllNPCs(
+    sessionId: string, 
+    playerPosition?: { x: number; y: number }
+  ): Promise<void> {
     const startTime = Date.now();
     this.tickCount++;
     
-    const worldState = this.npcWorldManager.getWorldState();
+    const truthSystem = TruthSystem.getInstance();
     
-    // === DEBUG: Логируем состояние мира ===
-    console.log(`[NPCAIManager] Tick ${this.tickCount}: worldState.npcs.size = ${worldState.npcs.size}, players = ${worldState.players.size}`);
+    // Получаем АКТИВНЫХ NPC из TruthSystem
+    const activeNPCs = truthSystem.getActiveNPCs(sessionId);
+    
+    // === DEBUG: Логируем состояние ===
+    console.log(`[NPCAIManager] Tick ${this.tickCount}: activeNPCs = ${activeNPCs.length}, playerPos = ${playerPosition ? `(${playerPosition.x}, ${playerPosition.y})` : 'N/A'}`);
     
     // Начинаем batch режим для отправки событий
     this.broadcastManager.startBatch();
     
     try {
-      // Проходим по всем NPC
-      for (const [npcId, npc] of worldState.npcs) {
+      // Проходим по всем активным NPC
+      for (const npc of activeNPCs) {
         // Пропускаем мёртвых NPC
         if (npc.isDead) continue;
         
-        // Находим ближайших игроков
-        const nearbyPlayers = this.findNearbyPlayers(npc);
+        // Находим ближайших игроков (используем переданную позицию)
+        const nearbyPlayers = this.findNearbyPlayersWithPosition(npc, playerPosition);
         
         if (nearbyPlayers.length > 0) {
-          // Активируем NPC
+          // Активируем NPC если не активен
           if (!npc.isActive) {
-            this.activateNPC(npc);
+            this.activateNPC(sessionId, npc);
           }
           
           // Обновляем AI
-          await this.updateActiveNPC(npc, nearbyPlayers);
+          await this.updateActiveNPC(sessionId, npc, nearbyPlayers);
         } else {
-          // Деактивируем NPC
+          // Деактивируем NPC если давно не было игрока рядом
           if (npc.isActive && Date.now() - npc.lastActiveTime > 30000) {
-            this.deactivateNPC(npc);
+            this.deactivateNPC(sessionId, npc);
           }
         }
       }
@@ -164,21 +172,27 @@ export class NPCAIManager {
   
   /**
    * Обработать атаку игрока на NPC
+   * 
+   * ИЗМЕНЕНО (Фаза 4): Добавлен sessionId, использует TruthSystem
    */
   handlePlayerAttack(
+    sessionId: string,
     playerId: string,
     targetNpcId: string,
     damage: number,
     techniqueId?: string
   ): void {
-    const npc = this.npcWorldManager.getNPC(targetNpcId);
-    const player = this.npcWorldManager.getPlayer(playerId);
+    const truthSystem = TruthSystem.getInstance();
+    const npc = truthSystem.getNPC(sessionId, targetNpcId);
+    const player = this.getPlayerPosition(sessionId);
     
     if (!npc || !player) return;
     
-    // Обновляем угрозу
-    npc.threatLevel = Math.min(100, npc.threatLevel + 30);
-    npc.targetId = playerId;
+    // Обновляем угрозу через TruthSystem
+    truthSystem.updateNPC(sessionId, targetNpcId, {
+      threatLevel: Math.min(100, npc.threatLevel + 30),
+      targetId: playerId,
+    });
     
     // Создаём сигнал атаки для Spinal AI
     const signal = createAttackSignal(
@@ -207,8 +221,10 @@ export class NPCAIManager {
   
   /**
    * Получить статистику AI
+   * 
+   * ИЗМЕНЕНО (Фаза 4): Добавлен опциональный sessionId
    */
-  getStats(): AIStats {
+  getStats(sessionId?: string): AIStats {
     let totalUpdates = 0;
     let avgUpdateTime = 0;
     
@@ -220,9 +236,19 @@ export class NPCAIManager {
       avgUpdateTime = this.totalTickTime / this.tickCount;
     }
     
+    let activeNPCs = 0;
+    let totalNPCs = this.controllers.size;
+    
+    if (sessionId) {
+      const truthSystem = TruthSystem.getInstance();
+      const stats = truthSystem.getNPCStats(sessionId);
+      activeNPCs = stats.active;
+      totalNPCs = stats.total;
+    }
+    
     return {
-      totalNPCs: this.controllers.size,
-      activeNPCs: this.npcWorldManager.getActiveNPCs().length,
+      totalNPCs,
+      activeNPCs,
       totalUpdates,
       avgUpdateTime,
     };
@@ -231,41 +257,102 @@ export class NPCAIManager {
   // ==================== PRIVATE METHODS ====================
   
   /**
-   * Найти ближайших игроков
+   * Получить позицию игрока из сессии
+   * 
+   * В single-player игре только один игрок.
+   * Позиция берётся из SessionState (playerX, playerY).
+   * 
+   * ИСПРАВЛЕНО: Теперь читает актуальную позицию из TruthSystem
    */
-  private findNearbyPlayers(npc: NPCState): PlayerWorldState[] {
-    const players = this.npcWorldManager.getPlayersInLocation(npc.locationId);
+  private getPlayerPosition(sessionId: string): { id: string; x: number; y: number } | null {
+    const truthSystem = TruthSystem.getInstance();
+    const position = truthSystem.getPlayerPosition(sessionId);
+    const session = truthSystem.getSessionState(sessionId);
     
-    // === DEBUG ===
-    console.log(`[NPCAIManager] findNearbyPlayers: NPC "${npc.name}" (${npc.id}) at (${npc.x}, ${npc.y}), locationId="${npc.locationId}", players in location: ${players.length}`);
+    if (!session || !position) return null;
     
-    if (players.length > 0) {
-      for (const player of players) {
-        const dx = player.x - npc.x;
-        const dy = player.y - npc.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        console.log(`[NPCAIManager] Player ${player.id} at (${player.x}, ${player.y}), distance=${distance.toFixed(0)}, activationRadius=${ACTIVATION_RADIUS}`);
-      }
+    return {
+      id: session.characterId,
+      x: position.x,
+      y: position.y,
+    };
+  }
+  
+  /**
+   * Найти ближайших игроков для NPC (с переданной позицией игрока)
+   * 
+   * ИСПРАВЛЕНО: Принимает позицию игрока как параметр вместо использования захардкоженной
+   */
+  private findNearbyPlayersWithPosition(
+    npc: NPCState,
+    playerPosition?: { x: number; y: number }
+  ): { id: string; x: number; y: number }[] {
+    if (!playerPosition) {
+      return [];
     }
     
-    const nearbyPlayers = players.filter(player => {
-      const dx = player.x - npc.x;
-      const dy = player.y - npc.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      
-      return distance <= ACTIVATION_RADIUS;
-    });
+    // Проверяем дистанцию
+    const dx = playerPosition.x - npc.x;
+    const dy = playerPosition.y - npc.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
     
-    console.log(`[NPCAIManager] findNearbyPlayers result: ${nearbyPlayers.length} players within ${ACTIVATION_RADIUS}px`);
-    return nearbyPlayers;
+    // === DEBUG ===
+    console.log(`[NPCAIManager] findNearbyPlayers: NPC "${npc.name}" at (${npc.x}, ${npc.y}), player at (${playerPosition.x}, ${playerPosition.y}), distance=${distance.toFixed(0)}, activationRadius=${ACTIVATION_RADIUS}`);
+    
+    if (distance <= ACTIVATION_RADIUS) {
+      return [{
+        id: 'player',
+        x: playerPosition.x,
+        y: playerPosition.y,
+      }];
+    }
+    
+    return [];
+  }
+  
+  /**
+   * Найти ближайших игроков для NPC
+   * 
+   * ИЗМЕНЕНО (Фаза 4): В single-player игре только один игрок
+   */
+  private findNearbyPlayers(
+    sessionId: string, 
+    npc: NPCState
+  ): { id: string; x: number; y: number }[] {
+    const player = this.getPlayerPosition(sessionId);
+    
+    if (!player) {
+      return [];
+    }
+    
+    // Проверяем дистанцию
+    const dx = player.x - npc.x;
+    const dy = player.y - npc.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    
+    // === DEBUG ===
+    console.log(`[NPCAIManager] findNearbyPlayers: NPC "${npc.name}" at (${npc.x}, ${npc.y}), player at (${player.x}, ${player.y}), distance=${distance.toFixed(0)}, activationRadius=${ACTIVATION_RADIUS}`);
+    
+    if (distance <= ACTIVATION_RADIUS) {
+      return [player];
+    }
+    
+    return [];
   }
   
   /**
    * Активировать NPC
+   * 
+   * ИЗМЕНЕНО (Фаза 4): Обновляет через TruthSystem
    */
-  private activateNPC(npc: NPCState): void {
-    npc.isActive = true;
-    npc.lastActiveTime = Date.now();
+  private activateNPC(sessionId: string, npc: NPCState): void {
+    const truthSystem = TruthSystem.getInstance();
+    
+    // Обновляем через TruthSystem
+    truthSystem.updateNPC(sessionId, npc.id, {
+      isActive: true,
+      lastActiveTime: Date.now(),
+    });
     
     // Создаём контроллер если нет
     if (!this.controllers.has(npc.id)) {
@@ -277,11 +364,18 @@ export class NPCAIManager {
   
   /**
    * Деактивировать NPC
+   * 
+   * ИЗМЕНЕНО (Фаза 4): Обновляет через TruthSystem
    */
-  private deactivateNPC(npc: NPCState): void {
-    npc.isActive = false;
-    npc.aiState = 'idle';
-    npc.currentAction = null;
+  private deactivateNPC(sessionId: string, npc: NPCState): void {
+    const truthSystem = TruthSystem.getInstance();
+    
+    // Обновляем через TruthSystem
+    truthSystem.updateNPC(sessionId, npc.id, {
+      isActive: false,
+      aiState: 'idle',
+      currentAction: null,
+    });
     
     console.log(`[NPCAIManager] Deactivated NPC: ${npc.name} (${npc.id})`);
   }
@@ -295,21 +389,22 @@ export class NPCAIManager {
    * Логика:
    * 1. Spinal AI - рефлекторные реакции (dodge, flinch, flee)
    * 2. Proactive AI - активные действия (chase, attack, patrol, move)
+   * 
+   * ИЗМЕНЕНО (Фаза 4): Добавлен sessionId, использует TruthSystem
    */
   private async updateActiveNPC(
+    sessionId: string,
     npc: NPCState,
-    nearbyPlayers: PlayerWorldState[]
+    nearbyPlayers: { id: string; x: number; y: number }[]
   ): Promise<void> {
     const entry = this.controllers.get(npc.id);
     if (!entry) return;
     
-    // Обновляем время последнего обновления
-    npc.lastActiveTime = Date.now();
-    
-    // Отмечаем игроков в зоне видимости
-    for (const player of nearbyPlayers) {
-      this.npcWorldManager.markPlayerSeen(npc.id, player.id);
-    }
+    // Обновляем время последнего обновления через TruthSystem
+    const truthSystem = TruthSystem.getInstance();
+    truthSystem.updateNPC(sessionId, npc.id, {
+      lastActiveTime: Date.now(),
+    });
     
     // Находим ближайшего игрока
     const nearestPlayer = this.findNearestPlayer(npc, nearbyPlayers);
@@ -350,7 +445,7 @@ export class NPCAIManager {
     
     // Если есть рефлекторное действие - выполняем его
     if (reflexAction && reflexAction.type !== 'idle') {
-      this.executeAction(npc, reflexAction);
+      this.executeAction(sessionId, npc, reflexAction);
       entry.totalUpdates++;
       entry.lastUpdateTime = Date.now();
       return;
@@ -362,7 +457,7 @@ export class NPCAIManager {
     const proactiveAction = this.generateProactiveAction(npc, nearestPlayer, distance);
     
     if (proactiveAction) {
-      this.executeAction(npc, proactiveAction);
+      this.executeAction(sessionId, npc, proactiveAction);
       entry.totalUpdates++;
       entry.lastUpdateTime = Date.now();
     }
@@ -378,7 +473,7 @@ export class NPCAIManager {
    */
   private generateProactiveAction(
     npc: NPCState,
-    nearestPlayer: PlayerWorldState | null,
+    nearestPlayer: { id: string; x: number; y: number } | null,
     distance: number
   ): NPCAction | null {
     const now = Date.now();
@@ -542,8 +637,8 @@ export class NPCAIManager {
    */
   private findNearestPlayer(
     npc: NPCState,
-    players: PlayerWorldState[]
-  ): PlayerWorldState | null {
+    players: { id: string; x: number; y: number }[]
+  ): { id: string; x: number; y: number } | null {
     if (players.length === 0) return null;
     
     let nearest = players[0];
@@ -563,7 +658,7 @@ export class NPCAIManager {
   /**
    * Вычислить расстояние
    */
-  private calculateDistance(npc: NPCState, player: PlayerWorldState): number {
+  private calculateDistance(npc: NPCState, player: { x: number; y: number }): number {
     const dx = player.x - npc.x;
     const dy = player.y - npc.y;
     return Math.sqrt(dx * dx + dy * dy);
@@ -571,23 +666,34 @@ export class NPCAIManager {
   
   /**
    * Выполнить действие NPC
+   * 
+   * ИЗМЕНЕНО (Фаза 4): Сохраняет изменения через TruthSystem
    */
-  private executeAction(npc: NPCState, action: NPCAction): void {
+  private executeAction(sessionId: string, npc: NPCState, action: NPCAction): void {
     console.log(`[NPCAIManager] EXECUTE ACTION: NPC "${npc.name}" (${npc.id}) -> ${action.type} target=${JSON.stringify(action.target)}`);
     
-    // Обновляем состояние NPC
-    npc.currentAction = action;
-    npc.aiState = action.type;
+    const truthSystem = TruthSystem.getInstance();
+    
+    // Подготавливаем обновления
+    const updates: Partial<NPCState> = {
+      currentAction: action,
+      aiState: action.type,
+    };
     
     // Обновляем позицию если действие связано с движением
     if (action.type === 'move' || action.type === 'chase' || action.type === 'flee') {
       if (action.target && typeof action.target === 'object') {
-        // Обновляем позицию (упрощённо)
-        npc.x = action.target.x;
-        npc.y = action.target.y;
-        console.log(`[NPCAIManager] Updated NPC "${npc.name}" position to (${npc.x}, ${npc.y})`);
+        updates.x = action.target.x;
+        updates.y = action.target.y;
+        console.log(`[NPCAIManager] Updated NPC "${npc.name}" position to (${updates.x}, ${updates.y})`);
       }
     }
+    
+    // Применяем обновления через TruthSystem
+    truthSystem.updateNPC(sessionId, npc.id, updates);
+    
+    // Обновляем локальную переменную для broadcast
+    Object.assign(npc, updates);
     
     // Отправляем событие
     this.broadcastManager.broadcastNPCAction(npc.locationId, {

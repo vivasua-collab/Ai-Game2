@@ -26,6 +26,7 @@ import { db } from '@/lib/db';
 import type { Character, Location, WorldTime, InventoryItem, CharacterTechnique } from '@/types/game';
 import { Prisma } from '@prisma/client';
 import { logQiChange, type QiChangeSource } from '@/lib/logger/qi-logger';
+import type { NPCState } from './types/npc-state';
 
 // ==================== TYPES ====================
 
@@ -39,6 +40,10 @@ export interface SessionState {
   // Персонаж (первичное состояние в памяти)
   character: CharacterState;
 
+  // === ПОЗИЦИЯ ИГРОКА (для AI) ===
+  playerX: number;
+  playerY: number;
+
   // Мир
   worldTime: WorldTimeState;
   worldState: Record<string, unknown>;
@@ -51,6 +56,11 @@ export interface SessionState {
 
   // Техники
   techniques: TechniqueState[];
+
+  // === НОВОЕ: NPC (Фаза 1) ===
+  npcs: Map<string, NPCState>;                      // npcId → NPCState
+  npcIndexByLocation: Map<string, Set<string>>;     // locationId → Set<npcId>
+  npcIndexByActivation: Map<string, Set<string>>;   // 'active' | 'inactive' → Set<npcId>
 
   // Метаданные
   lastSavedAt: Date;
@@ -172,9 +182,13 @@ export interface TruthResult<T = void> {
  * ВАЖНО: В активной сессии состояние в памяти ПЕРВИЧНО!
  * БД - это persistence layer, не источник истины во время игры.
  */
-class TruthSystemImpl {
-  private static instance: TruthSystemImpl;
 
+// Используем globalThis для сохранения singleton между запросами в Next.js Dev Mode
+const globalForTruthSystem = globalThis as unknown as {
+  truthSystem: TruthSystemImpl | undefined;
+};
+
+class TruthSystemImpl {
   // Активные сессии: sessionId -> SessionState
   private sessions: Map<string, SessionState> = new Map();
 
@@ -188,10 +202,10 @@ class TruthSystemImpl {
   private constructor() {}
 
   static getInstance(): TruthSystemImpl {
-    if (!this.instance) {
-      this.instance = new TruthSystemImpl();
+    if (!globalForTruthSystem.truthSystem) {
+      globalForTruthSystem.truthSystem = new TruthSystemImpl();
     }
-    return this.instance;
+    return globalForTruthSystem.truthSystem;
   }
 
   // ==================== SESSION MANAGEMENT ====================
@@ -268,6 +282,18 @@ class TruthSystemImpl {
         inventory: inventory.map(this.mapInventoryItemToState),
 
         techniques: techniques.map(this.mapTechniqueToState),
+
+        // === ПОЗИЦИЯ ИГРОКА (для AI) ===
+        playerX: 400,  // Дефолтная позиция, обновляется через updatePlayerPosition
+        playerY: 300,
+
+        // === НОВОЕ: Инициализация NPC (Фаза 1) ===
+        npcs: new Map(),
+        npcIndexByLocation: new Map(),
+        npcIndexByActivation: new Map([
+          ['active', new Set()],
+          ['inactive', new Set()],
+        ]),
 
         lastSavedAt: new Date(),
         isDirty: false,
@@ -862,6 +888,332 @@ class TruthSystemImpl {
     return session?.worldTime || null;
   }
 
+  // ==================== NPC OPERATIONS ====================
+
+  /**
+   * Добавить NPC в сессию
+   * 
+   * ИСПРАВЛЕНО: Автоматически загружает сессию если её нет в памяти
+   */
+  async addNPC(sessionId: string, npc: NPCState): Promise<TruthResult<NPCState>> {
+    let session = this.sessions.get(sessionId);
+    
+    // Если сессия не загружена - загружаем из БД
+    if (!session) {
+      console.log(`[TruthSystem] addNPC: Session ${sessionId} not loaded, loading from DB...`);
+      const loadResult = await this.loadSession(sessionId);
+      if (!loadResult.success) {
+        console.error(`[TruthSystem] Failed to load session ${sessionId}: ${loadResult.error}`);
+        return { success: false, error: `Failed to load session: ${loadResult.error}` };
+      }
+      session = loadResult.data!;
+    }
+
+    // Сохраняем в Map
+    session.npcs.set(npc.id, npc);
+
+    // Обновляем индекс по локации
+    if (!session.npcIndexByLocation.has(npc.locationId)) {
+      session.npcIndexByLocation.set(npc.locationId, new Set());
+    }
+    session.npcIndexByLocation.get(npc.locationId)!.add(npc.id);
+
+    // Обновляем индекс активности
+    const activationKey = npc.isActive ? 'active' : 'inactive';
+    session.npcIndexByActivation.get(activationKey)!.add(npc.id);
+
+    session.isDirty = true;
+
+    console.log(`[TruthSystem] Added NPC: ${npc.name} (${npc.id}) to location ${npc.locationId}`);
+    return { success: true, data: npc };
+  }
+
+  /**
+   * Добавить несколько NPC сразу (batch)
+   */
+  addNPCs(sessionId: string, npcs: NPCState[]): TruthResult<number> {
+    let added = 0;
+    for (const npc of npcs) {
+      const result = this.addNPC(sessionId, npc);
+      if (result.success) added++;
+    }
+    return { success: true, data: added };
+  }
+
+  /**
+   * Получить NPC по ID
+   */
+  getNPC(sessionId: string, npcId: string): NPCState | null {
+    const session = this.sessions.get(sessionId);
+    return session?.npcs.get(npcId) || null;
+  }
+
+  /**
+   * Получить всех NPC в локации
+   */
+  getNPCsByLocation(sessionId: string, locationId: string): NPCState[] {
+    const session = this.sessions.get(sessionId);
+    if (!session) return [];
+
+    const npcIds = session.npcIndexByLocation.get(locationId);
+    if (!npcIds) return [];
+
+    return Array.from(npcIds)
+      .map(id => session.npcs.get(id))
+      .filter((npc): npc is NPCState => npc !== undefined);
+  }
+
+  /**
+   * Получить всех активных NPC
+   */
+  getActiveNPCs(sessionId: string): NPCState[] {
+    const session = this.sessions.get(sessionId);
+    if (!session) return [];
+
+    const activeIds = session.npcIndexByActivation.get('active');
+    if (!activeIds) return [];
+
+    return Array.from(activeIds)
+      .map(id => session.npcs.get(id))
+      .filter((npc): npc is NPCState => npc !== undefined);
+  }
+
+  /**
+   * Получить всех NPC в сессии
+   */
+  getAllNPCs(sessionId: string): NPCState[] {
+    const session = this.sessions.get(sessionId);
+    if (!session) return [];
+
+    return Array.from(session.npcs.values());
+  }
+
+  /**
+   * Обновить NPC
+   */
+  updateNPC(
+    sessionId: string,
+    npcId: string,
+    updates: Partial<NPCState>
+  ): TruthResult<NPCState> {
+    const session = this.sessions.get(sessionId);
+    if (!session) {
+      return { success: false, error: 'Session not loaded' };
+    }
+
+    const npc = session.npcs.get(npcId);
+    if (!npc) {
+      return { success: false, error: 'NPC not found' };
+    }
+
+    // Проверяем смену локации
+    if (updates.locationId && updates.locationId !== npc.locationId) {
+      this.moveNPCToLocation(session, npc, updates.locationId);
+    }
+
+    // Проверяем смену активности
+    if (updates.isActive !== undefined && updates.isActive !== npc.isActive) {
+      this.updateNPCActivationIndex(session, npc, updates.isActive);
+    }
+
+    // Применяем обновления
+    Object.assign(npc, updates);
+    session.isDirty = true;
+
+    return { success: true, data: npc };
+  }
+
+  /**
+   * Удалить NPC
+   */
+  removeNPC(sessionId: string, npcId: string): TruthResult<NPCState> {
+    const session = this.sessions.get(sessionId);
+    if (!session) {
+      return { success: false, error: 'Session not loaded' };
+    }
+
+    const npc = session.npcs.get(npcId);
+    if (!npc) {
+      return { success: false, error: 'NPC not found' };
+    }
+
+    // Удаляем из основного Map
+    session.npcs.delete(npcId);
+
+    // Удаляем из индекса локации
+    session.npcIndexByLocation.get(npc.locationId)?.delete(npcId);
+
+    // Удаляем из индекса активности
+    const activationKey = npc.isActive ? 'active' : 'inactive';
+    session.npcIndexByActivation.get(activationKey)?.delete(npcId);
+
+    session.isDirty = true;
+
+    console.log(`[TruthSystem] Removed NPC: ${npc.name} (${npcId})`);
+    return { success: true, data: npc };
+  }
+
+  /**
+   * Активировать NPC в радиусе от позиции
+   *
+   * Используется при движении игрока для активации ближайших NPC.
+   * Активированные NPC обрабатываются AI.
+   */
+  activateNearbyNPCs(
+    sessionId: string,
+    x: number,
+    y: number,
+    radius: number,
+    locationId?: string
+  ): NPCState[] {
+    const session = this.sessions.get(sessionId);
+    if (!session) return [];
+
+    const targetLocationId = locationId || session.currentLocation?.id;
+    if (!targetLocationId) return [];
+
+    const npcsInLocation = this.getNPCsByLocation(sessionId, targetLocationId);
+    const activated: NPCState[] = [];
+
+    for (const npc of npcsInLocation) {
+      const dx = npc.x - x;
+      const dy = npc.y - y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance <= radius) {
+        if (!npc.isActive) {
+          npc.isActive = true;
+          npc.lastActiveTime = Date.now();
+          this.updateNPCActivationIndex(session, npc, true);
+          activated.push(npc);
+        }
+      }
+    }
+
+    if (activated.length > 0) {
+      console.log(`[TruthSystem] Activated ${activated.length} NPCs within ${radius}px`);
+    }
+
+    return activated;
+  }
+
+  /**
+   * Деактивировать NPC, далеко от игрока
+   */
+  deactivateFarNPCs(
+    sessionId: string,
+    playerX: number,
+    playerY: number,
+    maxDistance: number,
+    locationId?: string
+  ): number {
+    const session = this.sessions.get(sessionId);
+    if (!session) return 0;
+
+    const targetLocationId = locationId || session.currentLocation?.id;
+    if (!targetLocationId) return 0;
+
+    const activeNPCs = this.getActiveNPCs(sessionId);
+    let deactivated = 0;
+
+    for (const npc of activeNPCs) {
+      if (npc.locationId !== targetLocationId) continue;
+
+      const dx = npc.x - playerX;
+      const dy = npc.y - playerY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance > maxDistance) {
+        npc.isActive = false;
+        this.updateNPCActivationIndex(session, npc, false);
+        deactivated++;
+      }
+    }
+
+    if (deactivated > 0) {
+      console.log(`[TruthSystem] Deactivated ${deactivated} NPCs beyond ${maxDistance}px`);
+    }
+
+    return deactivated;
+  }
+
+  /**
+   * Получить статистику NPC
+   */
+  getNPCStats(sessionId: string): {
+    total: number;
+    active: number;
+    inactive: number;
+    byLocation: Record<string, number>;
+  } {
+    const session = this.sessions.get(sessionId);
+    if (!session) {
+      return { total: 0, active: 0, inactive: 0, byLocation: {} };
+    }
+
+    const active = session.npcIndexByActivation.get('active')?.size || 0;
+    const inactive = session.npcIndexByActivation.get('inactive')?.size || 0;
+
+    const byLocation: Record<string, number> = {};
+    for (const [locationId, npcIds] of session.npcIndexByLocation) {
+      byLocation[locationId] = npcIds.size;
+    }
+
+    return {
+      total: session.npcs.size,
+      active,
+      inactive,
+      byLocation,
+    };
+  }
+
+  /**
+   * Переместить NPC в другую локацию (приватный метод)
+   */
+  private moveNPCToLocation(
+    session: SessionState,
+    npc: NPCState,
+    newLocationId: string
+  ): void {
+    const oldLocationId = npc.locationId;
+
+    // Удаляем из старой локации
+    const oldLocationNPCs = session.npcIndexByLocation.get(oldLocationId);
+    if (oldLocationNPCs) {
+      oldLocationNPCs.delete(npc.id);
+    }
+
+    // Добавляем в новую локацию
+    if (!session.npcIndexByLocation.has(newLocationId)) {
+      session.npcIndexByLocation.set(newLocationId, new Set());
+    }
+    session.npcIndexByLocation.get(newLocationId)!.add(npc.id);
+
+    npc.locationId = newLocationId;
+
+    console.log(`[TruthSystem] Moved NPC ${npc.name} from ${oldLocationId} to ${newLocationId}`);
+  }
+
+  /**
+   * Обновить индекс активности (приватный метод)
+   */
+  private updateNPCActivationIndex(
+    session: SessionState,
+    npc: NPCState,
+    newIsActive: boolean
+  ): void {
+    const oldKey = npc.isActive ? 'active' : 'inactive';
+    const newKey = newIsActive ? 'active' : 'inactive';
+
+    // Удаляем из старого индекса
+    session.npcIndexByActivation.get(oldKey)?.delete(npc.id);
+
+    // Добавляем в новый индекс
+    session.npcIndexByActivation.get(newKey)?.add(npc.id);
+
+    console.log(`[TruthSystem] NPC ${npc.name} activation changed: ${oldKey} → ${newKey}`);
+  }
+
   // ==================== PERSISTENCE ====================
 
   /**
@@ -1196,24 +1548,6 @@ class TruthSystemImpl {
     return { success: true, data: session.worldTime };
   }
 
-  // ==================== UTILS ====================
-
-  /**
-   * Получить статистику системы
-   */
-  getStats(): { activeSessions: number; sessions: string[] } {
-    return {
-      activeSessions: this.sessions.size,
-      sessions: Array.from(this.sessions.keys()),
-    };
-  }
-
-  /**
-   * Проверить, загружена ли сессия
-   */
-  isSessionLoaded(sessionId: string): boolean {
-    return this.sessions.has(sessionId);
-  }
 }
 
 // ==================== EXPORTS ====================

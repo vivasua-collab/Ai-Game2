@@ -1,7 +1,7 @@
 # CHECKPOINT: 2026-03-27
 
-**Системное время:** 2026-03-27 07:17:05 UTC
-**Статус:** 🟢 Сервер работает, API отвечает
+**Системное время:** 2026-03-27 07:40:05 UTC
+**Статус:** 🟢 Сервер работает, API отвечает, NPCs генерируются
 
 ---
 
@@ -69,6 +69,37 @@ curl http://localhost:3000/api/ai/tick
   }
 }
 ```
+
+---
+
+### 5. Перезапуск DEV сервера (07:40 UTC)
+**Проблема:** Ошибка "Z" - чёрный экран с буквой Z вместо игры
+
+**Причина:** Dev сервер не запущен (в контейнерной среде процессы умирают без терминала)
+
+**Решение (из INSTALL.md секция 7a):**
+```bash
+# Контейнерная среда требует полного отсоединения процесса
+setsid -f bun run dev > /home/z/my-project/dev.log 2>&1
+```
+
+**Результат:**
+- ✅ Порт 3000 слушается
+- ✅ Next.js 16.1.3 (Turbopack) ✓ Ready in 951ms
+- ✅ Сессия загружена: `cmn5s3fco0002p7zwk4zqd14n`
+- ✅ NPCs генерируются: `[SessionNPCManager] Generating 5 NPCs for location training_ground`
+
+---
+
+### 6. Обнаружено: NPCs генерируются на клиенте
+**Из логов dev.log:**
+```
+[SessionNPCManager] Generating 5 NPCs for location training_ground
+[NPCGenerator] NPC L2 has 0/4 techniques (role: refugee)
+POST /api/temp-npc 200 in 249ms
+```
+
+**Вывод:** NPCs создаются через `/api/temp-npc`, но возможно не загружаются в NPCWorldManager для серверного AI
 
 ---
 
@@ -296,18 +327,24 @@ src/app/api/ai/tick/route.ts (loadNPCsToWorldManager)
 
 ## ✅ ЗАКЛЮЧЕНИЕ
 
-**Что соответствует архитектуре:**
+**Что соответствует архитектуре (ARCHITECTURE_cloud.md - самая новая):**
 1. ✅ TruthSystem - память первична
 2. ✅ HTTP-only для single-player
 3. ✅ 1 TICK = 1 СЕКУНДА
 4. ✅ NPCAIManager на сервере
 5. ✅ Слои архитектуры соблюдены
+6. ✅ Метафора: Божество → Облако → Земля
 
 **Что требует доработки:**
-1. ⏳ Загрузка NPC в WorldManager
+1. ⏳ Загрузка NPC в WorldManager (NPCs генерируются, но totalNPCs=0 в API)
 2. ⏳ Активация NPC при приближении игрока
 3. ⏳ Синхронизация SessionNPCManager ↔ NPCWorldManager
+
+**Ключевое решение:**
+- Использовать `setsid -f bun run dev > dev.log 2>&1` для запуска в контейнерной среде
+- Это обеспечивает полное отсоединение процесса от родительской сессии
 
 ---
 
 *Документ создан: 2026-03-27 07:17:05 UTC*
+*Обновлён: 2026-03-27 07:40:05 UTC*

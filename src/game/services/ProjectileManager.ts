@@ -50,6 +50,7 @@ export interface ProjectileHitEvent {
 export interface ProjectileManagerConfig {
   scene: Phaser.Scene;
   npcGroup: NPCGroup;
+  sessionId?: string;  // ID сессии для Combat API
   onHit?: (event: ProjectileHitEvent) => void;
   onFire?: (event: TechniqueFiredEvent) => void;
 }
@@ -59,6 +60,7 @@ export interface ProjectileManagerConfig {
 export class ProjectileManager {
   private scene: Phaser.Scene;
   private npcGroup: NPCGroup;
+  private sessionId?: string;
   private projectileGroup!: Phaser.Physics.Arcade.Group;
   private playerProjectiles: TechniqueProjectile[] = [];
   
@@ -75,6 +77,7 @@ export class ProjectileManager {
   constructor(config: ProjectileManagerConfig) {
     this.scene = config.scene;
     this.npcGroup = config.npcGroup;
+    this.sessionId = config.sessionId;
     this.onHitCallback = config.onHit;
     this.onFireCallback = config.onFire;
     
@@ -209,6 +212,8 @@ export class ProjectileManager {
    * Отправить урон на Combat API (HTTP)
    * 
    * Заменяет WebSocket player:attack на HTTP запрос к /api/combat
+   * 
+   * ИСПРАВЛЕНО: Теперь отправляет sessionId для интеграции с TruthSystem.
    */
   private async sendDamageToCombatAPI(
     npc: NPCSprite,
@@ -228,6 +233,7 @@ export class ProjectileManager {
           attackerLevel: 1,  // TODO: get from player
           element: projectile.element,
           isUltimate: false,
+          sessionId: this.sessionId,  // ← ИСПРАВЛЕНО: передаём sessionId
         }),
       });
       
@@ -237,6 +243,7 @@ export class ProjectileManager {
           // Обновляем HP NPC из ответа сервера
           if (result.targetHp !== undefined) {
             npc.currentHp = result.targetHp;
+            npc.maxHp = result.targetMaxHp ?? npc.maxHp;
             npc.updateHpBar();
           }
           
@@ -245,7 +252,11 @@ export class ProjectileManager {
             npc.onDeath();
           }
           
-          console.log(`[ProjectileManager] Combat API confirmed: ${hitResult.damage} damage, HP: ${result.targetHp}`);
+          console.log(`[ProjectileManager] Combat API confirmed: ${hitResult.damage} damage, HP: ${result.targetHp}/${result.targetMaxHp}`);
+        } else {
+          console.warn(`[ProjectileManager] Combat API failed: ${result.reason}`);
+          // Fallback: применяем урон локально
+          npc.takeDamage(hitResult.damage, projectile.element);
         }
       } else {
         // Fallback: применяем урон локально

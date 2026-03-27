@@ -3,16 +3,17 @@
  * 
  * CRUD операции для NPC в мире.
  * 
+ * ИЗМЕНЕНО (Фаза 6): Использует TruthSystem вместо NPCWorldManager
+ * 
  * GET  ?sessionId=xxx&locationId=yyy - Получить всех NPC в локации
- * GET  ?npcId=xxx                     - Получить конкретного NPC
- * POST   { sessionId, npc }           - Добавить NPC в мир
- * PATCH  { npcId, updates }           - Обновить NPC
- * DELETE ?npcId=xxx                   - Удалить NPC
+ * GET  ?sessionId=xxx&npcId=yyy      - Получить конкретного NPC
+ * POST   { sessionId, npc }          - Добавить NPC в мир
+ * PATCH  { sessionId, npcId, updates } - Обновить NPC
+ * DELETE ?sessionId=xxx&npcId=yyy    - Удалить NPC
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getNPCWorldManager } from '@/lib/game/npc-world-manager';
-import { getSessionNPCManager, applyAIConfigToNPC } from '@/lib/game/session-npc-manager';
+import { TruthSystem } from '@/lib/game/truth-system';
 import type { NPCState } from '@/lib/game/types';
 
 // ==================== GET ====================
@@ -24,11 +25,11 @@ export async function GET(request: NextRequest) {
     const locationId = searchParams.get('locationId');
     const npcId = searchParams.get('npcId');
 
-    const npcWorldManager = getNPCWorldManager();
+    const truthSystem = TruthSystem.getInstance();
 
     // Получить конкретного NPC
-    if (npcId) {
-      const npc = npcWorldManager.getNPC(npcId);
+    if (sessionId && npcId) {
+      const npc = truthSystem.getNPC(sessionId, npcId);
       if (!npc) {
         return NextResponse.json(
           { success: false, error: 'NPC not found' },
@@ -40,45 +41,40 @@ export async function GET(request: NextRequest) {
 
     // Получить всех NPC в локации
     if (sessionId && locationId) {
-      const npcs = npcWorldManager.getNPCsInLocation(locationId);
-      
-      // Если NPC нет в WorldManager, загружаем из SessionNPCManager
-      if (npcs.length === 0) {
-        const sessionNPCManager = getSessionNPCManager();
-        const tempNPCs = sessionNPCManager.getLocationNPCs(sessionId, locationId);
-        
-        // Конвертируем TempNPC в NPCState и добавляем в WorldManager
-        for (const tempNPC of tempNPCs) {
-          // Убедимся что AI конфиг применён
-          if (!tempNPC.aiConfig) {
-            applyAIConfigToNPC(tempNPC);
-          }
-          npcWorldManager.addNPCFromTempNPC(tempNPC);
-        }
-        
-        const refreshedNpcs = npcWorldManager.getNPCsInLocation(locationId);
-        return NextResponse.json({
-          success: true,
-          npcs: refreshedNpcs,
-          count: refreshedNpcs.length,
-          source: 'session_manager',
-        });
-      }
+      const npcs = truthSystem.getNPCsByLocation(sessionId, locationId);
       
       return NextResponse.json({
         success: true,
         npcs,
         count: npcs.length,
-        source: 'world_manager',
+        source: 'truth_system',
+      });
+    }
+
+    // Получить всех NPC в сессии
+    if (sessionId) {
+      const npcs = truthSystem.getAllNPCs(sessionId);
+      return NextResponse.json({
+        success: true,
+        npcs,
+        count: npcs.length,
+        source: 'truth_system',
       });
     }
 
     // Получить статистику
-    const stats = npcWorldManager.getStats();
-    return NextResponse.json({
-      success: true,
-      stats,
-    });
+    if (sessionId) {
+      const stats = truthSystem.getNPCStats(sessionId);
+      return NextResponse.json({
+        success: true,
+        stats,
+      });
+    }
+
+    return NextResponse.json(
+      { success: false, error: 'sessionId is required' },
+      { status: 400 }
+    );
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     console.error('[API /npc/state GET]', message);
@@ -94,49 +90,48 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { sessionId, npc, tempNPCId } = body;
+    const { sessionId, npc, npcs } = body;
 
-    const npcWorldManager = getNPCWorldManager();
+    if (!sessionId) {
+      return NextResponse.json(
+        { success: false, error: 'sessionId is required' },
+        { status: 400 }
+      );
+    }
 
-    // Добавить NPC из TempNPC (по ID)
-    if (sessionId && tempNPCId) {
-      const sessionNPCManager = getSessionNPCManager();
-      const tempNPC = sessionNPCManager.getNPC(sessionId, tempNPCId);
-      
-      if (!tempNPC) {
-        return NextResponse.json(
-          { success: false, error: 'TempNPC not found' },
-          { status: 404 }
-        );
-      }
-      
-      // Убедимся что AI конфиг применён
-      if (!tempNPC.aiConfig) {
-        applyAIConfigToNPC(tempNPC);
-      }
-      
-      const npcState = npcWorldManager.addNPCFromTempNPC(tempNPC);
+    const truthSystem = TruthSystem.getInstance();
+
+    // Добавить несколько NPC сразу (batch)
+    if (npcs && Array.isArray(npcs)) {
+      const result = truthSystem.addNPCs(sessionId, npcs);
       
       return NextResponse.json({
         success: true,
-        npc: npcState,
-        message: `NPC "${npcState.name}" added to world`,
+        added: result.data,
+        message: `Added ${result.data} NPCs to session`,
       });
     }
 
-    // Добавить NPC напрямую (из NPCState)
+    // Добавить один NPC напрямую (из NPCState)
     if (npc) {
-      npcWorldManager.addNPC(npc);
+      const result = truthSystem.addNPC(sessionId, npc as NPCState);
+      
+      if (!result.success) {
+        return NextResponse.json(
+          { success: false, error: result.error },
+          { status: 400 }
+        );
+      }
       
       return NextResponse.json({
         success: true,
-        npc,
-        message: `NPC "${npc.name}" added to world`,
+        npc: result.data,
+        message: `NPC "${result.data!.name}" added to session`,
       });
     }
 
     return NextResponse.json(
-      { success: false, error: 'Missing required fields: sessionId + tempNPCId OR npc' },
+      { success: false, error: 'Missing required fields: npc OR npcs' },
       { status: 400 }
     );
   } catch (error) {
@@ -154,29 +149,29 @@ export async function POST(request: NextRequest) {
 export async function PATCH(request: NextRequest) {
   try {
     const body = await request.json();
-    const { npcId, updates } = body;
+    const { sessionId, npcId, updates } = body;
 
-    if (!npcId || !updates) {
+    if (!sessionId || !npcId || !updates) {
       return NextResponse.json(
-        { success: false, error: 'Missing required fields: npcId, updates' },
+        { success: false, error: 'Missing required fields: sessionId, npcId, updates' },
         { status: 400 }
       );
     }
 
-    const npcWorldManager = getNPCWorldManager();
-    const updatedNPC = npcWorldManager.updateNPC(npcId, updates);
+    const truthSystem = TruthSystem.getInstance();
+    const result = truthSystem.updateNPC(sessionId, npcId, updates);
 
-    if (!updatedNPC) {
+    if (!result.success) {
       return NextResponse.json(
-        { success: false, error: 'NPC not found' },
+        { success: false, error: result.error },
         { status: 404 }
       );
     }
 
     return NextResponse.json({
       success: true,
-      npc: updatedNPC,
-      message: `NPC "${updatedNPC.name}" updated`,
+      npc: result.data,
+      message: `NPC "${result.data!.name}" updated`,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';
@@ -196,33 +191,27 @@ export async function DELETE(request: NextRequest) {
     const npcId = searchParams.get('npcId');
     const sessionId = searchParams.get('sessionId');
 
-    if (!npcId) {
+    if (!sessionId || !npcId) {
       return NextResponse.json(
-        { success: false, error: 'Missing required field: npcId' },
+        { success: false, error: 'Missing required fields: sessionId, npcId' },
         { status: 400 }
       );
     }
 
-    const npcWorldManager = getNPCWorldManager();
-    const removedNPC = npcWorldManager.removeNPC(npcId);
+    const truthSystem = TruthSystem.getInstance();
+    const result = truthSystem.removeNPC(sessionId, npcId);
 
-    if (!removedNPC) {
+    if (!result.success) {
       return NextResponse.json(
-        { success: false, error: 'NPC not found' },
+        { success: false, error: result.error },
         { status: 404 }
       );
     }
 
-    // Если есть sessionId, удаляем также из SessionNPCManager
-    if (sessionId) {
-      const sessionNPCManager = getSessionNPCManager();
-      sessionNPCManager.removeNPC(sessionId, npcId);
-    }
-
     return NextResponse.json({
       success: true,
-      npc: removedNPC,
-      message: `NPC "${removedNPC.name}" removed`,
+      npc: result.data,
+      message: `NPC "${result.data!.name}" removed`,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : 'Unknown error';

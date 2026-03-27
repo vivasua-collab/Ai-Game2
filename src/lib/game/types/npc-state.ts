@@ -248,6 +248,82 @@ function determineSpinalPreset(roleId: string, speciesType: string): string {
 }
 
 /**
+ * Создать NPCState из PresetNPC (для preset NPC из БД)
+ * 
+ * ВАЖНО: Preset NPC должны быть добавлены в TruthSystem для AI!
+ */
+export function createNPCStateFromPresetNPC(params: {
+  id: string;                    // ID из БД
+  presetId?: string;             // ID пресета
+  name: string;
+  speciesId: string;
+  speciesType: string;
+  roleId: string;
+  cultivation: { level: number; subLevel: number; currentQi?: number; coreCapacity?: number };
+  position: { x: number; y: number };
+  locationId: string;
+  stats?: { strength?: number; agility?: number; intelligence?: number };
+  personality?: { disposition?: number; aggressionLevel?: number };
+}): NPCState {
+  return {
+    id: params.id,
+    name: params.name,
+    speciesId: params.speciesId || 'human',
+    speciesType: params.speciesType || 'human',
+    roleId: params.roleId || 'civilian',
+    soulType: 'mortal',
+    controller: 'ai',
+    mind: 'full',
+    
+    level: params.cultivation?.level ?? 1,
+    subLevel: params.cultivation?.subLevel ?? 0,
+    
+    locationId: params.locationId,
+    x: params.position.x,
+    y: params.position.y,
+    z: 0,
+    facing: 0,
+    
+    health: 100,
+    maxHealth: 100,
+    qi: params.cultivation?.currentQi ?? 100,
+    maxQi: params.cultivation?.coreCapacity ?? 100,
+    
+    disposition: params.personality?.disposition ?? 0,
+    aggressionLevel: params.personality?.aggressionLevel ?? 
+      (params.roleId?.includes('guard') || params.roleId?.includes('monster') ? 60 : 10),
+    fleeThreshold: 20,
+    
+    isActive: false,  // Активируется когда игрок рядом
+    aiState: 'idle',
+    currentAction: null,
+    actionQueue: [],
+    
+    spinalState: {
+      activeReflexes: [],
+      cooldowns: {},
+      lastSignal: null,
+      lastAction: null,
+    },
+    spinalPreset: determineSpinalPreset(params.roleId, params.speciesType),
+    
+    threatLevel: 0,
+    targetId: null,
+    lastActiveTime: 0,
+    lastSeenPlayers: {},
+    
+    collisionRadius: 15,
+    agroRadius: 200,
+    perceptionRadius: 300,
+    
+    isDead: false,
+    isUnconscious: false,
+    canTalk: true,
+    canTrade: params.roleId?.includes('merchant') ?? false,
+  };
+}
+
+/**
  * Создать пустое состояние NPC (для инициализации)
  */
 export function createEmptyNPCState(id: string): NPCState {

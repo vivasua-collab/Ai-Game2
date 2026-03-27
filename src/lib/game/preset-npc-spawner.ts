@@ -4,12 +4,21 @@
  * ============================================================================
  * 
  * Загружает preset NPC из JSON-файлов и создаёт их в базе данных сессии.
+ * 
+ * ИСПРАВЛЕНО: Теперь также добавляет NPC в TruthSystem для AI!
  */
 
 import { db } from '@/lib/db';
 import { presetStorage } from '@/lib/generator/preset-storage';
 import { presetNPCToDBData, type PresetNPC } from '@/types/preset-npc';
 import { logInfo, logError, logDebug } from '@/lib/logger';
+import { TruthSystem } from '@/lib/game/truth-system';
+import { createNPCStateFromPresetNPC, type NPCState } from '@/lib/game/types/npc-state';
+
+// ==================== КОНСТАНТЫ ====================
+
+const WORLD_WIDTH = 1600;
+const WORLD_HEIGHT = 1200;
 
 // ==================== ТИПЫ ====================
 
@@ -130,19 +139,33 @@ export async function spawnPresetNPCs(
     // 7. Создаём NPC в базе
     const createdNPCs: SpawnedPresetNPC[] = [];
     
+    // Получаем TruthSystem для добавления NPC
+    const truthSystem = TruthSystem.getInstance();
+    
     for (const presetData of newPresetNPCs) {
       const preset = presetData as PresetNPC;
       
       console.log('[PRESET_SPAWNER] Creating NPC:', preset.name, 'presetId:', preset.id);
       
       try {
+        // === ГЕНЕРАЦИЯ ПОЗИЦИИ ===
+        // NPC должны быть БЛИЗКО к игроку для активации AI!
+        // Игрок появляется в центре (800, 600), NPCs в радиусе 100-250 пикселей
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 100 + Math.random() * 150;  // 100-250 пикселей от центра
+        const centerX = WORLD_WIDTH / 2;   // 800
+        const centerY = WORLD_HEIGHT / 2;  // 600
+        const positionX = Math.round(centerX + Math.cos(angle) * distance);
+        const positionY = Math.round(centerY + Math.sin(angle) * distance);
+        
         const dbData = presetNPCToDBData(preset, sessionId, locationId);
         
         console.log('[PRESET_SPAWNER] DB data prepared:', {
           name: dbData.name,
           cultivationLevel: dbData.cultivationLevel,
           sessionId: dbData.sessionId,
-          locationId: dbData.locationId
+          locationId: dbData.locationId,
+          position: `(${positionX}, ${positionY})`
         });
         
         const dbNPC = await db.nPC.create({
@@ -150,6 +173,34 @@ export async function spawnPresetNPCs(
         });
         
         console.log('[PRESET_SPAWNER] NPC created successfully:', dbNPC.id);
+        
+        // === ДОБАВЛЕНИЕ В TRUTH SYSTEM ===
+        // Создаём NPCState для AI
+        const npcState = createNPCStateFromPresetNPC({
+          id: dbNPC.id,
+          presetId: preset.id,
+          name: preset.name,
+          speciesId: preset.speciesId || 'human',
+          speciesType: preset.speciesType || 'human',
+          roleId: preset.roleId || 'civilian',
+          cultivation: {
+            level: preset.cultivation?.level ?? 1,
+            subLevel: preset.cultivation?.subLevel ?? 0,
+            currentQi: preset.cultivation?.currentQi ?? 100,
+            coreCapacity: preset.cultivation?.coreCapacity ?? 100,
+          },
+          position: { x: positionX, y: positionY },
+          locationId: locationId,
+          stats: preset.stats,
+          personality: {
+            disposition: preset.relations?.defaultPlayerDisposition ?? 0,
+            aggressionLevel: preset.roleId?.includes('guard') || preset.roleId?.includes('monster') ? 60 : 10,
+          },
+        });
+        
+        // Добавляем в TruthSystem
+        truthSystem.addNPC(sessionId, npcState);
+        console.log('[PRESET_SPAWNER] NPC added to TruthSystem:', dbNPC.id, 'at position', `(${positionX}, ${positionY})`);
         
         createdNPCs.push({
           id: dbNPC.id,
@@ -162,6 +213,7 @@ export async function spawnPresetNPCs(
         await logDebug('PRESET_SPAWNER', `Spawned preset NPC: ${preset.name}`, {
           presetId: preset.id,
           dbId: dbNPC.id,
+          position: { x: positionX, y: positionY },
         });
       } catch (createError) {
         const errorDetails = {

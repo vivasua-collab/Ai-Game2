@@ -105,6 +105,9 @@ async function handleTechniqueUse(data: {
 
 /**
  * Обработать попадание техники
+ * 
+ * ИСПРАВЛЕНО: Теперь поддерживает попадание по NPC через TruthSystem.
+ * Если передан sessionId и targetId выглядит как NPC, используется applyNPCHit.
  */
 async function handleCombatHit(data: {
   attackerId: string;
@@ -114,8 +117,35 @@ async function handleCombatHit(data: {
   attackerLevel: number;
   element: string;
   isUltimate?: boolean;
+  sessionId?: string;  // Опционально для NPC
 }): Promise<NextResponse> {
   
+  // Проверяем, является ли цель NPC (ID обычно начинается с 'TEMP_' или 'npc_' или 'NPC_PRESET_')
+  const isNPCTarget = data.targetId.startsWith('TEMP_') || 
+                      data.targetId.startsWith('npc_') ||
+                      data.targetId.startsWith('NPC_PRESET_') ||
+                      data.targetId.includes('-npc-') ||
+                      data.targetId.startsWith('temp_npc_');
+  
+  // Если это NPC и есть sessionId - используем новый метод через TruthSystem
+  if (isNPCTarget && data.sessionId) {
+    console.log(`[Combat API] NPC hit: ${data.targetId} with ${data.damage} damage`);
+    
+    const result = combatService.applyNPCHit(
+      data.sessionId,
+      data.attackerId,
+      data.targetId,
+      data.damage,
+      data.techniqueLevel,
+      data.attackerLevel,
+      data.element,
+      data.isUltimate ?? false
+    );
+    
+    return NextResponse.json(result);
+  }
+  
+  // Стандартный метод для других случаев
   const result = combatService.applyTechniqueHit(
     data.attackerId,
     data.targetId,

@@ -5,18 +5,26 @@
  *
  * Клиент отправляет позицию игрока на сервер для AI расчётов.
  *
+ * ИЗМЕНЕНО (Фаза 5): Использует TruthSystem вместо NPCWorldManager
+ *
  * @see docs/ARCHITECTURE_cloud.md
  * @see src/lib/game/ai/server/npc-ai-manager.ts
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getNPCWorldManager } from '@/lib/game/npc-world-manager';
 import { TruthSystem } from '@/lib/game/truth-system';
+
+// ==================== КОНСТАНТЫ ====================
+
+const ACTIVATION_RADIUS = 300; // Радиус активации NPC
+const MAX_DISTANCE = 500; // Макс. дистанция для деактивации
+
+// ==================== POST ====================
 
 /**
  * POST /api/ai/player-position
  *
- * Обновить позицию игрока в WorldState для AI расчётов.
+ * Обновить позицию игрока и активировать/деактивировать NPC.
  *
  * Body:
  * - sessionId: string (обязательно)
@@ -35,9 +43,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Получаем менеджеры
     const truthSystem = TruthSystem.getInstance();
-    const npcWorldManager = getNPCWorldManager();
 
     // Проверяем сессию
     const session = truthSystem.getSessionState(sessionId);
@@ -48,8 +54,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Получаем characterId из сессии
     const characterId = session.character?.id;
+    const locationId = session.currentLocation?.id;
+
     if (!characterId) {
       return NextResponse.json(
         { error: 'Character not found in session' },
@@ -57,29 +64,26 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Обновляем позицию игрока в WorldState
-    const worldState = npcWorldManager.getWorldState();
-    const player = worldState.players.get(characterId);
+    // Сохраняем позицию игрока в TruthSystem
+    truthSystem.updatePlayerPosition(sessionId, x, y);
 
-    if (player) {
-      player.x = x;
-      player.y = y;
-      player.lastUpdate = Date.now();
-    } else {
-      // Добавляем игрока если его нет
-      worldState.players.set(characterId, {
-        id: characterId,
-        x,
-        y,
-        lastUpdate: Date.now(),
-      });
-    }
+    // Активируем NPC вокруг новой позиции
+    const activated = locationId
+      ? truthSystem.activateNearbyNPCs(sessionId, x, y, ACTIVATION_RADIUS, locationId)
+      : [];
+
+    // Деактивируем далёких NPC
+    const deactivated = locationId
+      ? truthSystem.deactivateFarNPCs(sessionId, x, y, MAX_DISTANCE, locationId)
+      : 0;
 
     return NextResponse.json({
       success: true,
       playerId: characterId,
       x,
       y,
+      activated: activated.length,
+      deactivated,
     });
   } catch (error) {
     console.error('[API:ai/player-position] Error:', error);
