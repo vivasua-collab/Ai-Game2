@@ -1,0 +1,117 @@
+{
+  "version": "2.0",
+  "count": 2,
+  "techniques": [
+    {
+      "id": "MV000005",
+      "name": "Статический Рывок",
+      "nameEn": "Статический Рывок",
+      "description": "Статический Рывок — техника movement элемента lightning уровня 9. Grade: refined. Урон: 12288. Дальность: 5м.",
+      "type": "movement",
+      "element": "lightning",
+      "level": 9,
+      "grade": "refined",
+      "qiCost": 10240,
+      "baseQiCost": 10240,
+      "baseDamage": 10240,
+      "baseRange": 5,
+      "baseCapacity": 40,
+      "computed": {
+        "finalDamage": 12288,
+        "finalQiCost": 10240,
+        "finalRange": 5,
+        "formula": "10240 × 1.2 = 12288",
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 32,
+            "duration": 5
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffType": "pierce",
+          "buffAmount": 32,
+          "buffDuration": 5
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "agility": 29
+      },
+      "meta": {
+        "seed": 1774114254489,
+        "template": "movement_base_lightning",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 4
+      }
+    },
+    {
+      "id": "MV000006",
+      "name": "Шаг пустотный",
+      "nameEn": "Шаг Пустотный",
+      "description": "Шаг пустотный — техника movement элемента void уровня 9. Grade: common. Урон: 10240. Дальность: 5м.",
+      "type": "movement",
+      "element": "void",
+      "level": 9,
+      "grade": "common",
+      "qiCost": 10240,
+      "baseQiCost": 10240,
+      "baseDamage": 10240,
+      "baseRange": 5,
+      "baseCapacity": 40,
+      "computed": {
+        "finalDamage": 10240,
+        "finalQiCost": 10240,
+        "finalRange": 5,
+        "formula": "10240 × 1 = 10240",
+        "activeEffects": [
+          {
+            "type": "speed",
+            "value": 0
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "speed": true
+        },
+        "effectValues": {
+          "speedBonus": 63
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "agility": 27
+      },
+      "meta": {
+        "seed": 1774114254490,
+        "template": "movement_base_void",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 4
+      }
+    }
+  ]
+}

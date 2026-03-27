@@ -1,0 +1,237 @@
+{
+  "version": "2.0",
+  "type": "phoenix",
+  "count": 2,
+  "npcs": [
+    {
+      "id": "NP_000115",
+      "name": "Феникс Быстроног",
+      "age": 17,
+      "gender": "female",
+      "speciesId": "phoenix",
+      "roleId": "innkeeper",
+      "stats": {
+        "strength": 25,
+        "agility": 25,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 4,
+        "coreCapacity": 21067,
+        "currentQi": 18440,
+        "coreQuality": 71,
+        "baseVolume": 14388,
+        "qiDensity": 1,
+        "meridianConductivity": 39.96666666666667,
+        "meridianBuffer": 199
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 75,
+            "maxFunctionalHP": 75,
+            "structuralHP": 150,
+            "maxStructuralHP": 150,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 150,
+            "maxFunctionalHP": 150,
+            "structuralHP": 300,
+            "maxStructuralHP": 300,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 120,
+            "maxFunctionalHP": 120,
+            "structuralHP": 240,
+            "maxStructuralHP": 240,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_wing": {
+            "functionalHP": 60,
+            "maxFunctionalHP": 60,
+            "structuralHP": 120,
+            "maxStructuralHP": 120,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_wing": {
+            "functionalHP": 60,
+            "maxFunctionalHP": 60,
+            "structuralHP": 120,
+            "maxStructuralHP": 120,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_leg": {
+            "functionalHP": 75,
+            "maxFunctionalHP": 75,
+            "structuralHP": 150,
+            "maxStructuralHP": 150,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_leg": {
+            "functionalHP": 75,
+            "maxFunctionalHP": 75,
+            "structuralHP": 150,
+            "maxStructuralHP": 150,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Жадность",
+          "Хитрость",
+          "Обаяние"
+        ],
+        "motivation": "накопление богатства",
+        "dominantEmotion": "алчность",
+        "disposition": 50
+      },
+      "techniques": [
+        "breath_of_qi"
+      ],
+      "equipment": {
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 39,
+        "contributionPoints": 11
+      },
+      "generationMeta": {
+        "seed": 1773590176327,
+        "generatedAt": "2026-03-15T15:56:16.315Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000193",
+      "name": "Феникс Острозуб",
+      "age": 37,
+      "gender": "male",
+      "speciesId": "phoenix",
+      "roleId": "scholar",
+      "stats": {
+        "strength": 31,
+        "agility": 31,
+        "intelligence": 31,
+        "vitality": 31
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 1,
+        "coreCapacity": 36154,
+        "currentQi": 31932,
+        "coreQuality": 53,
+        "baseVolume": 6790,
+        "qiDensity": 4,
+        "meridianConductivity": 18.86111111111111,
+        "meridianBuffer": 94
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 180,
+            "maxFunctionalHP": 180,
+            "structuralHP": 360,
+            "maxStructuralHP": 360,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 144,
+            "maxFunctionalHP": 144,
+            "structuralHP": 288,
+            "maxStructuralHP": 288,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_wing": {
+            "functionalHP": 72,
+            "maxFunctionalHP": 72,
+            "structuralHP": 144,
+            "maxStructuralHP": 144,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_wing": {
+            "functionalHP": 72,
+            "maxFunctionalHP": 72,
+            "structuralHP": 144,
+            "maxStructuralHP": 144,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Таинственность",
+          "Мудрость",
+          "Отстранённость"
+        ],
+        "motivation": "уединение",
+        "dominantEmotion": "глубина",
+        "disposition": 55
+      },
+      "techniques": [
+        "breath_of_qi",
+        "mental_shield",
+        "qi_healing"
+      ],
+      "equipment": {
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 21,
+        "contributionPoints": 9
+      },
+      "generationMeta": {
+        "seed": 1773590348748,
+        "generatedAt": "2026-03-15T15:59:08.737Z",
+        "version": "2.1.0-lore"
+      }
+    }
+  ]
+}

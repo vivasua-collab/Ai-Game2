@@ -1,0 +1,243 @@
+{
+  "version": "2.0",
+  "count": 5,
+  "techniques": [
+    {
+      "id": "MW000006",
+      "name": "Взрыв сфокусированный",
+      "nameEn": "Взрыв Сфокусированный",
+      "description": "Взрыв сфокусированный — техника melee_weapon уровня 3. Grade: refined. Урон: 230. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "neutral",
+      "level": 3,
+      "grade": "refined",
+      "qiCost": 192,
+      "baseQiCost": 192,
+      "baseDamage": 192,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 230,
+        "finalQiCost": 192,
+        "finalRange": 1,
+        "formula": "192 × 1.2 = 230",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 5
+        }
+      },
+      "minCultivationLevel": 2,
+      "minLevel": 2,
+      "maxLevel": 4,
+      "fatigueCost": {
+        "physical": 1,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 11
+      },
+      "meta": {
+        "seed": 1774114254417,
+        "template": "combat_melee_weapon_neutral",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MW000007",
+      "name": "Пылающий Кулак",
+      "nameEn": "Пылающий Кулак",
+      "description": "Пылающий Кулак — техника melee_weapon элемента fire уровня 3. Grade: common. Урон: 192. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "fire",
+      "level": 3,
+      "grade": "common",
+      "qiCost": 192,
+      "baseQiCost": 192,
+      "baseDamage": 192,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 192,
+        "finalQiCost": 192,
+        "finalRange": 1,
+        "formula": "192 × 1 = 192",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 2,
+      "minLevel": 2,
+      "maxLevel": 4,
+      "fatigueCost": {
+        "physical": 1,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 9
+      },
+      "meta": {
+        "seed": 1774114254418,
+        "template": "combat_melee_weapon_fire",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MW000008",
+      "name": "Клинок огненный",
+      "nameEn": "Клинок Огненный",
+      "description": "Клинок огненный — техника melee_weapon элемента fire уровня 3. Grade: refined. Урон: 230. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "fire",
+      "level": 3,
+      "grade": "refined",
+      "qiCost": 192,
+      "baseQiCost": 192,
+      "baseDamage": 192,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 230,
+        "finalQiCost": 192,
+        "finalRange": 1,
+        "formula": "192 × 1.2 = 230",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 5
+        }
+      },
+      "minCultivationLevel": 2,
+      "minLevel": 2,
+      "maxLevel": 4,
+      "fatigueCost": {
+        "physical": 1,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 11
+      },
+      "meta": {
+        "seed": 1774114254419,
+        "template": "combat_melee_weapon_fire",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MW000009",
+      "name": "Взрыв морской",
+      "nameEn": "Взрыв Морской",
+      "description": "Взрыв морской — техника melee_weapon элемента water уровня 3. Grade: common. Урон: 192. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "water",
+      "level": 3,
+      "grade": "common",
+      "qiCost": 192,
+      "baseQiCost": 192,
+      "baseDamage": 192,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 192,
+        "finalQiCost": 192,
+        "finalRange": 1,
+        "formula": "192 × 1 = 192",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 2,
+      "minLevel": 2,
+      "maxLevel": 4,
+      "fatigueCost": {
+        "physical": 1,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 9
+      },
+      "meta": {
+        "seed": 1774114254420,
+        "template": "combat_melee_weapon_water",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MW000010",
+      "name": "Удар горный",
+      "nameEn": "Удар Горный",
+      "description": "Удар горный — техника melee_weapon элемента earth уровня 3. Grade: perfect. Урон: 268. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "earth",
+      "level": 3,
+      "grade": "perfect",
+      "qiCost": 192,
+      "baseQiCost": 192,
+      "baseDamage": 192,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 268,
+        "finalQiCost": 192,
+        "finalRange": 1,
+        "formula": "192 × 1.4 = 268",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 10,
+          "critDamage": 2
+        }
+      },
+      "minCultivationLevel": 2,
+      "minLevel": 2,
+      "maxLevel": 4,
+      "fatigueCost": {
+        "physical": 1,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 13
+      },
+      "meta": {
+        "seed": 1774114254421,
+        "template": "combat_melee_weapon_earth",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    }
+  ]
+}

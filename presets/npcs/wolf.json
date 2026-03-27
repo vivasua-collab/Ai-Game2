@@ -1,0 +1,995 @@
+{
+  "version": "2.0",
+  "type": "wolf",
+  "count": 8,
+  "npcs": [
+    {
+      "id": "NP_000032",
+      "name": "Волк Тенекрад",
+      "age": 54,
+      "gender": "female",
+      "speciesId": "wolf",
+      "roleId": "innkeeper",
+      "stats": {
+        "strength": 16,
+        "agility": 19,
+        "intelligence": 10,
+        "vitality": 21
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 2,
+        "coreCapacity": 345,
+        "currentQi": 189,
+        "coreQuality": 30,
+        "baseVolume": 284,
+        "qiDensity": 1,
+        "meridianConductivity": 0.7888888888888889,
+        "meridianBuffer": 3
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 50,
+            "maxFunctionalHP": 50,
+            "structuralHP": 100,
+            "maxStructuralHP": 100,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 80,
+            "maxFunctionalHP": 80,
+            "structuralHP": 160,
+            "maxStructuralHP": 160,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_left_leg": {
+            "functionalHP": 50,
+            "maxFunctionalHP": 50,
+            "structuralHP": 100,
+            "maxStructuralHP": 100,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_right_leg": {
+            "functionalHP": 50,
+            "maxFunctionalHP": 50,
+            "structuralHP": 100,
+            "maxStructuralHP": 100,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_left_leg": {
+            "functionalHP": 50,
+            "maxFunctionalHP": 50,
+            "structuralHP": 100,
+            "maxStructuralHP": 100,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_right_leg": {
+            "functionalHP": 50,
+            "maxFunctionalHP": 50,
+            "structuralHP": 100,
+            "maxStructuralHP": 100,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 30,
+            "maxFunctionalHP": 30,
+            "structuralHP": 60,
+            "maxStructuralHP": 60,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Лень",
+          "Покорность",
+          "Хитрость"
+        ],
+        "motivation": "минимум работы",
+        "dominantEmotion": "апатия",
+        "disposition": 55
+      },
+      "techniques": [
+        "breath_of_qi"
+      ],
+      "equipment": {
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 75,
+        "contributionPoints": 2
+      },
+      "generationMeta": {
+        "seed": 1773590045648,
+        "generatedAt": "2026-03-15T15:54:05.624Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000067",
+      "name": "Волк Быстроног",
+      "age": 111,
+      "gender": "male",
+      "speciesId": "wolf",
+      "roleId": "assassin",
+      "stats": {
+        "strength": 11,
+        "agility": 20,
+        "intelligence": 14,
+        "vitality": 22
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 6,
+        "coreCapacity": 222,
+        "currentQi": 172,
+        "coreQuality": 13,
+        "baseVolume": 123,
+        "qiDensity": 1,
+        "meridianConductivity": 0.3416666666666667,
+        "meridianBuffer": 1
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 50,
+            "maxFunctionalHP": 50,
+            "structuralHP": 100,
+            "maxStructuralHP": 100,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 80,
+            "maxFunctionalHP": 80,
+            "structuralHP": 160,
+            "maxStructuralHP": 160,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_left_leg": {
+            "functionalHP": 50,
+            "maxFunctionalHP": 50,
+            "structuralHP": 100,
+            "maxStructuralHP": 100,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_right_leg": {
+            "functionalHP": 50,
+            "maxFunctionalHP": 50,
+            "structuralHP": 100,
+            "maxStructuralHP": 100,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_left_leg": {
+            "functionalHP": 50,
+            "maxFunctionalHP": 50,
+            "structuralHP": 100,
+            "maxStructuralHP": 100,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_right_leg": {
+            "functionalHP": 50,
+            "maxFunctionalHP": 50,
+            "structuralHP": 100,
+            "maxStructuralHP": 100,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 30,
+            "maxFunctionalHP": 30,
+            "structuralHP": 60,
+            "maxStructuralHP": 60,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Хладнокровие",
+          "Скрытность",
+          "Профессионализм"
+        ],
+        "motivation": "выполнение заказа",
+        "dominantEmotion": "расчёт",
+        "disposition": 30
+      },
+      "techniques": [
+        "ghost_shadow",
+        "qi_bullet",
+        "wind_speed"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null,
+        "accessory1": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 165,
+        "contributionPoints": 6
+      },
+      "generationMeta": {
+        "seed": 1773590045683,
+        "generatedAt": "2026-03-15T15:54:05.626Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000069",
+      "name": "Волк Быстроног",
+      "age": 24,
+      "gender": "female",
+      "speciesId": "wolf",
+      "roleId": "healer",
+      "stats": {
+        "strength": 14,
+        "agility": 24,
+        "intelligence": 14,
+        "vitality": 16
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 0,
+        "coreCapacity": 1051,
+        "currentQi": 876,
+        "coreQuality": 35,
+        "baseVolume": 478,
+        "qiDensity": 2,
+        "meridianConductivity": 1.3277777777777777,
+        "meridianBuffer": 6
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 55,
+            "maxFunctionalHP": 55,
+            "structuralHP": 110,
+            "maxStructuralHP": 110,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 110,
+            "maxFunctionalHP": 110,
+            "structuralHP": 220,
+            "maxStructuralHP": 220,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 88,
+            "maxFunctionalHP": 88,
+            "structuralHP": 176,
+            "maxStructuralHP": 176,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_left_leg": {
+            "functionalHP": 55,
+            "maxFunctionalHP": 55,
+            "structuralHP": 110,
+            "maxStructuralHP": 110,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_right_leg": {
+            "functionalHP": 55,
+            "maxFunctionalHP": 55,
+            "structuralHP": 110,
+            "maxStructuralHP": 110,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_left_leg": {
+            "functionalHP": 55,
+            "maxFunctionalHP": 55,
+            "structuralHP": 110,
+            "maxStructuralHP": 110,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_right_leg": {
+            "functionalHP": 55,
+            "maxFunctionalHP": 55,
+            "structuralHP": 110,
+            "maxStructuralHP": 110,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 33,
+            "maxFunctionalHP": 33,
+            "structuralHP": 66,
+            "maxStructuralHP": 66,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Сострадание",
+          "Терпение",
+          "Знание"
+        ],
+        "motivation": "медицинские знания",
+        "dominantEmotion": "тепло",
+        "disposition": 70
+      },
+      "techniques": [
+        "breath_of_qi",
+        "qi_healing",
+        "water_shield",
+        "mental_shield"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 62,
+        "contributionPoints": 18
+      },
+      "generationMeta": {
+        "seed": 1773590045685,
+        "generatedAt": "2026-03-15T15:54:05.626Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000129",
+      "name": "Волк Быстроног",
+      "age": 48,
+      "gender": "male",
+      "speciesId": "wolf",
+      "roleId": "innkeeper",
+      "stats": {
+        "strength": 19,
+        "agility": 25,
+        "intelligence": 13,
+        "vitality": 17
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 8,
+        "coreCapacity": 1009,
+        "currentQi": 984,
+        "coreQuality": 35,
+        "baseVolume": 211,
+        "qiDensity": 2,
+        "meridianConductivity": 0.5861111111111111,
+        "meridianBuffer": 2
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 55,
+            "maxFunctionalHP": 55,
+            "structuralHP": 110,
+            "maxStructuralHP": 110,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 110,
+            "maxFunctionalHP": 110,
+            "structuralHP": 220,
+            "maxStructuralHP": 220,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 88,
+            "maxFunctionalHP": 88,
+            "structuralHP": 176,
+            "maxStructuralHP": 176,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_left_leg": {
+            "functionalHP": 55,
+            "maxFunctionalHP": 55,
+            "structuralHP": 110,
+            "maxStructuralHP": 110,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_right_leg": {
+            "functionalHP": 55,
+            "maxFunctionalHP": 55,
+            "structuralHP": 110,
+            "maxStructuralHP": 110,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_left_leg": {
+            "functionalHP": 55,
+            "maxFunctionalHP": 55,
+            "structuralHP": 110,
+            "maxStructuralHP": 110,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_right_leg": {
+            "functionalHP": 55,
+            "maxFunctionalHP": 55,
+            "structuralHP": 110,
+            "maxStructuralHP": 110,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 33,
+            "maxFunctionalHP": 33,
+            "structuralHP": 66,
+            "maxStructuralHP": 66,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Жадность",
+          "Хитрость",
+          "Обаяние"
+        ],
+        "motivation": "накопление богатства",
+        "dominantEmotion": "расчётливость",
+        "disposition": 50
+      },
+      "techniques": [
+        "breath_of_qi"
+      ],
+      "equipment": {
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 67,
+        "contributionPoints": 21
+      },
+      "generationMeta": {
+        "seed": 1773590343353,
+        "generatedAt": "2026-03-15T15:59:03.348Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000131",
+      "name": "Волк Острозуб",
+      "age": 51,
+      "gender": "male",
+      "speciesId": "wolf",
+      "roleId": "guard_combat",
+      "stats": {
+        "strength": 19,
+        "agility": 26,
+        "intelligence": 12,
+        "vitality": 18
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 5,
+        "coreCapacity": 2991,
+        "currentQi": 1505,
+        "coreQuality": 7,
+        "baseVolume": 381,
+        "qiDensity": 4,
+        "meridianConductivity": 1.0583333333333333,
+        "meridianBuffer": 5
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 60,
+            "maxFunctionalHP": 60,
+            "structuralHP": 120,
+            "maxStructuralHP": 120,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 120,
+            "maxFunctionalHP": 120,
+            "structuralHP": 240,
+            "maxStructuralHP": 240,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 96,
+            "maxFunctionalHP": 96,
+            "structuralHP": 192,
+            "maxStructuralHP": 192,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_left_leg": {
+            "functionalHP": 60,
+            "maxFunctionalHP": 60,
+            "structuralHP": 120,
+            "maxStructuralHP": 120,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_right_leg": {
+            "functionalHP": 60,
+            "maxFunctionalHP": 60,
+            "structuralHP": 120,
+            "maxStructuralHP": 120,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_left_leg": {
+            "functionalHP": 60,
+            "maxFunctionalHP": 60,
+            "structuralHP": 120,
+            "maxStructuralHP": 120,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_right_leg": {
+            "functionalHP": 60,
+            "maxFunctionalHP": 60,
+            "structuralHP": 120,
+            "maxStructuralHP": 120,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 36,
+            "maxFunctionalHP": 36,
+            "structuralHP": 72,
+            "maxStructuralHP": 72,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Безжалостность",
+          "Дисциплина",
+          "Сила"
+        ],
+        "motivation": "сила",
+        "dominantEmotion": "презрение",
+        "disposition": 35
+      },
+      "techniques": [
+        "reinforced_strike",
+        "turtle_stance",
+        "iron_wall"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 32,
+        "contributionPoints": 0
+      },
+      "generationMeta": {
+        "seed": 1773590343355,
+        "generatedAt": "2026-03-15T15:59:03.348Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000142",
+      "name": "Волк Быстроног",
+      "age": 57,
+      "gender": "female",
+      "speciesId": "wolf",
+      "roleId": "refugee",
+      "stats": {
+        "strength": 14,
+        "agility": 26,
+        "intelligence": 11,
+        "vitality": 21
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 4,
+        "coreCapacity": 1612,
+        "currentQi": 1461,
+        "coreQuality": 41,
+        "baseVolume": 500,
+        "qiDensity": 2,
+        "meridianConductivity": 1.3888888888888888,
+        "meridianBuffer": 6
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 55,
+            "maxFunctionalHP": 55,
+            "structuralHP": 110,
+            "maxStructuralHP": 110,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 110,
+            "maxFunctionalHP": 110,
+            "structuralHP": 220,
+            "maxStructuralHP": 220,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 88,
+            "maxFunctionalHP": 88,
+            "structuralHP": 176,
+            "maxStructuralHP": 176,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_left_leg": {
+            "functionalHP": 55,
+            "maxFunctionalHP": 55,
+            "structuralHP": 110,
+            "maxStructuralHP": 110,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_right_leg": {
+            "functionalHP": 55,
+            "maxFunctionalHP": 55,
+            "structuralHP": 110,
+            "maxStructuralHP": 110,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_left_leg": {
+            "functionalHP": 55,
+            "maxFunctionalHP": 55,
+            "structuralHP": 110,
+            "maxStructuralHP": 110,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_right_leg": {
+            "functionalHP": 55,
+            "maxFunctionalHP": 55,
+            "structuralHP": 110,
+            "maxStructuralHP": 110,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 33,
+            "maxFunctionalHP": 33,
+            "structuralHP": 66,
+            "maxStructuralHP": 66,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Хладнокровие",
+          "Скрытность",
+          "Профессионализм"
+        ],
+        "motivation": "оплата",
+        "dominantEmotion": "холод",
+        "disposition": 30
+      },
+      "techniques": [],
+      "equipment": {
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 4,
+        "contributionPoints": 18
+      },
+      "generationMeta": {
+        "seed": 1773590345663,
+        "generatedAt": "2026-03-15T15:59:05.662Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000174",
+      "name": "Волк Тенекрад",
+      "age": 107,
+      "gender": "male",
+      "speciesId": "wolf",
+      "roleId": "innkeeper",
+      "stats": {
+        "strength": 18,
+        "agility": 31,
+        "intelligence": 12,
+        "vitality": 13
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 8,
+        "coreCapacity": 4167,
+        "currentQi": 4028,
+        "coreQuality": 42,
+        "baseVolume": 399,
+        "qiDensity": 4,
+        "meridianConductivity": 1.1083333333333334,
+        "meridianBuffer": 5
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 60,
+            "maxFunctionalHP": 60,
+            "structuralHP": 120,
+            "maxStructuralHP": 120,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 120,
+            "maxFunctionalHP": 120,
+            "structuralHP": 240,
+            "maxStructuralHP": 240,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 96,
+            "maxFunctionalHP": 96,
+            "structuralHP": 192,
+            "maxStructuralHP": 192,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_left_leg": {
+            "functionalHP": 60,
+            "maxFunctionalHP": 60,
+            "structuralHP": 120,
+            "maxStructuralHP": 120,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_right_leg": {
+            "functionalHP": 60,
+            "maxFunctionalHP": 60,
+            "structuralHP": 120,
+            "maxStructuralHP": 120,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_left_leg": {
+            "functionalHP": 60,
+            "maxFunctionalHP": 60,
+            "structuralHP": 120,
+            "maxStructuralHP": 120,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_right_leg": {
+            "functionalHP": 60,
+            "maxFunctionalHP": 60,
+            "structuralHP": 120,
+            "maxStructuralHP": 120,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 36,
+            "maxFunctionalHP": 36,
+            "structuralHP": 72,
+            "maxStructuralHP": 72,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Лень",
+          "Покорность",
+          "Хитрость"
+        ],
+        "motivation": "комфорт",
+        "dominantEmotion": "скука",
+        "disposition": 55
+      },
+      "techniques": [
+        "breath_of_qi"
+      ],
+      "equipment": {
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 100,
+        "contributionPoints": 23
+      },
+      "generationMeta": {
+        "seed": 1773590347212,
+        "generatedAt": "2026-03-15T15:59:07.200Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000176",
+      "name": "Волк Тенекрад",
+      "age": 73,
+      "gender": "female",
+      "speciesId": "wolf",
+      "roleId": "guard_combat",
+      "stats": {
+        "strength": 24,
+        "agility": 25,
+        "intelligence": 10,
+        "vitality": 24
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 4,
+        "coreCapacity": 174,
+        "currentQi": 163,
+        "coreQuality": 14,
+        "baseVolume": 118,
+        "qiDensity": 1,
+        "meridianConductivity": 0.3277777777777778,
+        "meridianBuffer": 1
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 50,
+            "maxFunctionalHP": 50,
+            "structuralHP": 100,
+            "maxStructuralHP": 100,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 80,
+            "maxFunctionalHP": 80,
+            "structuralHP": 160,
+            "maxStructuralHP": 160,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_left_leg": {
+            "functionalHP": 50,
+            "maxFunctionalHP": 50,
+            "structuralHP": 100,
+            "maxStructuralHP": 100,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_right_leg": {
+            "functionalHP": 50,
+            "maxFunctionalHP": 50,
+            "structuralHP": 100,
+            "maxStructuralHP": 100,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_left_leg": {
+            "functionalHP": 50,
+            "maxFunctionalHP": 50,
+            "structuralHP": 100,
+            "maxStructuralHP": 100,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_right_leg": {
+            "functionalHP": 50,
+            "maxFunctionalHP": 50,
+            "structuralHP": 100,
+            "maxStructuralHP": 100,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 30,
+            "maxFunctionalHP": 30,
+            "structuralHP": 60,
+            "maxStructuralHP": 60,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Верность",
+          "Храбрость",
+          "Дисциплина"
+        ],
+        "motivation": "служение",
+        "dominantEmotion": "гордость",
+        "disposition": 65
+      },
+      "techniques": [
+        "reinforced_strike",
+        "turtle_stance",
+        "iron_wall"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 51,
+        "contributionPoints": 5
+      },
+      "generationMeta": {
+        "seed": 1773590347214,
+        "generatedAt": "2026-03-15T15:59:07.200Z",
+        "version": "2.1.0-lore"
+      }
+    }
+  ]
+}

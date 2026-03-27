@@ -1,0 +1,242 @@
+{
+  "version": "2.0",
+  "count": 5,
+  "techniques": [
+    {
+      "id": "MW000011",
+      "name": "Клинок штормовой",
+      "nameEn": "Клинок Штормовой",
+      "description": "Клинок штормовой — техника melee_weapon элемента air уровня 5. Grade: common. Урон: 768. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "air",
+      "level": 5,
+      "grade": "common",
+      "qiCost": 768,
+      "baseQiCost": 768,
+      "baseDamage": 768,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 768,
+        "finalQiCost": 768,
+        "finalRange": 1,
+        "formula": "768 × 1 = 768",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "strength": 15
+      },
+      "meta": {
+        "seed": 1774114254422,
+        "template": "combat_melee_weapon_air",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MW000012",
+      "name": "Статический Толчок",
+      "nameEn": "Статический Толчок",
+      "description": "Статический Толчок — техника melee_weapon элемента lightning уровня 5. Grade: perfect. Урон: 1075. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "lightning",
+      "level": 5,
+      "grade": "perfect",
+      "qiCost": 768,
+      "baseQiCost": 768,
+      "baseDamage": 768,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 1075,
+        "finalQiCost": 768,
+        "finalRange": 1,
+        "formula": "768 × 1.4 = 1075",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 10,
+          "critDamage": 2
+        }
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "strength": 19
+      },
+      "meta": {
+        "seed": 1774114254423,
+        "template": "combat_melee_weapon_lightning",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MW000013",
+      "name": "Теневой Кулак",
+      "nameEn": "Теневой Кулак",
+      "description": "Теневой Кулак — техника melee_weapon элемента void уровня 5. Grade: common. Урон: 768. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "void",
+      "level": 5,
+      "grade": "common",
+      "qiCost": 768,
+      "baseQiCost": 768,
+      "baseDamage": 768,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 768,
+        "finalQiCost": 768,
+        "finalRange": 1,
+        "formula": "768 × 1 = 768",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "strength": 15
+      },
+      "meta": {
+        "seed": 1774114254424,
+        "template": "combat_melee_weapon_void",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MW000014",
+      "name": "Клинок истинный",
+      "nameEn": "Клинок Истинный",
+      "description": "Клинок истинный — техника melee_weapon уровня 5. Grade: perfect. Урон: 1075. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "neutral",
+      "level": 5,
+      "grade": "perfect",
+      "qiCost": 768,
+      "baseQiCost": 768,
+      "baseDamage": 768,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 1075,
+        "finalQiCost": 768,
+        "finalRange": 1,
+        "formula": "768 × 1.4 = 1075",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 10,
+          "critDamage": 2
+        }
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "strength": 19
+      },
+      "meta": {
+        "seed": 1774114254425,
+        "template": "combat_melee_weapon_neutral",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MW000015",
+      "name": "Толчок огненный",
+      "nameEn": "Толчок Огненный",
+      "description": "Толчок огненный — техника melee_weapon элемента fire уровня 5. Grade: common. Урон: 768. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "fire",
+      "level": 5,
+      "grade": "common",
+      "qiCost": 768,
+      "baseQiCost": 768,
+      "baseDamage": 768,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 768,
+        "finalQiCost": 768,
+        "finalRange": 1,
+        "formula": "768 × 1 = 768",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "strength": 15
+      },
+      "meta": {
+        "seed": 1774114254426,
+        "template": "combat_melee_weapon_fire",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    }
+  ]
+}

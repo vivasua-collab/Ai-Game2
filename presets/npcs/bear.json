@@ -1,0 +1,508 @@
+{
+  "version": "2.0",
+  "type": "bear",
+  "count": 4,
+  "npcs": [
+    {
+      "id": "NP_000101",
+      "name": "Медведь Громолап",
+      "age": 114,
+      "gender": "male",
+      "speciesId": "bear",
+      "roleId": "hermit",
+      "stats": {
+        "strength": 31,
+        "agility": 21,
+        "intelligence": 12,
+        "vitality": 31
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 1,
+        "coreCapacity": 10188,
+        "currentQi": 5662,
+        "coreQuality": 49,
+        "baseVolume": 1913,
+        "qiDensity": 4,
+        "meridianConductivity": 5.313888888888889,
+        "meridianBuffer": 26
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 180,
+            "maxFunctionalHP": 180,
+            "structuralHP": 360,
+            "maxStructuralHP": 360,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 144,
+            "maxFunctionalHP": 144,
+            "structuralHP": 288,
+            "maxStructuralHP": 288,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_left_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_right_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_left_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_right_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 54,
+            "maxFunctionalHP": 54,
+            "structuralHP": 108,
+            "maxStructuralHP": 108,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Цинизм",
+          "Опыт",
+          "Реализм"
+        ],
+        "motivation": "наблюдение",
+        "dominantEmotion": "цинизм",
+        "disposition": 40
+      },
+      "techniques": [
+        "breath_of_qi",
+        "mental_shield",
+        "void_step",
+        "earth_armor",
+        "qi_healing"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 92,
+        "contributionPoints": 24
+      },
+      "generationMeta": {
+        "seed": 1773590176313,
+        "generatedAt": "2026-03-15T15:56:16.313Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000135",
+      "name": "Медведь Тенекрад",
+      "age": 61,
+      "gender": "female",
+      "speciesId": "bear",
+      "roleId": "innkeeper",
+      "stats": {
+        "strength": 27,
+        "agility": 20,
+        "intelligence": 13,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 3,
+        "coreCapacity": 3493,
+        "currentQi": 2298,
+        "coreQuality": 15,
+        "baseVolume": 1191,
+        "qiDensity": 2,
+        "meridianConductivity": 3.308333333333333,
+        "meridianBuffer": 16
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 165,
+            "maxFunctionalHP": 165,
+            "structuralHP": 330,
+            "maxStructuralHP": 330,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 132,
+            "maxFunctionalHP": 132,
+            "structuralHP": 264,
+            "maxStructuralHP": 264,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_left_leg": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_right_leg": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_left_leg": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_right_leg": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 49,
+            "maxFunctionalHP": 49,
+            "structuralHP": 98,
+            "maxStructuralHP": 98,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Жадность",
+          "Хитрость",
+          "Обаяние"
+        ],
+        "motivation": "накопление богатства",
+        "dominantEmotion": "алчность",
+        "disposition": 50
+      },
+      "techniques": [
+        "breath_of_qi"
+      ],
+      "equipment": {
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 29,
+        "contributionPoints": 12
+      },
+      "generationMeta": {
+        "seed": 1773590343359,
+        "generatedAt": "2026-03-15T15:59:03.348Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000146",
+      "name": "Медведь Громолап",
+      "age": 51,
+      "gender": "female",
+      "speciesId": "bear",
+      "roleId": "hunter",
+      "stats": {
+        "strength": 25,
+        "agility": 14,
+        "intelligence": 11,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 3,
+        "coreCapacity": 1955,
+        "currentQi": 1468,
+        "coreQuality": 22,
+        "baseVolume": 1468,
+        "qiDensity": 1,
+        "meridianConductivity": 4.0777777777777775,
+        "meridianBuffer": 20
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 75,
+            "maxFunctionalHP": 75,
+            "structuralHP": 150,
+            "maxStructuralHP": 150,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 150,
+            "maxFunctionalHP": 150,
+            "structuralHP": 300,
+            "maxStructuralHP": 300,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 120,
+            "maxFunctionalHP": 120,
+            "structuralHP": 240,
+            "maxStructuralHP": 240,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_left_leg": {
+            "functionalHP": 75,
+            "maxFunctionalHP": 75,
+            "structuralHP": 150,
+            "maxStructuralHP": 150,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_right_leg": {
+            "functionalHP": 75,
+            "maxFunctionalHP": 75,
+            "structuralHP": 150,
+            "maxStructuralHP": 150,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_left_leg": {
+            "functionalHP": 75,
+            "maxFunctionalHP": 75,
+            "structuralHP": 150,
+            "maxStructuralHP": 150,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_right_leg": {
+            "functionalHP": 75,
+            "maxFunctionalHP": 75,
+            "structuralHP": 150,
+            "maxStructuralHP": 150,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 45,
+            "maxFunctionalHP": 45,
+            "structuralHP": 90,
+            "maxStructuralHP": 90,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Дружелюбие",
+          "Любопытство",
+          "Авантюризм"
+        ],
+        "motivation": "путешествия",
+        "dominantEmotion": "любопытство",
+        "disposition": 70
+      },
+      "techniques": [
+        "breath_of_qi",
+        "reinforced_strike",
+        "wind_speed"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 55,
+        "contributionPoints": 2
+      },
+      "generationMeta": {
+        "seed": 1773590345667,
+        "generatedAt": "2026-03-15T15:59:05.662Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000180",
+      "name": "Медведь Смертоносец",
+      "age": 35,
+      "gender": "female",
+      "speciesId": "bear",
+      "roleId": "mercenary",
+      "stats": {
+        "strength": 31,
+        "agility": 19,
+        "intelligence": 12,
+        "vitality": 31
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 2,
+        "coreCapacity": 11175,
+        "currentQi": 8261,
+        "coreQuality": 33,
+        "baseVolume": 1908,
+        "qiDensity": 4,
+        "meridianConductivity": 5.3,
+        "meridianBuffer": 26
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 180,
+            "maxFunctionalHP": 180,
+            "structuralHP": 360,
+            "maxStructuralHP": 360,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 144,
+            "maxFunctionalHP": 144,
+            "structuralHP": 288,
+            "maxStructuralHP": 288,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_left_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "front_right_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_left_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "back_right_leg": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "tail": {
+            "functionalHP": 54,
+            "maxFunctionalHP": 54,
+            "structuralHP": 108,
+            "maxStructuralHP": 108,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Верность",
+          "Храбрость",
+          "Дисциплина"
+        ],
+        "motivation": "поддержание порядка",
+        "dominantEmotion": "решимость",
+        "disposition": 65
+      },
+      "techniques": [
+        "reinforced_strike",
+        "breath_of_qi",
+        "fire_strike",
+        "turtle_stance",
+        "wind_speed"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 54,
+        "contributionPoints": 11
+      },
+      "generationMeta": {
+        "seed": 1773590347218,
+        "generatedAt": "2026-03-15T15:59:07.200Z",
+        "version": "2.1.0-lore"
+      }
+    }
+  ]
+}

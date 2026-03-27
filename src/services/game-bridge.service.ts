@@ -1,0 +1,261 @@
+/**
+ * GameBridge - Communication bridge between Phaser and React/API
+ * 
+ * Singleton service that handles:
+ * - API calls from Phaser scenes
+ * - State synchronization between Phaser and React
+ * - Scene navigation events
+ * 
+ * Note: Phaser types are minimal to avoid SSR issues.
+ * Full Phaser is loaded dynamically on client only.
+ * 
+ * @updated 2026-03-11 12:00 - Removed sessionStorage, memory-only storage
+ */
+
+// Minimal Phaser types (avoid importing Phaser for SSR)
+interface PhaserGame {
+  events: {
+    emit: (event: string, data?: unknown) => void;
+  };
+  scene: {
+    start: (name: string, data?: object) => void;
+  };
+}
+
+// Types
+interface Location {
+  id: string;
+  name: string;
+  terrainType?: string | null;
+  x?: number | null;
+  y?: number | null;
+  description?: string | null;
+}
+
+interface Character {
+  id: string;
+  name: string;
+  level: number;
+  subLevel: number;
+  currentQi: number;
+  coreCapacity: number;
+  health: number;
+  maxHealth: number;
+}
+
+interface NPC {
+  id: string;
+  name: string;
+  type: string;
+}
+
+type GameEventType = 
+  | 'scene-change'
+  | 'state-updated'
+  | 'chat-toggle'
+  | 'narrative-generated'
+  | 'combat-start'
+  | 'combat-end';
+
+interface GameEvent {
+  type: GameEventType;
+  data?: unknown;
+}
+
+class GameBridgeImpl {
+  private static instance: GameBridgeImpl;
+  private phaserGame: PhaserGame | null = null;
+  private sessionId: string | null = null;
+  private currentLocationId: string | null = null;
+  private eventListeners: Map<GameEventType, Set<(data: unknown) => void>> = new Map();
+  
+  private constructor() {}
+  
+  static getInstance(): GameBridgeImpl {
+    if (!this.instance) {
+      this.instance = new GameBridgeImpl();
+    }
+    return this.instance;
+  }
+  
+  // ============ Game Management ============
+  
+  setGame(game: PhaserGame): void {
+    this.phaserGame = game;
+  }
+  
+  getGame(): PhaserGame | null {
+    return this.phaserGame;
+  }
+  
+  setSessionId(id: string): void {
+    this.sessionId = id;
+    console.log('[GameBridge] SessionId set to:', id);
+    // Memory-only storage (no sessionStorage - sandbox restriction)
+  }
+  
+  getSessionId(): string | null {
+    console.log('[GameBridge] getSessionId called, returning:', this.sessionId);
+    return this.sessionId;
+  }
+  
+  // ============ Event System ============
+  
+  on(event: GameEventType, callback: (data: unknown) => void): () => void {
+    if (!this.eventListeners.has(event)) {
+      this.eventListeners.set(event, new Set());
+    }
+    this.eventListeners.get(event)!.add(callback);
+    
+    // Return unsubscribe function
+    return () => {
+      this.eventListeners.get(event)?.delete(callback);
+    };
+  }
+  
+  emit(event: GameEventType, data?: unknown): void {
+    this.eventListeners.get(event)?.forEach(callback => callback(data));
+    
+    // Also emit to Phaser game
+    if (this.phaserGame) {
+      this.phaserGame.events.emit(event, data);
+    }
+  }
+  
+  // ============ Scene Navigation ============
+  
+  goToScene(sceneName: string, data?: object): void {
+    if (this.phaserGame) {
+      this.phaserGame.scene.start(sceneName, data);
+      this.emit('scene-change', { scene: sceneName, data });
+    }
+  }
+  
+  // ============ API Calls ============
+  
+  async getLocations(): Promise<Location[]> {
+    try {
+      const response = await fetch('/api/map');
+      const data = await response.json();
+      return data.locations || [];
+    } catch (error) {
+      console.error('Failed to fetch locations:', error);
+      return [];
+    }
+  }
+  
+  async getLocation(id: string): Promise<Location | null> {
+    try {
+      const response = await fetch(`/api/map?locationId=${id}`);
+      const data = await response.json();
+      return data.location || null;
+    } catch (error) {
+      console.error('Failed to fetch location:', error);
+      return null;
+    }
+  }
+  
+  async getCharacter(): Promise<Character | null> {
+    try {
+      const response = await fetch('/api/game/state');
+      const data = await response.json();
+      return data.character || null;
+    } catch (error) {
+      console.error('Failed to fetch character:', error);
+      return null;
+    }
+  }
+  
+  async getNPCs(locationId?: string): Promise<NPC[]> {
+    try {
+      // Use memory-stored sessionId
+      
+      if (!this.sessionId) {
+        console.warn('[GameBridge] No sessionId for NPC fetch');
+        return [];
+      }
+      
+      const sessionId = this.sessionId;
+      
+      // Формируем URL с параметрами
+      const params = new URLSearchParams({
+        action: 'list',
+        sessionId,
+      });
+      
+      if (locationId) {
+        params.append('locationId', locationId);
+      }
+      
+      const response = await fetch(`/api/npc/spawn?${params.toString()}`);
+      const data = await response.json();
+      
+      if (data.success && data.npcs) {
+        return data.npcs.map((npc: any) => ({
+          id: npc.id,
+          name: npc.name,
+          type: npc.isPreset ? 'preset' : 'generated',
+          title: npc.title,
+          level: npc.cultivation?.level || 0,
+          subLevel: npc.cultivation?.subLevel || 0,
+          speciesId: npc.speciesId,
+          roleId: npc.roleId,
+        }));
+      }
+      
+      return [];
+    } catch (error) {
+      console.error('[GameBridge] Failed to fetch NPCs:', error);
+      return [];
+    }
+  }
+  
+  async sendAction(action: string): Promise<string> {
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId: this.sessionId,
+          message: action,
+        }),
+      });
+      
+      const data = await response.json();
+      this.emit('narrative-generated', data);
+      
+      return data.response?.content || '';
+    } catch (error) {
+      console.error('Failed to send action:', error);
+      return '';
+    }
+  }
+  
+  setCurrentLocation(locationId: string): void {
+    // Memory-only storage (no sessionStorage - sandbox restriction)
+    this.currentLocationId = locationId;
+    this.emit('state-updated', { currentLocation: locationId });
+  }
+  
+  getCurrentLocation(): string | null {
+    return this.currentLocationId;
+  }
+  
+  // ============ Chat Toggle ============
+  
+  toggleChat(): void {
+    this.emit('chat-toggle');
+  }
+  
+  // ============ Cleanup ============
+  
+  destroy(): void {
+    this.eventListeners.clear();
+    this.phaserGame = null;
+    this.sessionId = null;
+  }
+}
+
+// Export singleton instance
+export const GameBridge = GameBridgeImpl;
+export type { Location, Character, NPC, GameEventType, GameEvent };

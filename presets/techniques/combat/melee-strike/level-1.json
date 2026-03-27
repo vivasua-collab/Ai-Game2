@@ -1,0 +1,242 @@
+{
+  "version": "2.0",
+  "count": 5,
+  "techniques": [
+    {
+      "id": "MS000001",
+      "name": "Раскалённый Волна",
+      "nameEn": "Раскалённый Волна",
+      "description": "Раскалённый Волна — техника melee_strike элемента fire уровня 1. Grade: common. Урон: 64. Дальность: 0.5м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "fire",
+      "level": 1,
+      "grade": "common",
+      "qiCost": 64,
+      "baseQiCost": 64,
+      "baseDamage": 64,
+      "baseRange": 0.5,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 64,
+        "finalQiCost": 64,
+        "finalRange": 0.5,
+        "formula": "64 × 1 = 64",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 3
+      },
+      "meta": {
+        "seed": 1774114254387,
+        "template": "combat_melee_strike_fire",
+        "generatedAt": "2026-03-21T17:30:54.388Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MS000002",
+      "name": "Ладонь холодный",
+      "nameEn": "Ладонь Холодный",
+      "description": "Ладонь холодный — техника melee_strike элемента water уровня 1. Grade: perfect. Урон: 89. Дальность: 0.7м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "water",
+      "level": 1,
+      "grade": "perfect",
+      "qiCost": 64,
+      "baseQiCost": 64,
+      "baseDamage": 64,
+      "baseRange": 0.7,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 89,
+        "finalQiCost": 64,
+        "finalRange": 0.7,
+        "formula": "64 × 1.4 = 89",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 10,
+          "critDamage": 2
+        }
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 7
+      },
+      "meta": {
+        "seed": 1774114254388,
+        "template": "combat_melee_strike_water",
+        "generatedAt": "2026-03-21T17:30:54.388Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MS000003",
+      "name": "Удар титанический",
+      "nameEn": "Удар Титанический",
+      "description": "Удар титанический — техника melee_strike элемента earth уровня 1. Grade: common. Урон: 64. Дальность: 0.5м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "earth",
+      "level": 1,
+      "grade": "common",
+      "qiCost": 64,
+      "baseQiCost": 64,
+      "baseDamage": 64,
+      "baseRange": 0.5,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 64,
+        "finalQiCost": 64,
+        "finalRange": 0.5,
+        "formula": "64 × 1 = 64",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 3
+      },
+      "meta": {
+        "seed": 1774114254389,
+        "template": "combat_melee_strike_earth",
+        "generatedAt": "2026-03-21T17:30:54.388Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MS000004",
+      "name": "Волна порывистый",
+      "nameEn": "Волна Порывистый",
+      "description": "Волна порывистый — техника melee_strike элемента air уровня 1. Grade: perfect. Урон: 89. Дальность: 0.7м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "air",
+      "level": 1,
+      "grade": "perfect",
+      "qiCost": 64,
+      "baseQiCost": 64,
+      "baseDamage": 64,
+      "baseRange": 0.7,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 89,
+        "finalQiCost": 64,
+        "finalRange": 0.7,
+        "formula": "64 × 1.4 = 89",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 10,
+          "critDamage": 2
+        }
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 7
+      },
+      "meta": {
+        "seed": 1774114254390,
+        "template": "combat_melee_strike_air",
+        "generatedAt": "2026-03-21T17:30:54.388Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MS000005",
+      "name": "Молниеносный Толчок",
+      "nameEn": "Молниеносный Толчок",
+      "description": "Молниеносный Толчок — техника melee_strike элемента lightning уровня 1. Grade: common. Урон: 64. Дальность: 0.5м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "lightning",
+      "level": 1,
+      "grade": "common",
+      "qiCost": 64,
+      "baseQiCost": 64,
+      "baseDamage": 64,
+      "baseRange": 0.5,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 64,
+        "finalQiCost": 64,
+        "finalRange": 0.5,
+        "formula": "64 × 1 = 64",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 3
+      },
+      "meta": {
+        "seed": 1774114254391,
+        "template": "combat_melee_strike_lightning",
+        "generatedAt": "2026-03-21T17:30:54.388Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    }
+  ]
+}

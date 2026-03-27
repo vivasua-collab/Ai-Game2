@@ -1,0 +1,236 @@
+{
+  "version": "2.0",
+  "count": 5,
+  "techniques": [
+    {
+      "id": "MW000021",
+      "name": "Толчок бесплотный",
+      "nameEn": "Толчок Бесплотный",
+      "description": "Толчок бесплотный — техника melee_weapon элемента void уровня 9. Grade: common. Урон: 12288. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "void",
+      "level": 9,
+      "grade": "common",
+      "qiCost": 12288,
+      "baseQiCost": 12288,
+      "baseDamage": 12288,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 12288,
+        "finalQiCost": 12288,
+        "finalRange": 1,
+        "formula": "12288 × 1 = 12288",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 27
+      },
+      "meta": {
+        "seed": 1774114254432,
+        "template": "combat_melee_weapon_void",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MW000022",
+      "name": "Укол базовый",
+      "nameEn": "Укол Базовый",
+      "description": "Укол базовый — техника melee_weapon уровня 9. Grade: common. Урон: 12288. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "neutral",
+      "level": 9,
+      "grade": "common",
+      "qiCost": 12288,
+      "baseQiCost": 12288,
+      "baseDamage": 12288,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 12288,
+        "finalQiCost": 12288,
+        "finalRange": 1,
+        "formula": "12288 × 1 = 12288",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 27
+      },
+      "meta": {
+        "seed": 1774114254433,
+        "template": "combat_melee_weapon_neutral",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MW000023",
+      "name": "Раскалённый Клинок",
+      "nameEn": "Раскалённый Клинок",
+      "description": "Раскалённый Клинок — техника melee_weapon элемента fire уровня 9. Grade: common. Урон: 12288. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "fire",
+      "level": 9,
+      "grade": "common",
+      "qiCost": 12288,
+      "baseQiCost": 12288,
+      "baseDamage": 12288,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 12288,
+        "finalQiCost": 12288,
+        "finalRange": 1,
+        "formula": "12288 × 1 = 12288",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 27
+      },
+      "meta": {
+        "seed": 1774114254434,
+        "template": "combat_melee_weapon_fire",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MW000024",
+      "name": "Ладонь пылающий",
+      "nameEn": "Ладонь Пылающий",
+      "description": "Ладонь пылающий — техника melee_weapon элемента fire уровня 9. Grade: common. Урон: 12288. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "fire",
+      "level": 9,
+      "grade": "common",
+      "qiCost": 12288,
+      "baseQiCost": 12288,
+      "baseDamage": 12288,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 12288,
+        "finalQiCost": 12288,
+        "finalRange": 1,
+        "formula": "12288 × 1 = 12288",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 27
+      },
+      "meta": {
+        "seed": 1774114254435,
+        "template": "combat_melee_weapon_fire",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MW000025",
+      "name": "Удар морской",
+      "nameEn": "Удар Морской",
+      "description": "Удар морской — техника melee_weapon элемента water уровня 9. Grade: common. Урон: 12288. Дальность: 1м.",
+      "type": "combat",
+      "subtype": "melee_weapon",
+      "element": "water",
+      "level": 9,
+      "grade": "common",
+      "qiCost": 12288,
+      "baseQiCost": 12288,
+      "baseDamage": 12288,
+      "baseRange": 1,
+      "baseCapacity": 48,
+      "computed": {
+        "finalDamage": 12288,
+        "finalQiCost": 12288,
+        "finalRange": 1,
+        "formula": "12288 × 1 = 12288",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 27
+      },
+      "meta": {
+        "seed": 1774114254436,
+        "template": "combat_melee_weapon_water",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    }
+  ]
+}

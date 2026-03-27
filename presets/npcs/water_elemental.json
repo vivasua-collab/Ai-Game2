@@ -1,0 +1,390 @@
+{
+  "version": "2.0",
+  "type": "water_elemental",
+  "count": 5,
+  "npcs": [
+    {
+      "id": "NP_000021",
+      "name": "Зефир",
+      "age": 41,
+      "gender": "male",
+      "speciesId": "water_elemental",
+      "roleId": "mercenary",
+      "stats": {
+        "strength": 25,
+        "agility": 25,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 8,
+        "coreCapacity": 5827,
+        "currentQi": 3866,
+        "coreQuality": 79,
+        "baseVolume": 2717,
+        "qiDensity": 1,
+        "meridianConductivity": 7.5472222222222225,
+        "meridianBuffer": 37
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Хладнокровие",
+          "Скрытность",
+          "Профессионализм"
+        ],
+        "motivation": "совершенствование навыков",
+        "dominantEmotion": "решимость",
+        "disposition": 30
+      },
+      "techniques": [
+        "reinforced_strike",
+        "breath_of_qi",
+        "fire_strike"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 32,
+        "contributionPoints": 24
+      },
+      "generationMeta": {
+        "seed": 1773590045637,
+        "generatedAt": "2026-03-15T15:54:05.622Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000058",
+      "name": "Зефир",
+      "age": 109,
+      "gender": "male",
+      "speciesId": "water_elemental",
+      "roleId": "hermit",
+      "stats": {
+        "strength": 25,
+        "agility": 20,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 9,
+        "coreCapacity": 5629,
+        "currentQi": 4887,
+        "coreQuality": 94,
+        "baseVolume": 2384,
+        "qiDensity": 1,
+        "meridianConductivity": 6.622222222222222,
+        "meridianBuffer": 33
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Мудрость",
+          "Терпение",
+          "Доброта"
+        ],
+        "motivation": "сохранение традиций",
+        "dominantEmotion": "мудрость",
+        "disposition": 75
+      },
+      "techniques": [
+        "breath_of_qi",
+        "mental_shield",
+        "qi_healing"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 55,
+        "contributionPoints": 4
+      },
+      "generationMeta": {
+        "seed": 1773590045674,
+        "generatedAt": "2026-03-15T15:54:05.626Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000093",
+      "name": "Аква",
+      "age": 55,
+      "gender": "female",
+      "speciesId": "water_elemental",
+      "roleId": "alchemist",
+      "stats": {
+        "strength": 25,
+        "agility": 25,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 2,
+        "coreCapacity": 2713,
+        "currentQi": 1746,
+        "coreQuality": 76,
+        "baseVolume": 2241,
+        "qiDensity": 1,
+        "meridianConductivity": 6.225,
+        "meridianBuffer": 31
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Сострадание",
+          "Терпение",
+          "Знание"
+        ],
+        "motivation": "помощь страждущим",
+        "dominantEmotion": "тепло",
+        "disposition": 70
+      },
+      "techniques": [
+        "breath_of_qi",
+        "qi_healing",
+        "water_shield"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 205,
+        "contributionPoints": 20
+      },
+      "generationMeta": {
+        "seed": 1773590045709,
+        "generatedAt": "2026-03-15T15:54:05.628Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000165",
+      "name": "Аква",
+      "age": 46,
+      "gender": "female",
+      "speciesId": "water_elemental",
+      "roleId": "blacksmith",
+      "stats": {
+        "strength": 25,
+        "agility": 25,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 9,
+        "coreCapacity": 4076,
+        "currentQi": 3867,
+        "coreQuality": 90,
+        "baseVolume": 1727,
+        "qiDensity": 1,
+        "meridianConductivity": 4.7972222222222225,
+        "meridianBuffer": 23
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Сострадание",
+          "Терпение",
+          "Знание"
+        ],
+        "motivation": "помощь страждущим",
+        "dominantEmotion": "сострадание",
+        "disposition": 70
+      },
+      "techniques": [
+        "breath_of_qi",
+        "reinforced_strike"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 46,
+        "contributionPoints": 22
+      },
+      "generationMeta": {
+        "seed": 1773590347203,
+        "generatedAt": "2026-03-15T15:59:07.199Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000199",
+      "name": "Фламма",
+      "age": 21,
+      "gender": "female",
+      "speciesId": "water_elemental",
+      "roleId": "scholar",
+      "stats": {
+        "strength": 24,
+        "agility": 25,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 0,
+        "coreCapacity": 1543,
+        "currentQi": 894,
+        "coreQuality": 91,
+        "baseVolume": 1543,
+        "qiDensity": 1,
+        "meridianConductivity": 4.286111111111111,
+        "meridianBuffer": 21
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Цинизм",
+          "Опыт",
+          "Реализм"
+        ],
+        "motivation": "наблюдение",
+        "dominantEmotion": "мудрость",
+        "disposition": 40
+      },
+      "techniques": [
+        "breath_of_qi",
+        "mental_shield",
+        "qi_healing"
+      ],
+      "equipment": {
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 10,
+        "contributionPoints": 21
+      },
+      "generationMeta": {
+        "seed": 1773590348754,
+        "generatedAt": "2026-03-15T15:59:08.737Z",
+        "version": "2.1.0-lore"
+      }
+    }
+  ]
+}

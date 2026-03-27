@@ -1,0 +1,239 @@
+{
+  "version": "2.0",
+  "count": 5,
+  "techniques": [
+    {
+      "id": "MS000006",
+      "name": "Бесплотный Удар",
+      "nameEn": "Бесплотный Удар",
+      "description": "Бесплотный Удар — техника melee_strike элемента void уровня 3. Grade: perfect. Урон: 358. Дальность: 0.7м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "void",
+      "level": 3,
+      "grade": "perfect",
+      "qiCost": 256,
+      "baseQiCost": 256,
+      "baseDamage": 256,
+      "baseRange": 0.7,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 358,
+        "finalQiCost": 256,
+        "finalRange": 0.7,
+        "formula": "256 × 1.4 = 358",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 10,
+          "critDamage": 2
+        }
+      },
+      "minCultivationLevel": 2,
+      "minLevel": 2,
+      "maxLevel": 4,
+      "fatigueCost": {
+        "physical": 1,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 13
+      },
+      "meta": {
+        "seed": 1774114254392,
+        "template": "combat_melee_strike_void",
+        "generatedAt": "2026-03-21T17:30:54.388Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MS000007",
+      "name": "Взрыв базовый",
+      "nameEn": "Взрыв Базовый",
+      "description": "Взрыв базовый — техника melee_strike уровня 3. Grade: common. Урон: 256. Дальность: 0.5м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "neutral",
+      "level": 3,
+      "grade": "common",
+      "qiCost": 256,
+      "baseQiCost": 256,
+      "baseDamage": 256,
+      "baseRange": 0.5,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 256,
+        "finalQiCost": 256,
+        "finalRange": 0.5,
+        "formula": "256 × 1 = 256",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 2,
+      "minLevel": 2,
+      "maxLevel": 4,
+      "fatigueCost": {
+        "physical": 1,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 9
+      },
+      "meta": {
+        "seed": 1774114254393,
+        "template": "combat_melee_strike_neutral",
+        "generatedAt": "2026-03-21T17:30:54.388Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MS000008",
+      "name": "Кулак раскалённый",
+      "nameEn": "Кулак Раскалённый",
+      "description": "Кулак раскалённый — техника melee_strike элемента fire уровня 3. Grade: common. Урон: 256. Дальность: 0.5м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "fire",
+      "level": 3,
+      "grade": "common",
+      "qiCost": 256,
+      "baseQiCost": 256,
+      "baseDamage": 256,
+      "baseRange": 0.5,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 256,
+        "finalQiCost": 256,
+        "finalRange": 0.5,
+        "formula": "256 × 1 = 256",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 2,
+      "minLevel": 2,
+      "maxLevel": 4,
+      "fatigueCost": {
+        "physical": 1,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 9
+      },
+      "meta": {
+        "seed": 1774114254394,
+        "template": "combat_melee_strike_fire",
+        "generatedAt": "2026-03-21T17:30:54.388Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MS000009",
+      "name": "Укол пылающий",
+      "nameEn": "Укол Пылающий",
+      "description": "Укол пылающий — техника melee_strike элемента fire уровня 3. Grade: common. Урон: 256. Дальность: 0.5м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "fire",
+      "level": 3,
+      "grade": "common",
+      "qiCost": 256,
+      "baseQiCost": 256,
+      "baseDamage": 256,
+      "baseRange": 0.5,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 256,
+        "finalQiCost": 256,
+        "finalRange": 0.5,
+        "formula": "256 × 1 = 256",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 2,
+      "minLevel": 2,
+      "maxLevel": 4,
+      "fatigueCost": {
+        "physical": 1,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 9
+      },
+      "meta": {
+        "seed": 1774114254395,
+        "template": "combat_melee_strike_fire",
+        "generatedAt": "2026-03-21T17:30:54.388Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MS000010",
+      "name": "Взрыв морской",
+      "nameEn": "Взрыв Морской",
+      "description": "Взрыв морской — техника melee_strike элемента water уровня 3. Grade: common. Урон: 256. Дальность: 0.5м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "water",
+      "level": 3,
+      "grade": "common",
+      "qiCost": 256,
+      "baseQiCost": 256,
+      "baseDamage": 256,
+      "baseRange": 0.5,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 256,
+        "finalQiCost": 256,
+        "finalRange": 0.5,
+        "formula": "256 × 1 = 256",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 2,
+      "minLevel": 2,
+      "maxLevel": 4,
+      "fatigueCost": {
+        "physical": 1,
+        "mental": 0
+      },
+      "statRequirements": {
+        "strength": 9
+      },
+      "meta": {
+        "seed": 1774114254396,
+        "template": "combat_melee_strike_water",
+        "generatedAt": "2026-03-21T17:30:54.388Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    }
+  ]
+}
