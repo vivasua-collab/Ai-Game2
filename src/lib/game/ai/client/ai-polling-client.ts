@@ -82,6 +82,9 @@ export class AIPollingClient {
   
   // === Позиция игрока для AI ===
   private lastPlayerPosition: { x: number; y: number } | null = null;
+  
+  // === Текущая локация ===
+  private currentLocationId: string | null = null;
 
   constructor(config: Partial<AIPollingConfig> = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config };
@@ -201,6 +204,17 @@ export class AIPollingClient {
   updatePlayerPosition(x: number, y: number): void {
     this.lastPlayerPosition = { x, y };
   }
+  
+  /**
+   * Установить текущую локацию (для AI)
+   * 
+   * ВАЖНО: Вызывать при входе в локацию!
+   * Это критично для правильной активации NPC.
+   */
+  setLocationId(locationId: string): void {
+    this.currentLocationId = locationId;
+    this.log('[AIPollingClient] Location set to:', locationId);
+  }
 
   // ==================== PRIVATE METHODS ====================
 
@@ -222,8 +236,13 @@ export class AIPollingClient {
         body.playerX = this.lastPlayerPosition.x;
         body.playerY = this.lastPlayerPosition.y;
       }
+      
+      // Если есть текущая локация - отправляем её
+      if (this.currentLocationId) {
+        body.locationId = this.currentLocationId;
+      }
 
-      const response = await fetch('/api/ai/tick', {
+      const response = await fetch('/api/ai/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),

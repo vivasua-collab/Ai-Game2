@@ -1048,6 +1048,17 @@ export class LocationScene extends BaseScene {
     // Инициализируем polling client
     this.aiPollingClient.initialize(this.sessionId);
 
+    // === ИСПРАВЛЕНО: Устанавливаем позицию игрока ПЕРЕД запуском polling ===
+    // Это критично для активации NPC при первом tick!
+    this.aiPollingClient.updatePlayerPosition(this.playerX, this.playerY);
+    console.log(`[LocationScene] Initial player position set: (${this.playerX}, ${this.playerY})`);
+    
+    // === ИСПРАВЛЕНО: Устанавливаем locationId для правильной активации NPC ===
+    if (this.locationId) {
+      this.aiPollingClient.setLocationId(this.locationId);
+      console.log(`[LocationScene] Location ID set: ${this.locationId}`);
+    }
+
     // Подписываемся на серверные события
     window.addEventListener('npc:server-action', this.handleServerNPCAction.bind(this) as EventListener);
     window.addEventListener('npc:server-update', this.handleServerNPCUpdate.bind(this) as EventListener);

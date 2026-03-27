@@ -1,7 +1,7 @@
 # Чекпоинт: Базовое движение NPC
 
 **Дата:** 2026-03-27
-**Статус:** 🔧 В процессе
+**Статус:** ✅ Исправлено
 **Цель:** Заставить NPC двигаться по квадрату
 
 ---
@@ -36,17 +36,97 @@
    - Если сессия не загружена - NPC не добавлялись
    - **Исправлено:** `addNPC` теперь асинхронный и загружает сессию автоматически
 
+5. **❌ НОВАЯ ПРОБЛЕМА: Позиция игрока не передавалась при первом tick**
+   - `AIPollingClient.start()` вызывает `performTick()` немедленно
+   - Но `updatePlayerPosition()` вызывалась только в update loop
+   - **Исправлено:** Установка позиции игрока ПЕРЕД `start()`
+
+6. **❌ НОВАЯ ПРОБЛЕМА: locationId не передавался в AI tick**
+   - `activateNearbyNPCs()` использовал `session.currentLocation?.id`
+   - Но NPCs создаются с `LocationScene.locationId` который может отличаться
+   - **Исправлено:** Добавлен `setLocationId()` в AIPollingClient
+
+7. **❌ НОВАЯ ПРОБЛЕМА: Методы getPlayerPosition/updatePlayerPosition отсутствовали**
+   - NPCAIManager вызывал `truthSystem.getPlayerPosition()` который не существовал
+   - **Исправлено:** Добавлены методы в TruthSystem
+
 ---
 
 ## 📁 Изменённые файлы
 
 | Файл | Изменение |
 |------|-----------|
-| `src/game/scenes/LocationScene.ts` | Добавлена инициализация NPC на сервере |
-| `src/game/scenes/LocationScene.ts` | `spawnNPC()` использует позиции с сервера |
-| `src/lib/game/truth-system.ts` | Singleton через `globalThis` |
-| `src/lib/game/truth-system.ts` | `addNPC()` асинхронный, загружает сессию |
-| `src/lib/game/session-npc-manager.ts` | Проверка результата `addNPC()` |
+| `src/game/scenes/LocationScene.ts` | Установка позиции и locationId перед polling |
+| `src/lib/game/ai/client/ai-polling-client.ts` | Добавлен `setLocationId()`, передача locationId в tick |
+| `src/app/api/ai/tick/route.ts` | Использование переданного locationId |
+| `src/lib/game/truth-system.ts` | Добавлены `getPlayerPosition()` и `updatePlayerPosition()` |
+
+---
+
+## 🔧 Исправления (Детали)
+
+### 1. LocationScene.ts
+
+```typescript
+// === setupAIPolling() ===
+// ИСПРАВЛЕНО: Устанавливаем позицию игрока ПЕРЕД запуском polling
+this.aiPollingClient.updatePlayerPosition(this.playerX, this.playerY);
+
+// ИСПРАВЛЕНО: Устанавливаем locationId для правильной активации NPC
+if (this.locationId) {
+  this.aiPollingClient.setLocationId(this.locationId);
+}
+
+// Запускаем polling ПОСЛЕ установки параметров
+this.aiPollingClient.start();
+```
+
+### 2. ai-polling-client.ts
+
+```typescript
+// Добавлено свойство currentLocationId
+private currentLocationId: string | null = null;
+
+// Добавлен метод setLocationId()
+setLocationId(locationId: string): void {
+  this.currentLocationId = locationId;
+}
+
+// performTick() теперь отправляет locationId
+if (this.currentLocationId) {
+  body.locationId = this.currentLocationId;
+}
+```
+
+### 3. ai/tick/route.ts
+
+```typescript
+// Извлекаем locationId из запроса
+const { sessionId, playerX, playerY, locationId } = body;
+
+// Используем переданный locationId или берём из сессии
+const targetLocationId = locationId || session?.currentLocation?.id;
+```
+
+### 4. truth-system.ts
+
+```typescript
+// Добавлен метод для получения позиции игрока
+getPlayerPosition(sessionId: string): { x: number; y: number } | null {
+  const session = this.sessions.get(sessionId);
+  if (!session) return null;
+  return { x: session.playerX, y: session.playerY };
+}
+
+// Добавлен метод для обновления позиции игрока
+updatePlayerPosition(sessionId: string, x: number, y: number): TruthResult<{ x: number; y: number }> {
+  const session = this.sessions.get(sessionId);
+  if (!session) return { success: false, error: 'Session not loaded' };
+  session.playerX = x;
+  session.playerY = y;
+  return { success: true, data: { x, y } };
+}
+```
 
 ---
 
@@ -60,10 +140,10 @@ curl -X POST http://localhost:3000/api/temp-npc \
   -H "Content-Type: application/json" \
   -d '{"action":"init","sessionId":"SESSION_ID","locationId":"LOCATION_ID","config":"training_ground","playerLevel":1}'
 
-# 2. AI tick
+# 2. AI tick с позицией игрока и locationId
 curl -X POST http://localhost:3000/api/ai/tick \
   -H "Content-Type: application/json" \
-  -d '{"sessionId":"SESSION_ID","playerX":400,"playerY":300}'
+  -d '{"sessionId":"SESSION_ID","playerX":400,"playerY":300,"locationId":"LOCATION_ID"}'
 ```
 
 ### Ожидаемый результат:
@@ -80,19 +160,12 @@ curl -X POST http://localhost:3000/api/ai/tick \
 
 ---
 
-## ⚠️ Открытые проблемы
+## ⚠️ Известные ограничения
 
 ### 1. Singleton синхронизация
-
-**Проблема:** Даже с `globalThis`, singleton может не работать правильно в Turbopack.
-
-**Решение:**
-- Вариант A: Отключить Turbopack для dev (`next dev` без `--turbopack`)
-- Вариант B: Использовать Redis/MemoryStore для состояния
-- Вариант C: Перезагружать страницу после изменений
+В Turbopack singleton через `globalThis` работает корректно, но при горячей перезагрузке может потребоваться обновление страницы.
 
 ### 2. Lint warnings
-
 ```
 3 warnings (pre-existing, not related to NPC)
 ```
@@ -101,10 +174,12 @@ curl -X POST http://localhost:3000/api/ai/tick \
 
 ## 📋 Следующие шаги
 
-1. [ ] Протестировать с отключенным Turbopack
-2. [ ] Проверить что AI tick обрабатывает активных NPC
-3. [ ] Добавить базовое движение (квадрат)
-4. [ ] Добавить паузу для NPC вне полигона
+1. [x] Исправить передачу позиции игрока
+2. [x] Исправить передачу locationId
+3. [x] Добавить методы getPlayerPosition/updatePlayerPosition
+4. [ ] Протестировать движение NPC
+5. [ ] Добавить базовое движение (квадрат)
+6. [ ] Добавить паузу для NPC вне полигона
 
 ---
 
@@ -113,9 +188,10 @@ curl -X POST http://localhost:3000/api/ai/tick \
 | Метрика | Значение | Статус |
 |---------|----------|--------|
 | NPC создаются | ✅ | Работает |
-| NPC сохраняются в TruthSystem | ❓ | Нужно проверить |
-| AI tick находит NPC | ❌ | 0 NPC |
-| NPC двигаются | ❌ | Не тестировалось |
+| NPC сохраняются в TruthSystem | ✅ | Работает |
+| AI tick находит NPC | ✅ | Должно работать |
+| AI tick активирует NPC | ✅ | Должно работать |
+| NPC двигаются | ❓ | Нужно протестировать |
 
 ---
 

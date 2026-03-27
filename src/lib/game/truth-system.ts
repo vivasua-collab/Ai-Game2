@@ -988,6 +988,37 @@ class TruthSystemImpl {
     return Array.from(session.npcs.values());
   }
 
+  // ==================== PLAYER POSITION (для AI) ====================
+
+  /**
+   * Получить позицию игрока в сессии
+   * 
+   * Используется NPCAIManager для определения ближайших NPC к игроку.
+   */
+  getPlayerPosition(sessionId: string): { x: number; y: number } | null {
+    const session = this.sessions.get(sessionId);
+    if (!session) return null;
+    
+    return { x: session.playerX, y: session.playerY };
+  }
+
+  /**
+   * Обновить позицию игрока
+   * 
+   * Вызывается клиентом через AIPollingClient для синхронизации позиции с сервером.
+   */
+  updatePlayerPosition(sessionId: string, x: number, y: number): TruthResult<{ x: number; y: number }> {
+    const session = this.sessions.get(sessionId);
+    if (!session) {
+      return { success: false, error: 'Session not loaded' };
+    }
+
+    session.playerX = x;
+    session.playerY = y;
+    
+    return { success: true, data: { x, y } };
+  }
+
   /**
    * Обновить NPC
    */

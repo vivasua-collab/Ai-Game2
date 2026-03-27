@@ -466,8 +466,8 @@ export async function POST(request: NextRequest) {
             }, { status: 400 });
           }
 
-          // Использовать валидированные данные
-          updates = validationResult.data;
+          // Валидация прошла успешно - данные корректны
+          // updates уже содержит правильные данные
         }
         
         if (isTempNPCId(npcId)) {

@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { sessionId, playerX, playerY } = body;
+    const { sessionId, playerX, playerY, locationId } = body;
 
     if (!sessionId) {
       return NextResponse.json(
@@ -75,9 +75,10 @@ export async function POST(request: NextRequest) {
       session = truthSystem.getSessionState(sessionId);
     }
 
-    const targetLocationId = session?.currentLocation?.id;
+    // === ИСПРАВЛЕНО: Используем переданный locationId или берём из сессии ===
+    const targetLocationId = locationId || session?.currentLocation?.id;
 
-    console.log(`[API:ai/tick] sessionId=${sessionId}, locationId=${targetLocationId}, playerPos=(${playerX}, ${playerY})`);
+    console.log(`[API:ai/tick] sessionId=${sessionId}, locationId=${targetLocationId} (from ${locationId ? 'client' : 'session'}), playerPos=(${playerX}, ${playerY})`);
 
     // === АКТИВАЦИЯ NPC ВОКРУГ ИГРОКА ===
     if (targetLocationId && playerX !== undefined && playerY !== undefined) {
@@ -89,7 +90,7 @@ export async function POST(request: NextRequest) {
         targetLocationId
       );
 
-      console.log(`[API:ai/tick] Activated ${activatedNPCs.length} NPCs near player`);
+      console.log(`[API:ai/tick] Activated ${activatedNPCs.length} NPCs near player in location ${targetLocationId}`);
     }
 
     // === ВЫПОЛНЯЕМ AI TICK ===
