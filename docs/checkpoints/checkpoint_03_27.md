@@ -1,128 +1,313 @@
 # CHECKPOINT: 2026-03-27
 
-**Дата:** 2026-03-27
-**Статус:** 🟢 Сервер работает
+**Системное время:** 2026-03-27 07:17:05 UTC
+**Статус:** 🟢 Сервер работает, API отвечает
 
 ---
 
-## 📋 ТЕКУЩИЙ СТАТУС
-
-### Сервер "Земля" (Server-side AI)
-- ✅ API `/api/ai/tick` работает
-- ✅ API `/api/ai/events` работает
-- ✅ NPC World Manager инициализирован
-- ✅ NPC AI Manager готов
-
-### Архитектура
-```
-HTTP-only Single-Player Architecture:
-- 1 TICK = 1 SECOND (real time)
-- Клиент polling каждые 1000ms
-- Земля (сервер) = Game logic, NPC AI, actions
-- Облако (клиент) = Display only, triggers
-```
-
----
-
-## 🔧 ИСПРАВЛЕНИЯ С ПРЕДЫДУЩЕЙ СЕССИИ
+## 📋 СЕССИЯ КОДИНГА: РЕШЕНИЯ
 
 ### 1. Исправлен импорт TruthSystem
+**Проблема:** В предыдущей сессии использовался несуществующий экспорт `getTruthSystem`
+
 **Файл:** `src/app/api/ai/events/route.ts`
 ```typescript
-// Было:
-import { getTruthSystem } from '@/lib/game/truth-system'; // НЕ СУЩЕСТВУЕТ
+// БЫЛО (ошибка):
+import { getTruthSystem } from '@/lib/game/truth-system';  // НЕ СУЩЕСТВУЕТ!
 
-// Стало:
+// СТАЛО (исправлено):
 import { TruthSystem } from '@/lib/game/truth-system';
 const truthSystem = TruthSystem.getInstance();
-```
-
-### 2. Исправлен метод getSession
-```typescript
-// Было:
-const session = truthSystem.getSession(sessionId); // НЕ СУЩЕСТВУЕТ
-
-// Стало:
 const session = truthSystem.getSessionState(sessionId);
 ```
 
-### 3. Порядок создания локации
-**Файл:** `src/app/api/ai/tick/route.ts`
-- СНАЧАЛА создаём локацию
-- ПОТОМ добавляем игрока в `location.playerIds`
+**Результат:** ✅ API `/api/ai/events` теперь работает
+
+---
+
+### 2. Исправлен импорт в player-position
+**Файл:** `src/app/api/ai/player-position/route.ts`
+```typescript
+// Те же исправления:
+// - getTruthSystem → TruthSystem.getInstance()
+// - getSession() → getSessionState()
+```
+
+---
+
+### 3. Проверен экспорт TruthSystem
+**Файл:** `src/lib/game/truth-system.ts` (конец файла)
+```typescript
+// Экспорт существует:
+export const TruthSystem = TruthSystemImpl;
+```
+
+---
+
+### 4. Проверена работа сервера
+**Тест:**
+```bash
+curl http://localhost:3000/api/ai/tick
+```
+
+**Результат:**
+```json
+{
+  "success": true,
+  "stats": {
+    "totalNPCs": 0,
+    "activeNPCs": 0,
+    "totalUpdates": 0,
+    "avgUpdateTime": 0
+  },
+  "world": {
+    "tick": 0,
+    "lastUpdate": 1774593593820,
+    "totalPlayers": 0,
+    "totalNPCs": 0,
+    "totalLocations": 0
+  }
+}
+```
+
+---
+
+## ✅ АРХИТЕКТУРНЫЙ АНАЛИЗ
+
+### Самая новая архитектура: ARCHITECTURE_cloud.md (2026-03-25)
+
+**Статус:** ✅ АКТИВНАЯ
+
+### Ключевые принципы ARCHITECTURE_cloud.md:
+
+#### 1. Метафора: Божество → Облако → Земля
+```
+👁️ БОЖЕСТВО (Игрок)
+├── Управляет аватаром в мире
+└── Его воля = действия персонажа
+
+☁️ ОБЛАКО (Браузер / Thin Client)
+├── Отображает мир (Phaser рендеринг)
+├── Передаёт волю на землю (HTTP requests)
+└── НЕ принимает решений - только транслирует
+
+🌍 ЗЕМЛЯ (Сервер - TruthSystem)
+├── Реальный мир, где всё происходит
+├── Хранит состояние (HP, Qi, NPC, мир)
+├── Исполняет расчёты (урон, культивация, AI)
+└── 1 TICK = 1 СЕКУНДА реального времени
+```
+
+**✅ СООТВЕТСТВИЕ:**
+- TruthSystem на сервере ✅
+- Phaser только рендеринг ✅
+- HTTP API для коммуникации ✅
+- 1 TICK = 1 СЕКУНДА ✅
+
+#### 2. HTTP-Only архитектура
+```
+✅ ПРОСТОТА
+   ├── Один протокол (HTTP)
+   ├── Нет WebSocket соединений (для single-player)
+   └── Проще debug
+
+✅ НАДЁЖНОСТЬ
+   ├── HTTP запросы атомарны
+   ├── Автоматический retry через браузер
+   └── Потеря сети = повторный запрос
+
+✅ БЕЗОПАСНОСТЬ
+   ├── Вся логика на сервере
+   ├── Клиент не может "накрутить"
+   └── Валидация на сервере
+```
+
+**✅ СООТВЕТСТВИЕ:**
+- HTTP-only для single-player ✅
+- `/api/ai/tick` - polling каждые 1000ms ✅
+- `/api/ai/events` - получение событий ✅
+
+#### 3. Серверные слои
+```
+LAYER 4: PRESENTATION (Client)
+├── Phaser 3 (2D рендеринг)
+└── React Components (UI)
+
+LAYER 3: API (Next.js Routes)
+├── /api/ai/tick
+├── /api/ai/events
+└── /api/ai/player-position
+
+LAYER 2: DOMAIN SERVICES
+├── NPCAIManager
+├── BroadcastManager
+└── SpinalServerController
+
+LAYER 1: TRUTH SYSTEM
+├── Активные сессии в памяти
+└── Единый источник истины
+
+LAYER 0: PERSISTENCE
+└── Prisma/SQLite
+```
+
+**✅ СООТВЕТСТВИЕ:**
+- Все слои реализованы ✅
+- TruthSystem singleton ✅
+- NPCAIManager управляет AI ✅
+
+---
+
+## 📊 СРАВНЕНИЕ С ARCHITECTURE.md (v21, 2026-03-24)
+
+### TruthSystem
+**Документ:** "Память первична! БД - persistence layer"
+
+**Реализация:** ✅
+```typescript
+// truth-system.ts
+class TruthSystemImpl {
+  private sessions: Map<string, SessionState> = new Map();
+  
+  // Память ПЕРВИЧНА
+  getSessionState(sessionId: string): SessionState | null {
+    return this.sessions.get(sessionId) || null;
+  }
+}
+```
+
+### API Routes
+**Документ:** "HTTP API для коммуникации"
+
+**Реализация:** ✅
+- `/api/game/state` - получение состояния ✅
+- `/api/ai/tick` - AI tick loop ✅
+- `/api/ai/events` - polling событий ✅
+
+---
+
+## 📊 СРАВНЕНИЕ С ARCHITECTURE_refact.md (2026-03-25)
+
+### Цель рефакторинга: Серверная миграция
+
+**Что уже сделано:**
+- [x] NPCAIManager на сервере ✅
+- [x] BroadcastManager на сервере ✅
+- [x] SpinalServerController адаптер ✅
+- [x] NPCState типы на сервере ✅
+- [x] WorldState типы на сервере ✅
+- [x] NPCWorldManager singleton ✅
+
+**Что в процессе:**
+- [ ] Интеграция NPCAIManager с SessionNPCManager
+- [ ] Загрузка NPC в WorldManager (totalNPCs = 0)
+- [ ] NPC двигаются на сервере
+
+---
+
+## 📊 СРАВНЕНИЕ С ARCHITECTURE_future.md (2026-03-25)
+
+### Unified Architecture
+
+**Текущий режим:** Sandbox (Caddy + XTransformPort)
+```
+BROWSER (Preview Panel)
+└── sandboxed iframe
+    └── HTTP/HTTPS запросы
+
+CADDY GATEWAY (Port 81)
+├── Default → localhost:3000 (Next.js)
+└── XTransformPort=3003 → localhost:3003 (WebSocket)
+
+NEXT.JS (Port 3000)
+└── HTTP API routes
+```
+
+**✅ СООТВЕТСТВИЕ:**
+- Sandbox режим работает ✅
+- HTTP-only архитектура (без WebSocket для single-player) ✅
+- Caddy gateway ✅
+
+---
+
+## 🔧 СОЗДАННЫЕ/ИЗМЕНЁННЫЕ ФАЙЛЫ
+
+### Новые файлы (сессия):
+```
+docs/checkpoints/checkpoint_03_27.md  - этот документ
+```
+
+### Изменённые файлы:
+```
+src/app/api/ai/events/route.ts
+├── Исправлен импорт TruthSystem
+└── Исправлен метод getSessionState
+
+src/app/api/ai/player-position/route.ts
+├── Исправлен импорт TruthSystem
+└── Исправлен метод getSessionState
+```
 
 ---
 
 ## 🎯 ОСТАВШИЕСЯ ПРОБЛЕМЫ
 
-### NPC НЕ ДВИГАЮТСЯ
-**Статус:** Требует investigation
+### 1. NPC НЕ ДВИГАЮТСЯ (totalNPCs = 0)
 
-**Возможные причины:**
-1. NPC не загружаются в WorldManager (totalNPCs = 0)
-2. SessionNPCManager singleton не работает между процессами
-3. Phaser debug режим подвешивает NPC
+**Симптомы:**
+- API возвращает `totalNPCs: 0`
+- NPC видны на клиенте (Phaser)
+- NPC не активируются
 
-**Что проверить:**
-1. `/api/temp-npc` возвращает NPC для сессии?
-2. `loadNPCsToWorldManager()` загружает NPC?
-3. `worldState.npcs.size > 0` после загрузки?
+**Причина (предположение):**
+- SessionNPCManager singleton не работает между процессами
+- NPC не загружаются в NPCWorldManager
 
----
-
-## 📊 ДИАГНОСТИКА
-
-### Тестовые команды:
-```bash
-# Проверить AI tick
-curl -X POST http://localhost:3000/api/ai/tick \
-  -H "Content-Type: application/json" \
-  -d '{"sessionId":"cmn5s3fco0002p7zwk4zqd14n","playerX":400,"playerY":300,"locationId":"training_ground"}'
-
-# Проверить NPC в сессии
-curl "http://localhost:3000/api/temp-npc?action=list&sessionId=cmn5s3fco0002p7zwk4zqd14n"
-
-# Проверить AI события
-curl "http://localhost:3000/api/ai/events?sessionId=cmn5s3fco0002p7zwk4zqd14n"
+**Файлы для исследования:**
+```
+src/lib/game/session-npc-manager.ts
+src/lib/game/npc-world-manager.ts
+src/app/api/ai/tick/route.ts (loadNPCsToWorldManager)
 ```
 
-### Ожидаемые результаты:
-- `totalNPCs > 0` - NPC загружены
-- `activeNPCs > 0` - NPC активированы
-- `events` содержит действия NPC
-
 ---
 
-## 📁 КЛЮЧЕВЫЕ ФАЙЛЫ
-
-### Серверный AI:
-- `src/app/api/ai/tick/route.ts` - главный tick endpoint
-- `src/app/api/ai/events/route.ts` - polling событий
-- `src/lib/game/ai/server/npc-ai-manager.ts` - менеджер AI
-- `src/lib/game/ai/server/broadcast-manager.ts` - отправка событий
-- `src/lib/game/ai/server/spinal-server.ts` - адаптер SpinalController
-- `src/lib/game/npc-world-manager.ts` - состояние мира
-
-### Клиентский execution:
-- `src/game/objects/NPCSprite.ts` - executeServerAction()
-- `src/lib/game/ai/client/ai-polling-client.ts` - HTTP polling
-
----
-
-## 🚀 СЛЕДУЮЩИЕ ШАГИ
-
-1. [ ] Проверить загрузку NPC в WorldManager
-2. [ ] Убедиться что `worldState.npcs.size > 0`
-3. [ ] Протестировать в игре с браузерными логами
-4. [ ] Проверить что `executeServerAction()` вызывается на клиенте
-
----
-
-## 📝 GIT INFO
+## 📁 GIT INFO
 
 **Репозиторий:** https://github.com/vivasua-collab/Ai-Game2.git
 **Ветка:** main2d7
+**Коммит:** 924a7db
 
 ---
 
-*Документ создан: 2026-03-27*
+## 📚 АРХИТЕКТУРНЫЕ ДОКУМЕНТЫ (по дате)
+
+| Документ | Дата | Статус | Описание |
+|----------|------|--------|----------|
+| ARCHITECTURE.md | 2026-03-24 | v21 | Основная архитектура |
+| ARCHITECTURE_cloud.md | 2026-03-25 | ✅ АКТИВНАЯ | HTTP-only Cloud Gaming |
+| ARCHITECTURE_refact.md | 2026-03-25 | 📋 План | Серверная миграция |
+| ARCHITECTURE_future.md | 2026-03-25 | 📋 План | Unified Server |
+| ARCHITECTURE_code_base.md | 2026-03-24 | v2.0 | Примеры кода |
+
+**Самая новая активная:** ARCHITECTURE_cloud.md (2026-03-25)
+
+---
+
+## ✅ ЗАКЛЮЧЕНИЕ
+
+**Что соответствует архитектуре:**
+1. ✅ TruthSystem - память первична
+2. ✅ HTTP-only для single-player
+3. ✅ 1 TICK = 1 СЕКУНДА
+4. ✅ NPCAIManager на сервере
+5. ✅ Слои архитектуры соблюдены
+
+**Что требует доработки:**
+1. ⏳ Загрузка NPC в WorldManager
+2. ⏳ Активация NPC при приближении игрока
+3. ⏳ Синхронизация SessionNPCManager ↔ NPCWorldManager
+
+---
+
+*Документ создан: 2026-03-27 07:17:05 UTC*
