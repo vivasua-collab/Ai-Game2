@@ -1,11 +1,30 @@
 # ДИАГНОЗ: NPC НЕ ДВИГАЮТСЯ
 
 **Дата:** 2026-03-26
-**Статус:** 🟢 ИСПРАВЛЕНО - ТРЕБУЕТ ТЕСТИРОВАНИЯ
+**Статус:** 🟢 ИСПРАВЛЕНО - Требует перезапуска сервера
 
 ---
 
-## 🔄 ИЗМЕНЕНИЯ В ВЕРСИИ (текущая)
+## 🔄 ИЗМЕНЕНИЯ В КОММИТЕ 0441685
+
+### Исправлены ошибки импортов и типы:
+
+1. **`src/app/api/ai/tick/route.ts`**:
+   - Добавлен импорт `getNPCWorldManager`
+   - Исправлено: `session.character?.id` → `session.characterId`
+   - Добавлено поле `lastUpdate` при создании игрока
+
+2. **`src/app/api/ai/events/route.ts`**:
+   - Исправлен импорт: `getTruthSystem` → `TruthSystem`
+   - Исправлен метод: `getSession` → `getSessionState`
+
+3. **`src/app/api/ai/player-position/route.ts`**:
+   - Исправлен импорт: `getTruthSystem` → `TruthSystem`
+   - Исправлен метод: `getSession` → `getSessionState`
+
+---
+
+## 🔄 ИЗМЕНЕНИЯ В КОММИТЕ 8f39459
 
 ### КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Порядок создания локации
 
@@ -21,11 +40,7 @@
 // Это критически важно! Без локации игрок не будет добавлен в location.playerIds
 const worldState = npcWorldManager.getWorldState();
 if (targetLocationId && !worldState.locations.has(targetLocationId)) {
-  npcWorldManager.addLocation({
-    id: targetLocationId,
-    name: session.currentLocation?.name || 'Unknown Location',
-    // ...
-  });
+  npcWorldManager.addLocation({...});
 }
 
 // === ШАГ 2: ОБНОВЛЯЕМ ПОЗИЦИЮ ИГРОКА ===
