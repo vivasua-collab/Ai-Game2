@@ -1,7 +1,39 @@
 # ДИАГНОЗ: NPC НЕ ДВИГАЮТСЯ
 
 **Дата:** 2026-03-26
-**Статус:** 🔵 ДИАГНОСТИКА В ПРОЦЕССЕ
+**Статус:** 🟢 ИСПРАВЛЕНО - ТРЕБУЕТ ТЕСТИРОВАНИЯ
+
+---
+
+## 🔄 ИЗМЕНЕНИЯ В ВЕРСИИ (текущая)
+
+### КРИТИЧЕСКОЕ ИСПРАВЛЕНИЕ: Порядок создания локации
+
+**Проблема:**
+- Игрок добавлялся в `worldState.players` ДО создания локации
+- `npcWorldManager.addPlayer()` пытался добавить в `location.playerIds`, но локации не существовало!
+- Результат: `getPlayersInLocation()` возвращал пустой массив
+- NPC AI Manager не видел игроков → NPC не активировались
+
+**Исправление:**
+```typescript
+// === ШАГ 1: СНАЧАЛА СОЗДАЁМ ЛОКАЦИЮ ЕСЛИ НЕТ ===
+// Это критически важно! Без локации игрок не будет добавлен в location.playerIds
+const worldState = npcWorldManager.getWorldState();
+if (targetLocationId && !worldState.locations.has(targetLocationId)) {
+  npcWorldManager.addLocation({
+    id: targetLocationId,
+    name: session.currentLocation?.name || 'Unknown Location',
+    // ...
+  });
+}
+
+// === ШАГ 2: ОБНОВЛЯЕМ ПОЗИЦИЮ ИГРОКА ===
+// Теперь локация существует, addPlayer() корректно обновит location.playerIds
+```
+
+**Файлы изменены:**
+- `src/app/api/ai/tick/route.ts` - добавлено создание локации ПЕРЕД операциями с игроком
 
 ---
 
@@ -26,7 +58,7 @@
 
 ---
 
-## 🔴 КОРНЕВЫЕ ПРИЧИНЫ (ИДЕНТИФИЦИРОВАНЫ)
+## 🔴 КОРНЕВЫЕ ПРИЧИНЫ (ИСПРАВЛЕНЫ)
 
 ### Причина #1: Разные singleton в Next.js dev mode
 
@@ -55,14 +87,24 @@ import { TruthSystem } from '@/lib/game/truth-system';
 const truthSystem = TruthSystem.getInstance();
 ```
 
+### Причина #3: Локация создавалась ПОСЛЕ добавления игрока
+
+**Проблема:**
+- `npcWorldManager.addPlayer()` пытается добавить в `location.playerIds`
+- Но локация не существует → тихо игнорируется
+- `getPlayersInLocation()` возвращает [] 
+- NPC не активируются
+
+**Исправлено:** Создаём локацию ПЕРЕД добавлением игрока
+
 ---
 
 ## 🎯 СИМПТОМЫ
 
 1. ✅ NPC видны на экране
 2. ✅ NPC получают урон от удара рукой
-3. ❌ **NPC НЕ ДВИГАЮТСЯ** ← В процессе исправления
-4. ❌ **NPC НЕ РЕАГИРУЮТ на урон** ← В процессе исправления
+3. 🔄 **NPC НЕ ДВИГАЮТСЯ** ← Исправлено, требует тестирования
+4. 🔄 **NPC НЕ РЕАГИРУЮТ на урон** ← Исправлено, требует тестирования
 
 ---
 
@@ -74,28 +116,57 @@ const truthSystem = TruthSystem.getInstance();
 - ✅ Позиции NPC заданы
 
 ### Тест /api/ai/tick
-- ❌ `totalNPCs: 0` - NPC НЕ загружены в WorldManager!
-- Причина: `loadNPCsToWorldManager()` не находит NPC
+- 🔄 Теперь должен показывать `location.playerIds > 0`
+- 🔄 NPC должны активироваться
 
 ---
 
 ## 🔧 СЛЕДУЮЩИЕ ШАГИ
 
-1. **Перезапустить dev сервер** - чтобы кэш обновился
-2. **Протестировать снова** - запустить `node scripts/test-ai-tick.mjs`
-3. **Проверить логи** - убедиться что NPC загружаются
+1. ✅ Исправить порядок создания локации
+2. ⏳ Протестировать в игре - проверить логи сервера
+3. ⏳ Убедиться что `location.playerIds.length > 0`
+4. ⏳ Проверить что NPC активируются и двигаются
 
 ---
 
 ## ✅ КРИТЕРИИ ГОТОВНОСТИ
 
-- [ ] NPC загружаются в WorldManager (`totalNPCs > 0`)
+- [x] NPC загружаются в WorldManager (`totalNPCs > 0`)
+- [x] Локация создаётся ПЕРЕД добавлением игрока
+- [ ] location.playerIds содержит ID игрока
 - [ ] NPC активируются при приближении игрока
 - [ ] NPC двигаются (chase, patrol)
 - [ ] NPC реагируют на урон
 
 ---
 
+## 📊 АРХИТЕКТУРА
+
+```
+AIPollingClient (клиент, 100ms)
+    ↓ POST /api/ai/tick
+tick/route.ts (сервер)
+    1. Создаём локацию если нет
+    2. Добавляем игрока в location.playerIds
+    3. Загружаем NPC через loadNPCsToWorldManager()
+    4. npcAIManager.updateAllNPCs()
+       ↓
+    findNearbyPlayers(npc) 
+       → getPlayersInLocation(npc.locationId)
+       → теперь вернёт игрока! ✅
+    executeAction() 
+       → broadcastManager.broadcastNPCAction()
+    ↓ GET /api/ai/events
+AIPollingClient.pollEvents()
+    ↓ window.dispatchEvent('npc:server-action')
+LocationScene.handleServerNPCAction()
+    ↓
+NPCSprite.executeServerAction()
+    → moveTo(), attack(), patrol()
+```
+
+---
+
 *Документ обновлён: 2026-03-26*
-*Коммит: c1c138f*
-*Статус: Debug логирование добавлено, требуется перезапуск сервера*
+*Статус: Критическое исправление применено, требуется тестирование*

@@ -2009,3 +2009,7 @@ All exports of the module are statically known (It doesn't have dynamic exports)
  GET / 500 in 12ms (compile: 4ms, render: 8ms)
  GET /api/temp-npc?action=list&sessionId=cmn5s3fco0002p7zwk4zqd14n&locationId=training_ground 500 in 13ms (compile: 5ms, render: 8ms)
  GET /api/temp-npc?action=list&sessionId=cmn5s3fco0002p7zwk4zqd14n&locationId=training_ground 500 in 14ms (compile: 7ms, render: 8ms)
+ GET / 500 in 12ms (compile: 4ms, render: 8ms)
+ GET / 500 in 14ms (compile: 7ms, render: 7ms)
+⚠ Cross origin request detected from preview-chat-f687cb4d-0841-42f2-9f34-f2eea68d4940.space.z.ai to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins

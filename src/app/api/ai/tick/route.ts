@@ -82,10 +82,26 @@ export async function POST(request: NextRequest) {
 
     console.log(`[API:ai/tick] sessionId=${sessionId}, targetLocationId=${targetLocationId}, characterId=${characterId}`);
 
-    // Обновляем позицию игрока в WorldState
+    // === ШАГ 1: СНАЧАЛА СОЗДАЁМ ЛОКАЦИЮ ЕСЛИ НЕТ ===
+    // Это критически важно! Без локации игрок не будет добавлен в location.playerIds
+    const worldState = npcWorldManager.getWorldState();
+    if (targetLocationId && !worldState.locations.has(targetLocationId)) {
+      npcWorldManager.addLocation({
+        id: targetLocationId,
+        name: session.currentLocation?.name || 'Unknown Location',
+        type: (session.currentLocation?.terrainType as any) || 'outdoor',
+        bounds: { x: 0, y: 0, width: 1600, height: 1200 },
+        npcIds: [],
+        playerIds: [],
+        activeEvents: [],
+        lastActivityTime: Date.now(),
+      });
+      console.log(`[API:ai/tick] CREATED location "${targetLocationId}" BEFORE player operations`);
+    }
+
+    // === ШАГ 2: ОБНОВЛЯЕМ ПОЗИЦИЮ ИГРОКА ===
     // ВАЖНО: Используем npcWorldManager для корректного обновления location.playerIds!
     if (characterId && playerX !== undefined && playerY !== undefined) {
-      const worldState = npcWorldManager.getWorldState();
       const existingPlayer = worldState.players.get(characterId);
 
       // === DEBUG: Проверяем состояние location.playerIds ===
