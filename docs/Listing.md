@@ -1,8 +1,14 @@
 # 📚 Перечень документации проекта Cultivation World Simulator
 
-**Последнее обновление:** 2026-03-30 10:00 UTC
-**Файлов в /docs:** 47
-**Файлов в /Unity:** 13 (+ 4 REQUIRED)
+**Последнее обновление:** 2026-03-30 14:00 UTC
+**Файлов в /docs:** 65 (исключая checkpoints, worklog)
+**Файлов в /Unity:** 18 (все необходимые мигрированы)
+
+---
+
+## ✅ СТАТУС МИГРАЦИИ: ЗАВЕРШЕНА
+
+Все критические документы для Unity мигрированы. Проект готов к разработке на Unity.
 
 ---
 
@@ -12,107 +18,74 @@
 
 | Unity документ | Источник в docs | Покрытие |
 |----------------|-----------------|----------|
+| ARCHITECTURE.md | ARCHITECTURE.md | ✅ 100% |
 | BODY_SYSTEM.md | body.md, body-development-analysis.md, body_review.md, body_monsters.md | ✅ 100% |
-| COMBAT_SYSTEM.md | combat-system.md, technique-system-v2.md (частично) | ✅ 95% |
-| TECHNIQUE_SYSTEM.md | technique-system-v2.md | ✅ 95% |
+| COMBAT_SYSTEM.md | combat-system.md, technique-system-v2.md, body_armor.md | ✅ 100% (v1.1 с 10 слоями) |
+| TECHNIQUE_SYSTEM.md | technique-system-v2.md | ✅ 100% |
 | TIME_SYSTEM.md | TIME_SYSTEM.md | ✅ 100% |
 | QI_SYSTEM.md | start_lore.md, body_review.md | ✅ 100% |
-| NPC_AI_SYSTEM.md | npc-session-integration.md, NPC_AI_THEORY.md | ✅ 90% |
-| WORLD_SYSTEM.md | sector-architecture.md, soul-system.md | ✅ 95% |
+| NPC_AI_SYSTEM.md | npc-session-integration.md, NPC_AI_THEORY.md | ✅ 100% |
+| WORLD_SYSTEM.md | sector-architecture.md, soul-system.md | ✅ 100% |
 | SAVE_SYSTEM.md | — | ✅ 100% (новый) |
 | GENERATORS_SYSTEM.md | generators.md | ✅ 100% |
 | FACTION_SYSTEM.md | faction-system.md | ✅ 100% |
 | LORE_SYSTEM.md | start_lore.md | ✅ 100% |
+| INVENTORY_SYSTEM.md | inventory-system.md | ✅ 100% |
+| EQUIPMENT_SYSTEM.md | equip.md, equip-v2.md, materials.md, weapon-armor-system.md | ✅ 100% |
+| MODIFIERS_SYSTEM.md | bonuses.md | ✅ 100% |
+| ELEMENTS_SYSTEM.md | elements-system.md | ✅ 100% |
+| CHARGER_SYSTEM.md | charger.md | ✅ 100% |
+| MIGRATION_ANALYSIS.md | — | ✅ 100% (аналитический) |
 
-### ⚠️ ТРЕБУЕТСЯ ДОПОЛНИТЕЛЬНАЯ МИГРАЦИЯ:
+### 📊 Статистика миграции:
 
-#### 1. EQUIPMENT_SYSTEM.md (НОВЫЙ, ВЫСОКИЙ ПРИОРИТЕТ)
-
-**Источники для консолидации:**
-- `equip.md` — унифицированная система экипировки (✅ частично в INVENTORY_SYSTEM.md)
-- `equip-v2.md` — экипировка v2 с Grade System
-- `materials.md` — система материалов с ID (❌ НЕ мигрировано)
-- `weapon-armor-system.md` — оружие, броня, формулы (❌ НЕ мигрировано)
-
-**Что отсутствует в Unity:**
-- Таблицы шансов попадания по частям тела
-- Прицельные атаки (aimed attacks)
-- Детальные формулы урона оружия
-- Ремонт и понижение Grade
-- Полный реестр материалов (5 тиров)
-
-#### 2. MODIFIERS_SYSTEM.md (НОВЫЙ, ВЫСОКИЙ ПРИОРИТЕТ)
-
-**Источник:** `bonuses.md`
-
-**Что отсутствует в Unity:**
-- Единая система бонусов и штрафов
-- Мягкие капы (soft caps)
-- Диминишинг (diminishing returns)
-- Источники модификаторов (material, grade, curse, blessing)
-- Примеры расчётов с капами
-
-**КРИТИЧНО:** Эта система используется ВСЕМИ другими системами!
-
-#### 3. ELEMENTS_SYSTEM.md (НОВЫЙ, СРЕДНИЙ ПРИОРИТЕТ)
-
-**Источник:** `elements-system.md`
-
-**Что отсутствует в Unity:**
-- Детальные таблицы эффектов стихий по типам техник
-- Poison механика (множественные дебаффы по Grade)
-- Transcendent-эффекты для каждого элемента
-- Ограничения по типам техник
-
-#### 4. CHARGER_SYSTEM.md (НОВЫЙ, СРЕДНИЙ ПРИОРИТЕТ)
-
-**Источник:** `charger.md`
-
-**Что отсутствует в Unity:**
-- Типы зарядников (belt, bracelet, necklace, ring, backpack)
-- Режимы работы (trickle, normal, burst, combat)
-- Буфер Ци зарядника
-- Проводимость как ограничитель потока
-- Использование в бою и медитации
+| Категория | Всего | Мигрировано | Статус |
+|-----------|-------|-------------|--------|
+| Ядро (архитектура, тело, время) | 6 | 6 | ✅ Завершено |
+| Боевые системы | 5 | 5 | ✅ Завершено |
+| Экипировка и материалы | 7 | 7 | ✅ Завершено |
+| NPC и AI | 3 | 3 | ✅ Завершено |
+| Прочие | 10 | 10 | ✅ Завершено |
+| **ИТОГО** | **31** | **31** | **✅ 100%** |
 
 ---
 
-## 🎮 Unity Migration (Новая папка)
+## 🎮 Unity Documents (папка Unity)
 
-Документы для миграции на Unity (только теория, без кода):
+Все документы для миграции на Unity (только теория, без кода):
 
 ### Приоритет 1 — Ядро игры:
 | Файл | Статус | Источники |
 |------|--------|-----------|
-| [Unity/ARCHITECTURE.md](../Unity/ARCHITECTURE.md) | ✅ DRAFT v1.0 | ARCHITECTURE.md |
-| [Unity/BODY_SYSTEM.md](../Unity/BODY_SYSTEM.md) | ✅ DRAFT v1.0 | body.md, body-development-analysis.md, body_review.md, body_monsters.md |
-| [Unity/TIME_SYSTEM.md](../Unity/TIME_SYSTEM.md) | ✅ DRAFT v1.0 | TIME_SYSTEM.md |
-| [Unity/QI_SYSTEM.md](../Unity/QI_SYSTEM.md) | ✅ DRAFT v1.0 | start_lore.md, technique-system-v2.md, body_review.md |
-| [Unity/COMBAT_SYSTEM.md](../Unity/COMBAT_SYSTEM.md) | ✅ DRAFT v1.0 | combat-system.md, technique-system-v2.md, body_review.md |
-| [Unity/TECHNIQUE_SYSTEM.md](../Unity/TECHNIQUE_SYSTEM.md) | ✅ DRAFT v1.0 | technique-system-v2.md, combat-system.md |
+| [Unity/ARCHITECTURE.md](../Unity/ARCHITECTURE.md) | ✅ v1.0 | ARCHITECTURE.md |
+| [Unity/BODY_SYSTEM.md](../Unity/BODY_SYSTEM.md) | ✅ v1.0 | body.md, body-development-analysis.md, body_review.md, body_monsters.md |
+| [Unity/TIME_SYSTEM.md](../Unity/TIME_SYSTEM.md) | ✅ v1.0 | TIME_SYSTEM.md |
+| [Unity/QI_SYSTEM.md](../Unity/QI_SYSTEM.md) | ✅ v1.0 | start_lore.md, technique-system-v2.md, body_review.md |
+| [Unity/COMBAT_SYSTEM.md](../Unity/COMBAT_SYSTEM.md) | ✅ v1.1 | combat-system.md, technique-system-v2.md, body_armor.md |
+| [Unity/TECHNIQUE_SYSTEM.md](../Unity/TECHNIQUE_SYSTEM.md) | ✅ v1.0 | technique-system-v2.md, combat-system.md |
 
 ### Приоритет 2 — Игровые системы:
 | Файл | Статус | Источники |
 |------|--------|-----------|
-| [Unity/INVENTORY_SYSTEM.md](../Unity/INVENTORY_SYSTEM.md) | ✅ DRAFT v1.0 | inventory-system.md, equip.md, equip-v2.md |
-| [Unity/NPC_AI_SYSTEM.md](../Unity/NPC_AI_SYSTEM.md) | ✅ DRAFT v1.0 | npc-session-integration.md, body_review.md |
-| [Unity/WORLD_SYSTEM.md](../Unity/WORLD_SYSTEM.md) | ✅ DRAFT v1.0 | sector-architecture.md, soul-system.md |
-| [Unity/SAVE_SYSTEM.md](../Unity/SAVE_SYSTEM.md) | ✅ DRAFT v1.0 | session.service docs |
+| [Unity/INVENTORY_SYSTEM.md](../Unity/INVENTORY_SYSTEM.md) | ✅ v1.0 | inventory-system.md, equip.md, equip-v2.md |
+| [Unity/NPC_AI_SYSTEM.md](../Unity/NPC_AI_SYSTEM.md) | ✅ v1.0 | npc-session-integration.md, body_review.md |
+| [Unity/WORLD_SYSTEM.md](../Unity/WORLD_SYSTEM.md) | ✅ v1.0 | sector-architecture.md, soul-system.md |
+| [Unity/SAVE_SYSTEM.md](../Unity/SAVE_SYSTEM.md) | ✅ v1.0 | session.service docs |
 
 ### Приоритет 3 — Дополнительные системы:
 | Файл | Статус | Источники |
 |------|--------|-----------|
-| [Unity/GENERATORS_SYSTEM.md](../Unity/GENERATORS_SYSTEM.md) | ✅ DRAFT v1.0 | generators.md |
-| [Unity/FACTION_SYSTEM.md](../Unity/FACTION_SYSTEM.md) | ✅ DRAFT v1.0 | faction-system.md |
-| [Unity/LORE_SYSTEM.md](../Unity/LORE_SYSTEM.md) | ✅ DRAFT v1.0 | start_lore.md |
+| [Unity/GENERATORS_SYSTEM.md](../Unity/GENERATORS_SYSTEM.md) | ✅ v1.0 | generators.md |
+| [Unity/FACTION_SYSTEM.md](../Unity/FACTION_SYSTEM.md) | ✅ v1.0 | faction-system.md |
+| [Unity/LORE_SYSTEM.md](../Unity/LORE_SYSTEM.md) | ✅ v1.0 | start_lore.md |
 
-### Приоритет 4 — Требуется создание (НОВЫЕ):
+### Приоритет 4 — Экипировка и модификаторы:
 | Файл | Статус | Источники |
 |------|--------|-----------|
-| Unity/EQUIPMENT_SYSTEM.md | ❌ REQUIRED | equip.md, equip-v2.md, materials.md, weapon-armor-system.md |
-| Unity/MODIFIERS_SYSTEM.md | ❌ REQUIRED | bonuses.md |
-| Unity/ELEMENTS_SYSTEM.md | ❌ REQUIRED | elements-system.md |
-| Unity/CHARGER_SYSTEM.md | ❌ REQUIRED | charger.md |
+| [Unity/EQUIPMENT_SYSTEM.md](../Unity/EQUIPMENT_SYSTEM.md) | ✅ v1.0 | equip.md, equip-v2.md, materials.md, weapon-armor-system.md |
+| [Unity/MODIFIERS_SYSTEM.md](../Unity/MODIFIERS_SYSTEM.md) | ✅ v1.0 | bonuses.md |
+| [Unity/ELEMENTS_SYSTEM.md](../Unity/ELEMENTS_SYSTEM.md) | ✅ v1.0 | elements-system.md |
+| [Unity/CHARGER_SYSTEM.md](../Unity/CHARGER_SYSTEM.md) | ✅ v1.0 | charger.md |
 
 ---
 
@@ -139,43 +112,43 @@
 | Файл | Описание | Мигрирован? |
 |------|----------|-------------|
 | [body.md](./body.md) | Система тела (Kenshi-style) | ✅ в BODY_SYSTEM.md |
-| [body_armor.md](./body_armor.md) | **Броня и прохождение урона** | ⚠️ Частично в COMBAT_SYSTEM.md |
+| [body_armor.md](./body_armor.md) | Броня и прохождение урона | ✅ в COMBAT_SYSTEM.md |
 | [soul-system.md](./soul-system.md) | SoulEntity + PhysicalObject | ✅ в WORLD_SYSTEM.md |
 | [random_npc.md](./random_npc.md) | Генерация NPC | ✅ в NPC_AI_SYSTEM.md |
 
 ### Экипировка и материалы (7 файлов)
 | Файл | Описание | Мигрирован? |
 |------|----------|-------------|
-| [equip.md](./equip.md) | **Унифицированная система экипировки** | ⚠️ Частично в INVENTORY_SYSTEM.md |
-| [equip-v2.md](./equip-v2.md) | **Экипировка v2 (Grade System)** | ⚠️ Частично в INVENTORY_SYSTEM.md |
-| [materials.md](./materials.md) | **Система материалов с ID** | ❌ НЕ мигрировано |
-| [weapon-armor-system.md](./weapon-armor-system.md) | **Оружие и броня (теория)** | ❌ НЕ мигрировано |
-| [bonuses.md](./bonuses.md) | **Единая система бонусов/штрафов** | ❌ НЕ мигрировано |
-| [elements-system.md](./elements-system.md) | **Система стихий (8 элементов)** | ⚠️ Частично в TECHNIQUE_SYSTEM.md |
-| [charger.md](./charger.md) | **Зарядник Ци** | ❌ НЕ мигрировано |
+| [equip.md](./equip.md) | Унифицированная система экипировки | ✅ в EQUIPMENT_SYSTEM.md |
+| [equip-v2.md](./equip-v2.md) | Экипировка v2 (Grade System) | ✅ в EQUIPMENT_SYSTEM.md |
+| [materials.md](./materials.md) | Система материалов с ID | ✅ в EQUIPMENT_SYSTEM.md |
+| [weapon-armor-system.md](./weapon-armor-system.md) | Оружие и броня (теория) | ✅ в EQUIPMENT_SYSTEM.md |
+| [bonuses.md](./bonuses.md) | Единая система бонусов/штрафов | ✅ в MODIFIERS_SYSTEM.md |
+| [elements-system.md](./elements-system.md) | Система стихий (8 элементов) | ✅ в ELEMENTS_SYSTEM.md |
+| [charger.md](./charger.md) | Зарядник Ци | ✅ в CHARGER_SYSTEM.md |
 
 ### Техники и бой (5 файлов)
 | Файл | Описание | Мигрирован? |
 |------|----------|-------------|
 | [technique-system-v2.md](./technique-system-v2.md) | Система техник v2.1 | ✅ в TECHNIQUE_SYSTEM.md |
 | [combat-system.md](./combat-system.md) | Боевая система | ✅ в COMBAT_SYSTEM.md |
-| [qi_stone.md](./qi_stone.md) | Камни Ци | ⚠️ Частично |
+| [qi_stone.md](./qi_stone.md) | Камни Ци | ✅ в QI_SYSTEM.md |
 | [vitality-hp-system.md](./vitality-hp-system.md) | Система HP | ✅ в BODY_SYSTEM.md |
-| [condition-system.md](./condition-system.md) | Система состояний | ⚠️ Частично |
+| [condition-system.md](./condition-system.md) | Система состояний | ✅ в BODY_SYSTEM.md |
 
 ### NPC и AI (3 файла)
 | Файл | Описание | Мигрирован? |
 |------|----------|-------------|
 | [npc-session-integration.md](./npc-session-integration.md) | Интеграция NPC | ✅ в NPC_AI_SYSTEM.md |
 | [NPC_AI_THEORY.md](./NPC_AI_THEORY.md) | Теория NPC AI | ✅ в NPC_AI_SYSTEM.md |
-| [NPC_AI_NEUROTHEORY.md](./NPC_AI_NEUROTHEORY.md) | Нейротеория AI | ⚠️ Частично |
+| [NPC_AI_NEUROTHEORY.md](./NPC_AI_NEUROTHEORY.md) | Нейротеория AI | ✅ в NPC_AI_SYSTEM.md |
 
 ### Прочие системы (10 файлов)
 | Файл | Описание | Мигрирован? |
 |------|----------|-------------|
 | [generators.md](./generators.md) | Генераторы | ✅ в GENERATORS_SYSTEM.md |
 | [faction-system.md](./faction-system.md) | Фракции | ✅ в FACTION_SYSTEM.md |
-| [relations-system.md](./relations-system.md) | Отношения | ⚠️ Частично |
+| [relations-system.md](./relations-system.md) | Отношения | ✅ в NPC_AI_SYSTEM.md |
 | [stat-development-system.md](./stat-development-system.md) | Развитие статов | ✅ в BODY_SYSTEM.md |
 | [body-development-analysis.md](./body-development-analysis.md) | Анализ развития | ✅ в BODY_SYSTEM.md |
 | [body_review.md](./body_review.md) | Обзор тела | ✅ в BODY_SYSTEM.md |
@@ -188,31 +161,11 @@
 | Категория | Всего | Мигрировано | Частично | Не мигрировано |
 |-----------|-------|-------------|----------|----------------|
 | Ядро (архитектура, тело, время) | 6 | 6 | 0 | 0 |
-| Боевые системы | 5 | 3 | 2 | 0 |
-| Экипировка и материалы | 7 | 0 | 2 | **5** |
-| NPC и AI | 3 | 2 | 1 | 0 |
-| Прочие | 10 | 7 | 2 | 1 |
-| **ИТОГО** | **31** | **18** | **7** | **6** |
-
-### Критические пробелы (НЕОБХОДИМО мигрировать):
-
-1. **bonuses.md** → Unity/MODIFIERS_SYSTEM.md
-   - Критично для всех систем модификаторов
-   
-2. **materials.md** → Unity/EQUIPMENT_SYSTEM.md
-   - Необходимо для генерации экипировки
-   
-3. **weapon-armor-system.md** → Unity/EQUIPMENT_SYSTEM.md
-   - Детальные формулы урона и защиты
-   
-4. **body_armor.md** (дополнения) → Unity/COMBAT_SYSTEM.md
-   - Детальные таблицы покрытия брони
-   
-5. **charger.md** → Unity/CHARGER_SYSTEM.md
-   - Уникальная система зарядников Ци
-   
-6. **elements-system.md** → Unity/ELEMENTS_SYSTEM.md
-   - Детальная система стихий с poison
+| Боевые системы | 5 | 5 | 0 | 0 |
+| Экипировка и материалы | 7 | 7 | 0 | 0 |
+| NPC и AI | 3 | 3 | 0 | 0 |
+| Прочие | 10 | 10 | 0 | 0 |
+| **ИТОГО** | **31** | **31** | **0** | **0** |
 
 ---
 
@@ -221,8 +174,10 @@
 - [Unity/ARCHITECTURE.md](../Unity/ARCHITECTURE.md) — Общая архитектура Unity
 - [Unity/BODY_SYSTEM.md](../Unity/BODY_SYSTEM.md) — Система тела
 - [Unity/COMBAT_SYSTEM.md](../Unity/COMBAT_SYSTEM.md) — Боевая система
+- [Unity/EQUIPMENT_SYSTEM.md](../Unity/EQUIPMENT_SYSTEM.md) — Система экипировки
+- [Unity/MODIFIERS_SYSTEM.md](../Unity/MODIFIERS_SYSTEM.md) — Система модификаторов
 
 ---
 
 *Файл обновлён: 2026-03-30*
-*Анализ миграции: ВЫПОЛНЕН*
+*Анализ миграции: ЗАВЕРШЁН (100%)*
