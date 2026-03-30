@@ -1,6 +1,6 @@
 # 🎮 Сравнение версий Unity: 2022 LTS vs Unity 6.3
 
-**Версия документа:** 1.1  
+**Версия документа:** 1.2 (исправлено про DOTS)  
 **Дата:** 2026-03-30  
 **Проект:** Cultivation World Simulator (Unity Migration)
 
@@ -71,27 +71,29 @@
 
 ### Преимущества
 
-#### 1. DOTS 2.0 — Полная интеграция
-- **Полная интеграция с GameObjects** — можно использовать Entities и GameObjects вместе
-- **Улучшенный API** — более интуитивный и мощный
-- **Рецепторы (Receivers)** — прямое взаимодействие между ECS и MonoBehaviour
-- **Визуальные инструменты** — Entity Scene и Entity Prefab
+#### 1. DOTS (Entities 1.3)
+- **Entities 1.3.15** — стабильная версия ECS
+- **Burst Compiler** — оптимизация C# кода
+- **Jobs System** — многопоточность
+- **Поддержка Unity 2022.3 и 2023.3+**
 
-#### 2. Графика нового поколения
-- **Render Graph** — новая архитектура рендеринга
-- **GPU Resident Drawer** — автоматическая инстансинг-система
-- **URP 3.0** — значительные улучшения производительности
-- **VFX Graph** — улучшения для GPU-эффектов
+⚠️ **Важно:** Unity 6.3 использует Entities 1.x (не DOTS 2.0)
 
-#### 3. Производительность
-- **Burst Compiler 2.0** — улучшенная оптимизация
-- **Incremental Baking** — быстрое перестроение данных
-- **Memory Optimizations** — сниженное потребление памяти
+#### 2. Графика
+- **Shared Render Graph** — общая основа URP/HDRP
+- **Render Graph Viewer** — просмотр на устройствах
+- **DLSS4 Super Resolution** — поддержка NVIDIA
+- **Metal support** — NativeGraphicsJobsSplitThreading
+
+#### 3. 2D и Physics
+- **Low-level 2D physics APIs** — интеграция Box2D v3
+- **Multi-threaded physics** — улучшения производительности
+- **Render 3D as 2D** — совместимость Mesh Renderer с 2D
 
 #### 4. Новые инструменты
-- **Unity Muse** — AI-ассистент для кода
-- **Improved Profiler** — расширенный профайлер
-- **Better 2D** — улучшенные 2D-инструменты
+- **New Hierarchy window** — улучшенная иерархия
+- **Scriptable audio pipeline** — Burst-compiled аудио
+- **Accessibility** — нативная поддержка screen reader
 
 #### 5. Кроссплатформенность
 - Поддержка новейших платформ
@@ -150,11 +152,11 @@
 
 ### Ключевые факторы для Unity 6
 
-#### 1. DOTS 2.0 — Критически важно
-Для проекта с большим количеством NPC (до 100+ одновременно) DOTS 2.0 даёт:
+#### 1. DOTS (Entities 1.3) — Высокая производительность
+Для проекта с большим количеством NPC (до 100+ одновременно) DOTS даёт:
 - 10-100x улучшение производительности для AI
 - Эффективное управление памятью
-- Простая интеграция с MonoBehaviour для UI
+- Требует отдельного подхода (не интегрируется напрямую с MonoBehaviour)
 
 #### 2. GPU Resident Drawer
 Для рендеринга множества объектов:
@@ -176,10 +178,10 @@
 
 **Причины:**
 
-1. **DOTS 2.0 критически важен** для проекта с большим количеством NPC
-2. **GPU Resident Drawer** улучшит производительность рендеринга
-3. **Долгосрочная перспектива** — проект будет актуален 5+ лет
-4. **Интеграция GameObject + Entity** — можно постепенно мигрировать системы
+1. **DOTS (Entities 1.3)** для систем с высокой нагрузкой
+2. **Scriptable audio pipeline** для кастомной обработки звука
+3. **Долгосрочная перспектива** — LTS версия с поддержкой до 2029+
+4. **Новые 2D physics APIs** для Box2D v3
 
 ### Стратегия разработки
 
@@ -191,8 +193,8 @@
 └── Валидация концепции
 
 Фаза 2: Оптимизация (Месяц 3-4)
-├── Миграция NPC на DOTS 2.0
-├── Использование GPU Resident Drawer
+├── Миграция NPC AI на DOTS (Entities 1.3)
+├── Использование Jobs System для параллельных задач
 └── Профайлинг и оптимизация
 
 Фаза 3: Контент (Месяц 5+)
@@ -220,7 +222,7 @@
 
 ```
 Core:
-- Entities (DOTS 2.0)
+- Entities 1.3 (DOTS)
 - Unity Physics (DOTS)
 - Burst Compiler
 
@@ -256,11 +258,10 @@ Code Quality:
 | Ресурс | Ссылка |
 |--------|--------|
 | Документация (главная) | https://docs.unity3d.com/Manual/index.html |
-| Документация (по версии) | https://docs.unity3d.com/6000.3/Documentation/Manual/ |
-| DOTS Guide | https://docs.unity3d.com/Packages/com.unity.entities@latest |
-| URP Manual | https://docs.unity3d.com/Packages/com.unity.render-pipelines.universal@latest |
-| ScriptableObjects | https://docs.unity3d.com/Manual/script-ScriptableObject.html |
-| Unity Muse | https://unity.com/products/muse |
+| What's New 6.3 | https://docs.unity3d.com/6000.3/Documentation/Manual/WhatsNewUnity63.html |
+| Entities 1.3 Docs | https://docs.unity3d.com/Packages/com.unity.entities@1.3 |
+| DOTS Samples | https://github.com/Unity-Technologies/EntityComponentSystemSamples |
+| ScriptableObjects | https://docs.unity3d.com/6000.3/Documentation/Manual/class-ScriptableObject.html |
 
 ---
 
@@ -285,12 +286,12 @@ Code Quality:
 
 | Решение | Версия | Обоснование |
 |---------|--------|-------------|
-| **Основное** | Unity 6.3 (6000.3) | DOTS 2.0, GPU Resident Drawer, долгосрочная перспектива |
+| **Основное** | Unity 6.3 (6000.3) | Entities 1.3, новые 2D physics, LTS до 2029+ |
 | **Альтернативное** | Unity 2022.3 LTS | Стабильность, экосистема, если сроки критичны |
 
 ### Финальная рекомендация
 
-Для проекта **Cultivation World Simulator** рекомендуется **Unity 6.3 (6000.3)** с постепенным внедрением DOTS 2.0 для систем с высокой нагрузкой (NPC AI, генерация мира).
+Для проекта **Cultivation World Simulator** рекомендуется **Unity 6.3 (6000.3)** с использованием MonoBehaviour для основной разработки и DOTS (Entities 1.3) для оптимизации систем с высокой нагрузкой (NPC AI).
 
 ---
 
