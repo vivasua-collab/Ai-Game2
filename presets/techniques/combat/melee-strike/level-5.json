@@ -1,0 +1,238 @@
+{
+  "version": "2.0",
+  "count": 5,
+  "techniques": [
+    {
+      "id": "MS000011",
+      "name": "Неизбежный Ладонь",
+      "nameEn": "Неизбежный Ладонь",
+      "description": "Неизбежный Ладонь — техника melee_strike элемента earth уровня 5. Grade: common. Урон: 1024. Дальность: 0.5м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "earth",
+      "level": 5,
+      "grade": "common",
+      "qiCost": 1024,
+      "baseQiCost": 1024,
+      "baseDamage": 1024,
+      "baseRange": 0.5,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 1024,
+        "finalQiCost": 1024,
+        "finalRange": 0.5,
+        "formula": "1024 × 1 = 1024",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "strength": 15
+      },
+      "meta": {
+        "seed": 1774114254397,
+        "template": "combat_melee_strike_earth",
+        "generatedAt": "2026-03-21T17:30:54.388Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MS000012",
+      "name": "Стремительный Укол",
+      "nameEn": "Стремительный Укол",
+      "description": "Стремительный Укол — техника melee_strike элемента air уровня 5. Grade: common. Урон: 1024. Дальность: 0.5м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "air",
+      "level": 5,
+      "grade": "common",
+      "qiCost": 1024,
+      "baseQiCost": 1024,
+      "baseDamage": 1024,
+      "baseRange": 0.5,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 1024,
+        "finalQiCost": 1024,
+        "finalRange": 0.5,
+        "formula": "1024 × 1 = 1024",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "strength": 15
+      },
+      "meta": {
+        "seed": 1774114254398,
+        "template": "combat_melee_strike_air",
+        "generatedAt": "2026-03-21T17:30:54.388Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MS000013",
+      "name": "Волна статический",
+      "nameEn": "Волна Статический",
+      "description": "Волна статический — техника melee_strike элемента lightning уровня 5. Grade: common. Урон: 1024. Дальность: 0.5м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "lightning",
+      "level": 5,
+      "grade": "common",
+      "qiCost": 1024,
+      "baseQiCost": 1024,
+      "baseDamage": 1024,
+      "baseRange": 0.5,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 1024,
+        "finalQiCost": 1024,
+        "finalRange": 0.5,
+        "formula": "1024 × 1 = 1024",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "strength": 15
+      },
+      "meta": {
+        "seed": 1774114254399,
+        "template": "combat_melee_strike_lightning",
+        "generatedAt": "2026-03-21T17:30:54.388Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MS000014",
+      "name": "Эфирный Удар",
+      "nameEn": "Эфирный Удар",
+      "description": "Эфирный Удар — техника melee_strike элемента void уровня 5. Grade: common. Урон: 1024. Дальность: 0.5м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "void",
+      "level": 5,
+      "grade": "common",
+      "qiCost": 1024,
+      "baseQiCost": 1024,
+      "baseDamage": 1024,
+      "baseRange": 0.5,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 1024,
+        "finalQiCost": 1024,
+        "finalRange": 0.5,
+        "formula": "1024 × 1 = 1024",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "strength": 15
+      },
+      "meta": {
+        "seed": 1774114254400,
+        "template": "combat_melee_strike_void",
+        "generatedAt": "2026-03-21T17:30:54.388Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MS000015",
+      "name": "Укол чистый",
+      "nameEn": "Укол Чистый",
+      "description": "Укол чистый — техника melee_strike уровня 5. Grade: refined. Урон: 1228. Дальность: 0.6м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "neutral",
+      "level": 5,
+      "grade": "refined",
+      "qiCost": 1024,
+      "baseQiCost": 1024,
+      "baseDamage": 1024,
+      "baseRange": 0.6,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 1228,
+        "finalQiCost": 1024,
+        "finalRange": 0.6,
+        "formula": "1024 × 1.2 = 1228",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 5
+        }
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "strength": 17
+      },
+      "meta": {
+        "seed": 1774114254401,
+        "template": "combat_melee_strike_neutral",
+        "generatedAt": "2026-03-21T17:30:54.388Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    }
+  ]
+}

@@ -1,0 +1,544 @@
+{
+  "version": "2.0",
+  "type": "ghost",
+  "count": 7,
+  "npcs": [
+    {
+      "id": "NP_000027",
+      "name": "Аква",
+      "age": 37,
+      "gender": "female",
+      "speciesId": "ghost",
+      "roleId": "mercenary",
+      "stats": {
+        "strength": 10,
+        "agility": 25,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 7,
+        "coreCapacity": 782,
+        "currentQi": 584,
+        "coreQuality": 45,
+        "baseVolume": 399,
+        "qiDensity": 1,
+        "meridianConductivity": 1.1083333333333334,
+        "meridianBuffer": 5
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Хладнокровие",
+          "Скрытность",
+          "Профессионализм"
+        ],
+        "motivation": "оплата",
+        "dominantEmotion": "расчёт",
+        "disposition": 30
+      },
+      "techniques": [
+        "reinforced_strike",
+        "breath_of_qi",
+        "turtle_stance"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 48,
+        "contributionPoints": 6
+      },
+      "generationMeta": {
+        "seed": 1773590045643,
+        "generatedAt": "2026-03-15T15:54:05.623Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000062",
+      "name": "Фламма",
+      "age": 64,
+      "gender": "female",
+      "speciesId": "ghost",
+      "roleId": "hunter",
+      "stats": {
+        "strength": 10,
+        "agility": 17,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 1,
+        "coreCapacity": 151,
+        "currentQi": 98,
+        "coreQuality": 48,
+        "baseVolume": 137,
+        "qiDensity": 1,
+        "meridianConductivity": 0.38055555555555554,
+        "meridianBuffer": 1
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Дружелюбие",
+          "Любопытство",
+          "Авантюризм"
+        ],
+        "motivation": "приключения",
+        "dominantEmotion": "любопытство",
+        "disposition": 70
+      },
+      "techniques": [
+        "breath_of_qi",
+        "reinforced_strike",
+        "wind_speed"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 46,
+        "contributionPoints": 0
+      },
+      "generationMeta": {
+        "seed": 1773590045678,
+        "generatedAt": "2026-03-15T15:54:05.626Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000099",
+      "name": "Фламма",
+      "age": 110,
+      "gender": "male",
+      "speciesId": "ghost",
+      "roleId": "traveler",
+      "stats": {
+        "strength": 10,
+        "agility": 23,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 1,
+        "coreCapacity": 146,
+        "currentQi": 88,
+        "coreQuality": 9,
+        "baseVolume": 132,
+        "qiDensity": 1,
+        "meridianConductivity": 0.36666666666666664,
+        "meridianBuffer": 1
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Дружелюбие",
+          "Любопытство",
+          "Авантюризм"
+        ],
+        "motivation": "новые знакомства",
+        "dominantEmotion": "любопытство",
+        "disposition": 70
+      },
+      "techniques": [
+        "breath_of_qi",
+        "wind_speed",
+        "reinforced_strike"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 24,
+        "contributionPoints": 19
+      },
+      "generationMeta": {
+        "seed": 1773590045715,
+        "generatedAt": "2026-03-15T15:54:05.629Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000124",
+      "name": "Аква",
+      "age": 75,
+      "gender": "female",
+      "speciesId": "ghost",
+      "roleId": "bandit",
+      "stats": {
+        "strength": 10,
+        "agility": 13,
+        "intelligence": 23,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 4,
+        "coreCapacity": 406,
+        "currentQi": 230,
+        "coreQuality": 10,
+        "baseVolume": 276,
+        "qiDensity": 1,
+        "meridianConductivity": 0.7666666666666667,
+        "meridianBuffer": 3
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Безжалостность",
+          "Дисциплина",
+          "Сила"
+        ],
+        "motivation": "доминирование",
+        "dominantEmotion": "решимость",
+        "disposition": 35
+      },
+      "techniques": [
+        "reinforced_strike",
+        "dirty_trick",
+        "ghost_shadow"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 50,
+        "contributionPoints": 8
+      },
+      "generationMeta": {
+        "seed": 1773590343348,
+        "generatedAt": "2026-03-15T15:59:03.347Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000126",
+      "name": "Эфир",
+      "age": 69,
+      "gender": "male",
+      "speciesId": "ghost",
+      "roleId": "blacksmith",
+      "stats": {
+        "strength": 15,
+        "agility": 25,
+        "intelligence": 24,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 9,
+        "coreCapacity": 450,
+        "currentQi": 440,
+        "coreQuality": 28,
+        "baseVolume": 189,
+        "qiDensity": 1,
+        "meridianConductivity": 0.525,
+        "meridianBuffer": 2
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Цинизм",
+          "Опыт",
+          "Реализм"
+        ],
+        "motivation": "сохранение опыта",
+        "dominantEmotion": "усталость",
+        "disposition": 40
+      },
+      "techniques": [
+        "breath_of_qi",
+        "reinforced_strike"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 53,
+        "contributionPoints": 12
+      },
+      "generationMeta": {
+        "seed": 1773590343350,
+        "generatedAt": "2026-03-15T15:59:03.347Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000169",
+      "name": "Инферно",
+      "age": 59,
+      "gender": "female",
+      "speciesId": "ghost",
+      "roleId": "bandit",
+      "stats": {
+        "strength": 10,
+        "agility": 19,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 3,
+        "coreCapacity": 620,
+        "currentQi": 346,
+        "coreQuality": 17,
+        "baseVolume": 464,
+        "qiDensity": 1,
+        "meridianConductivity": 1.288888888888889,
+        "meridianBuffer": 6
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Фанатизм",
+          "Преданность",
+          "Тайна"
+        ],
+        "motivation": "служение культу",
+        "dominantEmotion": "фанатизм",
+        "disposition": 35
+      },
+      "techniques": [
+        "reinforced_strike",
+        "ghost_shadow",
+        "dirty_trick"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 46,
+        "contributionPoints": 9
+      },
+      "generationMeta": {
+        "seed": 1773590347207,
+        "generatedAt": "2026-03-15T15:59:07.200Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000171",
+      "name": "Фламма",
+      "age": 66,
+      "gender": "male",
+      "speciesId": "ghost",
+      "roleId": "blacksmith",
+      "stats": {
+        "strength": 10,
+        "agility": 13,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 8,
+        "coreCapacity": 596,
+        "currentQi": 317,
+        "coreQuality": 6,
+        "baseVolume": 275,
+        "qiDensity": 1,
+        "meridianConductivity": 0.7638888888888888,
+        "meridianBuffer": 3
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.05
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Лень",
+          "Покорность",
+          "Хитрость"
+        ],
+        "motivation": "комфорт",
+        "dominantEmotion": "желание отдыха",
+        "disposition": 55
+      },
+      "techniques": [
+        "breath_of_qi",
+        "reinforced_strike"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 90,
+        "contributionPoints": 19
+      },
+      "generationMeta": {
+        "seed": 1773590347209,
+        "generatedAt": "2026-03-15T15:59:07.200Z",
+        "version": "2.1.0-lore"
+      }
+    }
+  ]
+}

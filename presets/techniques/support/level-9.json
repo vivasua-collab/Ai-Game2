@@ -1,0 +1,117 @@
+{
+  "version": "2.0",
+  "count": 2,
+  "techniques": [
+    {
+      "id": "SP000005",
+      "name": "Эфирный Барьер",
+      "nameEn": "Эфирный Барьер",
+      "description": "Эфирный Барьер — техника support элемента void уровня 9. Grade: refined. Урон: 17203. Дальность: 5м.",
+      "type": "support",
+      "element": "void",
+      "level": 9,
+      "grade": "refined",
+      "qiCost": 14336,
+      "baseQiCost": 14336,
+      "baseDamage": 14336,
+      "baseRange": 5,
+      "baseCapacity": 56,
+      "computed": {
+        "finalDamage": 17203,
+        "finalQiCost": 14336,
+        "finalRange": 5,
+        "formula": "14336 × 1.2 = 17203",
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 32,
+            "duration": 3
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "buff": true
+        },
+        "effectValues": {
+          "buffType": "damage_percent",
+          "buffAmount": 32,
+          "buffDuration": 3
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "intelligence": 29
+      },
+      "meta": {
+        "seed": 1774114254483,
+        "template": "support_base_void",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 4
+      }
+    },
+    {
+      "id": "SP000006",
+      "name": "Сфокусированный Стена",
+      "nameEn": "Сфокусированный Стена",
+      "description": "Сфокусированный Стена — техника support уровня 9. Grade: common. Урон: 14336. Дальность: 5м.",
+      "type": "support",
+      "element": "neutral",
+      "level": 9,
+      "grade": "common",
+      "qiCost": 14336,
+      "baseQiCost": 14336,
+      "baseDamage": 14336,
+      "baseRange": 5,
+      "baseCapacity": 56,
+      "computed": {
+        "finalDamage": 14336,
+        "finalQiCost": 14336,
+        "finalRange": 5,
+        "formula": "14336 × 1 = 14336",
+        "activeEffects": [
+          {
+            "type": "speed",
+            "value": 0
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "speed": true
+        },
+        "effectValues": {
+          "speedBonus": 64
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 8,
+      "minLevel": 8,
+      "maxLevel": 9,
+      "fatigueCost": {
+        "physical": 4,
+        "mental": 2
+      },
+      "statRequirements": {
+        "intelligence": 27
+      },
+      "meta": {
+        "seed": 1774114254484,
+        "template": "support_base_neutral",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 4
+      }
+    }
+  ]
+}

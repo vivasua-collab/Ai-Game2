@@ -1,0 +1,828 @@
+{
+  "version": "2.0",
+  "type": "consumable",
+  "count": 40,
+  "items": [
+    {
+      "id": "CS_000161",
+      "name": "Средняя Таблетка Усиление характеристики",
+      "nameEn": "Средняя Таблетка of Buff Stat",
+      "description": "Временно усиливает характеристику (conductivity). Длительность: 66 сек.",
+      "type": "consumable",
+      "category": "consumable_pill",
+      "rarity": "common",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "buff_stat",
+          "value": 2,
+          "duration": 66
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000162",
+      "name": "Мощная Таблетка Восстановление здоровья",
+      "nameEn": "Мощная Таблетка of Heal HP",
+      "description": "Восстанавливает здоровье",
+      "type": "consumable",
+      "category": "consumable_pill",
+      "rarity": "uncommon",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "heal_hp",
+          "value": 13
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000163",
+      "name": "Малая Таблетка Усиление характеристики",
+      "nameEn": "Малая Таблетка of Buff Stat",
+      "description": "Временно усиливает характеристику (intelligence). Длительность: 66 сек.",
+      "type": "consumable",
+      "category": "consumable_pill",
+      "rarity": "common",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "buff_stat",
+          "value": 2,
+          "duration": 66
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000164",
+      "name": "Мощная Таблетка Восстановление сил",
+      "nameEn": "Мощная Таблетка of Heal Stamina",
+      "description": "Восстанавливает силы",
+      "type": "consumable",
+      "category": "consumable_pill",
+      "rarity": "rare",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "heal_stamina",
+          "value": 25
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000165",
+      "name": "Средняя Пилюля Усиление сопротивления",
+      "nameEn": "Средняя Пилюля of Buff Resistance",
+      "description": "Временно увеличивает сопротивление эффектам. Длительность: 132 сек.",
+      "type": "consumable",
+      "category": "consumable_pill",
+      "rarity": "common",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "buff_resistance",
+          "value": 5,
+          "duration": 132
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000166",
+      "name": "Средняя Капсула Усиление сопротивления",
+      "nameEn": "Средняя Капсула of Buff Resistance",
+      "description": "Временно увеличивает сопротивление эффектам. Длительность: 158 сек.",
+      "type": "consumable",
+      "category": "consumable_pill",
+      "rarity": "uncommon",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "buff_resistance",
+          "value": 6,
+          "duration": 158
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000167",
+      "name": "Средняя Таблетка Восстановление сил",
+      "nameEn": "Средняя Таблетка of Heal Stamina",
+      "description": "Восстанавливает силы",
+      "type": "consumable",
+      "category": "consumable_pill",
+      "rarity": "common",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "heal_stamina",
+          "value": 15
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000168",
+      "name": "Древняя Таблетка Усиление сопротивления",
+      "nameEn": "Древняя Таблетка of Buff Resistance",
+      "description": "Временно увеличивает сопротивление эффектам. Длительность: 198 сек.",
+      "type": "consumable",
+      "category": "consumable_pill",
+      "rarity": "rare",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "buff_resistance",
+          "value": 8,
+          "duration": 198
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000169",
+      "name": "Мощная Шарик Усиление сопротивления",
+      "nameEn": "Мощная Шарик of Buff Resistance",
+      "description": "Временно увеличивает сопротивление эффектам. Длительность: 198 сек.",
+      "type": "consumable",
+      "category": "consumable_pill",
+      "rarity": "rare",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "buff_resistance",
+          "value": 8,
+          "duration": 198
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000170",
+      "name": "Большая Шарик Восстановление здоровья",
+      "nameEn": "Большая Шарик of Heal HP",
+      "description": "Восстанавливает здоровье",
+      "type": "consumable",
+      "category": "consumable_pill",
+      "rarity": "uncommon",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "heal_hp",
+          "value": 13
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000171",
+      "name": "Обычный Настойка Лечение статуса",
+      "nameEn": "Обычный Настойка of Cure Status",
+      "description": "Снимает негативный статус",
+      "type": "consumable",
+      "category": "consumable_elixir",
+      "rarity": "uncommon",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "cure",
+          "value": 1
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000172",
+      "name": "Крепкий Зелье Усиление сопротивления",
+      "nameEn": "Крепкий Зелье of Buff Resistance",
+      "description": "Временно увеличивает сопротивление эффектам. Длительность: 132 сек.",
+      "type": "consumable",
+      "category": "consumable_elixir",
+      "rarity": "common",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "buff_resistance",
+          "value": 5,
+          "duration": 132
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000173",
+      "name": "Легендарный Эликсир Усиление характеристики",
+      "nameEn": "Легендарный Эликсир of Buff Stat",
+      "description": "Временно усиливает характеристику (agility). Длительность: 66 сек.",
+      "type": "consumable",
+      "category": "consumable_elixir",
+      "rarity": "common",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "buff_stat",
+          "value": 2,
+          "duration": 66
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000174",
+      "name": "Обычный Напиток Усиление характеристики",
+      "nameEn": "Обычный Напиток of Buff Stat",
+      "description": "Временно усиливает характеристику (agility). Длительность: 79 сек.",
+      "type": "consumable",
+      "category": "consumable_elixir",
+      "rarity": "uncommon",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "buff_stat",
+          "value": 2,
+          "duration": 79
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000175",
+      "name": "Обычный Зелье Лечение статуса",
+      "nameEn": "Обычный Зелье of Cure Status",
+      "description": "Снимает негативный статус",
+      "type": "consumable",
+      "category": "consumable_elixir",
+      "rarity": "common",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "cure",
+          "value": 1
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000176",
+      "name": "Легендарный Зелье Особый эффект",
+      "nameEn": "Легендарный Зелье of Special Effect",
+      "description": "Уникальный эффект. Длительность: 33 сек.",
+      "type": "consumable",
+      "category": "consumable_elixir",
+      "rarity": "common",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "special",
+          "value": 1,
+          "duration": 33
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000177",
+      "name": "Мощный Эликсир Усиление характеристики",
+      "nameEn": "Мощный Эликсир of Buff Stat",
+      "description": "Временно усиливает характеристику (intelligence). Длительность: 99 сек.",
+      "type": "consumable",
+      "category": "consumable_elixir",
+      "rarity": "rare",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "buff_stat",
+          "value": 3,
+          "duration": 99
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000178",
+      "name": "Легендарный Напиток Усиление сопротивления",
+      "nameEn": "Легендарный Напиток of Buff Resistance",
+      "description": "Временно увеличивает сопротивление эффектам. Длительность: 158 сек.",
+      "type": "consumable",
+      "category": "consumable_elixir",
+      "rarity": "uncommon",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "buff_resistance",
+          "value": 6,
+          "duration": 158
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000179",
+      "name": "Мощный Эликсир Лечение статуса",
+      "nameEn": "Мощный Эликсир of Cure Status",
+      "description": "Снимает негативный статус",
+      "type": "consumable",
+      "category": "consumable_elixir",
+      "rarity": "common",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "cure",
+          "value": 1
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000180",
+      "name": "Слабый Напиток Усиление сопротивления",
+      "nameEn": "Слабый Напиток of Buff Resistance",
+      "description": "Временно увеличивает сопротивление эффектам. Длительность: 158 сек.",
+      "type": "consumable",
+      "category": "consumable_elixir",
+      "rarity": "uncommon",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "buff_resistance",
+          "value": 6,
+          "duration": 158
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000181",
+      "name": "Изысканный Хлеб Восстановление сил",
+      "nameEn": "Изысканный Хлеб of Heal Stamina",
+      "description": "Восстанавливает силы",
+      "type": "consumable",
+      "category": "consumable_food",
+      "rarity": "common",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "heal_stamina",
+          "value": 15
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000182",
+      "name": "Простой Суп Восстановление здоровья",
+      "nameEn": "Простой Суп of Heal HP",
+      "description": "Восстанавливает здоровье",
+      "type": "consumable",
+      "category": "consumable_food",
+      "rarity": "rare",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "heal_hp",
+          "value": 17
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000183",
+      "name": "Изысканный Рис Восстановление сил",
+      "nameEn": "Изысканный Рис of Heal Stamina",
+      "description": "Восстанавливает силы",
+      "type": "consumable",
+      "category": "consumable_food",
+      "rarity": "rare",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "heal_stamina",
+          "value": 25
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000184",
+      "name": "Изысканный Фрукт Восстановление здоровья",
+      "nameEn": "Изысканный Фрукт of Heal HP",
+      "description": "Восстанавливает здоровье",
+      "type": "consumable",
+      "category": "consumable_food",
+      "rarity": "uncommon",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "heal_hp",
+          "value": 13
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000185",
+      "name": "Изысканный Хлеб Восстановление сил",
+      "nameEn": "Изысканный Хлеб of Heal Stamina",
+      "description": "Восстанавливает силы",
+      "type": "consumable",
+      "category": "consumable_food",
+      "rarity": "uncommon",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "heal_stamina",
+          "value": 19
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000186",
+      "name": "Питательный Суп Восстановление сил",
+      "nameEn": "Питательный Суп of Heal Stamina",
+      "description": "Восстанавливает силы",
+      "type": "consumable",
+      "category": "consumable_food",
+      "rarity": "common",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "heal_stamina",
+          "value": 15
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000187",
+      "name": "Простой Мясо Восстановление сил",
+      "nameEn": "Простой Мясо of Heal Stamina",
+      "description": "Восстанавливает силы",
+      "type": "consumable",
+      "category": "consumable_food",
+      "rarity": "common",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "heal_stamina",
+          "value": 15
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000188",
+      "name": "Изысканный Суп Восстановление здоровья",
+      "nameEn": "Изысканный Суп of Heal HP",
+      "description": "Восстанавливает здоровье",
+      "type": "consumable",
+      "category": "consumable_food",
+      "rarity": "uncommon",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "heal_hp",
+          "value": 13
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000189",
+      "name": "Сытный Хлеб Восстановление сил",
+      "nameEn": "Сытный Хлеб of Heal Stamina",
+      "description": "Восстанавливает силы",
+      "type": "consumable",
+      "category": "consumable_food",
+      "rarity": "uncommon",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "heal_stamina",
+          "value": 19
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000190",
+      "name": "Питательный Суп Восстановление сил",
+      "nameEn": "Питательный Суп of Heal Stamina",
+      "description": "Восстанавливает силы",
+      "type": "consumable",
+      "category": "consumable_food",
+      "rarity": "common",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "heal_stamina",
+          "value": 15
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000191",
+      "name": "Старый Гримуар Усиление характеристики",
+      "nameEn": "Старый Гримуар of Buff Stat",
+      "description": "Временно усиливает характеристику (agility). Длительность: 79 сек.",
+      "type": "consumable",
+      "category": "consumable_scroll",
+      "rarity": "uncommon",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "buff_stat",
+          "value": 2,
+          "duration": 79
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000192",
+      "name": "Святой Письмо Особый эффект",
+      "nameEn": "Святой Письмо of Special Effect",
+      "description": "Уникальный эффект. Длительность: 33 сек.",
+      "type": "consumable",
+      "category": "consumable_scroll",
+      "rarity": "common",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "special",
+          "value": 1,
+          "duration": 33
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000193",
+      "name": "Святой Гримуар Особый эффект",
+      "nameEn": "Святой Гримуар of Special Effect",
+      "description": "Уникальный эффект. Длительность: 49 сек.",
+      "type": "consumable",
+      "category": "consumable_scroll",
+      "rarity": "rare",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "special",
+          "value": 1,
+          "duration": 49
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000194",
+      "name": "Мистический Сказание Лечение статуса",
+      "nameEn": "Мистический Сказание of Cure Status",
+      "description": "Снимает негативный статус",
+      "type": "consumable",
+      "category": "consumable_scroll",
+      "rarity": "common",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "cure",
+          "value": 1
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000195",
+      "name": "Древний Гримуар Лечение статуса",
+      "nameEn": "Древний Гримуар of Cure Status",
+      "description": "Снимает негативный статус",
+      "type": "consumable",
+      "category": "consumable_scroll",
+      "rarity": "common",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "cure",
+          "value": 1
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000196",
+      "name": "Святой Сказание Усиление характеристики",
+      "nameEn": "Святой Сказание of Buff Stat",
+      "description": "Временно усиливает характеристику (strength). Длительность: 66 сек.",
+      "type": "consumable",
+      "category": "consumable_scroll",
+      "rarity": "common",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "buff_stat",
+          "value": 2,
+          "duration": 66
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000197",
+      "name": "Древний Свиток Усиление характеристики",
+      "nameEn": "Древний Свиток of Buff Stat",
+      "description": "Временно усиливает характеристику (conductivity). Длительность: 79 сек.",
+      "type": "consumable",
+      "category": "consumable_scroll",
+      "rarity": "uncommon",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "buff_stat",
+          "value": 2,
+          "duration": 79
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000198",
+      "name": "Мистический Свиток Особый эффект",
+      "nameEn": "Мистический Свиток of Special Effect",
+      "description": "Уникальный эффект. Длительность: 33 сек.",
+      "type": "consumable",
+      "category": "consumable_scroll",
+      "rarity": "common",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "special",
+          "value": 1,
+          "duration": 33
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000199",
+      "name": "Древний Сказание Лечение статуса",
+      "nameEn": "Древний Сказание of Cure Status",
+      "description": "Снимает негативный статус",
+      "type": "consumable",
+      "category": "consumable_scroll",
+      "rarity": "common",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "cure",
+          "value": 1
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    },
+    {
+      "id": "CS_000200",
+      "name": "Проклятый Сказание Лечение статуса",
+      "nameEn": "Проклятый Сказание of Cure Status",
+      "description": "Снимает негативный статус",
+      "type": "consumable",
+      "category": "consumable_scroll",
+      "rarity": "uncommon",
+      "icon": "consumable",
+      "sizeWidth": 1,
+      "sizeHeight": 1,
+      "effects": [
+        {
+          "type": "cure",
+          "value": 1
+        }
+      ],
+      "value": 5,
+      "currency": "spirit_stones"
+    }
+  ],
+  "autoGenerated": true,
+  "generatedAt": "2026-03-22T16:21:27.267Z"
+}

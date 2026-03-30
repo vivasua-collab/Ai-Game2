@@ -1,0 +1,240 @@
+{
+  "version": "2.0",
+  "count": 5,
+  "techniques": [
+    {
+      "id": "MS000016",
+      "name": "Толчок огненный",
+      "nameEn": "Толчок Огненный",
+      "description": "Толчок огненный — техника melee_strike элемента fire уровня 7. Grade: common. Урон: 4096. Дальность: 0.5м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "fire",
+      "level": 7,
+      "grade": "common",
+      "qiCost": 4096,
+      "baseQiCost": 4096,
+      "baseDamage": 4096,
+      "baseRange": 0.5,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 4096,
+        "finalQiCost": 4096,
+        "finalRange": 0.5,
+        "formula": "4096 × 1 = 4096",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 6,
+      "minLevel": 6,
+      "maxLevel": 8,
+      "fatigueCost": {
+        "physical": 3,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 21
+      },
+      "meta": {
+        "seed": 1774114254402,
+        "template": "combat_melee_strike_fire",
+        "generatedAt": "2026-03-21T17:30:54.388Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MS000017",
+      "name": "Пожирающий Ладонь",
+      "nameEn": "Пожирающий Ладонь",
+      "description": "Пожирающий Ладонь — техника melee_strike элемента fire уровня 7. Grade: refined. Урон: 4915. Дальность: 0.6м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "fire",
+      "level": 7,
+      "grade": "refined",
+      "qiCost": 4096,
+      "baseQiCost": 4096,
+      "baseDamage": 4096,
+      "baseRange": 0.6,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 4915,
+        "finalQiCost": 4096,
+        "finalRange": 0.6,
+        "formula": "4096 × 1.2 = 4915",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 5
+        }
+      },
+      "minCultivationLevel": 6,
+      "minLevel": 6,
+      "maxLevel": 8,
+      "fatigueCost": {
+        "physical": 3,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 23
+      },
+      "meta": {
+        "seed": 1774114254403,
+        "template": "combat_melee_strike_fire",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MS000018",
+      "name": "Холодный Клинок",
+      "nameEn": "Холодный Клинок",
+      "description": "Холодный Клинок — техника melee_strike элемента water уровня 7. Grade: common. Урон: 4096. Дальность: 0.5м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "water",
+      "level": 7,
+      "grade": "common",
+      "qiCost": 4096,
+      "baseQiCost": 4096,
+      "baseDamage": 4096,
+      "baseRange": 0.5,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 4096,
+        "finalQiCost": 4096,
+        "finalRange": 0.5,
+        "formula": "4096 × 1 = 4096",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 6,
+      "minLevel": 6,
+      "maxLevel": 8,
+      "fatigueCost": {
+        "physical": 3,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 21
+      },
+      "meta": {
+        "seed": 1774114254404,
+        "template": "combat_melee_strike_water",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MS000019",
+      "name": "Волна титанический",
+      "nameEn": "Волна Титанический",
+      "description": "Волна титанический — техника melee_strike элемента earth уровня 7. Grade: refined. Урон: 4915. Дальность: 0.6м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "earth",
+      "level": 7,
+      "grade": "refined",
+      "qiCost": 4096,
+      "baseQiCost": 4096,
+      "baseDamage": 4096,
+      "baseRange": 0.6,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 4915,
+        "finalQiCost": 4096,
+        "finalRange": 0.6,
+        "formula": "4096 × 1.2 = 4915",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 5
+        }
+      },
+      "minCultivationLevel": 6,
+      "minLevel": 6,
+      "maxLevel": 8,
+      "fatigueCost": {
+        "physical": 3,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 23
+      },
+      "meta": {
+        "seed": 1774114254405,
+        "template": "combat_melee_strike_earth",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "MS000020",
+      "name": "Штормовой Кулак",
+      "nameEn": "Штормовой Кулак",
+      "description": "Штормовой Кулак — техника melee_strike элемента air уровня 7. Grade: common. Урон: 4096. Дальность: 0.5м.",
+      "type": "combat",
+      "subtype": "melee_strike",
+      "element": "air",
+      "level": 7,
+      "grade": "common",
+      "qiCost": 4096,
+      "baseQiCost": 4096,
+      "baseDamage": 4096,
+      "baseRange": 0.5,
+      "baseCapacity": 64,
+      "computed": {
+        "finalDamage": 4096,
+        "finalQiCost": 4096,
+        "finalRange": 0.5,
+        "formula": "4096 × 1 = 4096",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 6,
+      "minLevel": 6,
+      "maxLevel": 8,
+      "fatigueCost": {
+        "physical": 3,
+        "mental": 2
+      },
+      "statRequirements": {
+        "strength": 21
+      },
+      "meta": {
+        "seed": 1774114254406,
+        "template": "combat_melee_strike_air",
+        "generatedAt": "2026-03-21T17:30:54.389Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    }
+  ]
+}

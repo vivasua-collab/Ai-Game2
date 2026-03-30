@@ -1,0 +1,385 @@
+{
+  "version": "2.0",
+  "type": "celestial_spirit",
+  "count": 5,
+  "npcs": [
+    {
+      "id": "NP_000029",
+      "name": "Эфир",
+      "age": 18,
+      "gender": "male",
+      "speciesId": "celestial_spirit",
+      "roleId": "blacksmith",
+      "stats": {
+        "strength": 25,
+        "agility": 25,
+        "intelligence": 25,
+        "vitality": 25
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 2,
+        "coreCapacity": 15120,
+        "currentQi": 9966,
+        "coreQuality": 41,
+        "baseVolume": 12495,
+        "qiDensity": 1,
+        "meridianConductivity": 34.708333333333336,
+        "meridianBuffer": 173
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 100,
+            "maxFunctionalHP": 100,
+            "structuralHP": 200,
+            "maxStructuralHP": 200,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "essence": {
+            "functionalHP": 200,
+            "maxFunctionalHP": 200,
+            "structuralHP": 400,
+            "maxStructuralHP": 400,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Агрессия",
+          "Жестокость",
+          "Нетерпение"
+        ],
+        "motivation": "доминирование",
+        "dominantEmotion": "презрение",
+        "disposition": 0
+      },
+      "techniques": [
+        "breath_of_qi",
+        "reinforced_strike"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 97,
+        "contributionPoints": 4
+      },
+      "generationMeta": {
+        "seed": 1773590045645,
+        "generatedAt": "2026-03-15T15:54:05.623Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000064",
+      "name": "Эфир",
+      "age": 47,
+      "gender": "male",
+      "speciesId": "celestial_spirit",
+      "roleId": "hermit",
+      "stats": {
+        "strength": 27,
+        "agility": 27,
+        "intelligence": 27,
+        "vitality": 27
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 8,
+        "coreCapacity": 67416,
+        "currentQi": 64199,
+        "coreQuality": 35,
+        "baseVolume": 14293,
+        "qiDensity": 2,
+        "meridianConductivity": 39.702777777777776,
+        "meridianBuffer": 198
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 110,
+            "maxFunctionalHP": 110,
+            "structuralHP": 220,
+            "maxStructuralHP": 220,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "essence": {
+            "functionalHP": 220,
+            "maxFunctionalHP": 220,
+            "structuralHP": 440,
+            "maxStructuralHP": 440,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Таинственность",
+          "Мудрость",
+          "Отстранённость"
+        ],
+        "motivation": "уединение",
+        "dominantEmotion": "спокойствие",
+        "disposition": 55
+      },
+      "techniques": [
+        "breath_of_qi",
+        "mental_shield",
+        "earth_armor",
+        "qi_healing"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 50,
+        "contributionPoints": 4
+      },
+      "generationMeta": {
+        "seed": 1773590045680,
+        "generatedAt": "2026-03-15T15:54:05.626Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000066",
+      "name": "Зефир",
+      "age": 41,
+      "gender": "female",
+      "speciesId": "celestial_spirit",
+      "roleId": "innkeeper",
+      "stats": {
+        "strength": 27,
+        "agility": 27,
+        "intelligence": 27,
+        "vitality": 27
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 3,
+        "coreCapacity": 7495,
+        "currentQi": 5984,
+        "coreQuality": 91,
+        "baseVolume": 2559,
+        "qiDensity": 2,
+        "meridianConductivity": 7.108333333333333,
+        "meridianBuffer": 35
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 110,
+            "maxFunctionalHP": 110,
+            "structuralHP": 220,
+            "maxStructuralHP": 220,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "essence": {
+            "functionalHP": 220,
+            "maxFunctionalHP": 220,
+            "structuralHP": 440,
+            "maxStructuralHP": 440,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Жадность",
+          "Хитрость",
+          "Обаяние"
+        ],
+        "motivation": "накопление богатства",
+        "dominantEmotion": "алчность",
+        "disposition": 50
+      },
+      "techniques": [
+        "breath_of_qi"
+      ],
+      "equipment": {
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 60,
+        "contributionPoints": 13
+      },
+      "generationMeta": {
+        "seed": 1773590045682,
+        "generatedAt": "2026-03-15T15:54:05.626Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000128",
+      "name": "Инферно",
+      "age": 18,
+      "gender": "male",
+      "speciesId": "celestial_spirit",
+      "roleId": "noble",
+      "stats": {
+        "strength": 31,
+        "agility": 31,
+        "intelligence": 31,
+        "vitality": 31
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 6,
+        "coreCapacity": 56734,
+        "currentQi": 35334,
+        "coreQuality": 25,
+        "baseVolume": 6615,
+        "qiDensity": 4,
+        "meridianConductivity": 18.375,
+        "meridianBuffer": 91
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 120,
+            "maxFunctionalHP": 120,
+            "structuralHP": 240,
+            "maxStructuralHP": 240,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "essence": {
+            "functionalHP": 240,
+            "maxFunctionalHP": 240,
+            "structuralHP": 480,
+            "maxStructuralHP": 480,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Гордыня",
+          "Презрение",
+          "Влиятельность"
+        ],
+        "motivation": "роскошь",
+        "dominantEmotion": "гордость",
+        "disposition": 25
+      },
+      "techniques": [
+        "breath_of_qi",
+        "mental_shield",
+        "wind_speed"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null,
+        "accessory1": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 896,
+        "contributionPoints": 5
+      },
+      "generationMeta": {
+        "seed": 1773590343352,
+        "generatedAt": "2026-03-15T15:59:03.348Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000173",
+      "name": "Зефир",
+      "age": 112,
+      "gender": "male",
+      "speciesId": "celestial_spirit",
+      "roleId": "beggar",
+      "stats": {
+        "strength": 27,
+        "agility": 27,
+        "intelligence": 27,
+        "vitality": 27
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 6,
+        "coreCapacity": 55013,
+        "currentQi": 33792,
+        "coreQuality": 37,
+        "baseVolume": 14113,
+        "qiDensity": 2,
+        "meridianConductivity": 39.202777777777776,
+        "meridianBuffer": 196
+      },
+      "bodyState": {
+        "parts": {
+          "core": {
+            "functionalHP": 110,
+            "maxFunctionalHP": 110,
+            "structuralHP": 220,
+            "maxStructuralHP": 220,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "essence": {
+            "functionalHP": 220,
+            "maxFunctionalHP": 220,
+            "structuralHP": 440,
+            "maxStructuralHP": 440,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Хладнокровие",
+          "Скрытность",
+          "Профессионализм"
+        ],
+        "motivation": "оплата",
+        "dominantEmotion": "расчёт",
+        "disposition": 30
+      },
+      "techniques": [],
+      "equipment": {
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 1,
+        "contributionPoints": 24
+      },
+      "generationMeta": {
+        "seed": 1773590347211,
+        "generatedAt": "2026-03-15T15:59:07.200Z",
+        "version": "2.1.0-lore"
+      }
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "version": "2.0",
+  "count": 2,
+  "techniques": [
+    {
+      "id": "SP000001",
+      "name": "Усиление штормовой",
+      "nameEn": "Усиление Штормовой",
+      "description": "Усиление штормовой — техника support элемента water уровня 1. Grade: refined. Урон: 67. Дальность: 5м.",
+      "type": "support",
+      "element": "water",
+      "level": 1,
+      "grade": "refined",
+      "qiCost": 56,
+      "baseQiCost": 56,
+      "baseDamage": 56,
+      "baseRange": 5,
+      "baseCapacity": 56,
+      "computed": {
+        "finalDamage": 67,
+        "finalQiCost": 56,
+        "finalRange": 5,
+        "formula": "56 × 1.2 = 67",
+        "activeEffects": [
+          {
+            "type": "buff",
+            "value": 8,
+            "duration": 3
+          },
+          {
+            "type": "speed",
+            "value": 0
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "buff": true,
+          "speed": true
+        },
+        "effectValues": {
+          "buffType": "crit_damage",
+          "buffAmount": 8,
+          "buffDuration": 3,
+          "speedBonus": 18
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "intelligence": 5
+      },
+      "meta": {
+        "seed": 1774114254479,
+        "template": "support_base_water",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 4
+      }
+    },
+    {
+      "id": "SP000002",
+      "name": "Неизбежный Защита",
+      "nameEn": "Неизбежный Защита",
+      "description": "Неизбежный Защита — техника support элемента earth уровня 1. Grade: common. Урон: 56. Дальность: 5м.",
+      "type": "support",
+      "element": "earth",
+      "level": 1,
+      "grade": "common",
+      "qiCost": 56,
+      "baseQiCost": 56,
+      "baseDamage": 56,
+      "baseRange": 5,
+      "baseCapacity": 56,
+      "computed": {
+        "finalDamage": 56,
+        "finalQiCost": 56,
+        "finalRange": 5,
+        "formula": "56 × 1 = 56",
+        "activeEffects": [
+          {
+            "type": "speed",
+            "value": 0
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "speed": true
+        },
+        "effectValues": {
+          "speedBonus": 16
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 1,
+      "minLevel": 1,
+      "maxLevel": 2,
+      "fatigueCost": {
+        "physical": 0,
+        "mental": 0
+      },
+      "statRequirements": {
+        "intelligence": 3
+      },
+      "meta": {
+        "seed": 1774114254480,
+        "template": "support_base_earth",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 4
+      }
+    }
+  ]
+}

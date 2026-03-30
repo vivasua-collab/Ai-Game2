@@ -1,0 +1,122 @@
+{
+  "version": "2.0",
+  "count": 2,
+  "techniques": [
+    {
+      "id": "CR000003",
+      "name": "Пылающий Печать",
+      "nameEn": "Пылающий Печать",
+      "description": "Пылающий Печать — техника curse элемента fire уровня 7. Grade: perfect. Урон: 3584. Дальность: 5м.",
+      "type": "curse",
+      "element": "fire",
+      "level": 7,
+      "grade": "perfect",
+      "qiCost": 2560,
+      "baseQiCost": 2560,
+      "baseDamage": 2560,
+      "baseRange": 5,
+      "baseCapacity": 40,
+      "computed": {
+        "finalDamage": 3584,
+        "finalQiCost": 2560,
+        "finalRange": 5,
+        "formula": "2560 × 1.4 = 3584",
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 19,
+            "duration": 3
+          },
+          {
+            "type": "slow",
+            "value": 42,
+            "duration": 1
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "debuff": true,
+          "slow": true
+        },
+        "effectValues": {
+          "debuffStat": "agility",
+          "debuffAmount": 19,
+          "debuffDuration": 3,
+          "slowPercent": 42,
+          "slowDuration": 1
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 6,
+      "minLevel": 6,
+      "maxLevel": 8,
+      "fatigueCost": {
+        "physical": 3,
+        "mental": 2
+      },
+      "meta": {
+        "seed": 1774114254499,
+        "template": "curse_base_fire",
+        "generatedAt": "2026-03-21T17:30:54.391Z",
+        "generatorVersion": "4.0.0",
+        "tier": 3
+      }
+    },
+    {
+      "id": "CR000004",
+      "name": "Порча холодный",
+      "nameEn": "Порча Холодный",
+      "description": "Порча холодный — техника curse элемента water уровня 7. Grade: common. Урон: 2560. Дальность: 5м.",
+      "type": "curse",
+      "element": "water",
+      "level": 7,
+      "grade": "common",
+      "qiCost": 2560,
+      "baseQiCost": 2560,
+      "baseDamage": 2560,
+      "baseRange": 5,
+      "baseCapacity": 40,
+      "computed": {
+        "finalDamage": 2560,
+        "finalQiCost": 2560,
+        "finalRange": 5,
+        "formula": "2560 × 1 = 2560",
+        "activeEffects": [
+          {
+            "type": "debuff",
+            "value": 19,
+            "duration": 3
+          }
+        ]
+      },
+      "modifiers": {
+        "effects": {
+          "debuff": true
+        },
+        "effectValues": {
+          "debuffStat": "intelligence",
+          "debuffAmount": 19,
+          "debuffDuration": 3
+        },
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 6,
+      "minLevel": 6,
+      "maxLevel": 8,
+      "fatigueCost": {
+        "physical": 3,
+        "mental": 2
+      },
+      "meta": {
+        "seed": 1774114254500,
+        "template": "curse_base_water",
+        "generatedAt": "2026-03-21T17:30:54.391Z",
+        "generatorVersion": "4.0.0",
+        "tier": 3
+      }
+    }
+  ]
+}

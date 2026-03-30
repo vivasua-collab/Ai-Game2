@@ -1,0 +1,359 @@
+{
+  "version": "2.0",
+  "type": "eagle",
+  "count": 3,
+  "npcs": [
+    {
+      "id": "NP_000107",
+      "name": "Орёл Быстроног",
+      "age": 68,
+      "gender": "male",
+      "speciesId": "eagle",
+      "roleId": "hermit",
+      "stats": {
+        "strength": 10,
+        "agility": 25,
+        "intelligence": 10,
+        "vitality": 10
+      },
+      "cultivation": {
+        "level": 1,
+        "subLevel": 0,
+        "coreCapacity": 263,
+        "currentQi": 246,
+        "coreQuality": 20,
+        "baseVolume": 263,
+        "qiDensity": 1,
+        "meridianConductivity": 0.7305555555555555,
+        "meridianBuffer": 3
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 37,
+            "maxFunctionalHP": 37,
+            "structuralHP": 74,
+            "maxStructuralHP": 74,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 75,
+            "maxFunctionalHP": 75,
+            "structuralHP": 150,
+            "maxStructuralHP": 150,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 60,
+            "maxFunctionalHP": 60,
+            "structuralHP": 120,
+            "maxStructuralHP": 120,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_wing": {
+            "functionalHP": 30,
+            "maxFunctionalHP": 30,
+            "structuralHP": 60,
+            "maxStructuralHP": 60,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_wing": {
+            "functionalHP": 30,
+            "maxFunctionalHP": 30,
+            "structuralHP": 60,
+            "maxStructuralHP": 60,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_leg": {
+            "functionalHP": 37,
+            "maxFunctionalHP": 37,
+            "structuralHP": 74,
+            "maxStructuralHP": 74,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_leg": {
+            "functionalHP": 37,
+            "maxFunctionalHP": 37,
+            "structuralHP": 74,
+            "maxStructuralHP": 74,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Мудрость",
+          "Терпение",
+          "Доброта"
+        ],
+        "motivation": "сохранение традиций",
+        "dominantEmotion": "мудрость",
+        "disposition": 75
+      },
+      "techniques": [
+        "breath_of_qi",
+        "mental_shield",
+        "qi_healing"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 51,
+        "contributionPoints": 10
+      },
+      "generationMeta": {
+        "seed": 1773590176319,
+        "generatedAt": "2026-03-15T15:56:16.314Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000154",
+      "name": "Орёл Быстроног",
+      "age": 30,
+      "gender": "female",
+      "speciesId": "eagle",
+      "roleId": "alchemist",
+      "stats": {
+        "strength": 14,
+        "agility": 27,
+        "intelligence": 16,
+        "vitality": 11
+      },
+      "cultivation": {
+        "level": 2,
+        "subLevel": 6,
+        "coreCapacity": 899,
+        "currentQi": 590,
+        "coreQuality": 44,
+        "baseVolume": 229,
+        "qiDensity": 2,
+        "meridianConductivity": 0.6361111111111111,
+        "meridianBuffer": 3
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 41,
+            "maxFunctionalHP": 41,
+            "structuralHP": 82,
+            "maxStructuralHP": 82,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 82,
+            "maxFunctionalHP": 82,
+            "structuralHP": 164,
+            "maxStructuralHP": 164,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 66,
+            "maxFunctionalHP": 66,
+            "structuralHP": 132,
+            "maxStructuralHP": 132,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_wing": {
+            "functionalHP": 33,
+            "maxFunctionalHP": 33,
+            "structuralHP": 66,
+            "maxStructuralHP": 66,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_wing": {
+            "functionalHP": 33,
+            "maxFunctionalHP": 33,
+            "structuralHP": 66,
+            "maxStructuralHP": 66,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_leg": {
+            "functionalHP": 41,
+            "maxFunctionalHP": 41,
+            "structuralHP": 82,
+            "maxStructuralHP": 82,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_leg": {
+            "functionalHP": 41,
+            "maxFunctionalHP": 41,
+            "structuralHP": 82,
+            "maxStructuralHP": 82,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Эксцентричность",
+          "Интеллект",
+          "Одержимость"
+        ],
+        "motivation": "исследования",
+        "dominantEmotion": "растерянность",
+        "disposition": 50
+      },
+      "techniques": [
+        "breath_of_qi",
+        "qi_healing",
+        "water_shield"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 235,
+        "contributionPoints": 12
+      },
+      "generationMeta": {
+        "seed": 1773590345675,
+        "generatedAt": "2026-03-15T15:59:05.663Z",
+        "version": "2.1.0-lore"
+      }
+    },
+    {
+      "id": "NP_000185",
+      "name": "Орёл Громолап",
+      "age": 27,
+      "gender": "female",
+      "speciesId": "eagle",
+      "roleId": "noble",
+      "stats": {
+        "strength": 12,
+        "agility": 21,
+        "intelligence": 13,
+        "vitality": 12
+      },
+      "cultivation": {
+        "level": 3,
+        "subLevel": 6,
+        "coreCapacity": 1911,
+        "currentQi": 1517,
+        "coreQuality": 30,
+        "baseVolume": 221,
+        "qiDensity": 4,
+        "meridianConductivity": 0.6138888888888889,
+        "meridianBuffer": 3
+      },
+      "bodyState": {
+        "parts": {
+          "head": {
+            "functionalHP": 45,
+            "maxFunctionalHP": 45,
+            "structuralHP": 90,
+            "maxStructuralHP": 90,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "torso": {
+            "functionalHP": 90,
+            "maxFunctionalHP": 90,
+            "structuralHP": 180,
+            "maxStructuralHP": 180,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "heart": {
+            "functionalHP": 72,
+            "maxFunctionalHP": 72,
+            "structuralHP": 144,
+            "maxStructuralHP": 144,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_wing": {
+            "functionalHP": 36,
+            "maxFunctionalHP": 36,
+            "structuralHP": 72,
+            "maxStructuralHP": 72,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_wing": {
+            "functionalHP": 36,
+            "maxFunctionalHP": 36,
+            "structuralHP": 72,
+            "maxStructuralHP": 72,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "left_leg": {
+            "functionalHP": 45,
+            "maxFunctionalHP": 45,
+            "structuralHP": 90,
+            "maxStructuralHP": 90,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          },
+          "right_leg": {
+            "functionalHP": 45,
+            "maxFunctionalHP": 45,
+            "structuralHP": 90,
+            "maxStructuralHP": 90,
+            "status": "healthy",
+            "regenerationRate": 0.1
+          }
+        },
+        "activeBleeds": [],
+        "activeAttachments": [],
+        "isDead": false
+      },
+      "personality": {
+        "traits": [
+          "Жадность",
+          "Хитрость",
+          "Обаяние"
+        ],
+        "motivation": "накопление богатства",
+        "dominantEmotion": "радость от сделки",
+        "disposition": 50
+      },
+      "techniques": [
+        "breath_of_qi",
+        "mental_shield",
+        "wind_speed"
+      ],
+      "equipment": {
+        "weapon": null,
+        "armor": null,
+        "accessory1": null
+      },
+      "inventory": [],
+      "resources": {
+        "spiritStones": 776,
+        "contributionPoints": 3
+      },
+      "generationMeta": {
+        "seed": 1773590348740,
+        "generatedAt": "2026-03-15T15:59:08.736Z",
+        "version": "2.1.0-lore"
+      }
+    }
+  ]
+}

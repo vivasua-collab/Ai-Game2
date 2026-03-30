@@ -1,0 +1,432 @@
+{
+  "version": "2.0",
+  "count": 9,
+  "techniques": [
+    {
+      "id": "RG000004",
+      "name": "Эфирный Волна",
+      "nameEn": "Эфирный Волна",
+      "description": "Эфирный Волна — техника ranged_projectile элемента void уровня 5. Grade: refined. Урон: 614. Дальность: 15м.",
+      "type": "combat",
+      "subtype": "ranged_projectile",
+      "element": "void",
+      "level": 5,
+      "grade": "refined",
+      "qiCost": 512,
+      "baseQiCost": 512,
+      "baseDamage": 512,
+      "baseRange": 15,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 614,
+        "finalQiCost": 512,
+        "finalRange": 15,
+        "formula": "512 × 1.2 = 614",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 5
+        }
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "strength": 17
+      },
+      "meta": {
+        "seed": 1774114254440,
+        "template": "combat_ranged_projectile_void",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000005",
+      "name": "Чистый Ладонь",
+      "nameEn": "Чистый Ладонь",
+      "description": "Чистый Ладонь — техника ranged_projectile уровня 5. Grade: common. Урон: 512. Дальность: 15м.",
+      "type": "combat",
+      "subtype": "ranged_projectile",
+      "element": "neutral",
+      "level": 5,
+      "grade": "common",
+      "qiCost": 512,
+      "baseQiCost": 512,
+      "baseDamage": 512,
+      "baseRange": 15,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 512,
+        "finalQiCost": 512,
+        "finalRange": 15,
+        "formula": "512 × 1 = 512",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "strength": 15
+      },
+      "meta": {
+        "seed": 1774114254441,
+        "template": "combat_ranged_projectile_neutral",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000006",
+      "name": "Укол огненный",
+      "nameEn": "Укол Огненный",
+      "description": "Укол огненный — техника ranged_projectile элемента fire уровня 5. Grade: refined. Урон: 614. Дальность: 15м.",
+      "type": "combat",
+      "subtype": "ranged_projectile",
+      "element": "fire",
+      "level": 5,
+      "grade": "refined",
+      "qiCost": 512,
+      "baseQiCost": 512,
+      "baseDamage": 512,
+      "baseRange": 15,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 614,
+        "finalQiCost": 512,
+        "finalRange": 15,
+        "formula": "512 × 1.2 = 614",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 5
+        }
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "strength": 17
+      },
+      "meta": {
+        "seed": 1774114254442,
+        "template": "combat_ranged_projectile_fire",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000013",
+      "name": "Истинный Взрыв",
+      "nameEn": "Истинный Взрыв",
+      "description": "Истинный Взрыв — техника ranged_beam уровня 5. Grade: common. Урон: 512. Дальность: 20м.",
+      "type": "combat",
+      "subtype": "ranged_beam",
+      "element": "neutral",
+      "level": 5,
+      "grade": "common",
+      "qiCost": 512,
+      "baseQiCost": 512,
+      "baseDamage": 512,
+      "baseRange": 20,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 512,
+        "finalQiCost": 512,
+        "finalRange": 20,
+        "formula": "512 × 1 = 512",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "strength": 15
+      },
+      "meta": {
+        "seed": 1774114254449,
+        "template": "combat_ranged_beam_neutral",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000014",
+      "name": "Раскалённый Толчок",
+      "nameEn": "Раскалённый Толчок",
+      "description": "Раскалённый Толчок — техника ranged_beam элемента fire уровня 5. Grade: refined. Урон: 614. Дальность: 20м.",
+      "type": "combat",
+      "subtype": "ranged_beam",
+      "element": "fire",
+      "level": 5,
+      "grade": "refined",
+      "qiCost": 512,
+      "baseQiCost": 512,
+      "baseDamage": 512,
+      "baseRange": 20,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 614,
+        "finalQiCost": 512,
+        "finalRange": 20,
+        "formula": "512 × 1.2 = 614",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 5
+        }
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "strength": 17
+      },
+      "meta": {
+        "seed": 1774114254450,
+        "template": "combat_ranged_beam_fire",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000015",
+      "name": "Раскалённый Укол",
+      "nameEn": "Раскалённый Укол",
+      "description": "Раскалённый Укол — техника ranged_beam элемента fire уровня 5. Grade: common. Урон: 512. Дальность: 20м.",
+      "type": "combat",
+      "subtype": "ranged_beam",
+      "element": "fire",
+      "level": 5,
+      "grade": "common",
+      "qiCost": 512,
+      "baseQiCost": 512,
+      "baseDamage": 512,
+      "baseRange": 20,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 512,
+        "finalQiCost": 512,
+        "finalRange": 20,
+        "formula": "512 × 1 = 512",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "strength": 15
+      },
+      "meta": {
+        "seed": 1774114254451,
+        "template": "combat_ranged_beam_fire",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000022",
+      "name": "Взрыв пылающий",
+      "nameEn": "Взрыв Пылающий",
+      "description": "Взрыв пылающий — техника ranged_aoe элемента fire уровня 5. Grade: perfect. Урон: 716. Дальность: 10м.",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "fire",
+      "level": 5,
+      "grade": "perfect",
+      "qiCost": 512,
+      "baseQiCost": 512,
+      "baseDamage": 512,
+      "baseRange": 10,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 716,
+        "finalQiCost": 512,
+        "finalRange": 10,
+        "formula": "512 × 1.4 = 716",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 10,
+          "critDamage": 2
+        }
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "strength": 19
+      },
+      "meta": {
+        "seed": 1774114254458,
+        "template": "combat_ranged_aoe_fire",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000023",
+      "name": "Огненный Кулак",
+      "nameEn": "Огненный Кулак",
+      "description": "Огненный Кулак — техника ranged_aoe элемента fire уровня 5. Grade: common. Урон: 512. Дальность: 10м.",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "fire",
+      "level": 5,
+      "grade": "common",
+      "qiCost": 512,
+      "baseQiCost": 512,
+      "baseDamage": 512,
+      "baseRange": 10,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 512,
+        "finalQiCost": 512,
+        "finalRange": 10,
+        "formula": "512 × 1 = 512",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {}
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "strength": 15
+      },
+      "meta": {
+        "seed": 1774114254459,
+        "template": "combat_ranged_aoe_fire",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    },
+    {
+      "id": "RG000024",
+      "name": "Морской Укол",
+      "nameEn": "Морской Укол",
+      "description": "Морской Укол — техника ranged_aoe элемента water уровня 5. Grade: perfect. Урон: 716. Дальность: 10м.",
+      "type": "combat",
+      "subtype": "ranged_aoe",
+      "element": "water",
+      "level": 5,
+      "grade": "perfect",
+      "qiCost": 512,
+      "baseQiCost": 512,
+      "baseDamage": 512,
+      "baseRange": 10,
+      "baseCapacity": 32,
+      "computed": {
+        "finalDamage": 716,
+        "finalQiCost": 512,
+        "finalRange": 10,
+        "formula": "512 × 1.4 = 716",
+        "activeEffects": []
+      },
+      "modifiers": {
+        "effects": {},
+        "effectValues": {},
+        "penalties": {},
+        "bonuses": {
+          "critChance": 10,
+          "critDamage": 2
+        }
+      },
+      "minCultivationLevel": 4,
+      "minLevel": 4,
+      "maxLevel": 6,
+      "fatigueCost": {
+        "physical": 2,
+        "mental": 1
+      },
+      "statRequirements": {
+        "strength": 19
+      },
+      "meta": {
+        "seed": 1774114254460,
+        "template": "combat_ranged_aoe_water",
+        "generatedAt": "2026-03-21T17:30:54.390Z",
+        "generatorVersion": "4.0.0",
+        "tier": 1
+      }
+    }
+  ]
+}
